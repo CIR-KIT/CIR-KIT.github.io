@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Getstarted | 九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/blog/categories/getstarted/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-01-31T17:43:29+09:00</updated>
+  <updated>2015-01-31T17:55:28+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[Member]]></name>
@@ -28,6 +28,13 @@
 
 <p>Gazeboのチュートリアル第一弾「Get Started」。その、「Quick Start」編です。<br/>
 公式サイトを適当に翻訳しただけですので、あしからず。</p>
+
+<h5>レベル</h5>
+
+<p><strong>BEGINNER</strong></p>
+
+<!-- more -->
+
 
 <h5>環境</h5>
 
@@ -77,13 +84,6 @@
 <h5>参考</h5>
 
 <p><a href="http://gazebosim.org/tutorials?cat=get_started">GAZEBO Tutorial-GetStarted</a></p>
-
-<h5>レベル</h5>
-
-<p><strong>BEGINNER</strong></p>
-
-<!-- more -->
-
 
 <h2>クイックスタート</h2>
 
