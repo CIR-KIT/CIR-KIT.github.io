@@ -4,7 +4,7 @@
   <title><![CDATA[九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-01-31T20:35:40+09:00</updated>
+  <updated>2015-01-31T20:47:08+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -171,7 +171,7 @@
 
 <h2>メッシュをテストする</h2>
 
-<p><a href="https://web.archive.org/web/20120513213905/http://www.c3dl.org/wp-content/2.0Release/Resources/duck.dae">duck.dae</a>と<a href="https://web.archive.org/web/20120513213905/http://www.c3dl.org/wp-content/2.0Release/Resources/duck.png">duck.png</a>を利用することができます。<code>world</code>ファイルとして２つのファイルを同じディレクトリに置いてください。duckのメッシュはY軸を上として定義してあるので、sdfファイルに回転を設置します。なので、モデルは、画面の上をモデルの右として表示しています。：</p>
+<p><a href="https://web.archive.org/web/20120513213905/http://www.c3dl.org/wp-content/2.0Release/Resources/duck.dae">duck.dae</a>と<a href="https://web.archive.org/web/20120513213905/http://www.c3dl.org/wp-content/2.0Release/Resources/duck.png">duck.png</a>を利用することができます。先ほど作成した<code>world</code>ファイルと同じディレクトリに２つのファイルを置いてください。duckのメッシュはY軸を上として定義してあるので、sdfファイルに回転を設置します。なので、モデルは、画面の上をモデルの右として表示しています。：</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -188,7 +188,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>実行すると、以下のように見えるはずです。
+<p>実行すると、以下のように見えるはずです。ちなみに、<code>&lt;uri&gt;</code>に示されているディレクトリは、読み込んだ<code>world</code>ファイルのあるディレクトリからの相対ディレクトリです。
 <img src="http://cir-kit.github.io/images/Make_a_Robot/TutorialMeshDuck.png" alt="TutorialMeshDuck" /></p>
 ]]></content>
   </entry>
@@ -441,7 +441,7 @@
 
 
 <p>うまく行けば、写真のように白い箱が見えるでしょう。また、地面から<code>1[m]</code>浮かんでいるはずです。<br/>
-<img src="http://cir-kit.github.io/images/Make_a_Robot/My_robot_box.png" alt="My_robot_box" /></p>
+<img src="http://cir-kit.github.io/images/2015-01-31-gazebo-make-a-mobile-robot/My_robot_box.png" alt="My_robot_box" /></p>
 
 <ol>
 <li>今度は、ロボットにキャスターを追加しましょう。物理エンジンにおいて、ジョイントを用いたタイヤを使ってキャスターにするより、摩擦なしの球を使うほうが、モデルを単純化できるため、キャスターは摩擦なしの球にします。それでは、<code>model.sdf</code>に要素を追加しましょう。最終的には、以下のようになるはずです。:<br/>
@@ -552,7 +552,7 @@
 
 <p>  ロボットの後方にキャスターが追加されることを確認してください。先ほどの手順と同じようにしてGazeboにモデルをスポーンさせてください。<strong>（Gazeboを再起動する必要はありません。というのも、コードを変更するたびに、Gazeboはモデルをリロードするためです。）</strong><br/>
   うまく行けば、以下のようになります。
-  <img src="http://cir-kit.github.io/images/Make_a_Robot/My_robot_caster.png" alt="My_robot_caster" /></p>
+  <img src="http://cir-kit.github.io/images/2015-01-31-gazebo-make-a-mobile-robot/My_robot_caster.png" alt="My_robot_caster" /></p>
 
 <ol>
 <li>続いて、左タイヤを追加しましょう。<code>model.sdf</code>を以下のように編集しましょう。<br/>
@@ -700,7 +700,7 @@
 
 
 <p>  先ほどと同じように、Gazeboで作成したモデルを確認し、追加したタイヤが正しく付いていることを確認しましょう。ちなみに、さっきまでのモデルは削除しました。(モデルを右クリックし、<strong>Delete</strong>をクリックすれば、削除できます)
-  <img src="http://cir-kit.github.io/images/Make_a_Robot/My_robot_caster_left_wheel.png" alt="My_robot_caster_left_wheel" /></p>
+  <img src="http://cir-kit.github.io/images/2015-01-31-gazebo-make-a-mobile-robot/My_robot_caster_left_wheel.png" alt="My_robot_caster_left_wheel" /></p>
 
 <ol>
 <li>左タイヤをコピーして右タイヤを作り、リンクの姿勢にタイヤを合わせましょう。以下のように<code>model.sdf</code>を編集してください。:
@@ -886,7 +886,7 @@
 
 
 <p>  これで、２つの車輪を持った台車を作ることが出来ました。先ほどと同じように、Gazeboで確認してみましょう。以下のようになっているはずです。
-  <img src="http://cir-kit.github.io/images/Make_a_Robot/My_robot_caster_wheels.png" alt="My_robot_caster_wheels" /></p>
+  <img src="http://cir-kit.github.io/images/2015-01-31-gazebo-make-a-mobile-robot/My_robot_caster_wheels.png" alt="My_robot_caster_wheels" /></p>
 
 <ol>
 <li><code>&lt;static&gt;</code>を<code>false</code>にし、左右のタイヤのヒンジを追加しましょう。以下のように<code>model.sdf</code> を編集してください。
@@ -1109,7 +1109,7 @@
 <li><p>Gazeboを起動し、今作成したモデルを挿入してください。画面右側に写っている白い長方形（カラム）をクリックし、左側にドラッグしてください。</p></li>
 <li><p>すると、それぞれのジョイントの様々なコントロールを含むウィンドウが出現するでしょう。(コントロールしたいモデルが選択されていることを確認してください。)</p></li>
 <li><p><strong>Force</strong>タブの下にあるコントロールから、それぞれのジョイントの力を<code>約0.1[N・m]</code>に増加させてください。すると、ロボットが動き始めるはずです。(下図はイメージ)
-<img src="http://cir-kit.github.io/images/Make_a_Robot/Simple-robot-driving.png" alt="Simple-robot-driving" /></p></li>
+<img src="http://cir-kit.github.io/images/2015-01-31-gazebo-make-a-mobile-robot/Simple-robot-driving.png" alt="Simple-robot-driving" /></p></li>
 <li><p>おめでとうございまぁす！これで基本的なロボットモデルが作れました!</p></li>
 </ol>
 
@@ -1882,9 +1882,9 @@ Gazeboはシミュレーションに使用するモデルについて記述し�
 
 <h2>スクリーンショットのキャプチャ</h2>
 
-<p>スクリーンショット機能はgzclientのGUIに追加されています。　　
+<p>スクリーンショット機能はgzclientのGUIに追加されています。<br/>
 スクリーンショットを撮るには描画ウィンドウのツールバーにあるカメラアイコンを見つけ、クリックしてください。（下図参照）
-<img src="http://cir-kit.github.io/images/Get_Started/gazebo_screen_shots.png" alt="screen_shots" /></p>
+<img src="http://cir-kit.github.io/images/2015-01-31-gazebo-capture-screenshot/gazebo_screen_shots.png" alt="screen_shots" /></p>
 
 <h2>スクリーンショットの保存アイコン</h2>
 
@@ -2576,7 +2576,7 @@ Gazeboによって提供されるworldデータは<code>/share/gazebo-*/worlds</
 <p>という感じで、もはや使わない手はないロボットシミュレータです。<br/>
 下図みたいな感じで使えるのでとってもGoodですね !</p>
 
-<p><img src="http://cir-kit.github.io/images/Install/gazebo_example.jpg" alt="gazebo_example" /></p>
+<p><img src="http://cir-kit.github.io/images/2015-01-31-gazebo-install/gazebo_example.jpg" alt="gazebo_example" /></p>
 
 <h2>GAZEBOのインストール</h2>
 

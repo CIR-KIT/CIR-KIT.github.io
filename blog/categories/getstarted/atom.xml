@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Getstarted | 九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/blog/categories/getstarted/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-01-31T20:35:40+09:00</updated>
+  <updated>2015-01-31T20:47:08+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -87,9 +87,9 @@
 
 <h2>スクリーンショットのキャプチャ</h2>
 
-<p>スクリーンショット機能はgzclientのGUIに追加されています。　　
+<p>スクリーンショット機能はgzclientのGUIに追加されています。<br/>
 スクリーンショットを撮るには描画ウィンドウのツールバーにあるカメラアイコンを見つけ、クリックしてください。（下図参照）
-<img src="/images/Get_Started/gazebo_screen_shots.png" alt="screen_shots" /></p>
+<img src="/images/2015-01-31-gazebo-capture-screenshot/gazebo_screen_shots.png" alt="screen_shots" /></p>
 
 <h2>スクリーンショットの保存アイコン</h2>
 

@@ -329,7 +329,7 @@
 
 
 <p>うまく行けば、写真のように白い箱が見えるでしょう。また、地面から<code>1[m]</code>浮かんでいるはずです。<br/>
-<img src="/images/Make_a_Robot/My_robot_box.png" alt="My_robot_box" /></p>
+<img src="/images/2015-01-31-gazebo-make-a-mobile-robot/My_robot_box.png" alt="My_robot_box" /></p>
 
 <ol>
 <li>今度は、ロボットにキャスターを追加しましょう。物理エンジンにおいて、ジョイントを用いたタイヤを使ってキャスターにするより、摩擦なしの球を使うほうが、モデルを単純化できるため、キャスターは摩擦なしの球にします。それでは、<code>model.sdf</code>に要素を追加しましょう。最終的には、以下のようになるはずです。:<br/>
@@ -440,7 +440,7 @@
 
 <p>  ロボットの後方にキャスターが追加されることを確認してください。先ほどの手順と同じようにしてGazeboにモデルをスポーンさせてください。<strong>（Gazeboを再起動する必要はありません。というのも、コードを変更するたびに、Gazeboはモデルをリロードするためです。）</strong><br/>
   うまく行けば、以下のようになります。
-  <img src="/images/Make_a_Robot/My_robot_caster.png" alt="My_robot_caster" /></p>
+  <img src="/images/2015-01-31-gazebo-make-a-mobile-robot/My_robot_caster.png" alt="My_robot_caster" /></p>
 
 <ol>
 <li>続いて、左タイヤを追加しましょう。<code>model.sdf</code>を以下のように編集しましょう。<br/>
@@ -588,7 +588,7 @@
 
 
 <p>  先ほどと同じように、Gazeboで作成したモデルを確認し、追加したタイヤが正しく付いていることを確認しましょう。ちなみに、さっきまでのモデルは削除しました。(モデルを右クリックし、<strong>Delete</strong>をクリックすれば、削除できます)
-  <img src="/images/Make_a_Robot/My_robot_caster_left_wheel.png" alt="My_robot_caster_left_wheel" /></p>
+  <img src="/images/2015-01-31-gazebo-make-a-mobile-robot/My_robot_caster_left_wheel.png" alt="My_robot_caster_left_wheel" /></p>
 
 <ol>
 <li>左タイヤをコピーして右タイヤを作り、リンクの姿勢にタイヤを合わせましょう。以下のように<code>model.sdf</code>を編集してください。:
@@ -774,7 +774,7 @@
 
 
 <p>  これで、２つの車輪を持った台車を作ることが出来ました。先ほどと同じように、Gazeboで確認してみましょう。以下のようになっているはずです。
-  <img src="/images/Make_a_Robot/My_robot_caster_wheels.png" alt="My_robot_caster_wheels" /></p>
+  <img src="/images/2015-01-31-gazebo-make-a-mobile-robot/My_robot_caster_wheels.png" alt="My_robot_caster_wheels" /></p>
 
 <ol>
 <li><code>&lt;static&gt;</code>を<code>false</code>にし、左右のタイヤのヒンジを追加しましょう。以下のように<code>model.sdf</code> を編集してください。
@@ -997,7 +997,7 @@
 <li><p>Gazeboを起動し、今作成したモデルを挿入してください。画面右側に写っている白い長方形（カラム）をクリックし、左側にドラッグしてください。</p></li>
 <li><p>すると、それぞれのジョイントの様々なコントロールを含むウィンドウが出現するでしょう。(コントロールしたいモデルが選択されていることを確認してください。)</p></li>
 <li><p><strong>Force</strong>タブの下にあるコントロールから、それぞれのジョイントの力を<code>約0.1[N・m]</code>に増加させてください。すると、ロボットが動き始めるはずです。(下図はイメージ)
-<img src="/images/Make_a_Robot/Simple-robot-driving.png" alt="Simple-robot-driving" /></p></li>
+<img src="/images/2015-01-31-gazebo-make-a-mobile-robot/Simple-robot-driving.png" alt="Simple-robot-driving" /></p></li>
 <li><p>おめでとうございまぁす！これで基本的なロボットモデルが作れました!</p></li>
 </ol>
 
