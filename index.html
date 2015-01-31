@@ -88,7 +88,7 @@
   </header>
 
 
-  <div class="entry-content"><p><img src="../Picture/gazebo_logo.png" alt="gazebo_logo" /></p>
+  <div class="entry-content"><p><img src="../images/gazebo_logo.png" alt="gazebo_logo" /></p>
 
 <h5>検証日時</h5>
 
@@ -152,75 +152,12 @@
 
 <p><strong>BEGINNER</strong></p>
 
-<h2>クイックスタート</h2>
-
-<h3>GAZEBOを立ち上げる</h3>
-
-<p>Gazeboをデフォルト環境で実行するには以下の3つの手順が必要です。</p>
-
-<ol>
-<li><p>Gazeboを<a href="https://cir-kit.github.io/blog/2015/01/31/gazebo-install/">インストール</a>する。</p></li>
-<li><p>ターミナルを立ち上げる。ほとんどのUbuntuシステムなら、<code>Ctrl+Alt+t</code>でもターミナルが立ち上がります。</p></li>
-<li>コマンドプロンプトに以下のコマンドを入力して<code>gazebo</code>を立ち上げる。</li>
-</ol>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>GAZEBOをロボットと一緒に動かす</h3>
-
-<p>pionieer2dxと共にworldを読み込んで、シミュレータを立ち上げてみましょう !</p>
-
-<ol>
-<li>ターミナルを開いて、以下のコマンドを入力してください。</li>
-</ol>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo worlds/pioneer2dx.world
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h4>worldデータはどこにあるのでしょうか?</h4>
-
-<p>さっき入力したコマンドの中に、不可思議な引数<code>worlds/pioneer2dx.world</code>があることに気づいたでしょう。これは、gazeboに<code>worlds/pioneer2dx.world</code>ファイルを探させ、ロードしスタートさせるようにする引数です。worldデータはバージョンシステムディレクトリに配置されています。例えば、Ubuntuの場合だと、<code>/usr/share/gazebo-4.0</code>にあります。もし、UbuntuにGazebo4.0をインストールしているのなら、以下のコマンドをターミナルに撃ちこむことで、worldデータの一覧を確認することができます。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>ls /usr/share/gazebo-4.0/worlds
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Homebrewを利用してOSXにGazebo4.0をインストールしている場合、以下を入力して、worldデータの一覧を確認することができます。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>ls /usr/local/share/gazebo-4.0/worlds
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>クライアントとサーバーの区別</h3>
-
-<p>実際は、<code>gazebo</code>コマンドでは、２つの異なるコマンドを実行しています。１つ目は、<code>gzserver</code> と呼ばれるもので、２つ目は <code>gzclient</code> と呼ばれるものです。 <code>gzserver</code> では、物理エンジンのアップデートループやセンサデータの更新などを実行可能にします。これはGazeboのコアであり、他のGUIとは独立して使用することができます。また、<strong>&ldquo;run headless&rdquo;</strong>というフレーズをフォーラムに確認することができるでしょう。このフレーズは <code>gzserver</code> のみを実行しているということを意味しています。例として、ユーザーインターフェースの必要ないクラウドコンピュータで実行している <code>gzserver</code> とworldデータが関連付けられているときなどがあります。<br/>
-また、<code>gzclient</code> では<a href="http://qt-project.org/">QT</a>を基本としたユーザーインターフェースを利用可能にします。このアプリケーションは素晴らしい見た目のシミュレーションを提供するだけでなく、様々なシミュレーションプロパティを操作する便利なコントロールも提供してくれます。<br/>
-これらを実行可能にし、実行するために、ターミナルを開いて、サーバーを起動してください。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gzserver
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>もうひとつ別のターミナルを開いて、GUIクライアントを実行してください</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gzclient
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>この時点で、Gazeboのユーザーインターフェースを確認できるはずです。また、<code>gzclient</code>は好きなタイミングで再起動することができますし、複数実行することも可能です。</p>
 </div>
   
+  
+    <footer>
+      <a rel="full-article" href="/blog/2015/01/31/gazebo-quickstart/">Read on &rarr;</a>
+    </footer>
   
 
 
@@ -247,7 +184,7 @@
   </header>
 
 
-  <div class="entry-content"><p><img src="../Picture/gazebo_logo.png" alt="gazebo_logo" /></p>
+  <div class="entry-content"><p><img src="../images/gazebo_logo.png" alt="gazebo_logo" /></p>
 
 <h5>検証日時</h5>
 
@@ -312,146 +249,12 @@
 
 <p><strong>BEGINNER</strong></p>
 
-<h2>「GAZEBO」ってなに?</h2>
-
-<p>gazeboは以下のような特徴を持っています。</p>
-
-<ul>
-<li><p>オープンソース（Apache ライセンス）の3Dロボットシミュレータ</p></li>
-<li><p><a href="http://qt-project.org/">Qt</a>を利用した強力なGUI</p></li>
-<li><p>複数の物理エンジンを切り替えられる(<a href="http://www.ode.org/">ODE</a>含む)</p></li>
-<li><p>カメラ、LRFなどのセンサシミュレーションが豊富</p></li>
-<li><p>センサだけでなく、ロボットモデルも豊富(<a href="http://www.nihonbinary.co.jp/Products/Robot/TurtleBot.html">TurtleBot</a>、<a href="https://www.willowgarage.com/pages/pr2/overview">PR2</a>etc&hellip;)</p></li>
-<li><p><a href="http://www.ros.org/">ROS</a>との連携も充実</p></li>
-</ul>
-
-
-<p>という感じで、もはや使わない手はないロボットシミュレータです。<br/>
-下図みたいな感じで使えるのでとってもGoodですね !</p>
-
-<p><img src="../Picture/Install/gazebo_example.jpg" alt="gazebo_example" /></p>
-
-<h2>GAZEBOのインストール</h2>
-
-<p>通常は、OnlineInstallの方の手順にしたがってインストールしてください。<br/>
-尚、<code>gazebo</code>コマンドを入力したあと、アプリケーションが立ち上がるまでに時間がかかるみたいなので、落ち着いて待ちましょう。</p>
-
-<h3>Online-Install</h3>
-
-<ol>
-<li>インストール</li>
-</ol>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>wget -O /tmp/gazebo4_install.sh http://osrf-distributions.s3.amazonaws.com/gazebo/gazebo4_install.sh<span class="p">;</span> sudo sh /tmp/gazebo4_install.sh
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ol>
-<li>実行</li>
-</ol>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>Step-by-step Install</h3>
-
-<ol>
-<li><code>packages.osrfoundation.org.</code> パッケージからのソフトウェア取得を許可するようコンピュータを設定します。
-<strong>Note : </strong>このパッケージの<a href="https://bitbucket.org/osrf/gazebo/wiki/gazebo_mirrors">ダウンロードミラー</a>があるので、それを使うと、ダウンロード速度が早くなるかもしれません。</li>
-</ol>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo sh -c <span class="s1">&#39;echo &quot;deb http://packages.osrfoundation.org/gazebo/ubuntu `lsb_release -cs` main&quot; &gt; /etc/apt/sources.list.d/gazebo-latest.list&#39;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ol>
-<li>Keyの設定</li>
-</ol>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>wget http://packages.osrfoundation.org/gazebo.key -O - <span class="p">|</span> sudo apt-key add -
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ol>
-<li>インストールのチェック(実行)
-<strong>Note : </strong>初めて<code>gazebo</code>コマンドを実行する時には、ダウンロードなどを行うので時間がかかります。落ち着いて待ちましょう。</li>
-</ol>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>他のdebパッケージ</h3>
-
-<p>Gazeboでは<a href="https://www.debian.org/doc/manuals/maint-guide/">公式パッケージガイドライン</a>にそったその他のUbuntu debian パッケージを用意しています。これらではgazeboのオプションのインストール方法が更新されます。</p>
-
-<ul>
-<li><p>Gazeboをアプリケーショんとして使用する場合：Gazeboを提供済みのプラグイン、モデルとともにシミュレータとしてのみ使用し、ソフトウェア開発においてgazeboの最新版を利用する予定のないユーザ用。Gazebo4.0を使用するためには、<code>gazebo4</code>と呼ばれるパッケージをインストールしてください。</p></li>
-<li><p>Gzeboのライブラリを使用してGazeboを開発ツールとして使用する場合：最新のGazeboやライブラリが必要とする様々なソフトウェアやプラグインを開発するユーザ用。この場合、<code>gazebo4</code>パッケージと共に、<code>libgazebo4-dev</code>もインストールしてください。</p></li>
-</ul>
-
-
-<h4>Gazeboマルチ物理エンジンサポート</h4>
-
-<p>Gazeboではシミュレーション実行のためにいろいろな物理エンジンを使用することができます。<br/>
-<a href="http://www.ode.org/">ODE</a>はデフォルトで使用されているものです。しかし、Ubuntuパッケージでは、<a href="http://bulletphysics.org/wordpress/">Bullet</a>や<a href="https://simtk.org/home/simbody/">Simbody</a>もまたサポートされています。<br/>
-それらを使用するユーザはgazeboをソースコードからインストールする<a href="http://dartsim.github.io/">DART</a>に接続(wan)する事になります。なので、<code>.deb</code>パッケージは使用しないでください。</p>
-
-<h3>ROSとGazebo</h3>
-
-<p>GazeboをROSと共に使用するためには、<a href="http://gazebosim.org/tutorials?cat=connect_ros">ROSとつなぐ</a>というチュートリアルを参照してください。</p>
 </div>
   
   
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2015/01/31/test-post/">Test Post</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-01-31T01:22:10+09:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>31</span><span class='date-suffix'>st</span>, <span class='date-year'>2015</span></span> <span class='time'>1:22 am</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h1>テスト投稿です</h1>
-
-<p>うまく投稿できるかな？？</p>
-
-<h1>テストPush</h1>
-
-<p>うまく投稿できてましたよ。</p>
-
-<h1>テスト</h1>
-
-<p>さらなるテスト</p>
-</div>
-  
+    <footer>
+      <a rel="full-article" href="/blog/2015/01/31/gazebo-install/">Read on &rarr;</a>
+    </footer>
   
 
 
@@ -475,10 +278,6 @@
     
       <li class="post">
         <a href="/blog/2015/01/31/gazebo-install/">Gazeboのインストール</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/01/31/test-post/">Test Post</a>
       </li>
     
   </ul>

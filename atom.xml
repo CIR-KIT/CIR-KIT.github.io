@@ -4,7 +4,7 @@
   <title><![CDATA[九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-01-31T17:35:42+09:00</updated>
+  <updated>2015-01-31T17:43:29+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[Member]]></name>
@@ -18,7 +18,7 @@
     <link href="http://cir-kit.github.io/blog/2015/01/31/gazebo-quickstart/"/>
     <updated>2015-01-31T17:12:33+09:00</updated>
     <id>http://cir-kit.github.io/blog/2015/01/31/gazebo-quickstart</id>
-    <content type="html"><![CDATA[<p><img src="../Picture/gazebo_logo.png" alt="gazebo_logo" /></p>
+    <content type="html"><![CDATA[<p><img src="../images/gazebo_logo.png" alt="gazebo_logo" /></p>
 
 <h5>検証日時</h5>
 
@@ -81,6 +81,9 @@
 <h5>レベル</h5>
 
 <p><strong>BEGINNER</strong></p>
+
+<!-- more -->
+
 
 <h2>クイックスタート</h2>
 
@@ -157,7 +160,7 @@
     <link href="http://cir-kit.github.io/blog/2015/01/31/gazebo-install/"/>
     <updated>2015-01-31T15:28:43+09:00</updated>
     <id>http://cir-kit.github.io/blog/2015/01/31/gazebo-install</id>
-    <content type="html"><![CDATA[<p><img src="../Picture/gazebo_logo.png" alt="gazebo_logo" /></p>
+    <content type="html"><![CDATA[<p><img src="../images/gazebo_logo.png" alt="gazebo_logo" /></p>
 
 <h5>検証日時</h5>
 
@@ -222,6 +225,9 @@
 
 <p><strong>BEGINNER</strong></p>
 
+<!-- more -->
+
+
 <h2>「GAZEBO」ってなに?</h2>
 
 <p>gazeboは以下のような特徴を持っています。</p>
@@ -239,7 +245,7 @@
 <p>という感じで、もはや使わない手はないロボットシミュレータです。<br/>
 下図みたいな感じで使えるのでとってもGoodですね !</p>
 
-<p><img src="../Picture/Install/gazebo_example.jpg" alt="gazebo_example" /></p>
+<p><img src="../images/Install/gazebo_example.jpg" alt="gazebo_example" /></p>
 
 <h2>GAZEBOのインストール</h2>
 
@@ -321,25 +327,6 @@
 <h3>ROSとGazebo</h3>
 
 <p>GazeboをROSと共に使用するためには、<a href="http://gazebosim.org/tutorials?cat=connect_ros">ROSとつなぐ</a>というチュートリアルを参照してください。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Test Post]]></title>
-    <link href="http://cir-kit.github.io/blog/2015/01/31/test-post/"/>
-    <updated>2015-01-31T01:22:10+09:00</updated>
-    <id>http://cir-kit.github.io/blog/2015/01/31/test-post</id>
-    <content type="html"><![CDATA[<h1>テスト投稿です</h1>
-
-<p>うまく投稿できるかな？？</p>
-
-<h1>テストPush</h1>
-
-<p>うまく投稿できてましたよ。</p>
-
-<h1>テスト</h1>
-
-<p>さらなるテスト</p>
 ]]></content>
   </entry>
   
