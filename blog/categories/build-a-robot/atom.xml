@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Build a Robot | 九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/blog/categories/build-a-robot/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-02-01T01:27:01+09:00</updated>
+  <updated>2015-02-01T01:30:44+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -89,7 +89,7 @@
 
 <h2>はじめに</h2>
 
-<h4>始める前に参照してください（してない人は）</h4>
+<h4>始める前に以下を参照してください（してない人は）</h4>
 
 <ul>
 <li><p><a href="http://cir-kit.github.io/2015/01/31/gazebo-make-a-mobile-robot/">移動ロボットを作る</a></p></li>
@@ -107,7 +107,7 @@
 
 <ol>
 <li><p>以前<a href="http://cir-kit.github.io/2015/01/31/gazebo-make-a-mobile-robot/">移動ロボットを作る</a>で以下のような移動ロボット（台車）を作成したはずです。
-<img src="/images/2015/02/01/gazebo-attach-gripper-to-robot/Mobile_base.png" alt="Mobile_base" /></p></li>
+<img src="/images/2015-02-01-gazebo-attach-gripper-to-robot/Mobile_base.png" alt="Mobile_base" /></p></li>
 <li><p>このチュートリアルでは<code>~/.gazebo/models/my_robot/model.sdf</code>を修正し、モデルをより大きくすることでグリッパを搭載します。故に、以下のようにして、<code>model.sdf</code>を修正してゆきましょう。:
 <code>bash
 gedit ~/.gazebo/models/my_robot/model.sdf
