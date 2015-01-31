@@ -4,7 +4,7 @@
   <title><![CDATA[九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-02-01T01:24:34+09:00</updated>
+  <updated>2015-02-01T01:27:01+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -22,7 +22,7 @@
 
 <h5>検証日時</h5>
 
-<p>01/30/2015 (Fri)</p>
+<p>02/01/2015 (Sun)</p>
 
 <h5>概要</h5>
 
@@ -376,7 +376,7 @@
       <sdf version='1.4'>manipulator.sdf</sdf>
       <author>
         <name>My Name</name>
-        <email><a href="&#109;&#x61;&#105;&#108;&#x74;&#x6f;&#58;&#x6d;&#101;&#x40;&#x6d;&#121;&#x2e;&#x65;&#109;&#97;&#105;&#x6c;">&#109;&#x65;&#64;&#109;&#x79;&#x2e;&#101;&#109;&#x61;&#105;&#108;</a></email>
+        <email><a href="&#x6d;&#x61;&#105;&#108;&#116;&#111;&#x3a;&#x6d;&#101;&#x40;&#x6d;&#121;&#46;&#x65;&#109;&#97;&#105;&#108;">&#109;&#101;&#64;&#x6d;&#121;&#46;&#101;&#109;&#x61;&#105;&#108;</a></email>
       </author>
       <description>
         My simple mobile manipulator
