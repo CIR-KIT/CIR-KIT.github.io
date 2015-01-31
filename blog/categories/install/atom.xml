@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Install | 九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/blog/categories/install/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-02-01T01:30:44+09:00</updated>
+  <updated>2015-02-01T01:33:33+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -18,25 +18,51 @@
     <link href="http://cir-kit.github.io/blog/2015/01/31/gazebo-install/"/>
     <updated>2015-01-31T15:28:43+09:00</updated>
     <id>http://cir-kit.github.io/blog/2015/01/31/gazebo-install</id>
-    <content type="html"><![CDATA[<p><img src="/images/gazebo_logo.png" alt="gazebo_logo" /></p>
+    <content type="html"><![CDATA[<p><img src="http://cir-kit.github.io/images/gazebo_logo.png" alt="gazebo_logo" /></p>
+
+
+
 
 <h5>検証日時</h5>
 
+
+
+
 <p>01/31/2015 (Sat)</p>
 
+
+
+
 <h5>概要</h5>
+
+
+
 
 <p>Robot Simulaterの<code>gazebo</code>の概要とそのインストールについてです。<br/>
 インストール編は、公式サイトを適当に翻訳しただけですので、あしからず。</p>
 
+
+
+
 <h5>レベル</h5>
 
+
+
+
 <p><strong>BEGINNER</strong></p>
+
+
+
 
 <!-- more -->
 
 
+
+
 <h5>環境</h5>
+
+
+
 
 <table>
 <thead>
@@ -81,14 +107,28 @@
 </table>
 
 
+
+
 <h5>参考</h5>
+
+
+
 
 <p><a href="http://gazebosim.org/tutorials?cat=install">GAZEBO Tutorial-Installation</a>
 <a href="http://www.slideshare.net/akio19937/1rosrosgazebo">第1回ROS勉強会発表資料 ROS+Gazeboではじめるロボットシミュレーション</a></p>
 
+
+
+
 <h2>「GAZEBO」ってなに?</h2>
 
+
+
+
 <p>gazeboは以下のような特徴を持っています。</p>
+
+
+
 
 <ul>
 <li><p>オープンソース（Apache ライセンス）の3Dロボットシミュレータ</p></li>
@@ -100,53 +140,121 @@
 </ul>
 
 
+
+
 <p>という感じで、もはや使わない手はないロボットシミュレータです。<br/>
 下図みたいな感じで使えるのでとってもGoodですね !</p>
 
-<p><img src="/images/2015-01-31-gazebo-install/gazebo_example.jpg" alt="gazebo_example" /></p>
+
+
+
+<p><img src="http://cir-kit.github.io/images/2015-01-31-gazebo-install/gazebo_example.jpg" alt="gazebo_example" /></p>
+
+
+
 
 <h2>GAZEBOのインストール</h2>
+
+
+
 
 <p>通常は、OnlineInstallの方の手順にしたがってインストールしてください。<br/>
 尚、<code>gazebo</code>コマンドを入力したあと、アプリケーションが立ち上がるまでに時間がかかるみたいなので、落ち着いて待ちましょう。</p>
 
+
+
+
 <h3>Online-Install</h3>
 
+
+
+
 <ol>
-<li><p>インストール
-<code>bash
-wget -O /tmp/gazebo4_install.sh http://osrf-distributions.s3.amazonaws.com/gazebo/gazebo4_install.sh; sudo sh /tmp/gazebo4_install.sh
-</code></p></li>
-<li><p>実行
-<code>bash
-gazebo
-</code></p></li>
+<li>インストール</li>
 </ol>
+
+
+
+
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>wget -O /tmp/gazebo4_install.sh http://osrf-distributions.s3.amazonaws.com/gazebo/gazebo4_install.sh<span class="p">;</span> sudo sh /tmp/gazebo4_install.sh
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+
+
+
+<ol>
+<li>実行</li>
+</ol>
+
+
+
+
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+
 
 
 <h3>Step-by-step Install</h3>
 
+
+
+
 <ol>
-<li><p><code>packages.osrfoundation.org.</code> パッケージからのソフトウェア取得を許可するようコンピュータを設定します。
-<strong>Note : </strong>このパッケージの<a href="https://bitbucket.org/osrf/gazebo/wiki/gazebo_mirrors">ダウンロードミラー</a>があるので、それを使うと、ダウンロード速度が早くなるかもしれません。
-<code>bash
-sudo sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu `lsb_release -cs` main" &gt; /etc/apt/sources.list.d/gazebo-latest.list'
-</code></p></li>
-<li><p>Keyの設定
-<code>bash
-wget http://packages.osrfoundation.org/gazebo.key -O - | sudo apt-key add -
-</code></p></li>
-<li><p>インストールのチェック(実行)
-<strong>Note : </strong>初めて<code>gazebo</code>コマンドを実行する時には、ダウンロードなどを行うので時間がかかります。落ち着いて待ちましょう。
-<code>bash
-gazebo
-</code></p></li>
+<li><code>packages.osrfoundation.org.</code> パッケージからのソフトウェア取得を許可するようコンピュータを設定します。
+<strong>Note : </strong>このパッケージの<a href="https://bitbucket.org/osrf/gazebo/wiki/gazebo_mirrors">ダウンロードミラー</a>があるので、それを使うと、ダウンロード速度が早くなるかもしれません。</li>
 </ol>
+
+
+
+
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo sh -c <span class="s1">&#39;echo &quot;deb http://packages.osrfoundation.org/gazebo/ubuntu `lsb_release -cs` main&quot; &gt; /etc/apt/sources.list.d/gazebo-latest.list&#39;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+
+
+
+<ol>
+<li>Keyの設定</li>
+</ol>
+
+
+
+
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>wget http://packages.osrfoundation.org/gazebo.key -O - <span class="p">|</span> sudo apt-key add -
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+
+
+
+<ol>
+<li>インストールのチェック(実行)
+<strong>Note : </strong>初めて<code>gazebo</code>コマンドを実行する時には、ダウンロードなどを行うので時間がかかります。落ち着いて待ちましょう。</li>
+</ol>
+
+
+
+
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+
 
 
 <h3>他のdebパッケージ</h3>
 
+
+
+
 <p>Gazeboでは<a href="https://www.debian.org/doc/manuals/maint-guide/">公式パッケージガイドライン</a>にそったその他のUbuntu debian パッケージを用意しています。これらではgazeboのオプションのインストール方法が更新されます。</p>
+
+
+
 
 <ul>
 <li><p>Gazeboをアプリケーショんとして使用する場合：Gazeboを提供済みのプラグイン、モデルとともにシミュレータとしてのみ使用し、ソフトウェア開発においてgazeboの最新版を利用する予定のないユーザ用。Gazebo4.0を使用するためには、<code>gazebo4</code>と呼ばれるパッケージをインストールしてください。</p></li>
@@ -154,15 +262,27 @@ gazebo
 </ul>
 
 
+
+
 <h4>Gazeboマルチ物理エンジンサポート</h4>
+
+
+
 
 <p>Gazeboではシミュレーション実行のためにいろいろな物理エンジンを使用することができます。<br/>
 <a href="http://www.ode.org/">ODE</a>はデフォルトで使用されているものです。しかし、Ubuntuパッケージでは、<a href="http://bulletphysics.org/wordpress/">Bullet</a>や<a href="https://simtk.org/home/simbody/">Simbody</a>もまたサポートされています。<br/>
 それらを使用するユーザはgazeboをソースコードからインストールする<a href="http://dartsim.github.io/">DART</a>に接続(wan)する事になります。なので、<code>.deb</code>パッケージは使用しないでください。</p>
 
+
+
+
 <h3>ROSとGazebo</h3>
 
+
+
+
 <p>GazeboをROSと共に使用するためには、<a href="http://gazebosim.org/tutorials?cat=connect_ros">ROSとつなぐ</a>というチュートリアルを参照してください。</p>
+
 ]]></content>
   </entry>
   

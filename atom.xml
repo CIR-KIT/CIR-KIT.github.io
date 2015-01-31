@@ -4,7 +4,7 @@
   <title><![CDATA[九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-02-01T01:30:44+09:00</updated>
+  <updated>2015-02-01T01:33:33+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -234,6 +234,7 @@
 <span class='line-number'>113</span>
 <span class='line-number'>114</span>
 <span class='line-number'>115</span>
+<span class='line-number'>116</span>
 </pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&#39;1.0&#39;?&gt;</span>
 </span><span class='line'><span class="nt">&lt;sdf</span> <span class="na">version=</span><span class="s">&#39;1.4&#39;</span><span class="nt">&gt;</span>
 </span><span class='line'>  <span class="nt">&lt;model</span> <span class="na">name=</span><span class="s">&quot;mobile_base&quot;</span><span class="nt">&gt;</span>
@@ -344,6 +345,7 @@
 </span><span class='line'>  <span class="nt">&lt;/model&gt;</span>
 </span><span class='line'> <span class="nt">&lt;/sdf&gt;</span>
 </span><span class='line'> ```
+</span><span class='line'>
 </span><span class='line'>すると以下の様になっているはずです。
 </span><span class='line'>[Mobile_base_large](/images/2015/02/01/gazebo-attach-gripper-to-robot/Mobile_base_large.png)
 </span><span class='line'>
@@ -353,7 +355,7 @@
 
 
 <p>bash
-    mkdir ~/.gazebo/models/simple_mobile_manipulator</p>
+mkdir ~/.gazebo/models/simple_mobile_manipulator</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='xml'><span class='line'>そしてモデルのConfigファイル```model.config```を編集しましょう。
@@ -361,7 +363,7 @@
 
 
 <p>bash
-    gedit ~/.gazebo/models/simple_mobile_manipulator/model.config</p>
+gedit ~/.gazebo/models/simple_mobile_manipulator/model.config</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='xml'><span class='line'>作成する```model.config```の内容は以下のようにしましょう。
@@ -376,7 +378,7 @@
       <sdf version='1.4'>manipulator.sdf</sdf>
       <author>
         <name>My Name</name>
-        <email><a href="&#109;&#97;&#x69;&#108;&#116;&#x6f;&#58;&#109;&#x65;&#64;&#x6d;&#121;&#x2e;&#x65;&#x6d;&#97;&#105;&#108;">&#x6d;&#101;&#x40;&#109;&#x79;&#46;&#101;&#x6d;&#x61;&#105;&#x6c;</a></email>
+        <email><a href="&#109;&#x61;&#105;&#x6c;&#116;&#111;&#x3a;&#x6d;&#x65;&#x40;&#x6d;&#x79;&#x2e;&#x65;&#x6d;&#x61;&#x69;&#108;">&#109;&#x65;&#64;&#109;&#121;&#46;&#x65;&#109;&#x61;&#x69;&#x6c;</a></email>
       </author>
       <description>
         My simple mobile manipulator
