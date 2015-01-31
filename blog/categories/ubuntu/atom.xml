@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Ubuntu | 九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/blog/categories/ubuntu/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-01-31T22:19:36+09:00</updated>
+  <updated>2015-01-31T22:26:22+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -18,53 +18,27 @@
     <link href="http://cir-kit.github.io/blog/2015/01/31/gazebo-add-a-sensor-to-a-robot/"/>
     <updated>2015-01-31T22:12:43+09:00</updated>
     <id>http://cir-kit.github.io/blog/2015/01/31/gazebo-add-a-sensor-to-a-robot</id>
-    <content type="html"><![CDATA[<p><img src="http://cir-kit.github.io/images/gazebo_logo.png" alt="gazebo_logo" /></p>
-
-
-
+    <content type="html"><![CDATA[<p><img src="/images/gazebo_logo.png" alt="gazebo_logo" /></p>
 
 <h5>検証日時</h5>
 
-
-
-
 <p>01/25/2015 (Sun)</p>
 
-
-
-
 <h5>概要</h5>
-
-
-
 
 <p>Gazeboのチュートリアル第二弾「Build a Robot」。<br/>
 このチュートリアルではロボットを作ったり、修正したりします。また、センサ、アクチュエータを搭載した車輪型ロボットを作り、モデルを描画するなどの実践例も行います。<br/>
 今回はその「Add a Sensor to a Robot」編です。<br/>
 公式サイトを適当に翻訳しただけですので、あしからず。</p>
 
-
-
-
 <h5>レベル</h5>
 
-
-
-
 <p><strong>BEGINNER</strong></p>
-
-
-
 
 <!-- more -->
 
 
-
-
 <h5>環境</h5>
-
-
-
 
 <table>
 <thead>
@@ -109,183 +83,76 @@
 </table>
 
 
-
-
 <h5>参考</h5>
-
-
-
 
 <p><a href="http://gazebosim.org/tutorials?cat=build_robot">GAZEBO Tutorial-Build a Robot</a></p>
 
-
-
-
 <h2>はじめに</h2>
-
-
-
 
 <p>このチュートリアルでは、他の複雑なモデルで構成されたコンポーネントに接続し、タグを使用することによって、Gazeboのモデルデータベースにあるモデルを直接使用した複雑なモデルを作るやり方を説明します。</p>
 
-
-
-
 <h2>レーザーを取り付ける</h2>
-
-
-
 
 <p>ロボットなどにレーザーを取り付けるには、モデルにセンサを含む物体を取り付けるだけです。</p>
 
-
-
-
 <ol>
-<li>前のチュートリアルで、すでに<code>model</code>ディレクトリにいるはずです。:</li>
-</ol>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd</span> ~/.gazebo/models/my_robot
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-
-<ol>
+<li><p>前のチュートリアルで、すでに<code>model</code>ディレクトリにいるはずです。:
+<code>bash
+ cd ~/.gazebo/models/my_robot
+</code></p></li>
 <li><p>好きなエディタで<code>model.sdf</code>を開いてください。</p></li>
-<li><p>ファイルの最後の方にある<code>&lt;/model&gt;</code>タグの前に、以下の要素を追加してください。</p></li>
-</ol>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>    <span class="nt">&lt;include&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;uri&gt;</span>model://hokuyo<span class="nt">&lt;/uri&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;pose&gt;</span>0.2 0 0.2 0 0 0<span class="nt">&lt;/pose&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/include&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;joint</span> <span class="na">name=</span><span class="s">&quot;hokuyo_joint&quot;</span> <span class="na">type=</span><span class="s">&quot;revolute&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;child&gt;</span>hokuyo::link<span class="nt">&lt;/child&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;parent&gt;</span>chassis<span class="nt">&lt;/parent&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;axis&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;xyz&gt;</span>0 0 1<span class="nt">&lt;/xyz&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;limit&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;upper&gt;</span>0<span class="nt">&lt;/upper&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;lower&gt;</span>0<span class="nt">&lt;/lower&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/limit&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/axis&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/joint&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-
-<p>上記のような<code>&lt;include&gt;</code>ブロックでは、Gazeboにモデルを探させ、<code>&lt;pose&gt;</code>で親モデルとの関係を挿入します。今回は、ロボットの前方上方に<code>hokuyo（北陽）</code>のレーザーモデルを追加します。<code>&lt;uri&gt;</code>ブロックでは、モデルデータベースのどこを探せばいいのかGazeboに知らせます。(チュートリアルで使用するモデルデータのuriリストを<a href="http://gazebosim.org/models/">ここ</a>に示します。これは、<a href="https://bitbucket.org/osrf/gazebo_models">mercurial repository</a>と同じです。)<br/>
+<li><p>ファイルの最後の方にある<code>&lt;/model&gt;</code>タグの前に、以下の要素を追加してください。
+<code>xml
+     &lt;include&gt;
+       &lt;uri&gt;model://hokuyo&lt;/uri&gt;
+       &lt;pose&gt;0.2 0 0.2 0 0 0&lt;/pose&gt;
+     &lt;/include&gt;
+     &lt;joint name="hokuyo_joint" type="revolute"&gt;
+       &lt;child&gt;hokuyo::link&lt;/child&gt;
+       &lt;parent&gt;chassis&lt;/parent&gt;
+       &lt;axis&gt;
+         &lt;xyz&gt;0 0 1&lt;/xyz&gt;
+         &lt;limit&gt;
+           &lt;upper&gt;0&lt;/upper&gt;
+           &lt;lower&gt;0&lt;/lower&gt;
+         &lt;/limit&gt;
+       &lt;/axis&gt;
+     &lt;/joint&gt;
+</code>
+上記のような<code>&lt;include&gt;</code>ブロックでは、Gazeboにモデルを探させ、<code>&lt;pose&gt;</code>で親モデルとの関係を挿入します。今回は、ロボットの前方上方に<code>hokuyo（北陽）</code>のレーザーモデルを追加します。<code>&lt;uri&gt;</code>ブロックでは、モデルデータベースのどこを探せばいいのかGazeboに知らせます。(チュートリアルで使用するモデルデータのuriリストを<a href="http://gazebosim.org/models/">ここ</a>に示します。これは、<a href="https://bitbucket.org/osrf/gazebo_models">mercurial repository</a>と同じです。)<br/>
 新しい<code>&lt;joint&gt;</code>は、台車ロボットと<code>hokuyo</code>レーザーをつなげます。<code>&lt;joint&gt;</code>には<code>&lt;upper&gt;</code>と<code>&lt;lower&gt;</code>があり、勝手に動かないように0に設定されています。<br/>
-また、<code>&lt;joint&gt;</code>の中にある<code>&lt;child&gt;</code>というのは、以下のソースから始まる<a href="https://bitbucket.org/osrf/gazebo_models/src/6cd587c0a30e/hokuyo/model.sdf?at=default">hokuyo model&rsquo;s SDF</a>から提供されています。</p>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>    <span class="cp">&lt;?xml version=&quot;1.0&quot; ?&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;sdf</span> <span class="na">version=</span><span class="s">&quot;1.4&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;model</span> <span class="na">name=</span><span class="s">&quot;hokuyo&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;link</span> <span class="na">name=</span><span class="s">&quot;link&quot;</span><span class="nt">&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-
-<p>さて、<code>hokuyo</code>モデルが代入できたら、<code>hokuyo</code>のリンクにはそれぞれのモデル名と共に名前空間が生成されます。今回は、モデル名は<code>hokuyo</code>です。なので、<code>hokuyo</code>モデルのリンクはそれぞれ<code>hokuyo::</code>で始まる名前空間で表現されます。</p>
-
-
-
-
-<ol>
-<li>以下のコマンドで、<code>~/.gazebo/models/</code>の下に<code>hokuyo</code>モデルを追加してください。尚、ダウンロードする<code>hokuyo</code>モデルは、 <a href="https://bitbucket.org/osrf/gazebo_models/src/6cd587c0a30e/hokuyo/?at=default">gazebo_models/hokuyo</a>にあります。</li>
-</ol>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd</span> ~/.gazebo/models/
-</span><span class='line'>hg clone https://bitbucket.org/osrf/gazebo_models
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-
-<p>今回は、<code>hokuyo</code>モデルを<code>~/gazebo/models/</code>に追加しました。なので、<code>model.sdf</code>の<code>&lt;include&gt;</code>ブロックにある<code>&lt;uri&gt;</code>の内容を以下の様にしました。</p>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;uri&gt;</span>model://hokuyo<span class="nt">&lt;/uri&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-
-<p>もし、他のディレクトリに置きたい場合には、<code>~/.gazebo/models/</code>ディレクトリからの相対パスを記す必要があります。例えば、<code>~/.gazebo/models/gazebo_models/hokuyo/</code>に<code>hokuyo</code>モデルの本体を配置したのであれば、<code>&lt;include&gt;</code>フロックの<code>&lt;uri&gt;</code>は以下のように記述します。</p>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;uri&gt;</span>model://gazebo_models/hokuyo<span class="nt">&lt;/uri&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-
-<ol>
+また、<code>&lt;joint&gt;</code>の中にある<code>&lt;child&gt;</code>というのは、以下のソースから始まる<a href="https://bitbucket.org/osrf/gazebo_models/src/6cd587c0a30e/hokuyo/model.sdf?at=default">hokuyo model&rsquo;s SDF</a>から提供されています。
+<code>xml
+     &lt;?xml version="1.0" ?&gt;
+     &lt;sdf version="1.4"&gt;
+       &lt;model name="hokuyo"&gt;
+         &lt;link name="link"&gt;
+</code>
+さて、<code>hokuyo</code>モデルが代入できたら、<code>hokuyo</code>のリンクにはそれぞれのモデル名と共に名前空間が生成されます。今回は、モデル名は<code>hokuyo</code>です。なので、<code>hokuyo</code>モデルのリンクはそれぞれ<code>hokuyo::</code>で始まる名前空間で表現されます。</p></li>
+<li><p>以下のコマンドで、<code>~/.gazebo/models/</code>の下に<code>hokuyo</code>モデルを追加してください。尚、ダウンロードする<code>hokuyo</code>モデルは、 <a href="https://bitbucket.org/osrf/gazebo_models/src/6cd587c0a30e/hokuyo/?at=default">gazebo_models/hokuyo</a>にあります。
+<code>bash
+ cd ~/.gazebo/models/
+ hg clone https://bitbucket.org/osrf/gazebo_models
+</code>
+今回は、<code>hokuyo</code>モデルを<code>~/gazebo/models/</code>に追加しました。なので、<code>model.sdf</code>の<code>&lt;include&gt;</code>ブロックにある<code>&lt;uri&gt;</code>の内容を以下の様にしました。
+<code>xml
+&lt;uri&gt;model://hokuyo&lt;/uri&gt;
+</code>
+もし、他のディレクトリに置きたい場合には、<code>~/.gazebo/models/</code>ディレクトリからの相対パスを記す必要があります。例えば、<code>~/.gazebo/models/gazebo_models/hokuyo/</code>に<code>hokuyo</code>モデルの本体を配置したのであれば、<code>&lt;include&gt;</code>フロックの<code>&lt;uri&gt;</code>は以下のように記述します。
+<code>xml
+&lt;uri&gt;model://gazebo_models/hokuyo&lt;/uri&gt;
+</code></p></li>
 <li><p>では、Gazeboを起動してGUIに表示される<strong>Insert</strong>という項目を利用してシミュレーションにロボットを追加しましょう。すると、下図のようにロボットにレーザーが付いていると思います。
-<img src="../Picture/Make_a_Robot/Add_laser_pioneer.png" alt="Add_laser_pioneer" /></p></li>
-<li><p>(オプション)ロボットにカメラを取り付けてみましょう。カメラモデルのURIは<code>model://camera</code>です。このURIは以下のフォルダに収められています。</p></li>
+<img src="/images/2015-01-31-gazebo-add-a-sensor-to-a-robot/Add_laser_pioneer.png" alt="Add_laser_pioneer" /></p></li>
+<li><p>(オプション)ロボットにカメラを取り付けてみましょう。カメラモデルのURIは<code>model://camera</code>です。このURIは以下のフォルダに収められています。
+<code>bash
+ ls ~/.gazebo/models/camera/
+</code>
+SDFについてのレファレンスは<a href="http://gazebosim.org/sdf/">ここ</a>にあります。</p></li>
 </ol>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>ls ~/.gazebo/models/camera/
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-
-<p>SDFについてのレファレンスは<a href="http://gazebosim.org/sdf/">ここ</a>にあります。</p>
-
-
 
 
 <h4>Next >> <a href="http://gazebosim.org/tutorials/?tut=simple_gripper">簡単なグリッパをつくる</a></h4>
-
 ]]></content>
   </entry>
   
@@ -294,53 +161,27 @@
     <link href="http://cir-kit.github.io/blog/2015/01/31/gazebo-attach-meshes/"/>
     <updated>2015-01-31T20:50:08+09:00</updated>
     <id>http://cir-kit.github.io/blog/2015/01/31/gazebo-attach-meshes</id>
-    <content type="html"><![CDATA[<p><img src="http://cir-kit.github.io/images/gazebo_logo.png" alt="gazebo_logo" /></p>
-
-
-
+    <content type="html"><![CDATA[<p><img src="/images/gazebo_logo.png" alt="gazebo_logo" /></p>
 
 <h5>検証日時</h5>
 
-
-
-
 <p>01/25/2015 (Sun)</p>
 
-
-
-
 <h5>概要</h5>
-
-
-
 
 <p>Gazeboのチュートリアル第二弾「Build a Robot」。<br/>
 このチュートリアルではロボットを作ったり、修正したりします。また、センサ、アクチュエータを搭載した車輪型ロボットを作り、モデルを描画するなどの実践例も行います。<br/>
 今回はその「Attach Meshes」編です。<br/>
 公式サイトを適当に翻訳しただけですので、あしからず。</p>
 
-
-
-
 <h5>レベル</h5>
 
-
-
-
 <p><strong>BEGINNER</strong></p>
-
-
-
 
 <!-- more -->
 
 
-
-
 <h5>環境</h5>
-
-
-
 
 <table>
 <thead>
@@ -385,165 +226,67 @@
 </table>
 
 
-
-
 <h5>参考</h5>
-
-
-
 
 <p><a href="http://gazebosim.org/tutorials?cat=build_robot">GAZEBO Tutorial-Build a Robot</a></p>
 
-
-
-
 <h2>はじめに</h2>
-
-
-
 
 <p>メッシュをモデルに追加すると、外観だけでなく、センサにとってもよりリアルなシミュレーションができます。このチュートリアルでは、カスタムメッシュの定義と、シミュレーションではそれがどのように見えるかを説明します。</p>
 
-
-
-
 <h2>メッシュを外観要素として追加する</h2>
-
-
-
 
 <p>メッシュを使う主な例は見た目のリアルさを高めるためです。</p>
 
-
-
-
 <ol>
-<li>まずは、<code>my_robot</code>ディレクトリまで移動しましょう。</li>
+<li>まずは、<code>my_robot</code>ディレクトリまで移動しましょう。
+<code>bash
+ cd ~/.gazebo/models/my_robot
+</code></li>
+<li><code>model.sdf</code>ファイルを好きなエディタで開きましょう。(ここでは<a href="https://wiki.gnome.org/Apps/Gedit">gedit</a>を使用します。)
+<code>bash
+ gedit ~/.gazebo/models/my_robot/model.sdf
+</code></li>
+<li><p>台車の見た目にメッシュを取り付けます。以下のようなビジュアルについての定義を探してください。:
+<code>xml
+     &lt;visual name='visual'&gt;
+       &lt;geometry&gt;
+         &lt;box&gt;
+           &lt;size&gt;.4 .2 .1&lt;/size&gt;
+         &lt;/box&gt;
+       &lt;/geometry&gt;
+     &lt;/visual&gt;
+</code></p></li>
+<li><p>メッシュはパソコン上のファイルもしくは他のモデルから引用することができます。今回は、<strong>pioneer2dx</strong>のメッシュを使用します。以下のようにして、メッシュを変更してください。(ただし、残りはそのままにして編集してください。)
+<code>xml
+     &lt;visual name='visual'&gt;
+       &lt;geometry&gt;
+         &lt;mesh&gt;
+           &lt;uri&gt;model://pioneer2dx/meshes/chassis.dae&lt;/uri&gt;
+         &lt;/mesh&gt;
+       &lt;/geometry&gt;
+     &lt;/visual&gt;
+</code></p></li>
+<li><p>上記の<code>&lt;mesh&gt;</code>によって定義された<strong>pioneer2dx</strong>のモデルがあるなら、ローカルの台車モデルを見るために以下のコマンドで確認しましょう。:
+<code>bash
+ ls -l ~/.gazebo/models/pioneer2dx/meshes/chassis.dae
+</code>
+もし、meshファイルが存在しないなら、Gazeboの中(<strong>Insert</strong>タブの下-><a href="http://gazebosim.org/models">http://gazebosim.org/models</a>) で少なくとも一回、<strong>Pioneer 2DX</strong>をスポーンさせて、モデルデータベースからGazeboにモデルを引っ張ってこさせましょう。<br/>
+もしくは、ローカルフォルダに直接ダウンロードしましょう。
+<code>bash
+ cd ~/.gazebo/models
+ wget -R *index.html*,*.tar.gz --cut-dirs=1 --no-parent -r -x -nH http://gazebosim.org/models/pioneer2dx/
+</code></p></li>
+<li><p>Gazeboで、<code>My_Robot</code>モデルをドラッグしましょう。すると、さっきまでの台車が下図のように<code>pioneer2sx</code>の様な見た目になります。</p></li>
 </ol>
 
 
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd</span> ~/.gazebo/models/my_robot
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-
-<ol>
-<li><code>model.sdf</code>ファイルを好きなエディタで開きましょう。(ここでは<a href="https://wiki.gnome.org/Apps/Gedit">gedit</a>を使用します。)</li>
-</ol>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gedit ~/.gazebo/models/my_robot/model.sdf
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-
-<ol>
-<li>台車の見た目にメッシュを取り付けます。以下のようなビジュアルについての定義を探してください。:</li>
-</ol>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>    <span class="nt">&lt;visual</span> <span class="na">name=</span><span class="s">&#39;visual&#39;</span><span class="nt">&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;box&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;size&gt;</span>.4 .2 .1<span class="nt">&lt;/size&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/box&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/visual&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-
-<ol>
-<li>メッシュはパソコン上のファイルもしくは他のモデルから引用することができます。今回は、<strong>pioneer2dx</strong>のメッシュを使用します。以下のようにして、メッシュを変更してください。(ただし、残りはそのままにして編集してください。)</li>
-</ol>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>    <span class="nt">&lt;visual</span> <span class="na">name=</span><span class="s">&#39;visual&#39;</span><span class="nt">&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;mesh&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;uri&gt;</span>model://pioneer2dx/meshes/chassis.dae<span class="nt">&lt;/uri&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/mesh&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/visual&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-
-<ol>
-<li>上記の<code>&lt;mesh&gt;</code>によって定義された<strong>pioneer2dx</strong>のモデルがあるなら、ローカルの台車モデルを見るために以下のコマンドで確認しましょう。:</li>
-</ol>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>ls -l ~/.gazebo/models/pioneer2dx/meshes/chassis.dae
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-
-<p>もし、meshファイルが存在しないなら、Gazeboの中(<strong>Insert</strong>タブの下-><a href="http://gazebosim.org/models">http://gazebosim.org/models</a>) で少なくとも一回、<strong>Pioneer 2DX</strong>をスポーンさせて、モデルデータベースからGazeboにモデルを引っ張ってこさせましょう。<br/>
-もしくは、ローカルフォルダに直接ダウンロードしましょう。</p>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd</span> ~/.gazebo/models
-</span><span class='line'>wget -R *index.html*,*.tar.gz --cut-dirs<span class="o">=</span><span class="m">1</span> --no-parent -r -x -nH http://gazebosim.org/models/pioneer2dx/
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-
-<ol>
-<li>Gazeboで、<code>My_Robot</code>モデルをドラッグしましょう。すると、さっきまでの台車が下図のように<code>pioneer2sx</code>の様な見た目になります。</li>
-</ol>
-
-
-
-
-<p><img src="http://cir-kit.github.io/images/2015-01-31-gazebo-attach-meshes/Mobile_robot_chassis_1.png" alt="Mobile_robot_chassis_1" /></p>
-
-
-
+<p><img src="/images/2015-01-31-gazebo-attach-meshes/Mobile_robot_chassis_1.png" alt="Mobile_robot_chassis_1" /></p>
 
 <ul>
 <li><p>台車は、私達のロボットにほ明らかに大きすぎるので、見た目の大きさを作りなおす必要があります。</p></li>
 <li><p>見た目の大きさを変更する必要があります。以下のように<code>model.sdf</code>を編集しましょう。</p></li>
 </ul>
-
-
 
 
 <p>  <strong>コピーはしないでください。手書きで追加していくことが、今回のチュートリアルです。</strong>
@@ -559,13 +302,7 @@
  </code>
   すると、以下の様になります。</p>
 
-
-
-
-<p><img src="http://cir-kit.github.io/images/2015-01-31-gazebo-attach-meshes/Mobile_robot_chassis_2.png" alt="Mobile_robot_chassis_2" /></p>
-
-
-
+<p><img src="/images/2015-01-31-gazebo-attach-meshes/Mobile_robot_chassis_2.png" alt="Mobile_robot_chassis_2" /></p>
 
 <ul>
 <li>今度は、小さくなりすぎました。(z軸方向に)見た目を改善するために、少し上に上げてるよう、以下のようにして<code>pose</code>を変更しましょう。<br/>
@@ -585,32 +322,15 @@
 </ul>
 
 
-
-
-<p>  <img src="http://cir-kit.github.io/images/2015-01-31-gazebo-attach-meshes/Mobile_robot_chassis_3.png" alt="Mobile_robot_chassis_3" /></p>
-
-
-
+<p>  <img src="/images/2015-01-31-gazebo-attach-meshes/Mobile_robot_chassis_3.png" alt="Mobile_robot_chassis_3" /></p>
 
 <p>  ここまでで、ロボットの<code>&lt;visual&gt;</code>要素をシンプルに変更しました。なので、GUIや、カメラ、深度カメラ、GPUレーザーの様なセンサに基づくGPUやGUIが<code>Pioneer 2DX</code>のようになっているはずです。また、私達は、<code>&lt;collision&gt;</code>要素も変更していませんし、外観の幾何学形状は、衝突ダイナミクスエンジンや距離センサなどに使われます。</p>
 
-
-
-
 <h2>もっとよく知る</h2>
-
-
-
 
 <p>新しいロボットを作るとき、自分のオリジナルのメッシュを追加痛くなるでしょう。<a href="http://cir-kit.github.io/blog/2015/01/31/gazebo-import-meshes/">メッシュをインポートする</a>というチュートリアルでは、Gazeboに最適なフォーマットでメッシュをインポートする方法について取り上げています。</p>
 
-
-
-
 <h2>試してみる</h2>
-
-
-
 
 <ol>
 <li><p><a href="http://sketchup.google.com/3dwarehouse/">3D Warehouse</a>からメッシュをダウンロードしてください。ただし、メッシュデータは<strong>Collada(.dae)</strong>フォーマットにすることに注意してください。</p></li>
@@ -620,10 +340,7 @@
 </ol>
 
 
-
-
-<h4>Next >> <a href="http://gazebosim.org/tutorials/?tut=add_laser">ロボットにセンサを取り付ける</a></h4>
-
+<h4>Next >> <a href="http://cir-kit.github.io/blog/2015/01/31/gazebo-add-a-sensor-to-a-robot/">ロボットにセンサを取り付ける</a></h4>
 ]]></content>
   </entry>
   
@@ -632,53 +349,27 @@
     <link href="http://cir-kit.github.io/blog/2015/01/31/gazebo-import-meshes/"/>
     <updated>2015-01-31T19:55:25+09:00</updated>
     <id>http://cir-kit.github.io/blog/2015/01/31/gazebo-import-meshes</id>
-    <content type="html"><![CDATA[<p><img src="http://cir-kit.github.io/images/gazebo_logo.png" alt="gazebo_logo" /></p>
-
-
-
+    <content type="html"><![CDATA[<p><img src="/images/gazebo_logo.png" alt="gazebo_logo" /></p>
 
 <h5>検証日時</h5>
 
-
-
-
 <p>01/31/2015 (Sat)</p>
 
-
-
-
 <h5>概要</h5>
-
-
-
 
 <p>Gazeboのチュートリアル第二弾「Build a Robot」。<br/>
 このチュートリアルではロボットを作ったり、修正したりします。また、センサ、アクチュエータを搭載した車輪型ロボットを作り、モデルを描画するなどの実践例も行います。<br/>
 今回はその「Import Meshes」編です。<br/>
 公式サイトを適当に翻訳しただけですので、あしからず。</p>
 
-
-
-
 <h5>レベル</h5>
 
-
-
-
 <p><strong>BEGINNER</strong></p>
-
-
-
 
 <!-- more -->
 
 
-
-
 <h5>環境</h5>
-
-
-
 
 <table>
 <thead>
@@ -723,179 +414,79 @@
 </table>
 
 
-
-
 <h5>参考</h5>
-
-
-
 
 <p><a href="http://gazebosim.org/tutorials?cat=build_robot">GAZEBO Tutorial-Build a Robot</a></p>
 
-
-
-
 <h2>はじめに</h2>
-
-
-
 
 <p>このチュートリアルでは、Gazeboへの3Dメッシュのインポートの仕方を説明します。</p>
 
-
-
-
 <h2>メッシュを用意する</h2>
-
-
-
 
 <p>Gazeboでは、+Zが上(垂直)、+Xが前(スクリーンの奥に向かう方向)、+Yが左となるような右手系の座標系を使用します。</p>
 
-
-
-
 <h4>複雑さを減らす</h4>
-
-
-
 
 <p>多くのメッシュはとても複雑になります。大量の三角形で構成されるメッシュはその数を減らすか、効率を良くするために、複数のメッシュに分割する必要があります。メッシュを減らす、もしくはメッシュを分割するということについての情報をあなたの3Dメッシュエディタのドキュメントで確認してみてください。</p>
 
-
-
-
 <h4>メッシュを作る</h4>
-
-
-
 
 <p>最初のステップはメッシュを(0,0,0)に設置し、前方（他の部位でも良い）をX軸にそうように設置します。</p>
 
-
-
-
 <h4>メッシュを計測する</h4>
-
-
-
 
 <p>Gazeboではメートル法を使用しています。多くのメッシュ（特に3D warehouseで作成したもの）では英語圏の単位系（インチとか）を使用しています。お気に入りの3Dエディタをメートル法でのものとして作成してください。</p>
 
-
-
-
 <h2>メッシュをエクスポートする</h2>
-
-
-
 
 <p>メッシュを詳細に作成したなら、<strong>Collada</strong>ファイルとしてエクスポートしましょう。このフォーマットにはすべての3D情報と材質情報が入っています。</p>
 
-
-
-
 <h2>メッシュを試す</h2>
 
-
-
-
-<p>メッシュを試す最も簡単な方法は<a href="http://bitbucket.org/osrf/gazebo_tutorials/raw/default/import_mesh/files/my_mesh.world">my_mesh.world</a>のようなメッシュをロードする、簡単な<code>world</code>ファイルを作成することです。以下に示す<code>my_mesh.dae</code>の部分は自分の好きなメッシュファイルの名前に置き換えてください。</p>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot;?&gt;</span>
-</span><span class='line'><span class="nt">&lt;sdf</span> <span class="na">version=</span><span class="s">&quot;1.4&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;world</span> <span class="na">name=</span><span class="s">&quot;default&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;include&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;uri&gt;</span>model://ground_plane<span class="nt">&lt;/uri&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/include&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;include&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;uri&gt;</span>model://sun<span class="nt">&lt;/uri&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/include&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;model</span> <span class="na">name=</span><span class="s">&quot;my_mesh&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;pose&gt;</span>0 0 0  0 0 0<span class="nt">&lt;/pose&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;static&gt;</span>true<span class="nt">&lt;/static&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;link</span> <span class="na">name=</span><span class="s">&quot;body&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;visual</span> <span class="na">name=</span><span class="s">&quot;visual&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;mesh&gt;&lt;uri&gt;</span>file://my_mesh.dae<span class="nt">&lt;/uri&gt;&lt;/mesh&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/visual&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/link&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/model&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;/world&gt;</span>
-</span><span class='line'><span class="nt">&lt;/sdf&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-
-<p>後は、Gazeboを立ち上げるだけです。先ほど作成した<code>my_mesh.world</code>のあるディレクトリで以下のように実行しましょう。</p>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo my_mesh.world
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
+<p>メッシュを試す最も簡単な方法は<a href="http://bitbucket.org/osrf/gazebo_tutorials/raw/default/import_mesh/files/my_mesh.world">my_mesh.world</a>のようなメッシュをロードする、簡単な<code>world</code>ファイルを作成することです。以下に示す<code>my_mesh.dae</code>の部分は自分の好きなメッシュファイルの名前に置き換えてください。
+<code>xml
+&lt;?xml version="1.0"?&gt;
+&lt;sdf version="1.4"&gt;
+  &lt;world name="default"&gt;
+    &lt;include&gt;
+      &lt;uri&gt;model://ground_plane&lt;/uri&gt;
+    &lt;/include&gt;
+    &lt;include&gt;
+      &lt;uri&gt;model://sun&lt;/uri&gt;
+    &lt;/include&gt;
+    &lt;model name="my_mesh"&gt;
+      &lt;pose&gt;0 0 0  0 0 0&lt;/pose&gt;
+      &lt;static&gt;true&lt;/static&gt;
+      &lt;link name="body"&gt;
+        &lt;visual name="visual"&gt;
+          &lt;geometry&gt;
+            &lt;mesh&gt;&lt;uri&gt;file://my_mesh.dae&lt;/uri&gt;&lt;/mesh&gt;
+          &lt;/geometry&gt;
+        &lt;/visual&gt;
+      &lt;/link&gt;
+    &lt;/model&gt;
+  &lt;/world&gt;
+&lt;/sdf&gt;
+</code>
+後は、Gazeboを立ち上げるだけです。先ほど作成した<code>my_mesh.world</code>のあるディレクトリで以下のように実行しましょう。
+<code>bash
+gazebo my_mesh.world
+</code></p>
 
 <h2>メッシュをテストする</h2>
 
-
-
-
-<p><a href="https://web.archive.org/web/20120513213905/http://www.c3dl.org/wp-content/2.0Release/Resources/duck.dae">duck.dae</a>と<a href="https://web.archive.org/web/20120513213905/http://www.c3dl.org/wp-content/2.0Release/Resources/duck.png">duck.png</a>を利用することができます。先ほど作成した<code>world</code>ファイルと同じディレクトリに２つのファイルを置いてください。duckのメッシュはY軸を上として定義してあるので、sdfファイルに回転を設置します。なので、モデルは、画面の上をモデルの右として表示しています。：</p>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;visual</span> <span class="na">name=</span><span class="s">&quot;visual&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;pose&gt;</span>0 0 0 1.5708 0 0<span class="nt">&lt;/pose&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;mesh&gt;&lt;uri&gt;</span>file://duck.dae<span class="nt">&lt;/uri&gt;&lt;/mesh&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'><span class="nt">&lt;/visual&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-
-<p>実行すると、以下のように見えるはずです。ちなみに、<code>&lt;uri&gt;</code>に示されているディレクトリは、読み込んだ<code>world</code>ファイルのあるディレクトリからの相対ディレクトリです。
-<img src="http://cir-kit.github.io/images/2015-01-31-gazebo-import-meshes/TutorialMeshDuck.png" alt="TutorialMeshDuck" /></p>
-
+<p><a href="https://web.archive.org/web/20120513213905/http://www.c3dl.org/wp-content/2.0Release/Resources/duck.dae">duck.dae</a>と<a href="https://web.archive.org/web/20120513213905/http://www.c3dl.org/wp-content/2.0Release/Resources/duck.png">duck.png</a>を利用することができます。先ほど作成した<code>world</code>ファイルと同じディレクトリに２つのファイルを置いてください。duckのメッシュはY軸を上として定義してあるので、sdfファイルに回転を設置します。なので、モデルは、画面の上をモデルの右として表示しています。：
+<code>xml
+&lt;visual name="visual"&gt;
+  &lt;pose&gt;0 0 0 1.5708 0 0&lt;/pose&gt;
+  &lt;geometry&gt;
+    &lt;mesh&gt;&lt;uri&gt;file://duck.dae&lt;/uri&gt;&lt;/mesh&gt;
+  &lt;/geometry&gt;
+&lt;/visual&gt;
+</code>
+実行すると、以下のように見えるはずです。ちなみに、<code>&lt;uri&gt;</code>に示されているディレクトリは、読み込んだ<code>world</code>ファイルのあるディレクトリからの相対ディレクトリです。
+<img src="/images/2015-01-31-gazebo-import-meshes/TutorialMeshDuck.png" alt="TutorialMeshDuck" /></p>
 ]]></content>
   </entry>
   
@@ -904,53 +495,27 @@
     <link href="http://cir-kit.github.io/blog/2015/01/31/gazebo-make-a-mobile-robot/"/>
     <updated>2015-01-31T19:28:40+09:00</updated>
     <id>http://cir-kit.github.io/blog/2015/01/31/gazebo-make-a-mobile-robot</id>
-    <content type="html"><![CDATA[<p><img src="http://cir-kit.github.io/images/gazebo_logo.png" alt="gazebo_logo" /></p>
-
-
-
+    <content type="html"><![CDATA[<p><img src="/images/gazebo_logo.png" alt="gazebo_logo" /></p>
 
 <h5>検証日時</h5>
 
-
-
-
 <p>01/25/2015 (Sun)</p>
 
-
-
-
 <h5>概要</h5>
-
-
-
 
 <p>Gazeboのチュートリアル第二弾「Build a Robot」。<br/>
 このチュートリアルではロボットを作ったり、修正したりします。また、センサ、アクチュエータを搭載した車輪型ロボットを作り、モデルを描画するなどの実践例も行います。<br/>
 今回はその「Make a Mobile Robot」編です。<br/>
 公式サイトを適当に翻訳しただけですので、あしからず。</p>
 
-
-
-
 <h5>レベル</h5>
 
-
-
-
 <p><strong>BEGINNER</strong></p>
-
-
-
 
 <!-- more -->
 
 
-
-
 <h5>環境</h5>
-
-
-
 
 <table>
 <thead>
@@ -995,971 +560,451 @@
 </table>
 
 
-
-
 <h5>参考</h5>
-
-
-
 
 <p><a href="http://gazebosim.org/tutorials?cat=build_robot">GAZEBO Tutorial-Build a Robot</a></p>
 
-
-
-
 <h5>レベル</h5>
-
-
-
 
 <p><strong>BEGINNER</strong></p>
 
-
-
-
 <h2>はじめに</h2>
-
-
-
 
 <p>このチュートリアルでは、デファレンシャル駆動機構をもつ二輪移動ロボットを作るプロセスを通じて、Gazeboの基本的なモデルマネジメントを学び、モデルデータベースの中でのベーシックモデル描写についても詳しく学びます。</p>
 
-
-
-
 <h2>モデルディレクトリのセットアップ</h2>
 
-
-
-
 <p><a href="http://gazebosim.org/user_guide/started__models__database.html">モデルデータベースドキュメント</a>を読んでください。Gazeboモデルデータベースディレクトリ構成のフォーマットルールに従ったモデルを作成します。また、モデルの構成フォーマットについての詳細は<a href="http://gazebosim.org/sdf">SDFリファレンス</a>をご覧ください。<br/>
-モデルディレクトリを作成します。：</p>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>  mkdir -p ~/.gazebo/models/my_robot
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-
-<p>ファイル<code>model.config</code>を作成します。:</p>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>  gedit ~/.gazebo/models/my_robot/model.config
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-
-<p>中身は以下の内容にしてください。：</p>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot;?&gt;</span>
-</span><span class='line'><span class="nt">&lt;model&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;name&gt;</span>My Robot<span class="nt">&lt;/name&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;version&gt;</span>1.0<span class="nt">&lt;/version&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;sdf</span> <span class="na">version=</span><span class="s">&#39;1.4&#39;</span><span class="nt">&gt;</span>model.sdf<span class="nt">&lt;/sdf&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;author&gt;</span>
-</span><span class='line'>   <span class="nt">&lt;name&gt;</span>My Name<span class="nt">&lt;/name&gt;</span>
-</span><span class='line'>   <span class="nt">&lt;email&gt;</span>me@my.email<span class="nt">&lt;/email&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;/author&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;description&gt;</span>
-</span><span class='line'>    My awesome robot.
-</span><span class='line'>  <span class="nt">&lt;/description&gt;</span>
-</span><span class='line'><span class="nt">&lt;/model&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-
-<p>ファイル<code>~/.gazebo/models/my_robot/model.sdf</code>を作成してください。</p>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>  gedit ~/.gazebo/models/my_robot/model.sdf
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-
-<p>また、その中身は以下の内容にしてください。</p>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&#39;1.0&#39;?&gt;</span>
-</span><span class='line'><span class="nt">&lt;sdf</span> <span class="na">version=</span><span class="s">&#39;1.4&#39;</span><span class="nt">&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;model</span> <span class="na">name=</span><span class="s">&quot;my_robot&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;/model&gt;</span>
-</span><span class='line'><span class="nt">&lt;/sdf&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-
-<p>ここまでで、モデルの基本的なコンテンツを作成しました。<code>model.config</code>ファイルではいくつかの追加メタデータによりロボットを記述しています。<code>model.sdf</code>ファイルにはSDF version 1.4にリンクされたGazeboを使用する<code>my_robot</code>という名前のモデルを初期化するために必要なタグが記述されています。</p>
-
-
-
+モデルディレクトリを作成します。：
+<code>bash
+  mkdir -p ~/.gazebo/models/my_robot
+</code>
+ファイル<code>model.config</code>を作成します。:
+<code>bash
+  gedit ~/.gazebo/models/my_robot/model.config
+</code>
+中身は以下の内容にしてください。：
+<code>xml
+    &lt;?xml version="1.0"?&gt;
+    &lt;model&gt;
+      &lt;name&gt;My Robot&lt;/name&gt;
+      &lt;version&gt;1.0&lt;/version&gt;
+      &lt;sdf version='1.4'&gt;model.sdf&lt;/sdf&gt;
+      &lt;author&gt;
+       &lt;name&gt;My Name&lt;/name&gt;
+       &lt;email&gt;me@my.email&lt;/email&gt;
+      &lt;/author&gt;
+      &lt;description&gt;
+        My awesome robot.
+      &lt;/description&gt;
+    &lt;/model&gt;
+</code>
+ファイル<code>~/.gazebo/models/my_robot/model.sdf</code>を作成してください。
+<code>bash
+  gedit ~/.gazebo/models/my_robot/model.sdf
+</code>
+また、その中身は以下の内容にしてください。
+<code>xml
+    &lt;?xml version='1.0'?&gt;
+    &lt;sdf version='1.4'&gt;
+      &lt;model name="my_robot"&gt;
+      &lt;/model&gt;
+    &lt;/sdf&gt;
+</code>
+ここまでで、モデルの基本的なコンテンツを作成しました。<code>model.config</code>ファイルではいくつかの追加メタデータによりロボットを記述しています。<code>model.sdf</code>ファイルにはSDF version 1.4にリンクされたGazeboを使用する<code>my_robot</code>という名前のモデルを初期化するために必要なタグが記述されています。</p>
 
 <h2>モデルの構成を作成する</h2>
-
-
-
 
 <p>このステップでは、長方形の本体に２つの車輪も持つモデルを制作してゆきます。
 まずは、シンプルなモデルから始め、段階を踏んでモデルを組み立ててゆくことが重要です。最初のステップはモデルの基本的な形状を作成することです。そのために、まずは、静的なモデルを作成します。つまり、物理エンジンについては無視したものから作成するということです。その結果、モデルは一定の場所から移動せず、構成要素を詳細に整理することができるようになります。</p>
 
-
-
-
 <ol>
-<li>モデルを静的にするために、<code>~/.gazebo/models/my_robot/model.sdf</code>ファイルに<code>&lt;static&gt;true&lt;/static&gt;</code>を追加してください。すると、以下のようなソースコードになるはずです。
-<strong>コピーはしないでください。手書きで追加していくことが、今回のチュートリアルです。</strong></li>
-</ol>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&#39;1.0&#39;?&gt;</span>
-</span><span class='line'><span class="nt">&lt;sdf</span> <span class="na">version=</span><span class="s">&#39;1.4&#39;</span><span class="nt">&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;model</span> <span class="na">name=</span><span class="s">&quot;my_robot&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;static&gt;</span>true<span class="nt">&lt;/static&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;/model&gt;</span>
-</span><span class='line'><span class="nt">&lt;/sdf&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-
-<ol>
-<li>長方形のロボット本体のモデルを追加するために、<code>~/.gazebo/models/my_robot/model.sdf</code>を以下のように編集してください。すると以下のようなソースコードになるはずです。<br/>
-<strong>コピーはしないでください。手書きで追加していくことが、今回のチュートリアルです。</strong></li>
-</ol>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&#39;1.0&#39;?&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;sdf</span> <span class="na">version=</span><span class="s">&#39;1.4&#39;</span><span class="nt">&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;model</span> <span class="na">name=</span><span class="s">&quot;my_robot&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;static&gt;</span>true<span class="nt">&lt;/static&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;link</span> <span class="na">name=</span><span class="s">&#39;chassis&#39;</span><span class="nt">&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;pose&gt;</span>0 0 .1 0 0 0<span class="nt">&lt;/pose&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;collision</span> <span class="na">name=</span><span class="s">&#39;collision&#39;</span><span class="nt">&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;box&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;size&gt;</span>.4 .2 .1<span class="nt">&lt;/size&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/box&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/collision&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;visual</span> <span class="na">name=</span><span class="s">&#39;visual&#39;</span><span class="nt">&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;box&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;size&gt;</span>.4 .2 .1<span class="nt">&lt;/size&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/box&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/visual&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/link&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;/model&gt;</span>
-</span><span class='line'><span class="nt">&lt;/sdf&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-
-<p>これで、大きさが<code>0.4 x 0.2 x 0.1 [m]</code>の<code>箱</code>を作ることが出来ました。衝突要素は衝突判定エンジンに使用されるような形状で定義されています。外観要素はレンダリングエンジンに使用されるような形状で定義されています。ほとんどのケースでは、衝突要素と外観要素は同じです。外観要素と衝突要素が異なる場合というのは、外観要素が複雑なメッシュを使用しており、外観要素より、衝突要素のほうがシンプルになる様な場合です。そのような場合には、パフォーマンスの向上を図るために行います。</p>
-
-
-
-
-<ol>
-<li>Gazeboを起動し、作成したモデルを確認しましょう。GUIに表示される<strong>insertmodelgui</strong>というボタンから<strong>Insert Model</strong>というボタンを押して作成したモデルをインポートしましょう。以下のコマンドで、Gazeboを起動します。:</li>
-</ol>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-
-<p>うまく行けば、写真のように白い箱が見えるでしょう。また、地面から<code>1[m]</code>浮かんでいるはずです。<br/>
-<img src="http://cir-kit.github.io/images/2015-01-31-gazebo-make-a-mobile-robot/My_robot_box.png" alt="My_robot_box" /></p>
-
-
-
-
-<ol>
-<li>今度は、ロボットにキャスターを追加しましょう。物理エンジンにおいて、ジョイントを用いたタイヤを使ってキャスターにするより、摩擦なしの球を使うほうが、モデルを単純化できるため、キャスターは摩擦なしの球にします。それでは、<code>model.sdf</code>に要素を追加しましょう。最終的には、以下のようになるはずです。:<br/>
-<strong>コピーはしないでください。手書きで追加していくことが、今回のチュートリアルです。</strong></li>
-</ol>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>   <span class="cp">&lt;?xml version=&#39;1.0&#39;?&gt;</span>
-</span><span class='line'><span class="nt">&lt;sdf</span> <span class="na">version=</span><span class="s">&#39;1.4&#39;</span><span class="nt">&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;model</span> <span class="na">name=</span><span class="s">&quot;my_robot&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;static&gt;</span>true<span class="nt">&lt;/static&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;link</span> <span class="na">name=</span><span class="s">&#39;chassis&#39;</span><span class="nt">&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;pose&gt;</span>0 0 .1 0 0 0<span class="nt">&lt;/pose&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;collision</span> <span class="na">name=</span><span class="s">&#39;collision&#39;</span><span class="nt">&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;box&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;size&gt;</span>.4 .2 .1<span class="nt">&lt;/size&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;/box&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/collision&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;visual</span> <span class="na">name=</span><span class="s">&#39;visual&#39;</span><span class="nt">&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;box&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;size&gt;</span>.4 .2 .1<span class="nt">&lt;/size&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;/box&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/visual&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;collision</span> <span class="na">name=</span><span class="s">&#39;caster_collision&#39;</span><span class="nt">&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;pose&gt;</span>-0.15 0 -0.05 0 0 0<span class="nt">&lt;/pose&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;sphere&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;radius&gt;</span>.05<span class="nt">&lt;/radius&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;/sphere&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;surface&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;friction&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;ode&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;mu&gt;</span>0<span class="nt">&lt;/mu&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;mu2&gt;</span>0<span class="nt">&lt;/mu2&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;slip1&gt;</span>1.0<span class="nt">&lt;/slip1&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;slip2&gt;</span>1.0<span class="nt">&lt;/slip2&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/ode&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;/friction&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/surface&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/collision&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;visual</span> <span class="na">name=</span><span class="s">&#39;caster_visual&#39;</span><span class="nt">&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;pose&gt;</span>-0.15 0 -0.05 0 0 0<span class="nt">&lt;/pose&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;sphere&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;radius&gt;</span>.05<span class="nt">&lt;/radius&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;/sphere&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/visual&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/link&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;/model&gt;</span>
-</span><span class='line'><span class="nt">&lt;/sdf&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-
-<p>  ロボットの後方にキャスターが追加されることを確認してください。先ほどの手順と同じようにしてGazeboにモデルをスポーンさせてください。<strong>（Gazeboを再起動する必要はありません。というのも、コードを変更するたびに、Gazeboはモデルをリロードするためです。）</strong><br/>
-  うまく行けば、以下のようになります。
-  <img src="http://cir-kit.github.io/images/2015-01-31-gazebo-make-a-mobile-robot/My_robot_caster.png" alt="My_robot_caster" /></p>
-
-
-
-
-<ol>
-<li>続いて、左タイヤを追加しましょう。<code>model.sdf</code>を以下のように編集しましょう。<br/>
-<strong>コピーはしないでください。手書きで追加していくことが、今回のチュートリアルです。</strong></li>
-</ol>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>    <span class="cp">&lt;?xml version=&#39;1.0&#39;?&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;sdf</span> <span class="na">version=</span><span class="s">&#39;1.4&#39;</span><span class="nt">&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;model</span> <span class="na">name=</span><span class="s">&quot;my_robot&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;static&gt;</span>true<span class="nt">&lt;/static&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;link</span> <span class="na">name=</span><span class="s">&#39;chassis&#39;</span><span class="nt">&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;pose&gt;</span>0 0 .1 0 0 0<span class="nt">&lt;/pose&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;collision</span> <span class="na">name=</span><span class="s">&#39;collision&#39;</span><span class="nt">&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;box&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;size&gt;</span>.4 .2 .1<span class="nt">&lt;/size&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;/box&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;/collision&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;visual</span> <span class="na">name=</span><span class="s">&#39;visual&#39;</span><span class="nt">&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;box&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;size&gt;</span>.4 .2 .1<span class="nt">&lt;/size&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;/box&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;/visual&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;collision</span> <span class="na">name=</span><span class="s">&#39;caster_collision&#39;</span><span class="nt">&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;pose&gt;</span>-0.15 0 -0.05 0 0 0<span class="nt">&lt;/pose&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;sphere&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;radius&gt;</span>.05<span class="nt">&lt;/radius&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/sphere&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;surface&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;friction&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;ode&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;mu&gt;</span>0<span class="nt">&lt;/mu&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;mu2&gt;</span>0<span class="nt">&lt;/mu2&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;slip1&gt;</span>1.0<span class="nt">&lt;/slip1&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;slip2&gt;</span>1.0<span class="nt">&lt;/slip2&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;/ode&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/friction&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;/surface&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/collision&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;visual</span> <span class="na">name=</span><span class="s">&#39;caster_visual&#39;</span><span class="nt">&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;pose&gt;</span>-0.15 0 -0.05 0 0 0<span class="nt">&lt;/pose&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;sphere&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;radius&gt;</span>.05<span class="nt">&lt;/radius&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/sphere&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/visual&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/link&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;link</span> <span class="na">name=</span><span class="s">&quot;left_wheel&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;pose&gt;</span>0.1 0.13 0.1 0 1.5707 1.5707<span class="nt">&lt;/pose&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;collision</span> <span class="na">name=</span><span class="s">&quot;collision&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;cylinder&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;radius&gt;</span>.1<span class="nt">&lt;/radius&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;length&gt;</span>.05<span class="nt">&lt;/length&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/cylinder&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/collision&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;visual</span> <span class="na">name=</span><span class="s">&quot;visual&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;cylinder&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;radius&gt;</span>.1<span class="nt">&lt;/radius&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;length&gt;</span>.05<span class="nt">&lt;/length&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/cylinder&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/visual&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/link&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/model&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/sdf&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-
-<p>  先ほどと同じように、Gazeboで作成したモデルを確認し、追加したタイヤが正しく付いていることを確認しましょう。ちなみに、さっきまでのモデルは削除しました。(モデルを右クリックし、<strong>Delete</strong>をクリックすれば、削除できます)
-  <img src="http://cir-kit.github.io/images/2015-01-31-gazebo-make-a-mobile-robot/My_robot_caster_left_wheel.png" alt="My_robot_caster_left_wheel" /></p>
-
-
-
-
-<ol>
-<li>左タイヤをコピーして右タイヤを作り、リンクの姿勢にタイヤを合わせましょう。以下のように<code>model.sdf</code>を編集してください。:
-<strong>コピーはしないでください。手書きで追加していくことが、今回のチュートリアルです。</strong></li>
-</ol>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-<span class='line-number'>70</span>
-<span class='line-number'>71</span>
-<span class='line-number'>72</span>
-<span class='line-number'>73</span>
-<span class='line-number'>74</span>
-<span class='line-number'>75</span>
-<span class='line-number'>76</span>
-<span class='line-number'>77</span>
-<span class='line-number'>78</span>
-<span class='line-number'>79</span>
-<span class='line-number'>80</span>
-<span class='line-number'>81</span>
-<span class='line-number'>82</span>
-<span class='line-number'>83</span>
-<span class='line-number'>84</span>
-<span class='line-number'>85</span>
-<span class='line-number'>86</span>
-<span class='line-number'>87</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>    <span class="cp">&lt;?xml version=&#39;1.0&#39;?&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;sdf</span> <span class="na">version=</span><span class="s">&#39;1.4&#39;</span><span class="nt">&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;model</span> <span class="na">name=</span><span class="s">&quot;my_robot&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;static&gt;</span>true<span class="nt">&lt;/static&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;link</span> <span class="na">name=</span><span class="s">&#39;chassis&#39;</span><span class="nt">&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;pose&gt;</span>0 0 .1 0 0 0<span class="nt">&lt;/pose&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;collision</span> <span class="na">name=</span><span class="s">&#39;collision&#39;</span><span class="nt">&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;box&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;size&gt;</span>.4 .2 .1<span class="nt">&lt;/size&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;/box&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;/collision&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;visual</span> <span class="na">name=</span><span class="s">&#39;visual&#39;</span><span class="nt">&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;box&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;size&gt;</span>.4 .2 .1<span class="nt">&lt;/size&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;/box&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;/visual&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;collision</span> <span class="na">name=</span><span class="s">&#39;caster_collision&#39;</span><span class="nt">&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;pose&gt;</span>-0.15 0 -0.05 0 0 0<span class="nt">&lt;/pose&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;sphere&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;radius&gt;</span>.05<span class="nt">&lt;/radius&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/sphere&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;surface&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;friction&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;ode&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;mu&gt;</span>0<span class="nt">&lt;/mu&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;mu2&gt;</span>0<span class="nt">&lt;/mu2&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;slip1&gt;</span>1.0<span class="nt">&lt;/slip1&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;slip2&gt;</span>1.0<span class="nt">&lt;/slip2&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;/ode&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/friction&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;/surface&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/collision&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;visual</span> <span class="na">name=</span><span class="s">&#39;caster_visual&#39;</span><span class="nt">&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;pose&gt;</span>-0.15 0 -0.05 0 0 0<span class="nt">&lt;/pose&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;sphere&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;radius&gt;</span>.05<span class="nt">&lt;/radius&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/sphere&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/visual&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/link&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;link</span> <span class="na">name=</span><span class="s">&quot;left_wheel&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;pose&gt;</span>0.1 0.13 0.1 0 1.5707 1.5707<span class="nt">&lt;/pose&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;collision</span> <span class="na">name=</span><span class="s">&quot;collision&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;cylinder&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;radius&gt;</span>.1<span class="nt">&lt;/radius&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;length&gt;</span>.05<span class="nt">&lt;/length&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/cylinder&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/collision&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;visual</span> <span class="na">name=</span><span class="s">&quot;visual&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;cylinder&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;radius&gt;</span>.1<span class="nt">&lt;/radius&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;length&gt;</span>.05<span class="nt">&lt;/length&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/cylinder&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/visual&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/link&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;link</span> <span class="na">name=</span><span class="s">&quot;right_wheel&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;pose&gt;</span>0.1 -0.13 0.1 0 1.5707 1.5707<span class="nt">&lt;/pose&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;collision</span> <span class="na">name=</span><span class="s">&quot;collision&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;cylinder&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;radius&gt;</span>.1<span class="nt">&lt;/radius&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;length&gt;</span>.05<span class="nt">&lt;/length&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/cylinder&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/collision&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;visual</span> <span class="na">name=</span><span class="s">&quot;visual&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;cylinder&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;radius&gt;</span>.1<span class="nt">&lt;/radius&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;length&gt;</span>.05<span class="nt">&lt;/length&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/cylinder&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/visual&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/link&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/model&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/sdf&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-
-<p>  これで、２つの車輪を持った台車を作ることが出来ました。先ほどと同じように、Gazeboで確認してみましょう。以下のようになっているはずです。
-  <img src="http://cir-kit.github.io/images/2015-01-31-gazebo-make-a-mobile-robot/My_robot_caster_wheels.png" alt="My_robot_caster_wheels" /></p>
-
-
-
-
-<ol>
-<li><code>&lt;static&gt;</code>を<code>false</code>にし、左右のタイヤのヒンジを追加しましょう。以下のように<code>model.sdf</code> を編集してください。
-<strong>コピーはしないでください。手書きで追加していくことが、今回のチュートリアルです。</strong></li>
-</ol>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-<span class='line-number'>70</span>
-<span class='line-number'>71</span>
-<span class='line-number'>72</span>
-<span class='line-number'>73</span>
-<span class='line-number'>74</span>
-<span class='line-number'>75</span>
-<span class='line-number'>76</span>
-<span class='line-number'>77</span>
-<span class='line-number'>78</span>
-<span class='line-number'>79</span>
-<span class='line-number'>80</span>
-<span class='line-number'>81</span>
-<span class='line-number'>82</span>
-<span class='line-number'>83</span>
-<span class='line-number'>84</span>
-<span class='line-number'>85</span>
-<span class='line-number'>86</span>
-<span class='line-number'>87</span>
-<span class='line-number'>88</span>
-<span class='line-number'>89</span>
-<span class='line-number'>90</span>
-<span class='line-number'>91</span>
-<span class='line-number'>92</span>
-<span class='line-number'>93</span>
-<span class='line-number'>94</span>
-<span class='line-number'>95</span>
-<span class='line-number'>96</span>
-<span class='line-number'>97</span>
-<span class='line-number'>98</span>
-<span class='line-number'>99</span>
-<span class='line-number'>100</span>
-<span class='line-number'>101</span>
-<span class='line-number'>102</span>
-<span class='line-number'>103</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&#39;1.0&#39;?&gt;</span>
-</span><span class='line'><span class="nt">&lt;sdf</span> <span class="na">version=</span><span class="s">&#39;1.4&#39;</span><span class="nt">&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;model</span> <span class="na">name=</span><span class="s">&quot;my_robot&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;static&gt;</span>false<span class="nt">&lt;/static&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;link</span> <span class="na">name=</span><span class="s">&#39;chassis&#39;</span><span class="nt">&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;pose&gt;</span>0 0 .1 0 0 0<span class="nt">&lt;/pose&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;collision</span> <span class="na">name=</span><span class="s">&#39;collision&#39;</span><span class="nt">&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;box&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;size&gt;</span>.4 .2 .1<span class="nt">&lt;/size&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;/box&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/collision&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;visual</span> <span class="na">name=</span><span class="s">&#39;visual&#39;</span><span class="nt">&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;box&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;size&gt;</span>.4 .2 .1<span class="nt">&lt;/size&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;/box&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/visual&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;collision</span> <span class="na">name=</span><span class="s">&#39;caster_collision&#39;</span><span class="nt">&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;pose&gt;</span>-0.15 0 -0.05 0 0 0<span class="nt">&lt;/pose&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;sphere&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;radius&gt;</span>.05<span class="nt">&lt;/radius&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/sphere&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;surface&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;friction&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;ode&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;mu&gt;</span>0<span class="nt">&lt;/mu&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;mu2&gt;</span>0<span class="nt">&lt;/mu2&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;slip1&gt;</span>1.0<span class="nt">&lt;/slip1&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;slip2&gt;</span>1.0<span class="nt">&lt;/slip2&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;/ode&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/friction&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/surface&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/collision&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;visual</span> <span class="na">name=</span><span class="s">&#39;caster_visual&#39;</span><span class="nt">&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;pose&gt;</span>-0.15 0 -0.05 0 0 0<span class="nt">&lt;/pose&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;sphere&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;radius&gt;</span>.05<span class="nt">&lt;/radius&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/sphere&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/visual&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;/link&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;link</span> <span class="na">name=</span><span class="s">&quot;left_wheel&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;pose&gt;</span>0.1 0.13 0.1 0 1.5707 1.5707<span class="nt">&lt;/pose&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;collision</span> <span class="na">name=</span><span class="s">&quot;collision&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;cylinder&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;radius&gt;</span>.1<span class="nt">&lt;/radius&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;length&gt;</span>.05<span class="nt">&lt;/length&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/cylinder&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/collision&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;visual</span> <span class="na">name=</span><span class="s">&quot;visual&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;cylinder&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;radius&gt;</span>.1<span class="nt">&lt;/radius&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;length&gt;</span>.05<span class="nt">&lt;/length&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/cylinder&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/visual&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;/link&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;link</span> <span class="na">name=</span><span class="s">&quot;right_wheel&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;pose&gt;</span>0.1 -0.13 0.1 0 1.5707 1.5707<span class="nt">&lt;/pose&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;collision</span> <span class="na">name=</span><span class="s">&quot;collision&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;cylinder&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;radius&gt;</span>.1<span class="nt">&lt;/radius&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;length&gt;</span>.05<span class="nt">&lt;/length&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/cylinder&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/collision&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;visual</span> <span class="na">name=</span><span class="s">&quot;visual&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;cylinder&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;radius&gt;</span>.1<span class="nt">&lt;/radius&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;length&gt;</span>.05<span class="nt">&lt;/length&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/cylinder&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/visual&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;/link&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;joint</span> <span class="na">type=</span><span class="s">&quot;revolute&quot;</span> <span class="na">name=</span><span class="s">&quot;left_wheel_hinge&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;pose&gt;</span>0 0 -0.03 0 0 0<span class="nt">&lt;/pose&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;child&gt;</span>left_wheel<span class="nt">&lt;/child&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;parent&gt;</span>chassis<span class="nt">&lt;/parent&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;axis&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;xyz&gt;</span>0 1 0<span class="nt">&lt;/xyz&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/axis&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;/joint&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;joint</span> <span class="na">type=</span><span class="s">&quot;revolute&quot;</span> <span class="na">name=</span><span class="s">&quot;right_wheel_hinge&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;pose&gt;</span>0 0 0.03 0 0 0<span class="nt">&lt;/pose&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;child&gt;</span>right_wheel<span class="nt">&lt;/child&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;parent&gt;</span>chassis<span class="nt">&lt;/parent&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;axis&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;xyz&gt;</span>0 1 0<span class="nt">&lt;/xyz&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/axis&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;/joint&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;/model&gt;</span>
-</span><span class='line'><span class="nt">&lt;/sdf&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-
-<p>２つのジョイントを<code>y</code>方向<code>&lt;xyz&gt;0 1 0&lt;/xyz&gt;</code>に回るようにし、台車に接続します。</p>
-
-
-
-
-<ol>
+<li><p>モデルを静的にするために、<code>~/.gazebo/models/my_robot/model.sdf</code>ファイルに<code>&lt;static&gt;true&lt;/static&gt;</code>を追加してください。すると、以下のようなソースコードになるはずです。
+<strong>コピーはしないでください。手書きで追加していくことが、今回のチュートリアルです。</strong>
+<code>xml
+ &lt;?xml version='1.0'?&gt;
+ &lt;sdf version='1.4'&gt;
+   &lt;model name="my_robot"&gt;
+     &lt;static&gt;true&lt;/static&gt;
+   &lt;/model&gt;
+ &lt;/sdf&gt;
+</code></p></li>
+<li><p>長方形のロボット本体のモデルを追加するために、<code>~/.gazebo/models/my_robot/model.sdf</code>を以下のように編集してください。すると以下のようなソースコードになるはずです。<br/>
+<strong>コピーはしないでください。手書きで追加していくことが、今回のチュートリアルです。</strong>
+<code>xml
+ &lt;?xml version='1.0'?&gt;
+   &lt;sdf version='1.4'&gt;
+     &lt;model name="my_robot"&gt;
+     &lt;static&gt;true&lt;/static&gt;
+       &lt;link name='chassis'&gt;
+         &lt;pose&gt;0 0 .1 0 0 0&lt;/pose&gt;
+         &lt;collision name='collision'&gt;
+           &lt;geometry&gt;
+             &lt;box&gt;
+               &lt;size&gt;.4 .2 .1&lt;/size&gt;
+             &lt;/box&gt;
+           &lt;/geometry&gt;
+         &lt;/collision&gt;
+         &lt;visual name='visual'&gt;
+           &lt;geometry&gt;
+             &lt;box&gt;
+               &lt;size&gt;.4 .2 .1&lt;/size&gt;
+             &lt;/box&gt;
+           &lt;/geometry&gt;
+         &lt;/visual&gt;
+       &lt;/link&gt;
+   &lt;/model&gt;
+ &lt;/sdf&gt;
+</code>
+これで、大きさが<code>0.4 x 0.2 x 0.1 [m]</code>の<code>箱</code>を作ることが出来ました。衝突要素は衝突判定エンジンに使用されるような形状で定義されています。外観要素はレンダリングエンジンに使用されるような形状で定義されています。ほとんどのケースでは、衝突要素と外観要素は同じです。外観要素と衝突要素が異なる場合というのは、外観要素が複雑なメッシュを使用しており、外観要素より、衝突要素のほうがシンプルになる様な場合です。そのような場合には、パフォーマンスの向上を図るために行います。</p></li>
+<li><p>Gazeboを起動し、作成したモデルを確認しましょう。GUIに表示される<strong>insertmodelgui</strong>というボタンから<strong>Insert Model</strong>というボタンを押して作成したモデルをインポートしましょう。以下のコマンドで、Gazeboを起動します。:
+<code>bash
+ gazebo
+</code>
+うまく行けば、写真のように白い箱が見えるでしょう。また、地面から<code>1[m]</code>浮かんでいるはずです。<br/>
+<img src="/images/2015-01-31-gazebo-make-a-mobile-robot/My_robot_box.png" alt="My_robot_box" /></p></li>
+<li><p>今度は、ロボットにキャスターを追加しましょう。物理エンジンにおいて、ジョイントを用いたタイヤを使ってキャスターにするより、摩擦なしの球を使うほうが、モデルを単純化できるため、キャスターは摩擦なしの球にします。それでは、<code>model.sdf</code>に要素を追加しましょう。最終的には、以下のようになるはずです。:<br/>
+<strong>コピーはしないでください。手書きで追加していくことが、今回のチュートリアルです。</strong>
+<code>xml
+    &lt;?xml version='1.0'?&gt;
+ &lt;sdf version='1.4'&gt;
+   &lt;model name="my_robot"&gt;
+     &lt;static&gt;true&lt;/static&gt;
+     &lt;link name='chassis'&gt;
+       &lt;pose&gt;0 0 .1 0 0 0&lt;/pose&gt;
+       &lt;collision name='collision'&gt;
+         &lt;geometry&gt;
+           &lt;box&gt;
+             &lt;size&gt;.4 .2 .1&lt;/size&gt;
+           &lt;/box&gt;
+         &lt;/geometry&gt;
+       &lt;/collision&gt;
+       &lt;visual name='visual'&gt;
+         &lt;geometry&gt;
+           &lt;box&gt;
+             &lt;size&gt;.4 .2 .1&lt;/size&gt;
+           &lt;/box&gt;
+         &lt;/geometry&gt;
+       &lt;/visual&gt;
+       &lt;collision name='caster_collision'&gt;
+         &lt;pose&gt;-0.15 0 -0.05 0 0 0&lt;/pose&gt;
+         &lt;geometry&gt;
+             &lt;sphere&gt;
+             &lt;radius&gt;.05&lt;/radius&gt;
+           &lt;/sphere&gt;
+         &lt;/geometry&gt;
+         &lt;surface&gt;
+           &lt;friction&gt;
+             &lt;ode&gt;
+               &lt;mu&gt;0&lt;/mu&gt;
+               &lt;mu2&gt;0&lt;/mu2&gt;
+               &lt;slip1&gt;1.0&lt;/slip1&gt;
+               &lt;slip2&gt;1.0&lt;/slip2&gt;
+             &lt;/ode&gt;
+           &lt;/friction&gt;
+         &lt;/surface&gt;
+       &lt;/collision&gt;
+       &lt;visual name='caster_visual'&gt;
+         &lt;pose&gt;-0.15 0 -0.05 0 0 0&lt;/pose&gt;
+         &lt;geometry&gt;
+           &lt;sphere&gt;
+             &lt;radius&gt;.05&lt;/radius&gt;
+           &lt;/sphere&gt;
+         &lt;/geometry&gt;
+       &lt;/visual&gt;
+     &lt;/link&gt;
+   &lt;/model&gt;
+ &lt;/sdf&gt;
+</code>
+ロボットの後方にキャスターが追加されることを確認してください。先ほどの手順と同じようにしてGazeboにモデルをスポーンさせてください。<strong>（Gazeboを再起動する必要はありません。というのも、コードを変更するたびに、Gazeboはモデルをリロードするためです。）</strong><br/>
+うまく行けば、以下のようになります。
+<img src="/images/2015-01-31-gazebo-make-a-mobile-robot/My_robot_caster.png" alt="My_robot_caster" /></p></li>
+<li><p>続いて、左タイヤを追加しましょう。<code>model.sdf</code>を以下のように編集しましょう。<br/>
+<strong>コピーはしないでください。手書きで追加していくことが、今回のチュートリアルです。</strong>
+<code>xml
+     &lt;?xml version='1.0'?&gt;
+     &lt;sdf version='1.4'&gt;
+       &lt;model name="my_robot"&gt;
+         &lt;static&gt;true&lt;/static&gt;
+         &lt;link name='chassis'&gt;
+           &lt;pose&gt;0 0 .1 0 0 0&lt;/pose&gt;
+           &lt;collision name='collision'&gt;
+             &lt;geometry&gt;
+               &lt;box&gt;
+                 &lt;size&gt;.4 .2 .1&lt;/size&gt;
+               &lt;/box&gt;
+             &lt;/geometry&gt;
+           &lt;/collision&gt;
+           &lt;visual name='visual'&gt;
+             &lt;geometry&gt;
+               &lt;box&gt;
+                 &lt;size&gt;.4 .2 .1&lt;/size&gt;
+               &lt;/box&gt;
+             &lt;/geometry&gt;
+           &lt;/visual&gt;
+           &lt;collision name='caster_collision'&gt;
+             &lt;pose&gt;-0.15 0 -0.05 0 0 0&lt;/pose&gt;
+             &lt;geometry&gt;
+               &lt;sphere&gt;
+               &lt;radius&gt;.05&lt;/radius&gt;
+             &lt;/sphere&gt;
+           &lt;/geometry&gt;
+           &lt;surface&gt;
+             &lt;friction&gt;
+               &lt;ode&gt;
+                 &lt;mu&gt;0&lt;/mu&gt;
+                 &lt;mu2&gt;0&lt;/mu2&gt;
+                 &lt;slip1&gt;1.0&lt;/slip1&gt;
+                 &lt;slip2&gt;1.0&lt;/slip2&gt;
+               &lt;/ode&gt;
+             &lt;/friction&gt;
+           &lt;/surface&gt;
+         &lt;/collision&gt;
+         &lt;visual name='caster_visual'&gt;
+           &lt;pose&gt;-0.15 0 -0.05 0 0 0&lt;/pose&gt;
+           &lt;geometry&gt;
+             &lt;sphere&gt;
+               &lt;radius&gt;.05&lt;/radius&gt;
+             &lt;/sphere&gt;
+           &lt;/geometry&gt;
+         &lt;/visual&gt;
+       &lt;/link&gt;
+       &lt;link name="left_wheel"&gt;
+         &lt;pose&gt;0.1 0.13 0.1 0 1.5707 1.5707&lt;/pose&gt;
+         &lt;collision name="collision"&gt;
+           &lt;geometry&gt;
+             &lt;cylinder&gt;
+               &lt;radius&gt;.1&lt;/radius&gt;
+               &lt;length&gt;.05&lt;/length&gt;
+             &lt;/cylinder&gt;
+           &lt;/geometry&gt;
+         &lt;/collision&gt;
+         &lt;visual name="visual"&gt;
+           &lt;geometry&gt;
+             &lt;cylinder&gt;
+               &lt;radius&gt;.1&lt;/radius&gt;
+               &lt;length&gt;.05&lt;/length&gt;
+             &lt;/cylinder&gt;
+           &lt;/geometry&gt;
+         &lt;/visual&gt;
+       &lt;/link&gt;
+       &lt;/model&gt;
+     &lt;/sdf&gt;
+</code>
+先ほどと同じように、Gazeboで作成したモデルを確認し、追加したタイヤが正しく付いていることを確認しましょう。ちなみに、さっきまでのモデルは削除しました。(モデルを右クリックし、<strong>Delete</strong>をクリックすれば、削除できます)
+<img src="/images/2015-01-31-gazebo-make-a-mobile-robot/My_robot_caster_left_wheel.png" alt="My_robot_caster_left_wheel" /></p></li>
+<li><p>左タイヤをコピーして右タイヤを作り、リンクの姿勢にタイヤを合わせましょう。以下のように<code>model.sdf</code>を編集してください。:
+<strong>コピーはしないでください。手書きで追加していくことが、今回のチュートリアルです。</strong>
+<code>xml
+     &lt;?xml version='1.0'?&gt;
+     &lt;sdf version='1.4'&gt;
+       &lt;model name="my_robot"&gt;
+         &lt;static&gt;true&lt;/static&gt;
+         &lt;link name='chassis'&gt;
+           &lt;pose&gt;0 0 .1 0 0 0&lt;/pose&gt;
+           &lt;collision name='collision'&gt;
+             &lt;geometry&gt;
+               &lt;box&gt;
+                 &lt;size&gt;.4 .2 .1&lt;/size&gt;
+               &lt;/box&gt;
+             &lt;/geometry&gt;
+           &lt;/collision&gt;
+           &lt;visual name='visual'&gt;
+             &lt;geometry&gt;
+               &lt;box&gt;
+                 &lt;size&gt;.4 .2 .1&lt;/size&gt;
+               &lt;/box&gt;
+             &lt;/geometry&gt;
+           &lt;/visual&gt;
+           &lt;collision name='caster_collision'&gt;
+             &lt;pose&gt;-0.15 0 -0.05 0 0 0&lt;/pose&gt;
+             &lt;geometry&gt;
+               &lt;sphere&gt;
+               &lt;radius&gt;.05&lt;/radius&gt;
+             &lt;/sphere&gt;
+           &lt;/geometry&gt;
+           &lt;surface&gt;
+             &lt;friction&gt;
+               &lt;ode&gt;
+                 &lt;mu&gt;0&lt;/mu&gt;
+                 &lt;mu2&gt;0&lt;/mu2&gt;
+                 &lt;slip1&gt;1.0&lt;/slip1&gt;
+                 &lt;slip2&gt;1.0&lt;/slip2&gt;
+               &lt;/ode&gt;
+             &lt;/friction&gt;
+           &lt;/surface&gt;
+         &lt;/collision&gt;
+         &lt;visual name='caster_visual'&gt;
+           &lt;pose&gt;-0.15 0 -0.05 0 0 0&lt;/pose&gt;
+           &lt;geometry&gt;
+             &lt;sphere&gt;
+               &lt;radius&gt;.05&lt;/radius&gt;
+             &lt;/sphere&gt;
+           &lt;/geometry&gt;
+         &lt;/visual&gt;
+       &lt;/link&gt;
+       &lt;link name="left_wheel"&gt;
+         &lt;pose&gt;0.1 0.13 0.1 0 1.5707 1.5707&lt;/pose&gt;
+         &lt;collision name="collision"&gt;
+           &lt;geometry&gt;
+             &lt;cylinder&gt;
+               &lt;radius&gt;.1&lt;/radius&gt;
+               &lt;length&gt;.05&lt;/length&gt;
+             &lt;/cylinder&gt;
+           &lt;/geometry&gt;
+         &lt;/collision&gt;
+         &lt;visual name="visual"&gt;
+           &lt;geometry&gt;
+             &lt;cylinder&gt;
+               &lt;radius&gt;.1&lt;/radius&gt;
+               &lt;length&gt;.05&lt;/length&gt;
+             &lt;/cylinder&gt;
+           &lt;/geometry&gt;
+         &lt;/visual&gt;
+       &lt;/link&gt;
+       &lt;link name="right_wheel"&gt;
+         &lt;pose&gt;0.1 -0.13 0.1 0 1.5707 1.5707&lt;/pose&gt;
+         &lt;collision name="collision"&gt;
+           &lt;geometry&gt;
+             &lt;cylinder&gt;
+               &lt;radius&gt;.1&lt;/radius&gt;
+               &lt;length&gt;.05&lt;/length&gt;
+             &lt;/cylinder&gt;
+           &lt;/geometry&gt;
+         &lt;/collision&gt;
+         &lt;visual name="visual"&gt;
+           &lt;geometry&gt;
+             &lt;cylinder&gt;
+               &lt;radius&gt;.1&lt;/radius&gt;
+               &lt;length&gt;.05&lt;/length&gt;
+             &lt;/cylinder&gt;
+           &lt;/geometry&gt;
+         &lt;/visual&gt;
+       &lt;/link&gt;
+       &lt;/model&gt;
+     &lt;/sdf&gt;
+</code>
+これで、２つの車輪を持った台車を作ることが出来ました。先ほどと同じように、Gazeboで確認してみましょう。以下のようになっているはずです。
+<img src="/images/2015-01-31-gazebo-make-a-mobile-robot/My_robot_caster_wheels.png" alt="My_robot_caster_wheels" /></p></li>
+<li><p><code>&lt;static&gt;</code>を<code>false</code>にし、左右のタイヤのヒンジを追加しましょう。以下のように<code>model.sdf</code> を編集してください。
+<strong>コピーはしないでください。手書きで追加していくことが、今回のチュートリアルです。</strong>
+<code>xml
+ &lt;?xml version='1.0'?&gt;
+ &lt;sdf version='1.4'&gt;
+   &lt;model name="my_robot"&gt;
+     &lt;static&gt;false&lt;/static&gt;
+     &lt;link name='chassis'&gt;
+       &lt;pose&gt;0 0 .1 0 0 0&lt;/pose&gt;
+       &lt;collision name='collision'&gt;
+         &lt;geometry&gt;
+           &lt;box&gt;
+             &lt;size&gt;.4 .2 .1&lt;/size&gt;
+           &lt;/box&gt;
+         &lt;/geometry&gt;
+       &lt;/collision&gt;
+       &lt;visual name='visual'&gt;
+         &lt;geometry&gt;
+           &lt;box&gt;
+             &lt;size&gt;.4 .2 .1&lt;/size&gt;
+           &lt;/box&gt;
+         &lt;/geometry&gt;
+       &lt;/visual&gt;
+       &lt;collision name='caster_collision'&gt;
+         &lt;pose&gt;-0.15 0 -0.05 0 0 0&lt;/pose&gt;
+         &lt;geometry&gt;
+           &lt;sphere&gt;
+           &lt;radius&gt;.05&lt;/radius&gt;
+         &lt;/sphere&gt;
+       &lt;/geometry&gt;
+       &lt;surface&gt;
+         &lt;friction&gt;
+           &lt;ode&gt;
+             &lt;mu&gt;0&lt;/mu&gt;
+             &lt;mu2&gt;0&lt;/mu2&gt;
+             &lt;slip1&gt;1.0&lt;/slip1&gt;
+             &lt;slip2&gt;1.0&lt;/slip2&gt;
+           &lt;/ode&gt;
+         &lt;/friction&gt;
+       &lt;/surface&gt;
+     &lt;/collision&gt;
+     &lt;visual name='caster_visual'&gt;
+       &lt;pose&gt;-0.15 0 -0.05 0 0 0&lt;/pose&gt;
+       &lt;geometry&gt;
+         &lt;sphere&gt;
+           &lt;radius&gt;.05&lt;/radius&gt;
+         &lt;/sphere&gt;
+       &lt;/geometry&gt;
+     &lt;/visual&gt;
+   &lt;/link&gt;
+   &lt;link name="left_wheel"&gt;
+     &lt;pose&gt;0.1 0.13 0.1 0 1.5707 1.5707&lt;/pose&gt;
+     &lt;collision name="collision"&gt;
+       &lt;geometry&gt;
+         &lt;cylinder&gt;
+           &lt;radius&gt;.1&lt;/radius&gt;
+           &lt;length&gt;.05&lt;/length&gt;
+         &lt;/cylinder&gt;
+       &lt;/geometry&gt;
+     &lt;/collision&gt;
+     &lt;visual name="visual"&gt;
+       &lt;geometry&gt;
+         &lt;cylinder&gt;
+           &lt;radius&gt;.1&lt;/radius&gt;
+           &lt;length&gt;.05&lt;/length&gt;
+         &lt;/cylinder&gt;
+       &lt;/geometry&gt;
+     &lt;/visual&gt;
+   &lt;/link&gt;
+   &lt;link name="right_wheel"&gt;
+     &lt;pose&gt;0.1 -0.13 0.1 0 1.5707 1.5707&lt;/pose&gt;
+     &lt;collision name="collision"&gt;
+       &lt;geometry&gt;
+         &lt;cylinder&gt;
+           &lt;radius&gt;.1&lt;/radius&gt;
+           &lt;length&gt;.05&lt;/length&gt;
+         &lt;/cylinder&gt;
+       &lt;/geometry&gt;
+     &lt;/collision&gt;
+     &lt;visual name="visual"&gt;
+       &lt;geometry&gt;
+         &lt;cylinder&gt;
+           &lt;radius&gt;.1&lt;/radius&gt;
+           &lt;length&gt;.05&lt;/length&gt;
+         &lt;/cylinder&gt;
+       &lt;/geometry&gt;
+     &lt;/visual&gt;
+   &lt;/link&gt;
+   &lt;joint type="revolute" name="left_wheel_hinge"&gt;
+     &lt;pose&gt;0 0 -0.03 0 0 0&lt;/pose&gt;
+     &lt;child&gt;left_wheel&lt;/child&gt;
+     &lt;parent&gt;chassis&lt;/parent&gt;
+     &lt;axis&gt;
+       &lt;xyz&gt;0 1 0&lt;/xyz&gt;
+     &lt;/axis&gt;
+   &lt;/joint&gt;
+   &lt;joint type="revolute" name="right_wheel_hinge"&gt;
+     &lt;pose&gt;0 0 0.03 0 0 0&lt;/pose&gt;
+     &lt;child&gt;right_wheel&lt;/child&gt;
+     &lt;parent&gt;chassis&lt;/parent&gt;
+     &lt;axis&gt;
+       &lt;xyz&gt;0 1 0&lt;/xyz&gt;
+     &lt;/axis&gt;
+   &lt;/joint&gt;
+   &lt;/model&gt;
+ &lt;/sdf&gt;
+</code>
+２つのジョイントを<code>y</code>方向<code>&lt;xyz&gt;0 1 0&lt;/xyz&gt;</code>に回るようにし、台車に接続します。</p></li>
 <li><p>Gazeboを起動し、今作成したモデルを挿入してください。画面右側に写っている白い長方形（カラム）をクリックし、左側にドラッグしてください。</p></li>
 <li><p>すると、それぞれのジョイントの様々なコントロールを含むウィンドウが出現するでしょう。(コントロールしたいモデルが選択されていることを確認してください。)</p></li>
 <li><p><strong>Force</strong>タブの下にあるコントロールから、それぞれのジョイントの力を<code>約0.1[N・m]</code>に増加させてください。すると、ロボットが動き始めるはずです。(下図はイメージ)
-<img src="http://cir-kit.github.io/images/2015-01-31-gazebo-make-a-mobile-robot/Simple-robot-driving.png" alt="Simple-robot-driving" /></p></li>
+<img src="/images/2015-01-31-gazebo-make-a-mobile-robot/Simple-robot-driving.png" alt="Simple-robot-driving" /></p></li>
 <li><p>おめでとうございまぁす！これで基本的なロボットモデルが作れました!</p></li>
 </ol>
 
 
-
-
 <h2>自分で試してみましょう</h2>
 
-
-
-
 <p>新しいロボットをどんどん作りましょう !</p>
-
-
-
 
 <ul>
 <li><p><strong>アイデア : </strong>円柱形の脚の生えた四足の動物なんかどうでしょう。脚は半時計回りのジョイントで胴体にくっつけるなどすると良いでしょう。</p></li>
@@ -1967,10 +1012,7 @@
 </ul>
 
 
-
-
 <h4>Next >> <a href="http://cir-kit.github.io/blog/2015/01/31/gazebo-attach-meshes/">メッシュを取り付ける</a></h4>
-
 ]]></content>
   </entry>
   
@@ -1979,53 +1021,27 @@
     <link href="http://cir-kit.github.io/blog/2015/01/31/gazebo-make-a-model/"/>
     <updated>2015-01-31T19:22:14+09:00</updated>
     <id>http://cir-kit.github.io/blog/2015/01/31/gazebo-make-a-model</id>
-    <content type="html"><![CDATA[<p><img src="http://cir-kit.github.io/images/gazebo_logo.png" alt="gazebo_logo" /></p>
-
-
-
+    <content type="html"><![CDATA[<p><img src="/images/gazebo_logo.png" alt="gazebo_logo" /></p>
 
 <h5>検証日時</h5>
 
-
-
-
 <p>01/25/2015 (Sun)</p>
 
-
-
-
 <h5>概要</h5>
-
-
-
 
 <p>Gazeboのチュートリアル第二弾「Build a Robot」。<br/>
 このチュートリアルではロボットを作ったり、修正したりします。また、センサ、アクチュエータを搭載した車輪型ロボットを作り、モデルを描画するなどの実践例も行います。<br/>
 今回はその「Make a model」編です。<br/>
 公式サイトを適当に翻訳しただけですので、あしからず。</p>
 
-
-
-
 <h5>レベル</h5>
 
-
-
-
 <p><strong>BEGINNER</strong></p>
-
-
-
 
 <!-- more -->
 
 
-
-
 <h5>環境</h5>
-
-
-
 
 <table>
 <thead>
@@ -2070,33 +1086,16 @@
 </table>
 
 
-
-
 <h5>参考</h5>
-
-
-
 
 <p><a href="http://gazebosim.org/tutorials?cat=build_robot">GAZEBO Tutorial-Build a Robot</a></p>
 
-
-
-
 <h2>はじめに</h2>
-
-
-
 
 <p>このチュートリアルでは、SDFモデルオブジェクトについて説明します。<br/>
 SDFモデルは複雑なロボットの形状を整理して記述することができます。これには、<code>&lt;model&gt;</code><a href="http://gazebosim.org/sdf.html">SDF</a>タグが必要です。また、リンク、ジョイント、物体の衝突情報、外観、プラグインなどの要素が必要です。必要なモデルのが複雑な依存関係にあるとき、modelファイルを作るのは困難になります。このページでは自身のモデルをどうやってビルドするのかについて、いくつかの方法を説明します。</p>
 
-
-
-
 <h2>SDFモデルの構成</h2>
-
-
-
 
 <ul>
 <li><p><strong>Links : </strong>リンクにはモデル本体の物理的な情報が記述されています。例えば、タイヤ出会ったりジョイントチェーンのリンクであったりします。それぞれのリンクには多くの衝突判定や外観要素が含まれています。パフォーマンスや安定性を向上させるためには、モデルのリンクの数を減らしてみてください。例えば、テーブルのモデルには、5つのリンク(４つは脚で、１つは天板)がジョイントで結合されています。しかし、これはとても複雑です。特にジョイントが決して動かない場合などです。なので、テーブルを1つのリンクと5つの衝突要素で生成します。</p>
@@ -2113,24 +1112,13 @@ SDFモデルは複雑なロボットの形状を整理して記述すること�
 </ul>
 
 
-
-
 <h2>モデルを作る</h2>
 
-
-
-
 <h3>ステップ 1 : メッシュを集める</h3>
-
-
-
 
 <p>モデルを作成する際に必要な３Dメッシュファイルのすべて集めることを意味します。Gazeboは簡単な形状のセット（：箱、球、円柱）を提供しています。もし、あなたのモデルがもう少し複雑であるなら、このまま読み進めてください。<br/>
 メッシュはいろいろな方法で生成できます。<a href="http://sketchup.google.com/3dwarehouse/">Google&rsquo;s 3D wharehouse</a>は良い３Dモデルのレポジトリです。あるいは、必要なファイルをすでに持っているかもしれない。いずれにせよ、最終的には、<a href="http://blender.org/">Blender</a>や<a href="http://sketchup.google.com/">Sketchup</a>などの3Dモデラーを使って独自のメッシュを作ることができます。<br/>
 GazeboではメッシュファイルはSTLもしくはColladaフォーマットでなければなりません。Colladaフォーマットの方が好ましいです。</p>
-
-
-
 
 <ul>
 <li><p><strong>コツ : </strong>原点が中心となるように、３Dモデリングソフトウェアを使ってメッシュを動かしておきましょう。これを行っておけばGazeboの中で、メッシュを動かすのがとtも簡単になります。</p></li>
@@ -2139,129 +1127,63 @@ GazeboではメッシュファイルはSTLもしくはColladaフォーマット�
 </ul>
 
 
-
-
 <h3>ステップ 2 : モデルのSDFファイルを作る</h3>
-
-
-
 
 <p>極端に簡単なモデルファイルを作る、もしくはすでにあるモデルファイルをコピーしてくるところから始めてください。機能がすでにわかっているもしくは、デバッグがとても簡単なものからスタートするのが鍵です。<br/>
 とても単純な最小単位のボックスモデルファイルを衝突、幾何形状のユニットボックスとして、更に慣性ボックスユニット、外観ユニットとする。：<br/>
-モデルファイル<code>box.sdf</code> を生成する。</p>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gedit box.sdf
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-
-<p>以下を<a href="http://bitbucket.org/osrf/gazebo_tutorials/raw/default/build_model/files/box.sdf">box.sdf</a>にコピーしてください。</p>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&#39;1.0&#39;?&gt;</span>
-</span><span class='line'><span class="nt">&lt;sdf</span> <span class="na">version=</span><span class="s">&quot;1.4&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'><span class="nt">&lt;model</span> <span class="na">name=</span><span class="s">&quot;my_model&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;pose&gt;</span>0 0 0.5 0 0 0<span class="nt">&lt;/pose&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;static&gt;</span>true<span class="nt">&lt;/static&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;link</span> <span class="na">name=</span><span class="s">&quot;link&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;inertial&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;mass&gt;</span>1.0<span class="nt">&lt;/mass&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;inertia&gt;</span> <span class="c">&lt;!-- interias are tricky to compute --&gt;</span>
-</span><span class='line'>          <span class="c">&lt;!-- http://answers.gazebosim.org/question/4372/the-inertia-matrix-explained/ --&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;ixx&gt;</span>0.083<span class="nt">&lt;/ixx&gt;</span>       <span class="c">&lt;!-- for a box: ixx = 0.083 * mass * (y*y + z*z) --&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;ixy&gt;</span>0.0<span class="nt">&lt;/ixy&gt;</span>         <span class="c">&lt;!-- for a box: ixy = 0 --&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;ixz&gt;</span>0.0<span class="nt">&lt;/ixz&gt;</span>         <span class="c">&lt;!-- for a box: ixz = 0 --&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;iyy&gt;</span>0.083<span class="nt">&lt;/iyy&gt;</span>       <span class="c">&lt;!-- for a box: iyy = 0.083 * mass * (x*x + z*z) --&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;iyz&gt;</span>0.0<span class="nt">&lt;/iyz&gt;</span>         <span class="c">&lt;!-- for a box: iyz = 0 --&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;izz&gt;</span>0.083<span class="nt">&lt;/izz&gt;</span>       <span class="c">&lt;!-- for a box: izz = 0.083 * mass * (x*x + y*y) --&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/inertia&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/inertial&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;collision</span> <span class="na">name=</span><span class="s">&quot;collision&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;box&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;size&gt;</span>1 1 1<span class="nt">&lt;/size&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;/box&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/collision&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;visual</span> <span class="na">name=</span><span class="s">&quot;visual&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;box&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;size&gt;</span>1 1 1<span class="nt">&lt;/size&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;/box&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/visual&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/link&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;/model&gt;</span>
-</span><span class='line'><span class="nt">&lt;/sdf&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-
-<p>Box-geometryの原点はboxの幾何学的中心に置くことに留意してください、なので、地面の水平面と共に更新されるboxの底面を生成するために、地面の水平面の上へboxを引き上げるように、<code>&lt;pose&gt;0 0 0.5 0 0 0&lt;/pose&gt;</code>の原点を加えます。</p>
-
-
-
+モデルファイル<code>box.sdf</code> を生成する。
+<code>bash
+gedit box.sdf
+</code>
+以下を<a href="http://bitbucket.org/osrf/gazebo_tutorials/raw/default/build_model/files/box.sdf">box.sdf</a>にコピーしてください。
+<code>xml
+&lt;?xml version='1.0'?&gt;
+&lt;sdf version="1.4"&gt;
+&lt;model name="my_model"&gt;
+  &lt;pose&gt;0 0 0.5 0 0 0&lt;/pose&gt;
+  &lt;static&gt;true&lt;/static&gt;
+    &lt;link name="link"&gt;
+      &lt;inertial&gt;
+        &lt;mass&gt;1.0&lt;/mass&gt;
+        &lt;inertia&gt; &lt;!-- interias are tricky to compute --&gt;
+          &lt;!-- http://answers.gazebosim.org/question/4372/the-inertia-matrix-explained/ --&gt;
+          &lt;ixx&gt;0.083&lt;/ixx&gt;       &lt;!-- for a box: ixx = 0.083 * mass * (y*y + z*z) --&gt;
+          &lt;ixy&gt;0.0&lt;/ixy&gt;         &lt;!-- for a box: ixy = 0 --&gt;
+          &lt;ixz&gt;0.0&lt;/ixz&gt;         &lt;!-- for a box: ixz = 0 --&gt;
+          &lt;iyy&gt;0.083&lt;/iyy&gt;       &lt;!-- for a box: iyy = 0.083 * mass * (x*x + z*z) --&gt;
+          &lt;iyz&gt;0.0&lt;/iyz&gt;         &lt;!-- for a box: iyz = 0 --&gt;
+          &lt;izz&gt;0.083&lt;/izz&gt;       &lt;!-- for a box: izz = 0.083 * mass * (x*x + y*y) --&gt;
+        &lt;/inertia&gt;
+      &lt;/inertial&gt;
+      &lt;collision name="collision"&gt;
+        &lt;geometry&gt;
+          &lt;box&gt;
+            &lt;size&gt;1 1 1&lt;/size&gt;
+          &lt;/box&gt;
+        &lt;/geometry&gt;
+      &lt;/collision&gt;
+      &lt;visual name="visual"&gt;
+        &lt;geometry&gt;
+          &lt;box&gt;
+            &lt;size&gt;1 1 1&lt;/size&gt;
+          &lt;/box&gt;
+        &lt;/geometry&gt;
+      &lt;/visual&gt;
+    &lt;/link&gt;
+  &lt;/model&gt;
+&lt;/sdf&gt;
+</code>
+Box-geometryの原点はboxの幾何学的中心に置くことに留意してください、なので、地面の水平面と共に更新されるboxの底面を生成するために、地面の水平面の上へboxを引き上げるように、<code>&lt;pose&gt;0 0 0.5 0 0 0&lt;/pose&gt;</code>の原点を加えます。</p>
 
 <ul>
 <li><strong>コツ : </strong>上記の例だとシンプルなboxモデルを静的に設置しました。モデルを作る際に有効なのが特徴です。一回でもモデルを生成し、モデルを動かせるようにしたいなら、<code>&lt;static</code>タグを<code>false</code>にしてください。</li>
 </ul>
 
 
-
-
 <h3>ステップ 3 : モデルをSDFファイルに加える</h3>
-
-
-
 
 <p>起動中の<code>.sdf</code>ファイルと共に、慎重にモデルを加えていき、少しずつ複雑にしていきましょう。それぞれの要素を加えていく際に、モデルがGUIクライアントできちんと動作していることを確認しながら、加えていきましょう。<br/>
 以下に、要素を追加していく際に見習ったほうが良い手順を示します。</p>
-
-
-
 
 <ol>
 <li><p>リンクを追加</p></li>
@@ -2272,8 +1194,6 @@ GazeboではメッシュファイルはSTLもしくはColladaフォーマット�
 <li><p>すべてのジョイントを追加(使うなら)</p></li>
 <li><p>すべてのプラグインを追加（使うなら）</p></li>
 </ol>
-
-
 
 ]]></content>
   </entry>

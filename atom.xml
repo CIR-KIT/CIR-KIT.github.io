@@ -4,7 +4,7 @@
   <title><![CDATA[九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-01-31T22:19:36+09:00</updated>
+  <updated>2015-01-31T22:26:22+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -189,7 +189,7 @@
 
 <ol>
 <li><p>では、Gazeboを起動してGUIに表示される<strong>Insert</strong>という項目を利用してシミュレーションにロボットを追加しましょう。すると、下図のようにロボットにレーザーが付いていると思います。
-<img src="../Picture/Make_a_Robot/Add_laser_pioneer.png" alt="Add_laser_pioneer" /></p></li>
+<img src="http://cir-kit.github.io/images/2015-01-31-gazebo-add-a-sensor-to-a-robot/Add_laser_pioneer.png" alt="Add_laser_pioneer" /></p></li>
 <li><p>(オプション)ロボットにカメラを取り付けてみましょう。カメラモデルのURIは<code>model://camera</code>です。このURIは以下のフォルダに収められています。</p></li>
 </ol>
 
@@ -435,7 +435,7 @@
 </ol>
 
 
-<h4>Next >> <a href="http://gazebosim.org/tutorials/?tut=add_laser">ロボットにセンサを取り付ける</a></h4>
+<h4>Next >> <a href="http://cir-kit.github.io/blog/2015/01/31/gazebo-add-a-sensor-to-a-robot/">ロボットにセンサを取り付ける</a></h4>
 ]]></content>
   </entry>
   
