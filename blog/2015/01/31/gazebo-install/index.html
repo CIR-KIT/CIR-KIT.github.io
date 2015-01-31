@@ -5,12 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>九州工業大学 CIR-KIT Blog</title>
+  <title>Gazeboのインストール - 九州工業大学 CIR-KIT Blog</title>
   <meta name="author" content="Member">
 
   
-  <meta name="description" content="検証日時 01/31/2015 (Sat) 概要 Gazeboのチュートリアル第一弾「Get Started」。その、「Quick Start」編です。
-公式サイトを適当に翻訳しただけですので、あしからず。 環境 PC : Lenovo ThinkPad X240 Prosessor : &hellip;">
+  <meta name="description" content="検証日時 01/31/2015 (Sat) 概要 Robot Simulaterのgazeboの概要とそのインストールについてです。
+インストール編は、公式サイトを適当に翻訳しただけですので、あしからず。 環境 PC : Lenovo ThinkPad X240 Prosessor : &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -19,7 +19,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://cir-kit.github.io/">
+  <link rel="canonical" href="http://cir-kit.github.io/blog/2015/01/31/gazebo-install/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="九州工業大学 CIR-KIT Blog" type="application/atom+xml">
@@ -64,174 +64,12 @@
 </nav>
   <div id="main">
     <div id="content">
-      <div class="blog-index">
+      <div>
+<article class="hentry" role="article">
   
-  
-  
-    <article>
-      
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2015/01/31/gazebo-quickstart/">GAZEBOを使ってみよう ! (Quick Start 編)</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-01-31T17:12:33+09:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>31</span><span class='date-suffix'>st</span>, <span class='date-year'>2015</span></span> <span class='time'>5:12 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><img src="../Picture/gazebo_logo.png" alt="gazebo_logo" /></p>
-
-<h5>検証日時</h5>
-
-<p>01/31/2015 (Sat)</p>
-
-<h5>概要</h5>
-
-<p>Gazeboのチュートリアル第一弾「Get Started」。その、「Quick Start」編です。<br/>
-公式サイトを適当に翻訳しただけですので、あしからず。</p>
-
-<h5>環境</h5>
-
-<table>
-<thead>
-<tr>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center;"> <strong>PC</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Prosessor</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>RAM</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>OS</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Kernel</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> 3.13.0-44-generic </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Gazebo</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Version 5.0.1 </td>
-</tr>
-</tbody>
-</table>
-
-
-<h5>参考</h5>
-
-<p><a href="http://gazebosim.org/tutorials?cat=get_started">GAZEBO Tutorial-GetStarted</a></p>
-
-<h5>レベル</h5>
-
-<p><strong>BEGINNER</strong></p>
-
-<h2>クイックスタート</h2>
-
-<h3>GAZEBOを立ち上げる</h3>
-
-<p>Gazeboをデフォルト環境で実行するには以下の3つの手順が必要です。</p>
-
-<ol>
-<li><p>Gazeboを<a href="https://cir-kit.github.io/blog/2015/01/31/gazebo-install/">インストール</a>する。</p></li>
-<li><p>ターミナルを立ち上げる。ほとんどのUbuntuシステムなら、<code>Ctrl+Alt+t</code>でもターミナルが立ち上がります。</p></li>
-<li>コマンドプロンプトに以下のコマンドを入力して<code>gazebo</code>を立ち上げる。</li>
-</ol>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>GAZEBOをロボットと一緒に動かす</h3>
-
-<p>pionieer2dxと共にworldを読み込んで、シミュレータを立ち上げてみましょう !</p>
-
-<ol>
-<li>ターミナルを開いて、以下のコマンドを入力してください。</li>
-</ol>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo worlds/pioneer2dx.world
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h4>worldデータはどこにあるのでしょうか?</h4>
-
-<p>さっき入力したコマンドの中に、不可思議な引数<code>worlds/pioneer2dx.world</code>があることに気づいたでしょう。これは、gazeboに<code>worlds/pioneer2dx.world</code>ファイルを探させ、ロードしスタートさせるようにする引数です。worldデータはバージョンシステムディレクトリに配置されています。例えば、Ubuntuの場合だと、<code>/usr/share/gazebo-4.0</code>にあります。もし、UbuntuにGazebo4.0をインストールしているのなら、以下のコマンドをターミナルに撃ちこむことで、worldデータの一覧を確認することができます。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>ls /usr/share/gazebo-4.0/worlds
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Homebrewを利用してOSXにGazebo4.0をインストールしている場合、以下を入力して、worldデータの一覧を確認することができます。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>ls /usr/local/share/gazebo-4.0/worlds
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>クライアントとサーバーの区別</h3>
-
-<p>実際は、<code>gazebo</code>コマンドでは、２つの異なるコマンドを実行しています。１つ目は、<code>gzserver</code> と呼ばれるもので、２つ目は <code>gzclient</code> と呼ばれるものです。 <code>gzserver</code> では、物理エンジンのアップデートループやセンサデータの更新などを実行可能にします。これはGazeboのコアであり、他のGUIとは独立して使用することができます。また、<strong>&ldquo;run headless&rdquo;</strong>というフレーズをフォーラムに確認することができるでしょう。このフレーズは <code>gzserver</code> のみを実行しているということを意味しています。例として、ユーザーインターフェースの必要ないクラウドコンピュータで実行している <code>gzserver</code> とworldデータが関連付けられているときなどがあります。<br/>
-また、<code>gzclient</code> では<a href="http://qt-project.org/">QT</a>を基本としたユーザーインターフェースを利用可能にします。このアプリケーションは素晴らしい見た目のシミュレーションを提供するだけでなく、様々なシミュレーションプロパティを操作する便利なコントロールも提供してくれます。<br/>
-これらを実行可能にし、実行するために、ターミナルを開いて、サーバーを起動してください。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gzserver
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>もうひとつ別のターミナルを開いて、GUIクライアントを実行してください</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gzclient
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>この時点で、Gazeboのユーザーインターフェースを確認できるはずです。また、<code>gzclient</code>は好きなタイミングで再起動することができますし、複数実行することも可能です。</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2015/01/31/gazebo-install/">Gazeboのインストール</a></h1>
+      <h1 class="entry-title">Gazeboのインストール</h1>
     
     
       <p class="meta">
@@ -247,7 +85,7 @@
   </header>
 
 
-  <div class="entry-content"><p><img src="../Picture/gazebo_logo.png" alt="gazebo_logo" /></p>
+<div class="entry-content"><p><img src="../Picture/gazebo_logo.png" alt="gazebo_logo" /></p>
 
 <h5>検証日時</h5>
 
@@ -412,57 +250,54 @@
 
 <p>GazeboをROSと共に使用するためには、<a href="http://gazebosim.org/tutorials?cat=connect_ros">ROSとつなぐ</a>というチュートリアルを参照してください。</p>
 </div>
-  
-  
 
 
-    </article>
-  
-  
-    <article>
+  <footer>
+    <p class="meta">
       
-  <header>
+  
+
+<span class="byline author vcard">Posted by <span class="fn">RyodoTanaka</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2015-01-31T15:28:43+09:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>31</span><span class='date-suffix'>st</span>, <span class='date-year'>2015</span></span> <span class='time'>3:28 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/gazebo/'>gazebo</a>, <a class='category' href='/blog/categories/install/'>install</a>, <a class='category' href='/blog/categories/ubuntu/'>ubuntu</a>
+  
+</span>
+
+
+    </p>
     
-      <h1 class="entry-title"><a href="/blog/2015/01/31/test-post/">Test Post</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-01-31T01:22:10+09:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>31</span><span class='date-suffix'>st</span>, <span class='date-year'>2015</span></span> <span class='time'>1:22 am</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h1>テスト投稿です</h1>
-
-<p>うまく投稿できるかな？？</p>
-
-<h1>テストPush</h1>
-
-<p>うまく投稿できてましたよ。</p>
-
-<h1>テスト</h1>
-
-<p>さらなるテスト</p>
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://cir-kit.github.io/blog/2015/01/31/gazebo-install/" data-via="" data-counturl="http://cir-kit.github.io/blog/2015/01/31/gazebo-install/" >Tweet</a>
+  
+  
+  
 </div>
-  
-  
 
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2015/01/31/test-post/" title="Previous Post: Test post">&laquo; Test post</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2015/01/31/gazebo-quickstart/" title="Next Post: GAZEBOを使ってみよう ! (Quick Start 編)">GAZEBOを使ってみよう ! (Quick Start 編) &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
 
-    </article>
-  
-  <div class="pagination">
-    
-    <a href="/blog/archives">Blog Archives</a>
-    
-  </div>
 </div>
+
 <aside class="sidebar">
   
     <section>
@@ -490,6 +325,7 @@
 
   
 </aside>
+
 
     </div>
   </div>
