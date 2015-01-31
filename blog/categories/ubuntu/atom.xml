@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Ubuntu | 九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/blog/categories/ubuntu/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-02-01T01:21:40+09:00</updated>
+  <updated>2015-02-01T01:24:34+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -12,6 +12,303 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[ロボットを作ってみよう ! (ロボットにグリッパを取り付ける 編)]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/02/01/gazebo-attach-gripper-to-robot/"/>
+    <updated>2015-02-01T01:24:00+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/02/01/gazebo-attach-gripper-to-robot</id>
+    <content type="html"><![CDATA[<p><img src="/images/gazebo_logo.png" alt="gazebo_logo" /></p>
+
+<h5>検証日時</h5>
+
+<p>01/30/2015 (Fri)</p>
+
+<h5>概要</h5>
+
+<p>Gazeboのチュートリアル第二弾「Build a Robot」。<br/>
+このチュートリアルではロボットを作ったり、修正したりします。また、センサ、アクチュエータを搭載した車輪型ロボットを作り、モデルを描画するなどの実践例も行います。<br/>
+今回はその「Attach Gripper to Robot」編です。<br/>
+公式サイトを適当に翻訳しただけですので、あしからず。</p>
+
+<h5>レベル</h5>
+
+<p><strong>BEGINNER</strong></p>
+
+<!-- more -->
+
+
+<h5>環境</h5>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> <strong>PC</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Prosessor</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>RAM</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>OS</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Kernel</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> 3.13.0-44-generic </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Gazebo</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Version 5.0.1 </td>
+</tr>
+</tbody>
+</table>
+
+
+<h5>参考</h5>
+
+<p><a href="http://gazebosim.org/tutorials?cat=build_robot">GAZEBO Tutorial-Build a Robot</a></p>
+
+<h2>はじめに</h2>
+
+<h4>始める前に参照してください（してない人は）</h4>
+
+<ul>
+<li><p><a href="http://cir-kit.github.io/2015/01/31/gazebo-make-a-mobile-robot/">移動ロボットを作る</a></p></li>
+<li><p><a href="http://cir-kit.github.io/2015/01/31/gazebo-make-a-simple-gripper">簡単なグリッパを作る</a></p></li>
+</ul>
+
+
+<p>このチュートリアルでは、すでに存在するロボットの部品を組み立てて、新しいロボットを作るにはどうするかについて説明します。例えば、移動ロボットに簡単な腕とグリッパを取り付けると言った具合です。</p>
+
+<h2>ロボットの組み立て</h2>
+
+<p>Gazeboを立ち上げてください。その際に、以前のチュートリアルで製作したロボットを読み込むことができるか確認してください。</p>
+
+<h3>移動台車ベース</h3>
+
+<ol>
+<li><p>以前<a href="http://cir-kit.github.io/2015/01/31/gazebo-make-a-mobile-robot/">移動ロボットを作る</a>で以下のような移動ロボット（台車）を作成したはずです。
+<img src="/images/2015/02/01/gazebo-attach-gripper-to-robot/Mobile_base.png" alt="Mobile_base" /></p></li>
+<li><p>このチュートリアルでは<code>~/.gazebo/models/my_robot/model.sdf</code>を修正し、モデルをより大きくすることでグリッパを搭載します。故に、以下のようにして、<code>model.sdf</code>を修正してゆきましょう。:
+<code>bash
+gedit ~/.gazebo/models/my_robot/model.sdf
+</code>
+以下のようにして、モデルを大きくし、タイヤの位置を設定し直します。
+<code>xml
+&lt;?xml version='1.0'?&gt;
+&lt;sdf version='1.4'&gt;
+&lt;model name="mobile_base"&gt;
+ &lt;link name='chassis'&gt;
+   &lt;pose&gt;0 0 .25 0 0 0&lt;/pose&gt;
+   &lt;inertial&gt;
+     &lt;mass&gt;20.0&lt;/mass&gt;
+     &lt;pose&gt;-0.1 0 -0.1 0 0 0&lt;/pose&gt;
+     &lt;inertia&gt;
+       &lt;ixx&gt;0.5&lt;/ixx&gt;
+       &lt;iyy&gt;1.0&lt;/iyy&gt;
+       &lt;izz&gt;0.1&lt;/izz&gt;
+     &lt;/inertia&gt;
+   &lt;/inertial&gt;
+   &lt;collision name='collision'&gt;
+     &lt;geometry&gt;
+       &lt;box&gt;
+         &lt;size&gt;2 1 0.3&lt;/size&gt;
+       &lt;/box&gt;
+     &lt;/geometry&gt;
+   &lt;/collision&gt;
+   &lt;visual name='visual'&gt;
+     &lt;geometry&gt;
+       &lt;box&gt;
+         &lt;size&gt;2 1 0.3&lt;/size&gt;
+       &lt;/box&gt;
+     &lt;/geometry&gt;
+   &lt;/visual&gt;
+   &lt;collision name='caster_collision'&gt;
+     &lt;pose&gt;-0.8 0 -0.125 0 0 0&lt;/pose&gt;
+     &lt;geometry&gt;
+       &lt;sphere&gt;
+         &lt;radius&gt;.125&lt;/radius&gt;
+       &lt;/sphere&gt;
+     &lt;/geometry&gt;
+     &lt;surface&gt;
+       &lt;friction&gt;
+         &lt;ode&gt;
+           &lt;mu&gt;0&lt;/mu&gt;
+           &lt;mu2&gt;0&lt;/mu2&gt;
+         &lt;/ode&gt;
+       &lt;/friction&gt;
+     &lt;/surface&gt;
+   &lt;/collision&gt;
+   &lt;visual name='caster_visual'&gt;
+     &lt;pose&gt;-0.8 0 -0.125 0 0 0&lt;/pose&gt;
+     &lt;geometry&gt;
+       &lt;sphere&gt;
+         &lt;radius&gt;.125&lt;/radius&gt;
+       &lt;/sphere&gt;
+     &lt;/geometry&gt;
+   &lt;/visual&gt;
+ &lt;/link&gt;
+ &lt;link name="left_wheel"&gt;
+   &lt;pose&gt;0.8 0.6 0.125 0 1.5707 1.5707&lt;/pose&gt;
+   &lt;collision name="collision"&gt;
+     &lt;geometry&gt;
+       &lt;cylinder&gt;
+         &lt;radius&gt;.125&lt;/radius&gt;
+         &lt;length&gt;.05&lt;/length&gt;
+       &lt;/cylinder&gt;
+     &lt;/geometry&gt;
+   &lt;/collision&gt;
+   &lt;visual name="visual"&gt;
+     &lt;geometry&gt;
+       &lt;cylinder&gt;
+         &lt;radius&gt;.125&lt;/radius&gt;
+         &lt;length&gt;.05&lt;/length&gt;
+       &lt;/cylinder&gt;
+     &lt;/geometry&gt;
+   &lt;/visual&gt;
+ &lt;/link&gt;
+ &lt;link name="right_wheel"&gt;
+   &lt;pose&gt;0.8 -0.6 0.125 0 1.5707 1.5707&lt;/pose&gt;
+   &lt;collision name="collision"&gt;
+     &lt;geometry&gt;
+       &lt;cylinder&gt;
+         &lt;radius&gt;.125&lt;/radius&gt;
+         &lt;length&gt;.05&lt;/length&gt;
+       &lt;/cylinder&gt;
+     &lt;/geometry&gt;
+   &lt;/collision&gt;
+   &lt;visual name="visual"&gt;
+     &lt;geometry&gt;
+       &lt;cylinder&gt;
+         &lt;radius&gt;.125&lt;/radius&gt;
+         &lt;length&gt;.05&lt;/length&gt;
+       &lt;/cylinder&gt;
+     &lt;/geometry&gt;
+   &lt;/visual&gt;
+ &lt;/link&gt;
+ &lt;joint type="revolute" name="left_wheel_hinge"&gt;
+   &lt;pose&gt;0 0 -0.03 0 0 0&lt;/pose&gt;
+   &lt;child&gt;left_wheel&lt;/child&gt;
+   &lt;parent&gt;chassis&lt;/parent&gt;
+   &lt;axis&gt;
+     &lt;xyz&gt;0 1 0&lt;/xyz&gt;
+   &lt;/axis&gt;
+ &lt;/joint&gt;
+ &lt;joint type="revolute" name="right_wheel_hinge"&gt;
+   &lt;pose&gt;0 0 0.03 0 0 0&lt;/pose&gt;
+   &lt;child&gt;right_wheel&lt;/child&gt;
+   &lt;parent&gt;chassis&lt;/parent&gt;
+   &lt;axis&gt;
+     &lt;xyz&gt;0 1 0&lt;/xyz&gt;
+   &lt;/axis&gt;
+ &lt;/joint&gt;
+&lt;/model&gt;
+&lt;/sdf&gt;
+</code>
+すると以下の様になっているはずです。
+<a href="/images/2015/02/01/gazebo-attach-gripper-to-robot/Mobile_base_large.png">Mobile_base_large</a></p></li>
+</ol>
+
+
+<h2>ロボットを組み立てる</h2>
+
+<ol>
+<li><p>簡単なグリッパを取り付けたロボットを作成するために、新しいモデルディレクトリを作成しましょう。
+<code>bash
+ mkdir ~/.gazebo/models/simple_mobile_manipulator
+</code>
+そしてモデルのConfigファイル<code>model.config</code>を編集しましょう。
+<code>bash
+ gedit ~/.gazebo/models/simple_mobile_manipulator/model.config
+</code>
+作成する<code>model.config</code>の内容は以下のようにしましょう。
+<code>xml
+ &lt;?xml version="1.0"?&gt;
+ &lt;model&gt;
+   &lt;name&gt;Simple Mobile Manipulator&lt;/name&gt;
+   &lt;version&gt;1.0&lt;/version&gt;
+   &lt;sdf version='1.4'&gt;manipulator.sdf&lt;/sdf&gt;
+   &lt;author&gt;
+     &lt;name&gt;My Name&lt;/name&gt;
+     &lt;email&gt;me@my.email&lt;/email&gt;
+   &lt;/author&gt;
+   &lt;description&gt;
+     My simple mobile manipulator
+   &lt;/description&gt;
+ &lt;/model&gt;
+</code></p></li>
+<li><p>続いて、モデルのSDFファイル<code>manipulator.sdf</code>を作成しましょう。:
+<code>bash
+gedit ~/.gazebo/models/simple_mobile_manipulator/manipulator.sdf
+</code>
+作成する<code>manipulator.sdf</code>の内容は以下のようにしましょう。
+<code>xml
+&lt;?xml version="1.0" ?&gt;
+&lt;sdf version="1.3"&gt;
+&lt;model name="simple_mobile_manipulator"&gt;
+ &lt;include&gt;
+   &lt;uri&gt;model://my_gripper&lt;/uri&gt;
+   &lt;pose&gt;1.3 0 0.1 0 0 0&lt;/pose&gt;
+ &lt;/include&gt;
+ &lt;include&gt;
+   &lt;uri&gt;model://my_robot&lt;/uri&gt;
+   &lt;pose&gt;0 0 0 0 0 0&lt;/pose&gt;
+ &lt;/include&gt;
+ &lt;joint name="arm_gripper_joint" type="revolute"&gt;
+   &lt;parent&gt;mobile_base::chassis&lt;/parent&gt;
+   &lt;child&gt;simple_gripper::riser&lt;/child&gt;
+   &lt;axis&gt;
+     &lt;limit&gt;
+       &lt;lower&gt;0&lt;/lower&gt;
+       &lt;upper&gt;0&lt;/upper&gt;
+     &lt;/limit&gt;
+     &lt;xyz&gt;0 0 1&lt;/xyz&gt;
+   &lt;/axis&gt;
+ &lt;/joint&gt;
+ &lt;!-- attach sensor to the gripper --&gt;
+ &lt;include&gt;
+   &lt;uri&gt;model://hokuyo&lt;/uri&gt;
+   &lt;pose&gt;1.3 0 0.3 0 0 0&lt;/pose&gt;
+ &lt;/include&gt;
+ &lt;joint name="hokuyo_joint" type="revolute"&gt;
+   &lt;child&gt;hokuyo::link&lt;/child&gt;
+   &lt;parent&gt;simple_gripper::palm&lt;/parent&gt;
+   &lt;axis&gt;
+     &lt;xyz&gt;0 0 1&lt;/xyz&gt;
+     &lt;limit&gt;
+       &lt;upper&gt;0&lt;/upper&gt;
+       &lt;lower&gt;0&lt;/lower&gt;
+     &lt;/limit&gt;
+   &lt;/axis&gt;
+ &lt;/joint&gt;
+&lt;/model&gt;
+&lt;/sdf&gt;
+</code></p></li>
+<li><p>編集した<code>model.config</code>と<code>manipulator.sdf</code>をセーブしたら、Gazeboを立ち上げ、<strong>Insert</strong>タブより<strong>Simple Mobile Manipulator</strong>モデルを選択して、作成したモデルをシミュレータに表示してください。すると、以下のようになっているはずです。
+<img src="/images/2015-02-01-gazebo-attach-gripper-to-robot/Simple_mobile_manipulator.png" alt="Simple_mobile_manipulator" /></p></li>
+</ol>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[ロボットを作ってみよう ! (簡単なグリッパーを作る 編)]]></title>
@@ -437,303 +734,6 @@ gazebo ~/simple_gripper_tutorial/gripper.world
 
 
 <h4>Next >> <a href="http://cir-kit.github.io/blog/2015/02/01/gazebo-attach-gripper-to-robot/:">グリッパをロボットに取り付ける</a></h4>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[ロボットを作ってみよう ! (ロボットにグリッパを取り付ける 編)]]></title>
-    <link href="http://cir-kit.github.io/blog/2015/01/31/gazebo-attach-gripper-to-robot/"/>
-    <updated>2015-01-31T22:35:00+09:00</updated>
-    <id>http://cir-kit.github.io/blog/2015/01/31/gazebo-attach-gripper-to-robot</id>
-    <content type="html"><![CDATA[<p><img src="/images/gazebo_logo.png" alt="gazebo_logo" /></p>
-
-<h5>検証日時</h5>
-
-<p>01/30/2015 (Fri)</p>
-
-<h5>概要</h5>
-
-<p>Gazeboのチュートリアル第二弾「Build a Robot」。<br/>
-このチュートリアルではロボットを作ったり、修正したりします。また、センサ、アクチュエータを搭載した車輪型ロボットを作り、モデルを描画するなどの実践例も行います。<br/>
-今回はその「Attach Gripper to Robot」編です。<br/>
-公式サイトを適当に翻訳しただけですので、あしからず。</p>
-
-<h5>レベル</h5>
-
-<p><strong>BEGINNER</strong></p>
-
-<!-- more -->
-
-
-<h5>環境</h5>
-
-<table>
-<thead>
-<tr>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center;"> <strong>PC</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Prosessor</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>RAM</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>OS</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Kernel</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> 3.13.0-44-generic </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Gazebo</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Version 5.0.1 </td>
-</tr>
-</tbody>
-</table>
-
-
-<h5>参考</h5>
-
-<p><a href="http://gazebosim.org/tutorials?cat=build_robot">GAZEBO Tutorial-Build a Robot</a></p>
-
-<h2>はじめに</h2>
-
-<h4>始める前に参照してください（してない人は）</h4>
-
-<ul>
-<li><p><a href="http://cir-kit.github.io/2015/01/31/gazebo-make-a-mobile-robot/">移動ロボットを作る</a></p></li>
-<li><p><a href="http://cir-kit.github.io/2015/01/31/gazebo-make-a-simple-gripper">簡単なグリッパを作る</a></p></li>
-</ul>
-
-
-<p>このチュートリアルでは、すでに存在するロボットの部品を組み立てて、新しいロボットを作るにはどうするかについて説明します。例えば、移動ロボットに簡単な腕とグリッパを取り付けると言った具合です。</p>
-
-<h2>ロボットの組み立て</h2>
-
-<p>Gazeboを立ち上げてください。その際に、以前のチュートリアルで製作したロボットを読み込むことができるか確認してください。</p>
-
-<h3>移動台車ベース</h3>
-
-<ol>
-<li><p>以前<a href="http://cir-kit.github.io/2015/01/31/gazebo-make-a-mobile-robot/">移動ロボットを作る</a>で以下のような移動ロボット（台車）を作成したはずです。
-<img src="/images/2015/02/01/gazebo-attach-gripper-to-robot/Mobile_base.png" alt="Mobile_base" /></p></li>
-<li><p>このチュートリアルでは<code>~/.gazebo/models/my_robot/model.sdf</code>を修正し、モデルをより大きくすることでグリッパを搭載します。故に、以下のようにして、<code>model.sdf</code>を修正してゆきましょう。:
-<code>bash
-gedit ~/.gazebo/models/my_robot/model.sdf
-</code>
-以下のようにして、モデルを大きくし、タイヤの位置を設定し直します。
-<code>xml
-&lt;?xml version='1.0'?&gt;
-&lt;sdf version='1.4'&gt;
-&lt;model name="mobile_base"&gt;
- &lt;link name='chassis'&gt;
-   &lt;pose&gt;0 0 .25 0 0 0&lt;/pose&gt;
-   &lt;inertial&gt;
-     &lt;mass&gt;20.0&lt;/mass&gt;
-     &lt;pose&gt;-0.1 0 -0.1 0 0 0&lt;/pose&gt;
-     &lt;inertia&gt;
-       &lt;ixx&gt;0.5&lt;/ixx&gt;
-       &lt;iyy&gt;1.0&lt;/iyy&gt;
-       &lt;izz&gt;0.1&lt;/izz&gt;
-     &lt;/inertia&gt;
-   &lt;/inertial&gt;
-   &lt;collision name='collision'&gt;
-     &lt;geometry&gt;
-       &lt;box&gt;
-         &lt;size&gt;2 1 0.3&lt;/size&gt;
-       &lt;/box&gt;
-     &lt;/geometry&gt;
-   &lt;/collision&gt;
-   &lt;visual name='visual'&gt;
-     &lt;geometry&gt;
-       &lt;box&gt;
-         &lt;size&gt;2 1 0.3&lt;/size&gt;
-       &lt;/box&gt;
-     &lt;/geometry&gt;
-   &lt;/visual&gt;
-   &lt;collision name='caster_collision'&gt;
-     &lt;pose&gt;-0.8 0 -0.125 0 0 0&lt;/pose&gt;
-     &lt;geometry&gt;
-       &lt;sphere&gt;
-         &lt;radius&gt;.125&lt;/radius&gt;
-       &lt;/sphere&gt;
-     &lt;/geometry&gt;
-     &lt;surface&gt;
-       &lt;friction&gt;
-         &lt;ode&gt;
-           &lt;mu&gt;0&lt;/mu&gt;
-           &lt;mu2&gt;0&lt;/mu2&gt;
-         &lt;/ode&gt;
-       &lt;/friction&gt;
-     &lt;/surface&gt;
-   &lt;/collision&gt;
-   &lt;visual name='caster_visual'&gt;
-     &lt;pose&gt;-0.8 0 -0.125 0 0 0&lt;/pose&gt;
-     &lt;geometry&gt;
-       &lt;sphere&gt;
-         &lt;radius&gt;.125&lt;/radius&gt;
-       &lt;/sphere&gt;
-     &lt;/geometry&gt;
-   &lt;/visual&gt;
- &lt;/link&gt;
- &lt;link name="left_wheel"&gt;
-   &lt;pose&gt;0.8 0.6 0.125 0 1.5707 1.5707&lt;/pose&gt;
-   &lt;collision name="collision"&gt;
-     &lt;geometry&gt;
-       &lt;cylinder&gt;
-         &lt;radius&gt;.125&lt;/radius&gt;
-         &lt;length&gt;.05&lt;/length&gt;
-       &lt;/cylinder&gt;
-     &lt;/geometry&gt;
-   &lt;/collision&gt;
-   &lt;visual name="visual"&gt;
-     &lt;geometry&gt;
-       &lt;cylinder&gt;
-         &lt;radius&gt;.125&lt;/radius&gt;
-         &lt;length&gt;.05&lt;/length&gt;
-       &lt;/cylinder&gt;
-     &lt;/geometry&gt;
-   &lt;/visual&gt;
- &lt;/link&gt;
- &lt;link name="right_wheel"&gt;
-   &lt;pose&gt;0.8 -0.6 0.125 0 1.5707 1.5707&lt;/pose&gt;
-   &lt;collision name="collision"&gt;
-     &lt;geometry&gt;
-       &lt;cylinder&gt;
-         &lt;radius&gt;.125&lt;/radius&gt;
-         &lt;length&gt;.05&lt;/length&gt;
-       &lt;/cylinder&gt;
-     &lt;/geometry&gt;
-   &lt;/collision&gt;
-   &lt;visual name="visual"&gt;
-     &lt;geometry&gt;
-       &lt;cylinder&gt;
-         &lt;radius&gt;.125&lt;/radius&gt;
-         &lt;length&gt;.05&lt;/length&gt;
-       &lt;/cylinder&gt;
-     &lt;/geometry&gt;
-   &lt;/visual&gt;
- &lt;/link&gt;
- &lt;joint type="revolute" name="left_wheel_hinge"&gt;
-   &lt;pose&gt;0 0 -0.03 0 0 0&lt;/pose&gt;
-   &lt;child&gt;left_wheel&lt;/child&gt;
-   &lt;parent&gt;chassis&lt;/parent&gt;
-   &lt;axis&gt;
-     &lt;xyz&gt;0 1 0&lt;/xyz&gt;
-   &lt;/axis&gt;
- &lt;/joint&gt;
- &lt;joint type="revolute" name="right_wheel_hinge"&gt;
-   &lt;pose&gt;0 0 0.03 0 0 0&lt;/pose&gt;
-   &lt;child&gt;right_wheel&lt;/child&gt;
-   &lt;parent&gt;chassis&lt;/parent&gt;
-   &lt;axis&gt;
-     &lt;xyz&gt;0 1 0&lt;/xyz&gt;
-   &lt;/axis&gt;
- &lt;/joint&gt;
-&lt;/model&gt;
-&lt;/sdf&gt;
-</code>
-すると以下の様になっているはずです。
-<a href="/images/2015/02/01/gazebo-attach-gripper-to-robot/Mobile_base_large.png">Mobile_base_large</a></p></li>
-</ol>
-
-
-<h2>ロボットを組み立てる</h2>
-
-<ol>
-<li><p>簡単なグリッパを取り付けたロボットを作成するために、新しいモデルディレクトリを作成しましょう。
-<code>bash
- mkdir ~/.gazebo/models/simple_mobile_manipulator
-</code>
-そしてモデルのConfigファイル<code>model.config</code>を編集しましょう。
-<code>bash
- gedit ~/.gazebo/models/simple_mobile_manipulator/model.config
-</code>
-作成する<code>model.config</code>の内容は以下のようにしましょう。
-<code>xml
- &lt;?xml version="1.0"?&gt;
- &lt;model&gt;
-   &lt;name&gt;Simple Mobile Manipulator&lt;/name&gt;
-   &lt;version&gt;1.0&lt;/version&gt;
-   &lt;sdf version='1.4'&gt;manipulator.sdf&lt;/sdf&gt;
-   &lt;author&gt;
-     &lt;name&gt;My Name&lt;/name&gt;
-     &lt;email&gt;me@my.email&lt;/email&gt;
-   &lt;/author&gt;
-   &lt;description&gt;
-     My simple mobile manipulator
-   &lt;/description&gt;
- &lt;/model&gt;
-</code></p></li>
-<li><p>続いて、モデルのSDFファイル<code>manipulator.sdf</code>を作成しましょう。:
-<code>bash
-gedit ~/.gazebo/models/simple_mobile_manipulator/manipulator.sdf
-</code>
-作成する<code>manipulator.sdf</code>の内容は以下のようにしましょう。
-<code>xml
-&lt;?xml version="1.0" ?&gt;
-&lt;sdf version="1.3"&gt;
-&lt;model name="simple_mobile_manipulator"&gt;
- &lt;include&gt;
-   &lt;uri&gt;model://my_gripper&lt;/uri&gt;
-   &lt;pose&gt;1.3 0 0.1 0 0 0&lt;/pose&gt;
- &lt;/include&gt;
- &lt;include&gt;
-   &lt;uri&gt;model://my_robot&lt;/uri&gt;
-   &lt;pose&gt;0 0 0 0 0 0&lt;/pose&gt;
- &lt;/include&gt;
- &lt;joint name="arm_gripper_joint" type="revolute"&gt;
-   &lt;parent&gt;mobile_base::chassis&lt;/parent&gt;
-   &lt;child&gt;simple_gripper::riser&lt;/child&gt;
-   &lt;axis&gt;
-     &lt;limit&gt;
-       &lt;lower&gt;0&lt;/lower&gt;
-       &lt;upper&gt;0&lt;/upper&gt;
-     &lt;/limit&gt;
-     &lt;xyz&gt;0 0 1&lt;/xyz&gt;
-   &lt;/axis&gt;
- &lt;/joint&gt;
- &lt;!-- attach sensor to the gripper --&gt;
- &lt;include&gt;
-   &lt;uri&gt;model://hokuyo&lt;/uri&gt;
-   &lt;pose&gt;1.3 0 0.3 0 0 0&lt;/pose&gt;
- &lt;/include&gt;
- &lt;joint name="hokuyo_joint" type="revolute"&gt;
-   &lt;child&gt;hokuyo::link&lt;/child&gt;
-   &lt;parent&gt;simple_gripper::palm&lt;/parent&gt;
-   &lt;axis&gt;
-     &lt;xyz&gt;0 0 1&lt;/xyz&gt;
-     &lt;limit&gt;
-       &lt;upper&gt;0&lt;/upper&gt;
-       &lt;lower&gt;0&lt;/lower&gt;
-     &lt;/limit&gt;
-   &lt;/axis&gt;
- &lt;/joint&gt;
-&lt;/model&gt;
-&lt;/sdf&gt;
-</code></p></li>
-<li><p>編集した<code>model.config</code>と<code>manipulator.sdf</code>をセーブしたら、Gazeboを立ち上げ、<strong>Insert</strong>タブより<strong>Simple Mobile Manipulator</strong>モデルを選択して、作成したモデルをシミュレータに表示してください。すると、以下のようになっているはずです。
-<img src="/images/2015-02-01-gazebo-attach-gripper-to-robot/Simple_mobile_manipulator.png" alt="Simple_mobile_manipulator" /></p></li>
-</ol>
-
 ]]></content>
   </entry>
   
