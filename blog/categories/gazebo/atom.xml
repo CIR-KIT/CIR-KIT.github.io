@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Gazebo | 九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/blog/categories/gazebo/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-01-31T18:42:08+09:00</updated>
+  <updated>2015-01-31T18:47:37+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -12,6 +12,90 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[GAZEBOを使ってみよう ! (キャプチャ スクリーンショット編)]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/01/31/capture-screenshot/"/>
+    <updated>2015-01-31T18:39:31+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/01/31/capture-screenshot</id>
+    <content type="html"><![CDATA[<p><img src="/images/gazebo_logo.png" alt="gazebo_logo" /></p>
+
+<h5>検証日時</h5>
+
+<p>01/25/2015 (Sun)</p>
+
+<h5>概要</h5>
+
+<p>Gazeboのチュートリアル第一弾「Get Started」。その「Capture Screeenshots」編です。
+公式サイトを適当に翻訳しただけですので、あしからず。</p>
+
+<h5>レベル</h5>
+
+<p><strong>BEGINNER</strong></p>
+
+<!-- more -->
+
+
+<h5>環境</h5>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> <strong>PC</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Prosessor</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>RAM</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>OS</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Kernel</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> 3.13.0-44-generic </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Gazebo</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Version 5.0.1 </td>
+</tr>
+</tbody>
+</table>
+
+
+<h5>参考</h5>
+
+<p><a href="http://gazebosim.org/tutorials?cat=get_started">GAZEBO Tutorial-GetStarted</a></p>
+
+<h2>スクリーンショットのキャプチャ</h2>
+
+<p>スクリーンショット機能はgzclientのGUIに追加されています。　　
+スクリーンショットを撮るには描画ウィンドウのツールバーにあるカメラアイコンを見つけ、クリックしてください。（下図参照）
+<img src="/images/Get_Started/gazebo_screen_shots.png" alt="screen_shots" /></p>
+
+<h2>スクリーンショットの保存アイコン</h2>
+
+<p>キャプチャされたイメージはタイムスタンプを付加したファイル名で<code>~/.gazebo/pictures</code>に保存されます。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[GAZEBOを使ってみよう ! (Gazebo 構造編)]]></title>
