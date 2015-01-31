@@ -4,7 +4,7 @@
   <title><![CDATA[九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-01-31T18:12:24+09:00</updated>
+  <updated>2015-01-31T18:17:19+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[Member]]></name>
@@ -18,7 +18,7 @@
     <link href="http://cir-kit.github.io/blog/2015/01/31/gazebo-components/"/>
     <updated>2015-01-31T18:01:34+09:00</updated>
     <id>http://cir-kit.github.io/blog/2015/01/31/gazebo-components</id>
-    <content type="html"><![CDATA[<p><img src="../images/gazebo_logo.png" alt="gazebo_logo" /></p>
+    <content type="html"><![CDATA[<p><img src="http://cir-kit.github.io/images/gazebo_logo.png" alt="gazebo_logo" /></p>
 
 <h5>検証日時</h5>
 
@@ -195,7 +195,7 @@ Gazeboによって提供されるworldデータは<code>/share/gazebo-*/worlds</
     <link href="http://cir-kit.github.io/blog/2015/01/31/gazebo-quickstart/"/>
     <updated>2015-01-31T17:12:33+09:00</updated>
     <id>http://cir-kit.github.io/blog/2015/01/31/gazebo-quickstart</id>
-    <content type="html"><![CDATA[<p><img src="../images/gazebo_logo.png" alt="gazebo_logo" /></p>
+    <content type="html"><![CDATA[<p><img src="http://cir-kit.github.io/images/gazebo_logo.png" alt="gazebo_logo" /></p>
 
 <h5>検証日時</h5>
 
@@ -337,7 +337,7 @@ Gazeboによって提供されるworldデータは<code>/share/gazebo-*/worlds</
     <link href="http://cir-kit.github.io/blog/2015/01/31/gazebo-install/"/>
     <updated>2015-01-31T15:28:43+09:00</updated>
     <id>http://cir-kit.github.io/blog/2015/01/31/gazebo-install</id>
-    <content type="html"><![CDATA[<p><img src="../images/gazebo_logo.png" alt="gazebo_logo" /></p>
+    <content type="html"><![CDATA[<p><img src="http://cir-kit.github.io/images/gazebo_logo.png" alt="gazebo_logo" /></p>
 
 <h5>検証日時</h5>
 
@@ -422,7 +422,7 @@ Gazeboによって提供されるworldデータは<code>/share/gazebo-*/worlds</
 <p>という感じで、もはや使わない手はないロボットシミュレータです。<br/>
 下図みたいな感じで使えるのでとってもGoodですね !</p>
 
-<p><img src="../images/Install/gazebo_example.jpg" alt="gazebo_example" /></p>
+<p><img src="http://cir-kit.github.io/images/Install/gazebo_example.jpg" alt="gazebo_example" /></p>
 
 <h2>GAZEBOのインストール</h2>
 
