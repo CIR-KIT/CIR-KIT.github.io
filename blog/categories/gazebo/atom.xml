@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Gazebo | 九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/blog/categories/gazebo/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-01-31T20:54:22+09:00</updated>
+  <updated>2015-01-31T21:55:34+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -251,61 +251,67 @@
 
 
 <ol>
-<li><p>Gazeboで、<code>My_Robot</code>モデルをドラッグしましょう。すると、さっきまでの台車が下図のように<code>pioneer2sx</code>の様な見た目になります。
-<img src="http://cir-kit.github.io/images/Make_a_Robot/Mobile_robot_chassis_1.png" alt="Mobile_robot_chassis_1" /></p></li>
-<li><p>台車は、私達のロボットにほ明らかに大きすぎるので、見た目の大きさを作りなおす必要があります。</p></li>
-<li><p>見た目の大きさを変更する必要があります。以下のように<code>model.sdf</code>を編集しましょう。
-<strong>コピーはしないでください。手書きで追加していくことが、今回のチュートリアルです。</strong>
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;visual</span> <span class="na">name=</span><span class="s">&#39;visual&#39;</span><span class="nt">&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;mesh&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;uri&gt;</span>model://pioneer2dx/meshes/chassis.dae<span class="nt">&lt;/uri&gt;&lt;/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="nt">&lt;pre&gt;&lt;code&gt;</span>      <span class="ni">&amp;lt;</span>scale<span class="ni">&amp;gt;</span>0.9 0.5 0.5<span class="ni">&amp;lt;</span>/scale<span class="ni">&amp;gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="ni">&amp;lt;</span>/mesh<span class="ni">&amp;gt;</span>
-</span><span class='line'>  <span class="ni">&amp;lt;</span>/geometry<span class="ni">&amp;gt;</span>
-</span><span class='line'><span class="ni">&amp;lt;</span>/visual<span class="ni">&amp;gt;</span>
-</span><span class='line'><span class="nt">&lt;/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="nt">&lt;p&gt;</span>```
-</span><span class='line'>すると、以下の様になります。
-</span><span class='line'><span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">&quot;http://cir-kit.github.io/images/Make_a_Robot/Mobile_robot_chassis_2.png&quot;</span> <span class="na">alt=</span><span class="s">&quot;Mobile_robot_chassis_2&quot;</span> <span class="nt">/&gt;&lt;/p&gt;&lt;/li&gt;</span>
-</span><span class='line'><span class="nt">&lt;li&gt;&lt;p&gt;</span>今度は、小さくなりすぎました。(z軸方向に)見た目を改善するために、少し上に上げてるよう、以下のようにして<span class="nt">&lt;code&gt;</span>pose<span class="nt">&lt;/code&gt;</span>を変更しましょう。<span class="nt">&lt;br/&gt;</span>
-</span><span class='line'><span class="nt">&lt;strong&gt;</span>コピーはしないでください。手書きで追加していくことが、今回のチュートリアルです。<span class="nt">&lt;/strong&gt;</span>
-</span></code></pre></td></tr></table></div></figure>xml
-<visual name='visual'></p>
-
-<p>  <pose>0 0 0.05 0 0 0</pose></p>
-
-<p>  <geometry>
-    <mesh>
-      <uri>model://pioneer2dx/meshes/chassis.dae</uri>
-      <scale>0.9 0.5 0.5</scale>
-    </mesh>
-  </geometry>
-</visual>
-&#8220;`
-すると、以下のようになります。
-<img src="http://cir-kit.github.io/images/Make_a_Robot/Mobile_robot_chassis_3.png" alt="Mobile_robot_chassis_3" /></p></li>
+<li>Gazeboで、<code>My_Robot</code>モデルをドラッグしましょう。すると、さっきまでの台車が下図のように<code>pioneer2sx</code>の様な見た目になります。</li>
 </ol>
+
+
+
+
+<p><img src="http://cir-kit.github.io/images/Make_a_Robot/Mobile_robot_chassis_1.png" alt="Mobile_robot_chassis_1" /></p>
+
+
+
+
+<ul>
+<li><p>台車は、私達のロボットにほ明らかに大きすぎるので、見た目の大きさを作りなおす必要があります。</p></li>
+<li><p>見た目の大きさを変更する必要があります。以下のように<code>model.sdf</code>を編集しましょう。</p></li>
+</ul>
+
+
+
+
+<p>  <strong>コピーはしないでください。手書きで追加していくことが、今回のチュートリアルです。</strong>
+  <code>xml
+        &lt;visual name='visual'&gt;
+          &lt;geometry&gt;
+            &lt;mesh&gt;
+              &lt;uri&gt;model://pioneer2dx/meshes/chassis.dae&lt;/uri&gt;
+              &lt;scale&gt;0.9 0.5 0.5&lt;/scale&gt;
+            &lt;/mesh&gt;
+          &lt;/geometry&gt;
+        &lt;/visual&gt;
+ </code>
+  すると、以下の様になります。</p>
+
+
+
+
+<p><img src="http://cir-kit.github.io/images/Make_a_Robot/Mobile_robot_chassis_2.png" alt="Mobile_robot_chassis_2" /></p>
+
+
+
+
+<ul>
+<li>今度は、小さくなりすぎました。(z軸方向に)見た目を改善するために、少し上に上げてるよう、以下のようにして<code>pose</code>を変更しましょう。<br/>
+<strong>コピーはしないでください。手書きで追加していくことが、今回のチュートリアルです。</strong>
+<code>xml
+&lt;visual name='visual'&gt;
+  &lt;pose&gt;0 0 0.05 0 0 0&lt;/pose&gt;
+  &lt;geometry&gt;
+    &lt;mesh&gt;
+      &lt;uri&gt;model://pioneer2dx/meshes/chassis.dae&lt;/uri&gt;
+      &lt;scale&gt;0.9 0.5 0.5&lt;/scale&gt;
+    &lt;/mesh&gt;
+  &lt;/geometry&gt;
+&lt;/visual&gt;
+</code>
+すると、以下のようになります。</li>
+</ul>
+
+
+
+
+<p>  <img src="http://cir-kit.github.io/images/Make_a_Robot/Mobile_robot_chassis_3.png" alt="Mobile_robot_chassis_3" /></p>
 
 
 
@@ -320,7 +326,7 @@
 
 
 
-<p>新しいロボットを作るとき、自分のオリジナルのメッシュを追加痛くなるでしょう。<a href="http://gazebosim.org/tutorials/?tut=import_mesh">メッシュをインポートする</a>というチュートリアルでは、Gazeboに最適なフォーマットでメッシュをインポートする方法について取り上げています。</p>
+<p>新しいロボットを作るとき、自分のオリジナルのメッシュを追加痛くなるでしょう。<a href="http://cir-kit.github.io/blog/2015/01/31/gazebo-import-meshes/">メッシュをインポートする</a>というチュートリアルでは、Gazeboに最適なフォーマットでメッシュをインポートする方法について取り上げています。</p>
 
 
 
@@ -331,8 +337,8 @@
 
 
 <ol>
-<li><a href="http://sketchup.google.com/3dwarehouse/">3D Warehouse</a>からメッシュをダウンロードしてください。ただし、メッシュデータは<strong>Collada(.dae)</strong>フォーマットにすることに注意してください。</li>
-<li>メッシュを<code>~/.gazebo/models/my_robot/meshes</code>に配置してください。もし<code>mesh</code>ディレクトリが存在しないなら、作成して、その下にメッシュを配置してください。</li>
+<li><p><a href="http://sketchup.google.com/3dwarehouse/">3D Warehouse</a>からメッシュをダウンロードしてください。ただし、メッシュデータは<strong>Collada(.dae)</strong>フォーマットにすることに注意してください。</p></li>
+<li><p>メッシュを<code>~/.gazebo/models/my_robot/meshes</code>に配置してください。もし<code>mesh</code>ディレクトリが存在しないなら、作成して、その下にメッシュを配置してください。</p></li>
 <li><p>台車を置き換えるか、追加するなどして、ロボットにメッシュを使ってみてください。</p></li>
 <li><p><strong>注意 : </strong>マテリアル（.pngや.jpgの様な拡張子を持つテクスチャファイル）は<code>~/.gazebo/models/my_robot/materials/textures</code>に配置する必要があります。</p></li>
 </ol>
