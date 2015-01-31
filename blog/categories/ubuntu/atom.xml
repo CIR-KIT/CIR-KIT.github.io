@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Ubuntu | 九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/blog/categories/ubuntu/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-01-31T19:16:25+09:00</updated>
+  <updated>2015-01-31T19:26:10+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -12,6 +12,188 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[ロボットを作ってみよう ! (モデルをつくる 編)]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/01/31/gazebo-make-a-model/"/>
+    <updated>2015-01-31T19:22:14+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/01/31/gazebo-make-a-model</id>
+    <content type="html"><![CDATA[<p><img src="/images/gazebo_logo.png" alt="gazebo_logo" /></p>
+
+<h5>検証日時</h5>
+
+<p>01/25/2015 (Sun)</p>
+
+<h5>概要</h5>
+
+<p>Gazeboのチュートリアル第二弾「Build a Robot」。<br/>
+このチュートリアルではロボットを作ったり、修正したりします。また、センサ、アクチュエータを搭載した車輪型ロボットを作り、モデルを描画するなどの実践例も行います。<br/>
+今回はその「Make a model」編です。<br/>
+公式サイトを適当に翻訳しただけですので、あしからず。</p>
+
+<h5>レベル</h5>
+
+<p><strong>BEGINNER</strong></p>
+
+<!-- more -->
+
+
+<h5>環境</h5>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> <strong>PC</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Prosessor</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>RAM</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>OS</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Kernel</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> 3.13.0-44-generic </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Gazebo</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Version 5.0.1 </td>
+</tr>
+</tbody>
+</table>
+
+
+<h5>参考</h5>
+
+<p><a href="http://gazebosim.org/tutorials?cat=build_robot">GAZEBO Tutorial-Build a Robot</a></p>
+
+<h2>はじめに</h2>
+
+<p>このチュートリアルでは、SDFモデルオブジェクトについて説明します。<br/>
+SDFモデルは複雑なロボットの形状を整理して記述することができます。これには、<code>&lt;model&gt;</code><a href="http://gazebosim.org/sdf.html">SDF</a>タグが必要です。また、リンク、ジョイント、物体の衝突情報、外観、プラグインなどの要素が必要です。必要なモデルのが複雑な依存関係にあるとき、modelファイルを作るのは困難になります。このページでは自身のモデルをどうやってビルドするのかについて、いくつかの方法を説明します。</p>
+
+<h2>SDFモデルの構成</h2>
+
+<ul>
+<li><p><strong>Links : </strong>リンクにはモデル本体の物理的な情報が記述されています。例えば、タイヤ出会ったりジョイントチェーンのリンクであったりします。それぞれのリンクには多くの衝突判定や外観要素が含まれています。パフォーマンスや安定性を向上させるためには、モデルのリンクの数を減らしてみてください。例えば、テーブルのモデルには、5つのリンク(４つは脚で、１つは天板)がジョイントで結合されています。しかし、これはとても複雑です。特にジョイントが決して動かない場合などです。なので、テーブルを1つのリンクと5つの衝突要素で生成します。</p>
+
+<ul>
+<li><p><strong>Collision : </strong>衝突要素は衝突判定に使用される幾何学にカプセル化されています。これは単純な形状（そのほうが好ましい）、もしくは、三角形のメッシュ（こちらの方がよりリソースを必要とします）です。リンクはたくさんの衝突要素が含まれています。</p></li>
+<li><p><strong>Visual : </strong>外観要素はリンクの外観部分に使われます。リンクには０もしくはそれ以上の外観要素が含まれています。</p></li>
+<li><p><strong>Inertial : </strong>慣性要素は質量や回転慣性行列などのリンクの物理的特性を記述します。</p></li>
+<li><p><strong>Sensor : </strong>センサはプラグインの中で使用するための環境データを取得します。リンクには0もしくはそれ以上のセンサが含まれています。</p></li>
+</ul>
+</li>
+<li><p><strong>Joints : </strong>ジョイントは２つのリンクを接続します。回転のやじる地とジョイントの限界のように、親子関係が他の親との間に生成されます。</p></li>
+<li><p><strong>Plugins : </strong>プラグインはモデルを制御するためのサードパーティーによって作られた共有ライブラリです。</p></li>
+</ul>
+
+
+<h2>モデルを作る</h2>
+
+<h3>ステップ 1 : メッシュを集める</h3>
+
+<p>モデルを作成する際に必要な３Dメッシュファイルのすべて集めることを意味します。Gazeboは簡単な形状のセット（：箱、球、円柱）を提供しています。もし、あなたのモデルがもう少し複雑であるなら、このまま読み進めてください。<br/>
+メッシュはいろいろな方法で生成できます。<a href="http://sketchup.google.com/3dwarehouse/">Google&rsquo;s 3D wharehouse</a>は良い３Dモデルのレポジトリです。あるいは、必要なファイルをすでに持っているかもしれない。いずれにせよ、最終的には、<a href="http://blender.org/">Blender</a>や<a href="http://sketchup.google.com/">Sketchup</a>などの3Dモデラーを使って独自のメッシュを作ることができます。<br/>
+GazeboではメッシュファイルはSTLもしくはColladaフォーマットでなければなりません。Colladaフォーマットの方が好ましいです。</p>
+
+<ul>
+<li><p><strong>コツ : </strong>原点が中心となるように、３Dモデリングソフトウェアを使ってメッシュを動かしておきましょう。これを行っておけばGazeboの中で、メッシュを動かすのがとtも簡単になります。</p></li>
+<li><p><strong>コツ : </strong>Colladaファイルフォーマットでは、マテリアルにメッシュを貼り付けることができます。作成したメッシュの外見の体裁を良くするためにこの仕組みを使いましょう。</p></li>
+<li><p><strong>コツ : </strong>メッシュはシンプルにしてください。これは、特に、メッシュを衝突要素として使用する場合に重要です。衝突要素には単純なポリゴンメッシュを使用し、見た目には複雑なポリゴンメッシュを使用するというのが一般的です．すでに提供されている形状（箱、球、円柱）を衝突要素として使用するのも、良い方法です。</p></li>
+</ul>
+
+
+<h3>ステップ 2 : モデルのSDFファイルを作る</h3>
+
+<p>極端に簡単なモデルファイルを作る、もしくはすでにあるモデルファイルをコピーしてくるところから始めてください。機能がすでにわかっているもしくは、デバッグがとても簡単なものからスタートするのが鍵です。<br/>
+とても単純な最小単位のボックスモデルファイルを衝突、幾何形状のユニットボックスとして、更に慣性ボックスユニット、外観ユニットとする。：<br/>
+モデルファイル<code>box.sdf</code> を生成する。
+<code>bash
+gedit box.sdf
+</code>
+以下を<a href="http://bitbucket.org/osrf/gazebo_tutorials/raw/default/build_model/files/box.sdf">box.sdf</a>にコピーしてください。
+<code>xml
+&lt;?xml version='1.0'?&gt;
+&lt;sdf version="1.4"&gt;
+&lt;model name="my_model"&gt;
+  &lt;pose&gt;0 0 0.5 0 0 0&lt;/pose&gt;
+  &lt;static&gt;true&lt;/static&gt;
+    &lt;link name="link"&gt;
+      &lt;inertial&gt;
+        &lt;mass&gt;1.0&lt;/mass&gt;
+        &lt;inertia&gt; &lt;!-- interias are tricky to compute --&gt;
+          &lt;!-- http://answers.gazebosim.org/question/4372/the-inertia-matrix-explained/ --&gt;
+          &lt;ixx&gt;0.083&lt;/ixx&gt;       &lt;!-- for a box: ixx = 0.083 * mass * (y*y + z*z) --&gt;
+          &lt;ixy&gt;0.0&lt;/ixy&gt;         &lt;!-- for a box: ixy = 0 --&gt;
+          &lt;ixz&gt;0.0&lt;/ixz&gt;         &lt;!-- for a box: ixz = 0 --&gt;
+          &lt;iyy&gt;0.083&lt;/iyy&gt;       &lt;!-- for a box: iyy = 0.083 * mass * (x*x + z*z) --&gt;
+          &lt;iyz&gt;0.0&lt;/iyz&gt;         &lt;!-- for a box: iyz = 0 --&gt;
+          &lt;izz&gt;0.083&lt;/izz&gt;       &lt;!-- for a box: izz = 0.083 * mass * (x*x + y*y) --&gt;
+        &lt;/inertia&gt;
+      &lt;/inertial&gt;
+      &lt;collision name="collision"&gt;
+        &lt;geometry&gt;
+          &lt;box&gt;
+            &lt;size&gt;1 1 1&lt;/size&gt;
+          &lt;/box&gt;
+        &lt;/geometry&gt;
+      &lt;/collision&gt;
+      &lt;visual name="visual"&gt;
+        &lt;geometry&gt;
+          &lt;box&gt;
+            &lt;size&gt;1 1 1&lt;/size&gt;
+          &lt;/box&gt;
+        &lt;/geometry&gt;
+      &lt;/visual&gt;
+    &lt;/link&gt;
+  &lt;/model&gt;
+&lt;/sdf&gt;
+</code>
+Box-geometryの原点はboxの幾何学的中心に置くことに留意してください、なので、地面の水平面と共に更新されるboxの底面を生成するために、地面の水平面の上へboxを引き上げるように、<code>&lt;pose&gt;0 0 0.5 0 0 0&lt;/pose&gt;</code>の原点を加えます。</p>
+
+<ul>
+<li><strong>コツ : </strong>上記の例だとシンプルなboxモデルを静的に設置しました。モデルを作る際に有効なのが特徴です。一回でもモデルを生成し、モデルを動かせるようにしたいなら、<code>&lt;static</code>タグを<code>false</code>にしてください。</li>
+</ul>
+
+
+<h3>ステップ 3 : モデルをSDFファイルに加える</h3>
+
+<p>起動中の<code>.sdf</code>ファイルと共に、慎重にモデルを加えていき、少しずつ複雑にしていきましょう。それぞれの要素を加えていく際に、モデルがGUIクライアントできちんと動作していることを確認しながら、加えていきましょう。<br/>
+以下に、要素を追加していく際に見習ったほうが良い手順を示します。</p>
+
+<ol>
+<li><p>リンクを追加</p></li>
+<li><p>衝突要素を追加</p></li>
+<li><p>外観要素を追加</p></li>
+<li><p>慣性情報を追加</p></li>
+<li><p>すべてのリンクを追加し終わるまで、1.に戻る</p></li>
+<li><p>すべてのジョイントを追加(使うなら)</p></li>
+<li><p>すべてのプラグインを追加（使うなら）</p></li>
+</ol>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[ロボットを作ってみよう ! (モデルの作り方 編)]]></title>
@@ -150,7 +332,7 @@ code$ hg clone https://yourname@bitbucket.org/yourname/gazebo_models
 </span><span class='line'>
 </span><span class='line'><span class="nt">&lt;p&gt;</span>  <span class="nt">&lt;author&gt;</span>
 </span><span class='line'>    <span class="nt">&lt;name&gt;</span>Evan Drumwright<span class="nt">&lt;/name&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;email&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;&amp;#x6d;&amp;#x61;&amp;#105;&amp;#108;&amp;#116;&amp;#x6f;&amp;#x3a;&amp;#100;&amp;#114;&amp;#x75;&amp;#x6d;&amp;#64;&amp;#x67;&amp;#119;&amp;#x75;&amp;#46;&amp;#101;&amp;#100;&amp;#x75;&quot;</span><span class="nt">&gt;</span><span class="ni">&amp;#x64;&amp;#x72;&amp;#117;&amp;#109;&amp;#x40;&amp;#x67;&amp;#119;&amp;#x75;&amp;#x2e;&amp;#101;&amp;#100;&amp;#117;</span><span class="nt">&lt;/a&gt;&lt;/email&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;email&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;&amp;#x6d;&amp;#x61;&amp;#105;&amp;#108;&amp;#x74;&amp;#111;&amp;#58;&amp;#x64;&amp;#114;&amp;#x75;&amp;#x6d;&amp;#64;&amp;#x67;&amp;#119;&amp;#117;&amp;#46;&amp;#x65;&amp;#100;&amp;#117;&quot;</span><span class="nt">&gt;</span><span class="ni">&amp;#100;&amp;#x72;&amp;#117;&amp;#109;&amp;#x40;&amp;#103;&amp;#119;&amp;#117;&amp;#46;&amp;#x65;&amp;#100;&amp;#117;</span><span class="nt">&lt;/a&gt;&lt;/email&gt;</span>
 </span><span class='line'>  <span class="nt">&lt;/author&gt;&lt;/p&gt;</span>
 </span><span class='line'>
 </span><span class='line'><span class="nt">&lt;p&gt;</span>  <span class="nt">&lt;description&gt;</span>
@@ -170,7 +352,7 @@ code$ hg clone https://yourname@bitbucket.org/yourname/gazebo_models
 </span><span class='line'>
 </span><span class='line'><span class="nt">&lt;p&gt;</span>  <span class="nt">&lt;author&gt;</span>
 </span><span class='line'>    <span class="nt">&lt;name&gt;</span>Evan Drumwright<span class="nt">&lt;/name&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;email&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;&amp;#109;&amp;#97;&amp;#105;&amp;#108;&amp;#116;&amp;#x6f;&amp;#x3a;&amp;#100;&amp;#x72;&amp;#117;&amp;#109;&amp;#64;&amp;#x67;&amp;#119;&amp;#x75;&amp;#x2e;&amp;#101;&amp;#x64;&amp;#117;&quot;</span><span class="nt">&gt;</span><span class="ni">&amp;#x64;&amp;#x72;&amp;#117;&amp;#x6d;&amp;#64;&amp;#103;&amp;#119;&amp;#x75;&amp;#x2e;&amp;#101;&amp;#100;&amp;#x75;</span><span class="nt">&lt;/a&gt;&lt;/email&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;email&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;&amp;#109;&amp;#x61;&amp;#105;&amp;#108;&amp;#x74;&amp;#111;&amp;#58;&amp;#100;&amp;#x72;&amp;#117;&amp;#x6d;&amp;#x40;&amp;#x67;&amp;#x77;&amp;#x75;&amp;#x2e;&amp;#x65;&amp;#100;&amp;#x75;&quot;</span><span class="nt">&gt;</span><span class="ni">&amp;#x64;&amp;#x72;&amp;#x75;&amp;#x6d;&amp;#64;&amp;#103;&amp;#x77;&amp;#117;&amp;#46;&amp;#x65;&amp;#100;&amp;#x75;</span><span class="nt">&lt;/a&gt;&lt;/email&gt;</span>
 </span><span class='line'>  <span class="nt">&lt;/author&gt;&lt;/p&gt;</span>
 </span><span class='line'>
 </span><span class='line'><span class="nt">&lt;p&gt;</span>  <span class="nt">&lt;description&gt;</span>
@@ -380,7 +562,7 @@ Database
 </span><span class='line'>
 </span><span class='line'><span class="nt">&lt;p&gt;</span>  <span class="nt">&lt;author&gt;</span>
 </span><span class='line'>    <span class="nt">&lt;name&gt;</span>My name<span class="nt">&lt;/name&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;email&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;&amp;#109;&amp;#97;&amp;#x69;&amp;#108;&amp;#116;&amp;#111;&amp;#x3a;&amp;#110;&amp;#x61;&amp;#x6d;&amp;#101;&amp;#x40;&amp;#101;&amp;#109;&amp;#x61;&amp;#x69;&amp;#108;&amp;#46;&amp;#x61;&amp;#x64;&amp;#x64;&amp;#114;&amp;#x65;&amp;#x73;&amp;#115;&quot;</span><span class="nt">&gt;</span><span class="ni">&amp;#x6e;&amp;#x61;&amp;#x6d;&amp;#x65;&amp;#x40;&amp;#101;&amp;#109;&amp;#x61;&amp;#x69;&amp;#108;&amp;#x2e;&amp;#x61;&amp;#100;&amp;#x64;&amp;#114;&amp;#x65;&amp;#115;&amp;#115;</span><span class="nt">&lt;/a&gt;&lt;/email&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;email&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;&amp;#x6d;&amp;#x61;&amp;#x69;&amp;#108;&amp;#116;&amp;#111;&amp;#58;&amp;#110;&amp;#x61;&amp;#109;&amp;#101;&amp;#64;&amp;#x65;&amp;#x6d;&amp;#x61;&amp;#105;&amp;#108;&amp;#x2e;&amp;#97;&amp;#100;&amp;#100;&amp;#x72;&amp;#x65;&amp;#115;&amp;#x73;&quot;</span><span class="nt">&gt;</span><span class="ni">&amp;#x6e;&amp;#97;&amp;#109;&amp;#101;&amp;#64;&amp;#x65;&amp;#x6d;&amp;#97;&amp;#105;&amp;#x6c;&amp;#46;&amp;#97;&amp;#100;&amp;#x64;&amp;#x72;&amp;#101;&amp;#x73;&amp;#x73;</span><span class="nt">&lt;/a&gt;&lt;/email&gt;</span>
 </span><span class='line'>  <span class="nt">&lt;/author&gt;&lt;/p&gt;</span>
 </span><span class='line'>
 </span><span class='line'><span class="nt">&lt;p&gt;</span>  <span class="nt">&lt;description&gt;</span>
@@ -790,160 +972,6 @@ Database
 <h3>プラグイン</h3>
 
 <p>Phisics、センサ、Renderingライブラリはプラグインをサポートしています。それらのプラグインでは、ユーザーはコミュニケーションシステムを使用することなく、それぞれのライブラリにアクセスすることができます。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[GAZEBOを使ってみよう ! (Gazebo コンポーネント 編)]]></title>
-    <link href="http://cir-kit.github.io/blog/2015/01/31/gazebo-components/"/>
-    <updated>2015-01-31T18:01:34+09:00</updated>
-    <id>http://cir-kit.github.io/blog/2015/01/31/gazebo-components</id>
-    <content type="html"><![CDATA[<p><img src="/images/gazebo_logo.png" alt="gazebo*logo" /></p>
-
-<h5>検証日時</h5>
-
-<p>01/31/2015 (Sat)</p>
-
-<h5>概要</h5>
-
-<p>Gazeboのチュートリアル第一弾「Get Started」。その「Gazebo Components」編です。<br/>
-公式サイトを適当に翻訳しただけですので、あしからず。</p>
-
-<h5>レベル</h5>
-
-<p><strong>BEGINNER</strong></p>
-
-<!-- more -->
-
-
-<h5>環境</h5>
-
-<table>
-<thead>
-<tr>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center;"> <strong>PC</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Prosessor</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>RAM</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>OS</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Kernel</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> 3.13.0-44-generic </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Gazebo</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Version 5.0.1 </td>
-</tr>
-</tbody>
-</table>
-
-
-<h5>参考</h5>
-
-<p><a href="http://gazebosim.org/tutorials?cat=get_started">GAZEBO Tutorial-GetStarted</a></p>
-
-<hr />
-
-<p>このページではGazeboシミュレーションを実行するときに一緒に実行されるそれぞれのアイテムについて説明します。</p>
-
-<h2>worldファイル</h2>
-
-<p>worldディスクリプションファイルにはロボット、ライト、センサ、静的物体などのシミュレーションのすべての要素が含まれています。このふぁいるは<a href="http://sdformat.org/spec">SDF (Simulation Description Format)</a>フォーマットを使用しており、<code>.world</code>という拡張子がついています。<br/>
-Gazeboサーバー(<code>gzserver</code>)はこのファイルを読み込み、シミュレーションの環境を構築します。<br/>
-Gazeboでは宅sなんのworldデータの例が提供されています。それらのworldデータは<code>&lt;install_path&gt;/share/gazebo-&lt;version&gt;/worlds</code>に配置してあります。</p>
-
-<h2>modelファイル</h2>
-
-<p>modelファイルもworldファイルと同じように<a href="http://sdformat.org/spec">SDF</a>フォーマットを使用していますが、唯一ひとつだけ<code>&lt;model&gt; ... &lt;/model&gt;</code>を含んでいなければなりません。これらのファイルの目的はモデルの再利用を用意にし、worldファイルを簡単化するというものです。一度modelファイルが生成されると、以下のようなSDF文法にしたがったコードを記入することでworldファイルにincludeすることが可能です。
-<code>xml
-&lt;include&gt;
-  &lt;uri&gt;model://model_file_name&lt;/uri&gt;
-&lt;/include&gt;
-</code>
-多くのmodelは一行のmodelデータベース（バージョン情報、Gazeboによって提供されるいくつかのモデル例）によって提供されます。Gazeboをインターネット接続が有効な環境で使用しているとすると、たくさんのモデルを<a href="http://bitbucket.org/osrf/gazebo_models">データベース</a>から挿入することが可能ですし、実行中に必要なコンテンツをダウンロードすることも可能です。</p>
-
-<h3>環境変数</h3>
-
-<p>ファイルを配置するために、また、クライアントとサーバーの間の通信をセットアップするために、Gazeboにはたくさんの<a href="http://gazebosim.org/user_guide/started__components__env.html">環境変数</a>があります。<br/>
-Gazebo 1.9.0より、ほとんどの場合に使用するデフォルト変数は編纂されています。つまり、多くの変数は設定する必要がないということです。これらのデフォルト変数は以下のシェルスクリプトの中にも含まれています。
-<code>bash
-source &lt;install_path&gt;/share/gazebo/setup.sh
-</code>
-例えば、もし、モジュールを検索するためのパスを拡張するなどして、Gazeboの挙動を修正したいなら、まず最初に<code>source</code>コマンドで上記のェルスクリプトを実行したあと、設定されている変数を修正するということです。</p>
-
-<h3>Gazeboサーバー</h3>
-
-<p>このサーバーはGazeboの実体です。コマンドラインから与えられるworldディスクリプションファイルを解読し、物理エンジンやセンサエンジンを使ってシミュレータを実行します。<br/>
-このサーバーは以下のコマンドを使うことで実行できます。サーバーにはグラフィックが含まれていない、つまり、GUIが存在しないということに留意してください。
-<code>bash
-gzserver &lt;world_filename&gt;
-</code>
-ここで、<code>&lt;world_filename&gt;</code>は：</p>
-
-<ol>
-<li><p>カレントディレクトリ（現在のディレクトリ）との相対パス</p></li>
-<li><p>絶対パス</p></li>
-<li><p>GAZEBO_RESOURCE_PATHに記されるパスとの相対パス</p></li>
-</ol>
-
-
-<p>のいずれかである必要があります。<br/>
-Gazeboによって提供されるworldデータは<code>/share/gazebo-*/worlds</code>にあります。<br/>
-例えば、Gazeboによって提供される<code>empty.world</code>を使用する場合、以下のコマンドを使います。
-<code>bash
-gzserver worlds/empty.world
-</code></p>
-
-<h2>グラフィカルクライアント</h2>
-
-<p>グラフィカルクライアントは実行中の<code>gzserver</code>と接続し、要素を表示します。実行中のシミュレーションを修正することができるツールでもあります。<br/>
-グラフィカルクライアントは以下のコマンドで実行されます。<br/>
-<code>bash
-gzclient
-</code></p>
-
-<h3>サーバー + グラフィカルクライアントを一度に</h3>
-
-<p>コマンド<code>gazebo</code>はサーバーとクライアントを一度に利用可能にするコマンドです。<code>gzserver worlds/empty.world</code>と<code>gzclient</code>をそれぞれ実行する代わりに、以下のように実行することができます
-<code>bash
-gazebo worlds/empty.world
-</code></p>
-
-<h2>プラグイン</h2>
-
-<p>プラグインではGazeboにシンプルでかつ便利なインターフェース接続メカニズムを提供しています。プラグインはコマンドラインでの記述とworld/modelファイル（<a href="http://sdformat.org/spec">SDF</a>フォーマットを参照）での記述のどちらも読み込むことができます。コマンドラインに記述されたものが最初に読み込まれ、world/modelファイルに記述されたプラグインを次に読み込みます。ほとんどのプラグインがサーバーによって読み込まれますが、プラグインはグラフィカルクライアントでもまた、GUIのカスタムを用意にするために読み込まれます。<br/>
-コマンドラインからプラグインを読み込む例:
-<code>bash
-gzserver -s
-</code>
-グラフィカルクライアントでも同じように：
-<code>bash
-gzclient -g
-</code>
-プラグインについてもっと情報が必要なら<a href="http://gazebosim.org/tutorials/?tut=plugins_hello_world">プラグインのオーバービュー</a>を参照してください。</p>
 ]]></content>
   </entry>
   
