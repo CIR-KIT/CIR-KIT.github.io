@@ -4,7 +4,7 @@
   <title><![CDATA[九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-01-31T19:47:52+09:00</updated>
+  <updated>2015-01-31T19:48:58+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -1630,9 +1630,9 @@ Gazeboはシミュレーションに使用するモデルについて記述し�
   
   <entry>
     <title type="html"><![CDATA[GAZEBOを使ってみよう ! (キャプチャ スクリーンショット編)]]></title>
-    <link href="http://cir-kit.github.io/blog/2015/01/31/capture-screenshot/"/>
+    <link href="http://cir-kit.github.io/blog/2015/01/31/gazebo-capture-screenshot/"/>
     <updated>2015-01-31T18:39:31+09:00</updated>
-    <id>http://cir-kit.github.io/blog/2015/01/31/capture-screenshot</id>
+    <id>http://cir-kit.github.io/blog/2015/01/31/gazebo-capture-screenshot</id>
     <content type="html"><![CDATA[<p><img src="http://cir-kit.github.io/images/gazebo_logo.png" alt="gazebo_logo" /></p>
 
 <h5>検証日時</h5>
