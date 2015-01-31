@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Gazebo | 九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/blog/categories/gazebo/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-01-31T17:59:34+09:00</updated>
+  <updated>2015-01-31T18:12:24+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[Member]]></name>
@@ -12,6 +12,160 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[GAZEBOを使ってみよう ! (Gazebo コンポーネント 編)]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/01/31/gazebo-components/"/>
+    <updated>2015-01-31T18:01:34+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/01/31/gazebo-components</id>
+    <content type="html"><![CDATA[<p><img src="../images/gazebo_logo.png" alt="gazebo_logo" /></p>
+
+<h5>検証日時</h5>
+
+<p>01/31/2015 (Sat)</p>
+
+<h5>概要</h5>
+
+<p>Gazeboのチュートリアル第一弾「Get Started」。その「Gazebo Components」編です。
+公式サイトを適当に翻訳しただけですので、あしからず。</p>
+
+<h5>レベル</h5>
+
+<p><strong>BEGINNER</strong></p>
+
+<!-- more -->
+
+
+<h5>環境</h5>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> <strong>PC</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Prosessor</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>RAM</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>OS</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Kernel</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> 3.13.0-44-generic </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Gazebo</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Version 5.0.1 </td>
+</tr>
+</tbody>
+</table>
+
+
+<h5>参考</h5>
+
+<p><a href="http://gazebosim.org/tutorials?cat=get_started">GAZEBO Tutorial-GetStarted</a></p>
+
+<hr />
+
+<p>このページではGazeboシミュレーションを実行するときに一緒に実行されるそれぞれのアイテムについて説明します。</p>
+
+<h2>worldファイル</h2>
+
+<p>worldディスクリプションファイルにはロボット、ライト、センサ、静的物体などのシミュレーションのすべての要素が含まれています。このふぁいるは<a href="http://sdformat.org/spec">SDF (Simulation Description Format)</a>フォーマットを使用しており、<code>.world</code>という拡張子がついています。<br/>
+Gazeboサーバー(<code>gzserver</code>)はこのファイルを読み込み、シミュレーションの環境を構築します。<br/>
+Gazeboでは宅sなんのworldデータの例が提供されています。それらのworldデータは<code>&lt;install_path&gt;/share/gazebo-&lt;version&gt;/worlds</code>に配置してあります。</p>
+
+<h2>modelファイル</h2>
+
+<p>modelファイルもworldファイルと同じように<a href="http://sdformat.org/spec">SDF</a>フォーマットを使用していますが、唯一ひとつだけ<code>&lt;model&gt; ... &lt;/model&gt;</code>を含んでいなければなりません。これらのファイルの目的はモデルの再利用を用意にし、worldファイルを簡単化するというものです。一度modelファイルが生成されると、以下のようなSDF文法にしたがったコードを記入することでworldファイルにincludeすることが可能です。
+<code>xml
+&lt;include&gt;
+  &lt;uri&gt;model://model_file_name&lt;/uri&gt;
+&lt;/include&gt;
+</code>
+多くのmodelは一行のmodelデータベース（バージョン情報、Gazeboによって提供されるいくつかのモデル例）によって提供されます。Gazeboをインターネット接続が有効な環境で使用しているとすると、たくさんのモデルを<a href="http://bitbucket.org/osrf/gazebo_models">データベース</a>から挿入することが可能ですし、実行中に必要なコンテンツをダウンロードすることも可能です。</p>
+
+<h3>環境変数</h3>
+
+<p>ファイルを配置するために、また、クライアントとサーバーの間の通信をセットアップするために、Gazeboにはたくさんの<a href="http://gazebosim.org/user_guide/started__components__env.html">環境変数</a>があります。<br/>
+Gazebo 1.9.0より、ほとんどの場合に使用するデフォルト変数は編纂されています。つまり、多くの変数は設定する必要がないということです。これらのデフォルト変数は以下のシェルスクリプトの中にも含まれています。
+<code>bash
+source &lt;install_path&gt;/share/gazebo/setup.sh
+</code>
+例えば、もし、モジュールを検索するためのパスを拡張するなどして、Gazeboの挙動を修正したいなら、まず最初に<code>source</code>コマンドで上記のェルスクリプトを実行したあと、設定されている変数を修正するということです。</p>
+
+<h3>Gazeboサーバー</h3>
+
+<p>このサーバーはGazeboの実体です。コマンドラインから与えられるworldディスクリプションファイルを解読し、物理エンジンやセンサエンジンを使ってシミュレータを実行します。<br/>
+このサーバーは以下のコマンドを使うことで実行できます。サーバーにはグラフィックが含まれていない、つまり、GUIが存在しないということに留意してください。
+<code>bash
+gzserver &lt;world_filename&gt;
+</code>
+ここで、<code>&lt;world_filename&gt;</code>は：</p>
+
+<ol>
+<li><p>カレントディレクトリ（現在のディレクトリ）との相対パス</p></li>
+<li><p>絶対パス</p></li>
+<li><p>GAZEBO_RESOURCE_PATHに記されるパスとの相対パス</p></li>
+</ol>
+
+
+<p>のいずれかである必要があります。<br/>
+Gazeboによって提供されるworldデータは<code>/share/gazebo-*/worlds</code>にあります。<br/>
+例えば、Gazeboによって提供される<code>empty.world</code>を使用する場合、以下のコマンドを使います。
+<code>bash
+gzserver worlds/empty.world
+</code></p>
+
+<h2>グラフィカルクライアント</h2>
+
+<p>グラフィカルクライアントは実行中の<code>gzserver</code>と接続し、要素を表示します。実行中のシミュレーションを修正することができるツールでもあります。<br/>
+グラフィカルクライアントは以下のコマンドで実行されます。<br/>
+<code>bash
+gzclient
+</code></p>
+
+<h3>サーバー + グラフィカルクライアントを一度に</h3>
+
+<p>コマンド<code>gazebo</code>はサーバーとクライアントを一度に利用可能にするコマンドです。<code>gzserver worlds/empty.world</code>と<code>gzclient</code>をそれぞれ実行する代わりに、以下のように実行することができます
+<code>bash
+gazebo worlds/empty.world
+</code></p>
+
+<h2>プラグイン</h2>
+
+<p>プラグインではGazeboにシンプルでかつ便利なインターフェース接続メカニズムを提供しています。プラグインはコマンドラインでの記述とworld/modelファイル（<a href="http://sdformat.org/spec">SDF</a>フォーマットを参照）での記述のどちらも読み込むことができます。コマンドラインに記述されたものが最初に読み込まれ、world/modelファイルに記述されたプラグインを次に読み込みます。ほとんどのプラグインがサーバーによって読み込まれますが、プラグインはグラフィカルクライアントでもまた、GUIのカスタムを用意にするために読み込まれます。<br/>
+コマンドラインからプラグインを読み込む例:
+<code>bash
+gzserver -s
+</code>
+グラフィカルクライアントでも同じように：
+<code>bash
+gzclient -g
+</code>
+プラグインについてもっと情報が必要なら<a href="http://gazebosim.org/tutorials/?tut=plugins_hello_world">プラグインのオーバービュー</a>を参照してください。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[GAZEBOを使ってみよう ! (Quick Start 編)]]></title>
