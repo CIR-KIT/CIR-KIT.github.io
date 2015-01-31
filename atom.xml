@@ -4,7 +4,7 @@
   <title><![CDATA[九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-02-01T01:33:33+09:00</updated>
+  <updated>2015-02-01T01:38:56+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -228,13 +228,6 @@
 <span class='line-number'>107</span>
 <span class='line-number'>108</span>
 <span class='line-number'>109</span>
-<span class='line-number'>110</span>
-<span class='line-number'>111</span>
-<span class='line-number'>112</span>
-<span class='line-number'>113</span>
-<span class='line-number'>114</span>
-<span class='line-number'>115</span>
-<span class='line-number'>116</span>
 </pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&#39;1.0&#39;?&gt;</span>
 </span><span class='line'><span class="nt">&lt;sdf</span> <span class="na">version=</span><span class="s">&#39;1.4&#39;</span><span class="nt">&gt;</span>
 </span><span class='line'>  <span class="nt">&lt;model</span> <span class="na">name=</span><span class="s">&quot;mobile_base&quot;</span><span class="nt">&gt;</span>
@@ -344,102 +337,156 @@
 </span><span class='line'>    <span class="nt">&lt;/joint&gt;</span>
 </span><span class='line'>  <span class="nt">&lt;/model&gt;</span>
 </span><span class='line'> <span class="nt">&lt;/sdf&gt;</span>
-</span><span class='line'> ```
-</span><span class='line'>
-</span><span class='line'>すると以下の様になっているはずです。
-</span><span class='line'>[Mobile_base_large](/images/2015/02/01/gazebo-attach-gripper-to-robot/Mobile_base_large.png)
-</span><span class='line'>
-</span><span class='line'>##ロボットを組み立てる
-</span><span class='line'>1. 簡単なグリッパを取り付けたロボットを作成するために、新しいモデルディレクトリを作成しましょう。
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>bash
-mkdir ~/.gazebo/models/simple_mobile_manipulator</p>
+<p>すると以下の様になっているはずです。
+<img src="http://cir-kit.github.io/images/2015-02-01-gazebo-attach-gripper-to-robot/Mobile_base_large.png" alt="Mobile_base_large" /></p>
+
+<h2>ロボットを組み立てる</h2>
+
+<ol>
+<li>簡単なグリッパを取り付けたロボットを作成するために、新しいモデルディレクトリを作成しましょう。</li>
+</ol>
+
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>そしてモデルのConfigファイル```model.config```を編集しましょう。
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>mkdir ~/.gazebo/models/simple_mobile_manipulator
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>bash
-gedit ~/.gazebo/models/simple_mobile_manipulator/model.config</p>
+<p>そしてモデルのConfigファイル<code>model.config</code>を編集しましょう。</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>作成する```model.config```の内容は以下のようにしましょう。
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gedit ~/.gazebo/models/simple_mobile_manipulator/model.config
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>xml
-    &lt;?xml version=&ldquo;1.0&rdquo;?>
-    <model>
-      <name>Simple Mobile Manipulator</name>
-      <version>1.0</version>
-      <sdf version='1.4'>manipulator.sdf</sdf>
-      <author>
-        <name>My Name</name>
-        <email><a href="&#109;&#x61;&#105;&#x6c;&#116;&#111;&#x3a;&#x6d;&#x65;&#x40;&#x6d;&#x79;&#x2e;&#x65;&#x6d;&#x61;&#x69;&#108;">&#109;&#x65;&#64;&#109;&#121;&#46;&#x65;&#109;&#x61;&#x69;&#x6c;</a></email>
-      </author>
-      <description>
-        My simple mobile manipulator
-      </description>
-    </model></p>
+<p>作成する<code>model.config</code>の内容は以下のようにしましょう。</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>2. 続いて、モデルのSDFファイル```manipulator.sdf```を作成しましょう。:
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot;?&gt;</span>
+</span><span class='line'><span class="nt">&lt;model&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;name&gt;</span>Simple Mobile Manipulator<span class="nt">&lt;/name&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;version&gt;</span>1.0<span class="nt">&lt;/version&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;sdf</span> <span class="na">version=</span><span class="s">&#39;1.4&#39;</span><span class="nt">&gt;</span>manipulator.sdf<span class="nt">&lt;/sdf&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;author&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;name&gt;</span>My Name<span class="nt">&lt;/name&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;email&gt;</span>me@my.email<span class="nt">&lt;/email&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/author&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;description&gt;</span>
+</span><span class='line'>    My simple mobile manipulator
+</span><span class='line'>  <span class="nt">&lt;/description&gt;</span>
+</span><span class='line'><span class="nt">&lt;/model&gt;</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>bash
-gedit ~/.gazebo/models/simple_mobile_manipulator/manipulator.sdf</p>
+<ol>
+<li>続いて、モデルのSDFファイル<code>manipulator.sdf</code>を作成しましょう。:</li>
+</ol>
+
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>作成する```manipulator.sdf```の内容は以下のようにしましょう。
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gedit ~/.gazebo/models/simple_mobile_manipulator/manipulator.sdf
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>xml
-&lt;?xml version=&ldquo;1.0&rdquo; ?>
-<sdf version="1.3">
-  <model name="simple_mobile_manipulator">
-    <include>
-      <uri>model://my_gripper</uri>
-      <pose>1.3 0 0.1 0 0 0</pose>
-    </include>
-    <include>
-      <uri>model://my_robot</uri>
-      <pose>0 0 0 0 0 0</pose>
-    </include>
-    <joint name="arm_gripper_joint" type="revolute">
-      <parent>mobile_base::chassis</parent>
-      <child>simple_gripper::riser</child>
-      <axis>
-        <limit>
-          <lower>0</lower>
-          <upper>0</upper>
-        </limit>
-        <xyz>0 0 1</xyz>
-      </axis>
-    </joint>
-    <!-- attach sensor to the gripper -->
-    <include>
-      <uri>model://hokuyo</uri>
-      <pose>1.3 0 0.3 0 0 0</pose>
-    </include>
-    <joint name="hokuyo_joint" type="revolute">
-      <child>hokuyo::link</child>
-      <parent>simple_gripper::palm</parent>
-      <axis>
-        <xyz>0 0 1</xyz>
-        <limit>
-          <upper>0</upper>
-          <lower>0</lower>
-        </limit>
-      </axis>
-    </joint>
-  </model>
-</sdf>
-&#8220;`</p>
+<p>作成する<code>manipulator.sdf</code>の内容は以下のようにしましょう。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; ?&gt;</span>
+</span><span class='line'><span class="nt">&lt;sdf</span> <span class="na">version=</span><span class="s">&quot;1.3&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;model</span> <span class="na">name=</span><span class="s">&quot;simple_mobile_manipulator&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;include&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;uri&gt;</span>model://my_gripper<span class="nt">&lt;/uri&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;pose&gt;</span>1.3 0 0.1 0 0 0<span class="nt">&lt;/pose&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/include&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;include&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;uri&gt;</span>model://my_robot<span class="nt">&lt;/uri&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;pose&gt;</span>0 0 0 0 0 0<span class="nt">&lt;/pose&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/include&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;joint</span> <span class="na">name=</span><span class="s">&quot;arm_gripper_joint&quot;</span> <span class="na">type=</span><span class="s">&quot;revolute&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;parent&gt;</span>mobile_base::chassis<span class="nt">&lt;/parent&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;child&gt;</span>simple_gripper::riser<span class="nt">&lt;/child&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;axis&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;limit&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;lower&gt;</span>0<span class="nt">&lt;/lower&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;upper&gt;</span>0<span class="nt">&lt;/upper&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/limit&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;xyz&gt;</span>0 0 1<span class="nt">&lt;/xyz&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/axis&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/joint&gt;</span>
+</span><span class='line'>    <span class="c">&lt;!-- attach sensor to the gripper --&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;include&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;uri&gt;</span>model://hokuyo<span class="nt">&lt;/uri&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;pose&gt;</span>1.3 0 0.3 0 0 0<span class="nt">&lt;/pose&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/include&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;joint</span> <span class="na">name=</span><span class="s">&quot;hokuyo_joint&quot;</span> <span class="na">type=</span><span class="s">&quot;revolute&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;child&gt;</span>hokuyo::link<span class="nt">&lt;/child&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;parent&gt;</span>simple_gripper::palm<span class="nt">&lt;/parent&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;axis&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;xyz&gt;</span>0 0 1<span class="nt">&lt;/xyz&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;limit&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;upper&gt;</span>0<span class="nt">&lt;/upper&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;lower&gt;</span>0<span class="nt">&lt;/lower&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/limit&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/axis&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/joint&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/model&gt;</span>
+</span><span class='line'><span class="nt">&lt;/sdf&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <ol>
 <li>編集した<code>model.config</code>と<code>manipulator.sdf</code>をセーブしたら、Gazeboを立ち上げ、<strong>Insert</strong>タブより<strong>Simple Mobile Manipulator</strong>モデルを選択して、作成したモデルをシミュレータに表示してください。すると、以下のようになっているはずです。
