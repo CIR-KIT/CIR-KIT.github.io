@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Ubuntu | 九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/blog/categories/ubuntu/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-01-31T18:47:37+09:00</updated>
+  <updated>2015-01-31T19:00:17+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -12,6 +12,234 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[ロボットを作ってみよう ! (モデルの構成と必要条件 編)]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/01/31/gazebo-model-structure-and-requirements/"/>
+    <updated>2015-01-31T18:54:31+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/01/31/gazebo-model-structure-and-requirements</id>
+    <content type="html"><![CDATA[<p><img src="/images/gazebo_logo.png" alt="gazebo_logo" /></p>
+
+<h5>検証日時</h5>
+
+<p>01/31/2015 (Sat)</p>
+
+<h5>概要</h5>
+
+<p>Gazeboのチュートリアル第二弾「Build a Robot」。<br/>
+このチュートリアルではロボットを作ったり、修正したりします。また、センサ、アクチュエータを搭載した車輪型ロボットを作り、モデルを描画するなどの実践例も行います。<br/>
+今回はその「Model structure and requirements」編です。<br/>
+公式サイトを適当に翻訳しただけですので、あしからず。</p>
+
+<h5>レベル</h5>
+
+<p><strong>BEGINNER</strong></p>
+
+<!-- more -->
+
+
+<h5>環境</h5>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> <strong>PC</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Prosessor</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>RAM</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>OS</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Kernel</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> 3.13.0-44-generic </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Gazebo</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Version 5.0.1 </td>
+</tr>
+</tbody>
+</table>
+
+
+<h5>参考</h5>
+
+<p><a href="http://gazebosim.org/tutorials?cat=build_robot">GAZEBO Tutorial-Build a Robot</a></p>
+
+<h2>はじめに</h2>
+
+<p>GazeboはプログラムもしくはGUIを通して直接シミュレーションを読み込むことができます。あなたがダウンロードしたり、創造したりすれば、モデルはあなたのコンピュータ上に生成されます。このチュートリアルでは、Gazeboのモデルディレクトリ構成とモデルディレクトリに必要なファイルを説明します。<br/>
+Gazeboのモデルはダイナミック、キネマティック、ビジュアルプロパティなどにより物理的実体を定義します。さらに、モデルは一つ以上のモデルの挙動に影響を及ぼすようなプラグインを持っています。モデルは単純な形状から複雑なロボット（地面もまたモデルです）のような形状までどんなものでも描画することができます。<br/>
+Gazeboはシミュレーションに使用するモデルについて記述したり、記録したりするデータベースに依存しています。モデルデータベースはコミュニティーによって供給される資源です。なので、あなたが作ったモデルを是非アップロードしてください。</p>
+
+<h2>モデルデータベースレポジトリ</h2>
+
+<p>モデルデータベースは<a href="https://bitbucket.org/osrf/gazebo_models">ここ</a>のbitbucketレポジトリにあります。<br/>
+このレポジトリは以下のコマンドでcloneすることができます。
+<code>bash
+hg clone https://bitbucket.org/osrf/gazebo_models
+</code></p>
+
+<h2>モデルデータベースの構成</h2>
+
+<p>モデルデータベースは特定のディレクトリとファイル構成でなければなりません。各モデルデータベースのルートディレクトリには一つのディレクトリと、モデルについての情報と共にメタデータ<code>database.cmfig</code>ファイルがあります。それぞれのモデルディレクトリはモデルについてのメタデータを含む<code>model.config</code>ファイルもあります。更に、モデルディレクトリには、モデルや物質、メッシュ、そしてプラグインのSDFもあります。<br/>
+この構成は以下のようになっています。（この例では、データベースはmodel_1と呼ばれるモデルだけです。）：
+<code>
+Database
+    ├── database.config：データベースについてのメタデータ。CMakeLists.txtから自動的に生成されます。
+    └── model_1：model_1のためのディレクトリ
+        ├── materials：texturesとscriptsというサブディレクトリのみで構成されるディレクトリ
+        │   ├── scripts：OGREマテリアルスクリプトのディレクトリ
+        │   └── textures：イメージファイル（jpg, png, etc...）のディレクトリ
+        ├── meshes：COLLADAとSTLファイルのディレクトリ
+        ├── model.config：model_1のメタデータ
+        ├── model.sdf:model_1のSDFディスクリプション
+        └── plugins
+</code></p>
+
+<h3>pluginsディレクトリ</h3>
+
+<p>モデルのすべてのプラグインを含むオプションディレクトリです。</p>
+
+<h3>meshesディレクトリ</h3>
+
+<p>モデルのCOLLADAたSTLファイルを含むオプションディレクトリです。</p>
+
+<h3>materialsディレクトリ</h3>
+
+<p>モデルのすべてのテクスチャ、イメージそしてOGREスクリプトを含むサブディレクトリです。テクスチャイメージは<code>textures</code>サブディレクトリに、OGREスクリプトファイルは<code>scripts</code>ディレクトリに配置しなければなりません。</p>
+
+<h3>Database Config</h3>
+
+<p>モデルデータベースのルートディレクトリにある<code>database.config</code>です．このファイルには、モデルのライセンス情報、データベースの名前、有効なモデルのリストが書かれています。<br/>
+<strong>NOTE : <code>database.config</code>ファイルはオンラインレポジトリを利用するときのみ必要です。ローカル（オフライン）コンピュータにすべてのモデルがアルバイは、<code>database.config</code>は必要ありません。</strong><br/>
+ファイル<code>database.config</code> のフォーマットは以下のようになっています。：</p>
+
+<pre><code class="xml">&lt;?xml version='1.0'?&gt;
+&lt;database&gt;
+  &lt;name&gt;name_of_this_database&lt;/name&gt;
+  &lt;license&gt;Creative Commons Attribution 3.0 Unported&lt;/license&gt;
+  &lt;models&gt;
+    &lt;uri&gt;file://model_directory&lt;/uri&gt;
+  &lt;/models&gt;
+&lt;/database&gt;
+</code></pre>
+
+<ul>
+<li><p>name
+データベースの名前です。GUIや他のツールで使用されます。</p></li>
+<li><p>license
+データベースにあるモデルのライセンスです。<a href="http://creativecommons.org/licenses/by/3.0">Creative Commons Attribution 3.0 Unported</a>ライセンスを強く推奨します。</p></li>
+<li><p>models
+データベースにあるすべてのモデルのURIリストです。</p></li>
+<li><p>uri
+モデルのURIです。これは、<code>file://model_directory_name</code>のように記述しなければなりません。</p></li>
+</ul>
+
+
+<h3>Model Config</h3>
+
+<p>それぞれのモデルにはメタデータがおいてあるルートディレクトリに<code>model.config</code>ファイルが必ず配置されています。<br/>
+また、<code>model.config</code>は以下のようなフォーマットで記述されます。:
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="ni">&amp;lt;</span>?xml version=<span class="ni">&amp;ldquo;</span>1.0<span class="ni">&amp;rdquo;</span>?&gt;<span class="nt">&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;p&gt;&lt;model&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;name&gt;</span>My Model Name<span class="nt">&lt;/name&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;version&gt;</span>1.0<span class="nt">&lt;/version&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;sdf</span> <span class="na">version=</span><span class="s">&#39;1.5&#39;</span><span class="nt">&gt;</span>model.sdf<span class="nt">&lt;/sdf&gt;&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;p&gt;</span>  <span class="nt">&lt;author&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;name&gt;</span>My name<span class="nt">&lt;/name&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;email&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;&amp;#x6d;&amp;#97;&amp;#x69;&amp;#x6c;&amp;#x74;&amp;#x6f;&amp;#x3a;&amp;#110;&amp;#x61;&amp;#109;&amp;#101;&amp;#x40;&amp;#101;&amp;#x6d;&amp;#97;&amp;#105;&amp;#108;&amp;#x2e;&amp;#97;&amp;#100;&amp;#100;&amp;#114;&amp;#101;&amp;#x73;&amp;#x73;&quot;</span><span class="nt">&gt;</span><span class="ni">&amp;#110;&amp;#x61;&amp;#x6d;&amp;#x65;&amp;#x40;&amp;#x65;&amp;#x6d;&amp;#97;&amp;#x69;&amp;#108;&amp;#x2e;&amp;#97;&amp;#x64;&amp;#x64;&amp;#x72;&amp;#101;&amp;#115;&amp;#115;</span><span class="nt">&lt;/a&gt;&lt;/email&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/author&gt;&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;p&gt;</span>  <span class="nt">&lt;description&gt;</span>
+</span><span class='line'>    A description of the model
+</span><span class='line'>  <span class="nt">&lt;/description&gt;</span>
+</span><span class='line'><span class="nt">&lt;/model&gt;</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<ul>
+<li><p>name(必須)
+モデルの名前です。</p></li>
+<li><p>version(必須)
+モデルのバージョンです。
+<strong>Note : これは、モデルが使用しているSDFのバージョンではありません。SDFの情報は、<code>model.sdf</code>ファイルに記述されています。</strong></p></li>
+<li><p>sdf(必須)
+モデルをのSDFもしくはURDFファイルの名前です。ファイルが使用するSDFのバージョン情報を定義します。ただし、URDFを使用する場合は、必須ではありません。様々なの<code>sdf</code>要素は、様々なSDFバージョンをサポートするために使用されます。</p></li>
+<li><p>author(必須)</p>
+
+<ul>
+<li><p>name(必須)
+モデルの編集者の名前です。</p></li>
+<li><p>email（必須）
+編集者のEmailアドレスです。</p></li>
+</ul>
+</li>
+<li><p>description(必須)
+モデルのdescriptionには以下の要素が必要です。</p>
+
+<ul>
+<li><p>モデルが何であるか(例えば、robot、table、cup、etc&hellip;)</p></li>
+<li><p>プラグインが何２お売るのか（モデルの機能）</p></li>
+</ul>
+</li>
+<li><p>depend(任意)
+モデルのすべての依存関係です。これは他のモデルであることが多いです。</p></li>
+<li><p>model(任意)</p>
+
+<ul>
+<li><p>uri(必須)
+モデルの依存関係のURIです。</p></li>
+<li><p>version(必須)
+モデルのバージョンです。</p></li>
+</ul>
+</li>
+</ul>
+
+
+<h3>Model SDF</h3>
+
+<p>すべてのモデルにはモデルのシミュレータを記述するフォーマット情報(Simulator Description Format)が記述されている、<code>model.sdf</code>が必要です。このSDFについてもっと知りたい場合には、<a href="http://sdformat.org/">SDFのウェブサイト</a>を参照してください。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[GAZEBOを使ってみよう ! (キャプチャ スクリーンショット編)]]></title>
@@ -650,159 +878,6 @@ gzserver
 gzclient
 </code>
 この時点で、Gazeboのユーザーインターフェースを確認できるはずです。また、<code>gzclient</code>は好きなタイミングで再起動することができますし、複数実行することも可能です。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Gazeboのインストール]]></title>
-    <link href="http://cir-kit.github.io/blog/2015/01/31/gazebo-install/"/>
-    <updated>2015-01-31T15:28:43+09:00</updated>
-    <id>http://cir-kit.github.io/blog/2015/01/31/gazebo-install</id>
-    <content type="html"><![CDATA[<p><img src="/images/gazebo_logo.png" alt="gazebo_logo" /></p>
-
-<h5>検証日時</h5>
-
-<p>01/31/2015 (Sat)</p>
-
-<h5>概要</h5>
-
-<p>Robot Simulaterの<code>gazebo</code>の概要とそのインストールについてです。<br/>
-インストール編は、公式サイトを適当に翻訳しただけですので、あしからず。</p>
-
-<h5>レベル</h5>
-
-<p><strong>BEGINNER</strong></p>
-
-<!-- more -->
-
-
-<h5>環境</h5>
-
-<table>
-<thead>
-<tr>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center;"> <strong>PC</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Prosessor</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>RAM</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>OS</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Kernel</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> 3.13.0-44-generic </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Gazebo</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Version 5.0.1 </td>
-</tr>
-</tbody>
-</table>
-
-
-<h5>参考</h5>
-
-<p><a href="http://gazebosim.org/tutorials?cat=install">GAZEBO Tutorial-Installation</a>
-<a href="http://www.slideshare.net/akio19937/1rosrosgazebo">第1回ROS勉強会発表資料 ROS+Gazeboではじめるロボットシミュレーション</a></p>
-
-<h2>「GAZEBO」ってなに?</h2>
-
-<p>gazeboは以下のような特徴を持っています。</p>
-
-<ul>
-<li><p>オープンソース（Apache ライセンス）の3Dロボットシミュレータ</p></li>
-<li><p><a href="http://qt-project.org/">Qt</a>を利用した強力なGUI</p></li>
-<li><p>複数の物理エンジンを切り替えられる(<a href="http://www.ode.org/">ODE</a>含む)</p></li>
-<li><p>カメラ、LRFなどのセンサシミュレーションが豊富</p></li>
-<li><p>センサだけでなく、ロボットモデルも豊富(<a href="http://www.nihonbinary.co.jp/Products/Robot/TurtleBot.html">TurtleBot</a>、<a href="https://www.willowgarage.com/pages/pr2/overview">PR2</a>etc&hellip;)</p></li>
-<li><p><a href="http://www.ros.org/">ROS</a>との連携も充実</p></li>
-</ul>
-
-
-<p>という感じで、もはや使わない手はないロボットシミュレータです。<br/>
-下図みたいな感じで使えるのでとってもGoodですね !</p>
-
-<p><img src="/images/Install/gazebo_example.jpg" alt="gazebo_example" /></p>
-
-<h2>GAZEBOのインストール</h2>
-
-<p>通常は、OnlineInstallの方の手順にしたがってインストールしてください。<br/>
-尚、<code>gazebo</code>コマンドを入力したあと、アプリケーションが立ち上がるまでに時間がかかるみたいなので、落ち着いて待ちましょう。</p>
-
-<h3>Online-Install</h3>
-
-<ol>
-<li><p>インストール
-<code>bash
-wget -O /tmp/gazebo4_install.sh http://osrf-distributions.s3.amazonaws.com/gazebo/gazebo4_install.sh; sudo sh /tmp/gazebo4_install.sh
-</code></p></li>
-<li><p>実行
-<code>bash
-gazebo
-</code></p></li>
-</ol>
-
-
-<h3>Step-by-step Install</h3>
-
-<ol>
-<li><p><code>packages.osrfoundation.org.</code> パッケージからのソフトウェア取得を許可するようコンピュータを設定します。
-<strong>Note : </strong>このパッケージの<a href="https://bitbucket.org/osrf/gazebo/wiki/gazebo_mirrors">ダウンロードミラー</a>があるので、それを使うと、ダウンロード速度が早くなるかもしれません。
-<code>bash
-sudo sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu `lsb_release -cs` main" &gt; /etc/apt/sources.list.d/gazebo-latest.list'
-</code></p></li>
-<li><p>Keyの設定
-<code>bash
-wget http://packages.osrfoundation.org/gazebo.key -O - | sudo apt-key add -
-</code></p></li>
-<li><p>インストールのチェック(実行)
-<strong>Note : </strong>初めて<code>gazebo</code>コマンドを実行する時には、ダウンロードなどを行うので時間がかかります。落ち着いて待ちましょう。
-<code>bash
-gazebo
-</code></p></li>
-</ol>
-
-
-<h3>他のdebパッケージ</h3>
-
-<p>Gazeboでは<a href="https://www.debian.org/doc/manuals/maint-guide/">公式パッケージガイドライン</a>にそったその他のUbuntu debian パッケージを用意しています。これらではgazeboのオプションのインストール方法が更新されます。</p>
-
-<ul>
-<li><p>Gazeboをアプリケーショんとして使用する場合：Gazeboを提供済みのプラグイン、モデルとともにシミュレータとしてのみ使用し、ソフトウェア開発においてgazeboの最新版を利用する予定のないユーザ用。Gazebo4.0を使用するためには、<code>gazebo4</code>と呼ばれるパッケージをインストールしてください。</p></li>
-<li><p>Gzeboのライブラリを使用してGazeboを開発ツールとして使用する場合：最新のGazeboやライブラリが必要とする様々なソフトウェアやプラグインを開発するユーザ用。この場合、<code>gazebo4</code>パッケージと共に、<code>libgazebo4-dev</code>もインストールしてください。</p></li>
-</ul>
-
-
-<h4>Gazeboマルチ物理エンジンサポート</h4>
-
-<p>Gazeboではシミュレーション実行のためにいろいろな物理エンジンを使用することができます。<br/>
-<a href="http://www.ode.org/">ODE</a>はデフォルトで使用されているものです。しかし、Ubuntuパッケージでは、<a href="http://bulletphysics.org/wordpress/">Bullet</a>や<a href="https://simtk.org/home/simbody/">Simbody</a>もまたサポートされています。<br/>
-それらを使用するユーザはgazeboをソースコードからインストールする<a href="http://dartsim.github.io/">DART</a>に接続(wan)する事になります。なので、<code>.deb</code>パッケージは使用しないでください。</p>
-
-<h3>ROSとGazebo</h3>
-
-<p>GazeboをROSと共に使用するためには、<a href="http://gazebosim.org/tutorials?cat=connect_ros">ROSとつなぐ</a>というチュートリアルを参照してください。</p>
 ]]></content>
   </entry>
   
