@@ -1,0 +1,426 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>ロボットを作ってみよう !（動く箱 編） - 九州工業大学 CIR-KIT Blog</title>
+  <meta name="author" content="">
+
+  
+  <meta name="description" content="検証日時 02/01/2015 (Sun) 概要 Gazeboのチュートリアル第二弾「Build a Robot」。
+このチュートリアルではロボットを作ったり、修正したりします。また、センサ、アクチュエータを搭載した車輪型ロボットを作り、モデルを描画するなどの実践例も行います。
+今回はその「 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://cir-kit.github.io/blog/2015/02/01/gazebo-animated-box/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="九州工業大学 CIR-KIT Blog" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-59178596-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">九州工業大学 CIR-KIT Blog</a></h1>
+  
+    <h2>九工大自律移動ロボット製作プロジェクトCIR-KITの技術系ブログ</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="cir-kit.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">ロボットを作ってみよう !（動く箱 編）</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-02-01T10:50:42+09:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>1</span><span class='date-suffix'>st</span>, <span class='date-year'>2015</span></span> <span class='time'>10:50 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><img src="/images/gazebo_logo.png" alt="gazebo_logo" /></p>
+
+<h5>検証日時</h5>
+
+<p>02/01/2015 (Sun)</p>
+
+<h5>概要</h5>
+
+<p>Gazeboのチュートリアル第二弾「Build a Robot」。<br/>
+このチュートリアルではロボットを作ったり、修正したりします。また、センサ、アクチュエータを搭載した車輪型ロボットを作り、モデルを描画するなどの実践例も行います。<br/>
+今回はその「Animated Box」編です。<br/>
+公式サイトを適当に翻訳しただけですので、あしからず。</p>
+
+<h5>レベル</h5>
+
+<p><strong>INTERMEDIATE</strong></p>
+
+<!-- more -->
+
+
+<h5>環境</h5>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> <strong>PC</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Prosessor</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>RAM</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>OS</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Kernel</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> 3.13.0-44-generic </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Gazebo</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Version 5.0.1 </td>
+</tr>
+</tbody>
+</table>
+
+
+<h5>参考</h5>
+
+<p><a href="http://gazebosim.org/tutorials?cat=build_robot">GAZEBO Tutorial-Build a Robot</a></p>
+
+<h2>はじめに</h2>
+
+<p>このチュートリアルでは、10周期で地面の上をスライドするようなシンプルな箱と、その<code>world</code>を生成します。<br/>
+また、Gazeboもしくは、自分独自の実行可能なシミュレーションを使用しての参照方法、アクセス方法、相互作用の様々な方法を紹介します。
+シミュレーションで生成する箱は自身の姿勢を配信し、姿勢を受け取るとコールバックを呼び、箱のロケーションとタイムスタンプをプリントアウトします。</p>
+
+<h2>セットアップ</h2>
+
+<p>作業ディレクトリを作成しましょう。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>mkdir ~/gazebo_animatebox_tutorial
+</span><span class='line'><span class="nb">cd</span> ~/gazebo_animatebox_tutorial
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>動く箱のコード</h2>
+
+<p><a href="https://bitbucket.org/osrf/gazebo/src/gazebo_4.0/examples/stand_alone/animated_box/animated_box.cc">animate_box.cc</a>、<a href="https://bitbucket.org/osrf/gazebo/src/gazebo_4.0/examples/stand_alone/animated_box/independent_listener.cc">independent_listner.cc</a>、<a href="https://bitbucket.org/osrf/gazebo/src/gazebo_4.0/examples/stand_alone/animated_box/integrated_main.cc">integrated_main.cc</a>、<a href="https://bitbucket.org/osrf/gazebo/src/gazebo_4.0/examples/stand_alone/animated_box/CMakeLists.txt">CMakeLists.txt</a>、<a href="https://bitbucket.org/osrf/gazebo/src/gazebo_4.0/examples/stand_alone/animated_box/animated_box.world">animated_box.world</a>を現在のディレクトリにコピーしましょう。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>wget http://bitbucket.org/osrf/gazebo/raw/gazebo_4.0/examples/stand_alone/animated_box/animated_box.cc
+</span><span class='line'>wget http://bitbucket.org/osrf/gazebo/raw/gazebo_4.0/examples/stand_alone/animated_box/independent_listener.cc
+</span><span class='line'>wget http://bitbucket.org/osrf/gazebo/raw/gazebo_4.0/examples/stand_alone/animated_box/integrated_main.cc
+</span><span class='line'>wget http://bitbucket.org/osrf/gazebo/raw/gazebo_4.0/examples/stand_alone/animated_box/CMakeLists.txt
+</span><span class='line'>wget http://bitbucket.org/osrf/gazebo/raw/gazebo_4.0/examples/stand_alone/animated_box/animated_box.world
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>プラグインをビルドしましょう。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>mkdir build
+</span><span class='line'><span class="nb">cd </span>build
+</span><span class='line'>cmake ../
+</span><span class='line'>make
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ただし、Gazeboはプラグインを最後に読み込むことができるということを覚えておいてください。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">export </span><span class="nv">GAZEBO_PLUGIN_PATH</span><span class="o">=</span><span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>:<span class="nv">$GAZEBO_PLUGIN_PATH</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Gazeboでシミュレーションする</h2>
+
+<p>今回は、プラグインを使ったGazeboをどのようにして使うかを説明します。<br/>
+以下のようにしてGazeboを起動しましょう。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd</span> ~/gazebo_animatebox_tutorial
+</span><span class='line'>gazebo animated_box.world
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>他のターミナルで、<code>gz topc</code>コマンドを使用し、箱の姿勢を表示するユーザーインターフェースを起動しましょう。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gz topic -v /gazebo/animated_box_world/pose/local/info
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>すると、箱の姿勢を表示するGUIが表示できたはずです。</p>
+
+<h2>独自の実行ファイルを使ってシミュレーションに接続する。</h2>
+
+<p>Gazeboが起動していないことを確認してください。<br/>
+これまでの説明通りにGazeboを起動してください。同時にGazeboに接続できる独立したリスナを起動してください。このリスナというのは、箱のロケーションとタイムスタンプを受け取り、それをプリントアウトするようなものです。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd</span> ~/gazebo_animatebox_tutorial
+</span><span class='line'>gazebo animated_box.world <span class="p">&amp;</span> ./build/independent_listener
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>シミュレーションを起動し、独自の実行ファイルを接続する。</h2>
+
+<p>Gazeboが起動していないことを確認してください。
+例<code>integrated_main</code>は以下のようになっています。</p>
+
+<ol>
+<li><p>箱を表示するシミュレーションを起動する。</p></li>
+<li><p>シミュレーションにリスナを接続する。</p></li>
+<li><p>リスナはタイムスタンプと姿勢を受け取り、それぞれをプリントアウトします。</p></li>
+</ol>
+
+
+<p>ファイル<code>integrated_main</code>を実行しましょう。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd</span> ~/gazebo_animatebox_tutorial
+</span><span class='line'>./build/integrated_main animated_box.world
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>シミュレーションを見るために、以下のコマンドを実行しましょう。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gzclient
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>ソースコード</h2>
+
+<h3>independent_listner.cc</h3>
+
+<p>実行しているシミュレーションに接続し、姿勢情報トピックを受け取り、物体の姿勢を表示します。</p>
+
+<h3>integrated_main.cc</h3>
+
+<p>シミュレーションを起動し、姿勢情報トピックを受け取り、物体の姿勢を表示します。</p>
+
+<h3>animated_box.cc</h3>
+
+<p>シミュレーションのアニメーション要素を定義したプラグインライブラリです。アニメーション要素とは、シミュレーションの中で、箱を動かすようなものです。</p>
+
+<h3>animated_box.world</h3>
+
+<p>シミュレーションの環境とその環境下に置く箱のについて定義下XMLファイルです。</p>
+
+<h3>CMakeLists.txt</h3>
+
+<p>スクリプトをビルドするCMakeです。</p>
+
+<h2>最後に</h2>
+
+<p>ここまでは、公式サイトの訳だけです。
+自分でやってみたら、どういうふうに動くかを追加で書く予定ですので、もう少々お待ちください。(02/02/2015 11:49)</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">RyodoTanaka</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2015-02-01T10:50:42+09:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>1</span><span class='date-suffix'>st</span>, <span class='date-year'>2015</span></span> <span class='time'>10:50 am</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/build-a-robot/'>build a robot</a>, <a class='category' href='/blog/categories/gazebo/'>gazebo</a>, <a class='category' href='/blog/categories/ubuntu/'>ubuntu</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://cir-kit.github.io/blog/2015/02/01/gazebo-animated-box/" data-via="" data-counturl="http://cir-kit.github.io/blog/2015/02/01/gazebo-animated-box/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2015/02/01/gazebo-attach-gripper-to-robot/" title="Previous Post: ロボットを作ってみよう ! (ロボットにグリッパを取り付ける 編)">&laquo; ロボットを作ってみよう ! (ロボットにグリッパを取り付ける 編)</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/02/01/gazebo-animated-box/">ロボットを作ってみよう !（動く箱 編）</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/02/01/gazebo-attach-gripper-to-robot/">ロボットを作ってみよう ! (ロボットにグリッパを取り付ける 編)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/01/31/gazebo-make-a-simple-gripper/">ロボットを作ってみよう ! (簡単なグリッパーを作る 編)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/01/31/gazebo-add-a-sensor-to-a-robot/">ロボットを作ってみよう ! (ロボットにセンサを取り付ける 編)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/01/31/gazebo-attach-meshes/">ロボットを作ってみよう ! (メッシュをつける 編)</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 -  -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
