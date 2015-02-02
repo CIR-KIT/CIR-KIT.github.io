@@ -4,7 +4,7 @@
   <title><![CDATA[九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-02-03T04:45:05+09:00</updated>
+  <updated>2015-02-03T05:37:21+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -180,6 +180,22 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
+<p>実行すると、以下の動画のようになります。<br/>
+先ほどまでのように、<code>gz topic``によるアプリケーションとは異なり、箱の状態が端末に表示されていることがわかります。  
+**注目 : **もし、Gazeboは起動するが、箱が動ないという現象に陥ったなら、それは、パス通しがうまく行っていません。一つ前の項でパス通しをしていますので、</code>libanimated_box.so&#8220;`ファイルのあるディレクトリで、以下のコマンドを実行し、パス通しをし直しましょう。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">export </span><span class="nv">GAZEBO_PLUGIN_PATH</span><span class="o">=</span><span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>:<span class="nv">$GAZEBO_PLUGIN_PATH</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ちなみに、この現象は、パスを通した後に一旦端末を閉じ、新しい端末で実行した場合に起きるようです。</p>
+
+<div class="youtube-container">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/e3kCrol8XA8" frameborder="0" allowfullscreen></iframe>
+</div>
+
+
 <h2>シミュレーションを起動し、独自の実行ファイルを接続する。</h2>
 
 <p>Gazeboが起動していないことを確認してください。
@@ -208,6 +224,14 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
+<p>実行すると、以下の動画のようになります。<br/>
+先ほどと同様、端末に箱の状態が表示されますが、コマンド一つでGazeboが立ち上がっていないところに違いがあります。つまり、今回は、<code>gzserver</code>のみを立ち上げ、その後手動で<code>gzclient</code>を立ち上げたということです。この、<code>gzserver</code>と<code>gzclient</code>の概念については<a href="http://cir-kit.github.io/blog/2015/01/31/gazebo-components/">GAZEBOを使ってみよう ! (Gazebo コンポーネント 編)</a>で説明していますので、そちらをご覧ください。</p>
+
+<div class="youtube-container">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/dY7pIIXt85E" frameborder="0" allowfullscreen></iframe>
+</div>
+
+
 <h2>ソースコード</h2>
 
 <h3>independent_listner.cc</h3>
@@ -229,11 +253,6 @@
 <h3>CMakeLists.txt</h3>
 
 <p>スクリプトをビルドするCMakeです。</p>
-
-<h2>最後に</h2>
-
-<p>ここまでは、公式サイトの訳だけです。
-自分でやってみたら、どういうふうに動くかを追加で書く予定ですので、もう少々お待ちください。(02/02/2015 11:49)</p>
 ]]></content>
   </entry>
   
