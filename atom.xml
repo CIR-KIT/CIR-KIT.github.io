@@ -4,7 +4,7 @@
   <title><![CDATA[九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-02-02T12:19:52+09:00</updated>
+  <updated>2015-02-03T03:12:49+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -12,6 +12,152 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Gazebo Find Out Inertial Parameters]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/02/02/gazebo-find-out-inertial-parameters/"/>
+    <updated>2015-02-02T00:00:00+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/02/02/gazebo-find-out-inertial-parameters</id>
+    <content type="html"><![CDATA[<p><img src="http://cir-kit.github.io/images/gazebo_logo.png" alt="gazebo_logo" /></p>
+
+<h5>検証日時</h5>
+
+<p>02/01/2015 (Sun)</p>
+
+<h5>概要</h5>
+
+<p>Gazeboのチュートリアル第二弾「Build a Robot」。<br/>
+このチュートリアルではロボットを作ったり、修正したりします。また、センサ、アクチュエータを搭載した車輪型ロボットを作り、モデルを描画するなどの実践例も行います。<br/>
+今回はその「Findout inertial parameters」編です。<br/>
+公式サイトを適当に翻訳しただけですので、あしからず。</p>
+
+<h5>レベル</h5>
+
+<p><strong>INTERMEDIATE</strong></p>
+
+<!-- more -->
+
+
+<h5>環境</h5>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> <strong>PC</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Prosessor</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>RAM</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>OS</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Kernel</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> 3.13.0-44-generic </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Gazebo</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Version 5.0.1 </td>
+</tr>
+</tbody>
+</table>
+
+
+<h5>参考</h5>
+
+<p><a href="http://gazebosim.org/tutorials?cat=build_robot">GAZEBO Tutorial-Build a Robot</a></p>
+
+<h2>はじめに</h2>
+
+<p>モデルの尤もらしい物理的特性のためには、慣性行列、重心、すべてのリンクの質量を正しく設定する必要があります。このチュートリアルでは、それらのパラメータを得ていない場合に、(また、3Dのリンクモデルを作成している)それらのパラメータを探し当て、適用するプロセスを説明します。
+このチュートリアルではフリーソフトウェアの<code>MeshLab</code>(同次元のボディであるとします)を使って、いかにして慣性データを取得するのかを示します。それらの情報を計算するために、<strong>SolidWorks</strong>のような商用ソフトを使うこともできます。<strong>SolidWorks</strong>を使用するためのガイドは、<a href="http://answers.ros.org/question/30539/choosing-the-right-coefficients-for-gazebo-simulation/">question on answers.ros.org</a>をご覧ください。</p>
+
+<h2>準備</h2>
+
+<p>***MeshLabをインストールする
+<a href="http://meshlab.sourceforge.net/">MeshLabを公式サイトよりダウンロード</a>してください。インストールは順調に終わるはずです。
+インストールしたら、メッシュデータを見るときにMashLabが立ち上がるでしょう。（GazeboやROSででもサポートされているDAEファイルやSTLファイルも同様です。）</p>
+
+<h2>慣性パラメータを計算する</h2>
+
+<h3>最初にMeshLabで試す</h3>
+
+<p>MeshLabでメッシュファイルを開いてください。慣性パラメータを計算するためには、<strong>Layers</strong>ダイアログを開く必要があります。<strong>View</strong>-><strong>show Layer Dialog</strong>を開いてください。ウィンドウの右側半分にパネルが開きます。今回は、画面下にあるテキスト出力を含む部分に注目してください。
+続いて、MeshLabに慣性パラメータの計算をさせるため、コマンドを打ちます。<strong>Filters</strong>-><strong>Quality Measure and Computations</strong>-><strong>Compute Geometric Measures</strong>をメニューから選んでください。すると以下のような慣性パラメータの情報がウィンドウ下側のレイヤーに表示されます。：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Mesh Bounding Box Size 0.044000 0.221000 0.388410
+</span><span class='line'>Mesh Bounding Box Diag 0.449043 
+</span><span class='line'>Mesh Volume is 0.001576
+</span><span class='line'>Mesh Surface is 0.136169
+</span><span class='line'>Thin shell barycenter -0.021954 0.008976 0.012835
+</span><span class='line'>Center of Mass is -0.021993 0.001259 0.001489
+</span><span class='line'>Inertia Tensor is :
+</span><span class='line'>| 0.000008 -0.000000 -0.000000 |
+</span><span class='line'>| -0.000000 0.000001 -0.000000 |
+</span><span class='line'>| -0.000000 -0.000000 0.000007 |
+</span><span class='line'>Principal axes are :
+</span><span class='line'>| 0.999999 0.000166 0.001241 |
+</span><span class='line'>| -0.000113 0.999104 -0.042310 |
+</span><span class='line'>| -0.001247 0.042310 0.999104 |
+</span><span class='line'>axis momenta are :
+</span><span class='line'>| 0.000008 0.000001 0.000007 |</span></code></pre></td></tr></table></div></figure>
+
+
+<p>探していたパラメータが見つかったように思うでしょう。しかし、よく見てみると、出力は、たったの10進数6桁しかないということがわかります。結果として、慣性テンソル情報のほとんどを失ってしまっているのです。<br/>
+ここで、MeshLabの出力が何を意味しているのかを説明します。MeshLabでは、モデルの質量を知らせる方法がありません。なので、MeshLabでは質量の代わりに他のパラメータを使用せねばなりません。そのような場合には、モデルを定量化することに意味があります。（つまりは、物質密度のことです。）メッシュの大きさは、テキスト出力に表示されます。（そして、長さの単位と一致するような単位によって表現されます。）
+以下は、パラメータを表示しているMeshLabの様子です。
+<img src="http://cir-kit.github.io/images/2015-02-02-gazebo-find-out-inertial-parameters/meshlab.jpg" alt="meshlab" /></p>
+
+<h2>重心を得る</h2>
+
+<p>MeshLabが同一の単位系を使用することはいつでも起こることではありません。(例えばGazeboでつかうメートル系で統一されているとうことばかりではないとうことです。)しかし、MeshLabでは、<code>Mesh Bounding Box size</code>というエントリを使用することで、設計した単位系の比を簡単に指定することができます。例えば、必要な単位系で統一して作られた箱のサイズをMeshLabのものと比較して計算することもできるということです。<br/>
+計算した比と重心を掛けあわせ、メッシュの重心を得ます。しかし、作成したリンクが同次元でない場合、他の方法を使って重心を求める必要があります。（ほとんどの場合は経験則です。）</p>
+
+<h2>慣性テンソルを得る</h2>
+
+<p>テキスト出力に表示されるfloat型に起因する、慣性テンソルの誤差に対処するにはどうしたら良いのでしょうか？</p>
+
+<p>How to overcome the problem with low precision of the Inertia Tensor floats in the text output? You can scale up the model so that all the numbers grow sufficiently large for not being cropped. The model can be scaled using Filters->Normals, Curvatures and Orientation->Transform: Scale. Enter a scale in the dialog and hit Apply. What scale to choose? It is reasonable to scale the model in such way that it has unit volume in MeshLab. That is done using a scale of 1/Mesh Volume with the Mesh Volume read from the text output in Layers Dialog.</p>
+
+<p>Now, instruct MeshLab to recompute the geometrical measures again, et voilà, the Inertia Tensor entry looks much better now. The only thing that remains is to copy the inertia tensor into a mathematical software and multiply it by 1/s<sup>2</sup> where s is the reciprocal of the scale used for upscaling the model.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[ロボットを作ってみよう !（動く箱 編）]]></title>
