@@ -4,7 +4,7 @@
   <title><![CDATA[九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-02-03T04:33:49+09:00</updated>
+  <updated>2015-02-03T04:45:05+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -164,7 +164,7 @@
 以下の動画は、動く箱と、その状態を表示するGUIが動いている様子です。</p>
 
 <div class="youtube-container">
-  <iframe width="560" height="315" src="http://youtu.be/QMrT0iapF4g" frameborder="0" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/QMrT0iapF4g" frameborder="0" allowfullscreen></iframe>
 </div>
 
 
