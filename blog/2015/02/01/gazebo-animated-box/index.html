@@ -261,8 +261,8 @@
 
 
 <p>実行すると、以下の動画のようになります。<br/>
-先ほどまでのように、<code>gz topic``によるアプリケーションとは異なり、箱の状態が端末に表示されていることがわかります。  
-**注目 : **もし、Gazeboは起動するが、箱が動ないという現象に陥ったなら、それは、パス通しがうまく行っていません。一つ前の項でパス通しをしていますので、</code>libanimated_box.so&#8220;`ファイルのあるディレクトリで、以下のコマンドを実行し、パス通しをし直しましょう。</p>
+先ほどまでのように、<code>gz topic</code>によるアプリケーションとは異なり、箱の状態が端末に表示されていることがわかります。<br/>
+<strong>注目 : </strong>もし、Gazeboは起動するが、箱が動ないという現象に陥ったなら、それは、パス通しがうまく行っていません。一つ前の項でパス通しをしていますので、<code>libanimated_box.so</code>ファイルのあるディレクトリで、以下のコマンドを実行し、パス通しをし直しましょう。</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">export </span><span class="nv">GAZEBO_PLUGIN_PATH</span><span class="o">=</span><span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>:<span class="nv">$GAZEBO_PLUGIN_PATH</span>
