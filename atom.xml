@@ -4,7 +4,7 @@
   <title><![CDATA[九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-02-03T19:02:09+09:00</updated>
+  <updated>2015-02-03T19:56:23+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -88,6 +88,59 @@
 <p><a href="http://gazebosim.org/tutorials?cat=build_world">GAZEBO Tutorial-Build a World</a></p>
 
 <h2>はじめに</h2>
+
+<p>このチュートリアルでは、どのようにして物理プロパティや場面プロパティを含むグローバルプロパティを修正するか説明します。<br/>
+Gazeboを起動してください。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>  gazebo
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>場面プロパティ</h2>
+
+<p><strong>World</strong>タブの中で、<strong>scene</strong>を選んでください。すると、以下のような場面プロパティのリストが表示されたはずです。続いてプロパティの詳細を表示するために、三角形のボタンをクリックしてプロパティを展開してください。<br/>
+<img src="http://cir-kit.github.io/images/2015-02-03-gazebo-modifying-a-world/tutorialSceneTab.png" alt="tutorialSceneTab" />
+<img src="http://cir-kit.github.io/images/2015-02-03-gazebo-modifying-a-world/tutorialSceneTabExpanded.png" alt="tutorialSceneTabExpanded" /><br/>
+これらのプロパティでは照明についての詳細を変更することができます。<br/>
+<strong>メモ : </strong>skyが選択されている場合、背景色は変更できません。</p>
+
+<h2>物理プロパティ</h2>
+
+<p><strong>World</strong>タブの中で、<strong>physics</strong>を選択してください。すると、以下のように物理プロパティのリストが表示されたはずです。</p>
+
+<ul>
+<li><p>チェックボックスはプラグインやセンサが起動している間、物理エンジンを起動するかどうかを選択できます。</p></li>
+<li><p><strong>rial time update rate parameter</strong>は物理エンジンのアプデートの時間を[Hz]で指定します。もし、この値を0にしたら、可能な限り速い速度でアップデートを行います。<strong>rial time update rate</strong>と<strong>step size</strong>はリアルタイム要素を代表する要素であり、シミュレーション時間をリアルタイムにするかどうかを決定します。</p></li>
+<li><p><strong>max step size</strong>は一秒間にどれだけの間物理シミュレータのアップデートステップを維持するかを定義します。</p></li>
+</ul>
+
+
+<p><strong>grabity</strong>ブロックでは:</p>
+
+<ul>
+<li>x,y,zのパラメータで全体の重力をベクトルで設定します。単位は[$m/s<sup>2</sup>$]です。</li>
+</ul>
+
+
+<p><strong>solver</strong>ブロックでは:</p>
+
+<ul>
+<li><p>慣性パラメータによりLCP solver（ODEやbulletで使用されています）で使用するための慣性データを設定します。</p></li>
+<li><p>SORパラメータは<a href="http://en.wikipedia.org/wiki/Successive_over-relaxation">連続する加速緩和</a>を記述します。この、加速緩和とは慣性要素を収束させるために使用します。</p></li>
+</ul>
+
+
+<p><strong>constraints</strong>ブロックには制約を解除するパラメータがいくつか含まれています。</p>
+
+<ul>
+<li>CFMやERPパラメータは<a href="http://ode-wiki.org/wiki/index.php?title=Manual:_Concepts#Constraint_Force_Mixing_.28CFM.29">Constant Force Mixing</a>や<a href="http://ode-wiki.org/wiki/index.php?title=Manual:_Concepts#Joint_error_and_the_Error_Reduction_Parameter_.28ERP.29">Error Reduction</a>のパラメータにを記述し、ODEやbulletで使用されます。CFMやERｐパラメータは<a href="http://ode-wiki.org/wiki/index.php?title=Manual:_Concepts#How_To_Use_ERP_and_CFM">linear stiffness や damping coefficients</a>に関連付けることができます。<strong>max velocity</strong>や<strong>surface layer</strong>パラメータは<strong>split inpulse method</strong>の解決に使用されます。どのようなcontactにおいても、<strong>surface layer</strong>やバウンドしないような<strong>max velocity</strong>より遅い速度による深さより深い。(????)<strong>私もよくわからない</strong>ので、ちょっと勘弁してください。すみませんorz&hellip;<br/>
+パラメータについての詳しい説明は、<a href="http://osrf-distributions.s3.amazonaws.com/sdformat/api/dev.html#physics12">sdf physics documentation</a>をご覧ください。
+<img src="http://cir-kit.github.io/images/2015-02-03-gazebo-modifying-a-world/tutorialPhysicsTab.png" alt="tutorialPhysicsTab" /></li>
+</ul>
+
+
+<h4>Next >> <a href="">GazeboでのDEMｓの使い方</a></h4>
 ]]></content>
   </entry>
   
@@ -290,7 +343,7 @@
 
 <p>ファイル名は現在の作業ディレクトリ直下にしてください。そうしない場合には、絶対パスもしくは、作業ディレクトリからの相対パスを入力してください。</p>
 
-<h3>Next >> <a href="">環境を修正する</a></h3>
+<h3>Next >> <a href="http://cir-kit.github.io/blog/2015/02/03/gazebo-modifying-a-world/">環境を修正する</a></h3>
 ]]></content>
   </entry>
   
