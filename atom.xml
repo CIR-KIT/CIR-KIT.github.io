@@ -4,7 +4,7 @@
   <title><![CDATA[九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-02-03T05:43:42+09:00</updated>
+  <updated>2015-02-03T18:16:41+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -12,6 +12,122 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[環境をつくろう ! (新規の環境を作る 編)]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/02/03/gazebo-building-a-new-world/"/>
+    <updated>2015-02-03T17:42:21+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/02/03/gazebo-building-a-new-world</id>
+    <content type="html"><![CDATA[<p><img src="http://cir-kit.github.io/images/gazebo_logo.png" alt="gazebo_logo" /></p>
+
+<h5>検証日時</h5>
+
+<p>02/03/2015 (Tue)</p>
+
+<h5>概要</h5>
+
+<p>Gazeboのチュートリアル第三弾「Build a World」。
+このチュートリアルでは、シミュレーション中の環境をどのように構築するかについて説明します。<br/>
+今回はその「Building a New World」編です。<br/>
+公式サイトを適当に翻訳しただけですので、あしからず。</p>
+
+<h5>レベル</h5>
+
+<p><strong>BEGINNER</strong></p>
+
+<!-- more -->
+
+
+<h5>環境</h5>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> <strong>PC</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Prosessor</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>RAM</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>OS</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Kernel</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> 3.13.0-44-generic </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Gazebo</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Version 5.0.1 </td>
+</tr>
+</tbody>
+</table>
+
+
+<h5>参考</h5>
+
+<p><a href="http://gazebosim.org/tutorials?cat=build_world">GAZEBO Tutorial-Build a World</a></p>
+
+<h2>はじめに</h2>
+
+<p>このチュートリアルでは、動的もしくは静的な物体を生成する過程について説明します。</p>
+
+<h2>用語説明</h2>
+
+<ul>
+<li><p><strong>World : </strong>ロボットや物体（例えばビルやテーブル、照明など）さらに、空や照明のパラメータ、物理的特性を記述するのに使用します。</p></li>
+<li><p><strong>Static : </strong>staticマークがついた物体（SDFファイルで<code>&lt;static&gt;true&lt;/static&gt;</code>と記述されているもの）であり、衝突要素のみを持つ様な物体です。すべての動いていない物体は<code>static</code>と記述する必要があります。また、そのように記述することで、パフォーマンスが向上します。</p></li>
+<li><p><strong>Dynamic : </strong>dynamicマークがついた物体（SDFファイルには<code>&lt;static&gt;</code>要素がないか、<code>false</code>が設定されています）で、慣性要素と衝突要素を含みます。</p></li>
+</ul>
+
+
+<h2>セットアップ</h2>
+
+<ol>
+<li><p>Gazeboがインストールされていることを確認してください。インストールしていない場合には、<a href="http://cir-kit.github.io/blog/2015/01/31/gazebo-install/">Gazeboのインストール</a>をご覧ください。</p></li>
+<li><p>チュートリアル用の作業ディレクトリを作成しましょう。:</p></li>
+</ol>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>mkdir ~/build_world_tutorial
+</span><span class='line'><span class="nb">cd</span> ~/build_world_tutorial
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ol>
+<li>Gazeboを起動し、以下のように<code>gland plane</code>が起動していることを確かめましょう。</li>
+</ol>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="http://cir-kit.github.io/images/2015-02-03-gazebo-building-a-new-world/empty_world.png" alt="empty_world" /></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[ロボットを作ってみよう !（動く箱 編）]]></title>
