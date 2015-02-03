@@ -1,0 +1,337 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>環境をつくろう ! (環境を修正する 編) - 九州工業大学 CIR-KIT Blog</title>
+  <meta name="author" content="">
+
+  
+  <meta name="description" content="検証日時 02/03/2015 (Tue) 概要 Gazeboのチュートリアル第三弾「Build a World」。
+このチュートリアルでは、シミュレーション中の環境をどのように構築するかについて説明します。
+今回はその「Modifying a World」編です。 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://cir-kit.github.io/blog/2015/02/03/gazebo-modifying-a-world/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="九州工業大学 CIR-KIT Blog" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-59178596-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">九州工業大学 CIR-KIT Blog</a></h1>
+  
+    <h2>九工大自律移動ロボット製作プロジェクトCIR-KITの技術系ブログ</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="cir-kit.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">環境をつくろう ! (環境を修正する 編)</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-02-03T18:59:45+09:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>3</span><span class='date-suffix'>rd</span>, <span class='date-year'>2015</span></span> <span class='time'>6:59 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><img src="/images/gazebo_logo.png" alt="gazebo_logo" /></p>
+
+<h5>検証日時</h5>
+
+<p>02/03/2015 (Tue)</p>
+
+<h5>概要</h5>
+
+<p>Gazeboのチュートリアル第三弾「Build a World」。
+このチュートリアルでは、シミュレーション中の環境をどのように構築するかについて説明します。<br/>
+今回はその「Modifying a World」編です。<br/>
+公式サイトを適当に翻訳しただけですので、あしからず。</p>
+
+<h5>レベル</h5>
+
+<p><strong>BEGINNER</strong></p>
+
+<!-- more -->
+
+
+<h5>環境</h5>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> <strong>PC</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Prosessor</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>RAM</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>OS</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Kernel</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> 3.13.0-44-generic </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Gazebo</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Version 5.0.1 </td>
+</tr>
+</tbody>
+</table>
+
+
+<h5>参考</h5>
+
+<p><a href="http://gazebosim.org/tutorials?cat=build_world">GAZEBO Tutorial-Build a World</a></p>
+
+<h2>はじめに</h2>
+
+<p>このチュートリアルでは、どのようにして物理プロパティや場面プロパティを含むグローバルプロパティを修正するか説明します。<br/>
+Gazeboを起動してください。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>  gazebo
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>場面プロパティ</h2>
+
+<p><strong>World</strong>タブの中で、<strong>scene</strong>を選んでください。すると、以下のような場面プロパティのリストが表示されたはずです。続いてプロパティの詳細を表示するために、三角形のボタンをクリックしてプロパティを展開してください。<br/>
+<img src="/images/2015-02-03-gazebo-modifying-a-world/tutorialSceneTab.png" alt="tutorialSceneTab" />
+<img src="/images/2015-02-03-gazebo-modifying-a-world/tutorialSceneTabExpanded.png" alt="tutorialSceneTabExpanded" /><br/>
+これらのプロパティでは照明についての詳細を変更することができます。<br/>
+<strong>メモ : </strong>skyが選択されている場合、背景色は変更できません。</p>
+
+<h2>物理プロパティ</h2>
+
+<p><strong>World</strong>タブの中で、<strong>physics</strong>を選択してください。すると、以下のように物理プロパティのリストが表示されたはずです。</p>
+
+<ul>
+<li><p>チェックボックスはプラグインやセンサが起動している間、物理エンジンを起動するかどうかを選択できます。</p></li>
+<li><p><strong>rial time update rate parameter</strong>は物理エンジンのアプデートの時間を[Hz]で指定します。もし、この値を0にしたら、可能な限り速い速度でアップデートを行います。<strong>rial time update rate</strong>と<strong>step size</strong>はリアルタイム要素を代表する要素であり、シミュレーション時間をリアルタイムにするかどうかを決定します。</p></li>
+<li><p><strong>max step size</strong>は一秒間にどれだけの間物理シミュレータのアップデートステップを維持するかを定義します。</p></li>
+</ul>
+
+
+<p><strong>grabity</strong>ブロックでは:</p>
+
+<ul>
+<li>x,y,zのパラメータで全体の重力をベクトルで設定します。単位は[$m/s<sup>2</sup>$]です。</li>
+</ul>
+
+
+<p><strong>solver</strong>ブロックでは:</p>
+
+<ul>
+<li><p>慣性パラメータによりLCP solver（ODEやbulletで使用されています）で使用するための慣性データを設定します。</p></li>
+<li><p>SORパラメータは<a href="http://en.wikipedia.org/wiki/Successive_over-relaxation">連続する加速緩和</a>を記述します。この、加速緩和とは慣性要素を収束させるために使用します。</p></li>
+</ul>
+
+
+<p><strong>constraints</strong>ブロックには制約を解除するパラメータがいくつか含まれています。</p>
+
+<ul>
+<li>CFMやERPパラメータは<a href="http://ode-wiki.org/wiki/index.php?title=Manual:_Concepts#Constraint_Force_Mixing_.28CFM.29">Constant Force Mixing</a>や<a href="http://ode-wiki.org/wiki/index.php?title=Manual:_Concepts#Joint_error_and_the_Error_Reduction_Parameter_.28ERP.29">Error Reduction</a>のパラメータにを記述し、ODEやbulletで使用されます。CFMやERｐパラメータは<a href="http://ode-wiki.org/wiki/index.php?title=Manual:_Concepts#How_To_Use_ERP_and_CFM">linear stiffness や damping coefficients</a>に関連付けることができます。<strong>max velocity</strong>や<strong>surface layer</strong>パラメータは<strong>split inpulse method</strong>の解決に使用されます。どのようなcontactにおいても、<strong>surface layer</strong>やバウンドしないような<strong>max velocity</strong>より遅い速度による深さより深い。(????)<strong>私もよくわからない</strong>ので、ちょっと勘弁してください。すみませんorz&hellip;<br/>
+パラメータについての詳しい説明は、<a href="http://osrf-distributions.s3.amazonaws.com/sdformat/api/dev.html#physics12">sdf physics documentation</a>をご覧ください。
+<img src="/images/2015-02-03-gazebo-modifying-a-world/tutorialPhysicsTab.png" alt="tutorialPhysicsTab" /></li>
+</ul>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">RyodoTanaka</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2015-02-03T18:59:45+09:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>3</span><span class='date-suffix'>rd</span>, <span class='date-year'>2015</span></span> <span class='time'>6:59 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/build-a-robot/'>build a robot</a>, <a class='category' href='/blog/categories/gazebo/'>gazebo</a>, <a class='category' href='/blog/categories/ubuntu/'>ubuntu</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://cir-kit.github.io/blog/2015/02/03/gazebo-modifying-a-world/" data-via="" data-counturl="http://cir-kit.github.io/blog/2015/02/03/gazebo-modifying-a-world/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2015/02/03/gazebo-building-a-new-world/" title="Previous Post: 環境をつくろう ! (新規の環境を作る 編)">&laquo; 環境をつくろう ! (新規の環境を作る 編)</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/02/03/gazebo-modifying-a-world/">環境をつくろう ! (環境を修正する 編)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/02/03/gazebo-building-a-new-world/">環境をつくろう ! (新規の環境を作る 編)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/02/01/gazebo-animated-box/">ロボットを作ってみよう !（動く箱 編）</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/02/01/gazebo-attach-gripper-to-robot/">ロボットを作ってみよう ! (ロボットにグリッパを取り付ける 編)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/01/31/gazebo-make-a-simple-gripper/">ロボットを作ってみよう ! (簡単なグリッパーを作る 編)</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 -  -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

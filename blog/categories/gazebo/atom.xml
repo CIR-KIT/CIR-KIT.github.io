@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Gazebo | 九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/blog/categories/gazebo/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-02-03T18:16:41+09:00</updated>
+  <updated>2015-02-03T19:02:09+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -12,6 +12,119 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[環境をつくろう ! (環境を修正する 編)]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/02/03/gazebo-modifying-a-world/"/>
+    <updated>2015-02-03T18:59:45+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/02/03/gazebo-modifying-a-world</id>
+    <content type="html"><![CDATA[<p><img src="http://cir-kit.github.io/images/gazebo_logo.png" alt="gazebo_logo" /></p>
+
+
+
+
+<h5>検証日時</h5>
+
+
+
+
+<p>02/03/2015 (Tue)</p>
+
+
+
+
+<h5>概要</h5>
+
+
+
+
+<p>Gazeboのチュートリアル第三弾「Build a World」。
+このチュートリアルでは、シミュレーション中の環境をどのように構築するかについて説明します。<br/>
+今回はその「Modifying a World」編です。<br/>
+公式サイトを適当に翻訳しただけですので、あしからず。</p>
+
+
+
+
+<h5>レベル</h5>
+
+
+
+
+<p><strong>BEGINNER</strong></p>
+
+
+
+
+<!-- more -->
+
+
+
+
+<h5>環境</h5>
+
+
+
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> <strong>PC</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Prosessor</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>RAM</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>OS</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Kernel</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> 3.13.0-44-generic </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Gazebo</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Version 5.0.1 </td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+<h5>参考</h5>
+
+
+
+
+<p><a href="http://gazebosim.org/tutorials?cat=build_world">GAZEBO Tutorial-Build a World</a></p>
+
+
+
+
+<h2>はじめに</h2>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[環境をつくろう ! (新規の環境を作る 編)]]></title>
@@ -182,6 +295,170 @@
 
 
 <p><img src="http://cir-kit.github.io/images/2015-02-03-gazebo-building-a-new-world/empty_world.png" alt="empty_world" /></p>
+
+
+
+
+<h2>物体を追加する</h2>
+
+
+
+
+<p>Gazeboには、物体を追加する方法が２つあります。</p>
+
+
+
+
+<ol>
+<li><p>１つ目は、簡単な形状の設置です。これは、以下のようにレンダリングウィンドウの上部にあります。
+<img src="http://cir-kit.github.io/images/2015-02-03-gazebo-building-a-new-world/empty_world_simple_shapes_highlighted.png" alt="empty_world_simple_shapes_highlighted" /></p></li>
+<li><p>２つ目は、モデルデータベースにあります。以下のように画面左上部にある<strong>Insert</strong>タブをクリックすることで、追加する物体の一覧が表示でき、追加する物体を選択することができます。
+<img src="http://cir-kit.github.io/images/2015-02-03-gazebo-building-a-new-world/empty_world_insert_highlighted.png" alt="empty_world_insert_highlighted" /></p></li>
+</ol>
+
+
+
+
+<h2>簡単な図形を追加する</h2>
+
+
+
+
+<p>箱、球、円柱をアイコンをレンダリングウィンドウ上部のアイコンをクリックすることで追加できます。それぞれの形状の大きさは以下のようになっています。</p>
+
+
+
+
+<ul>
+<li><p>箱 : 1x1x1 [m]</p></li>
+<li><p>球 : 直径 1 [m]</p></li>
+<li><p>円柱 : 直径 1 [m]、高さ 1 [m]</p></li>
+</ul>
+
+
+
+
+<p>箱のアイコンを選択し、マウスをレンダリングウィンドウに動かしてください。すると、マウスと共に動く箱を確認できるはずです。気に入った場所に箱を設置するには、左クリックを押してください。<br/>
+球と円柱でも同じことを繰り返してください。すると以下のような感じになるはずです。
+<img src="http://cir-kit.github.io/images/2015-02-03-gazebo-building-a-new-world/simple_shapes.png" alt="simple_shapes" /></p>
+
+
+
+
+<h2>モデルデータベースからモデルを追加する</h2>
+
+
+
+
+<p>Gazeboのモデルデータベースはロボットや机、建物に至るまでのありとあらゆる種類の保管場所です。</p>
+
+
+
+
+<ol>
+<li><p>モデルデータベースに接続するために、画面左上端にある<strong>Insert</strong>タブを選択してください。<br/>
+モデルのリストは現在の場所に従ったセクションに分けられています。それぞれのセクションはURIもしくはパスによって読み込まれています。リモートサーバーに置かれている物体を選択するとモデルを<code>~/.gazebo/models</code>にダウンロードします。</p></li>
+<li><p><code>world</code>にいろいろなモデルを追加してみましょう。モデルをダウンロードするときは、容量の大きい物もありますので、注意してください。</p></li>
+<li><p>以下のような感じでモデルを追加することができたと思います。モデルは、あなたが選んだものが表示差rているはずです。ですので、以下のキャプチャは、あくまでも一例です。:
+<img src="http://cir-kit.github.io/images/2015-02-03-gazebo-building-a-new-world/added_models_to_empty_world.png" alt="added_models_to_empty_world" /></p></li>
+</ol>
+
+
+
+
+<h2>モデルのポジション</h2>
+
+
+
+
+<p>それぞれのモデルのポジションは変換ツールもしくは回転ツールを使うことで変更できます。<br/>
+以下のように、アイコンが用意されています。
+<img src="http://cir-kit.github.io/images/2015-02-03-gazebo-building-a-new-world/empty_rts.png" alt="empty_rts" /></p>
+
+
+
+
+<h3>変換</h3>
+
+
+
+
+<p>変換ツールでは、物体をx,y,z軸それぞれに移動することができます。動かしたいモデルをクリックで選択しこのツールを使ってみましょう。３軸マーカーがモデル上に現れたと思います。このマーカーを使ってモデルをx,y,z軸方向に動かすのです。<br/>
+モデルをクリックし、ドラッグするだけで、物体をx-y平面では移動させることができます。x,y,zのキーを押しながらドラッグすることで、どの軸に沿って動かすのかを決定することができます。<br/>
+いろいろな方法で、モデルを動かしてみましょう。</p>
+
+
+
+
+<h3>回転</h3>
+
+
+
+
+<p>回転ツールではx,y,z軸周りにモデルを回転することができます。動かしたいモデルをクリックで選択しこのツールを使ってみましょう。３つの輪でできたマーカがモデル上に現れたと思います。このマーカーを使ってモデルをx,y,z軸周りに回転することができるのです。<br/>
+いろいろな方向にモデルを回転させてみましょう。</p>
+
+
+
+
+<h3>大きさ</h3>
+
+
+
+
+<p>大きさツールではモデルの大きさをx,y,z軸に沿って変更することができます。現在は、このツールは簡単な形状（つまり、箱、球、円柱）にのみ適用できます。簡単なモデルを選択し、このツールを使ってみましょう。すると、三軸のマーカーが出現したはずです。これを使ってx,y,z軸方向に物体の大きさを変更することができます。<br/>
+いろいろな大きさにしてみましょう。</p>
+
+
+
+
+<h2>モデルを削除する</h2>
+
+
+
+
+<p>モデルを選択し、Deleteキーを押せばモデルを削除できます。また、モデルの上で右クリックし、<strong>Delete</strong>を選択してもモデルを削除できます。<br/>
+いくつかのモデルを削除してみましょう。</p>
+
+
+
+
+<h2>Worldを保存する</h2>
+
+
+
+
+<p>気に入った<code>world</code>データが出来上がったら、<strong>File</strong>メニューより保存することができます。<br/>
+<strong>File</strong>メニューを選び<strong>Save as</strong>を選択しましょう。<br/>
+ポップアップが現れ、新しいファイルネームを問われます。<code>my_world.sdf</code>などのフィル名を入力し、OKをクリックしましょう。</p>
+
+
+
+
+<h2>Worldを読み込む</h2>
+
+
+
+
+<p>コマンドラインで以下のように入力すれば、保存した<code>world</code>データを読み込むことができます。<br/>
+以下の例は、<code>my_worlf.sdf</code>を読み込んでいます。</p>
+
+
+
+
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo my_world.sdf
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+
+
+
+<p>ファイル名は現在の作業ディレクトリ直下にしてください。そうしない場合には、絶対パスもしくは、作業ディレクトリからの相対パスを入力してください。</p>
+
+
+
+
+<h3>Next >> <a href="">環境を修正する</a></h3>
 
 ]]></content>
   </entry>
@@ -2021,282 +2298,6 @@
 
 
 <h4>Next >> <a href="http://cir-kit.github.io/blog/2015/02/01/gazebo-attach-gripper-to-robot/:">グリッパをロボットに取り付ける</a></h4>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[ロボットを作ってみよう ! (ロボットにセンサを取り付ける 編)]]></title>
-    <link href="http://cir-kit.github.io/blog/2015/01/31/gazebo-add-a-sensor-to-a-robot/"/>
-    <updated>2015-01-31T22:12:43+09:00</updated>
-    <id>http://cir-kit.github.io/blog/2015/01/31/gazebo-add-a-sensor-to-a-robot</id>
-    <content type="html"><![CDATA[<p><img src="http://cir-kit.github.io/images/gazebo_logo.png" alt="gazebo_logo" /></p>
-
-
-
-
-<h5>検証日時</h5>
-
-
-
-
-<p>01/25/2015 (Sun)</p>
-
-
-
-
-<h5>概要</h5>
-
-
-
-
-<p>Gazeboのチュートリアル第二弾「Build a Robot」。<br/>
-このチュートリアルではロボットを作ったり、修正したりします。また、センサ、アクチュエータを搭載した車輪型ロボットを作り、モデルを描画するなどの実践例も行います。<br/>
-今回はその「Add a Sensor to a Robot」編です。<br/>
-公式サイトを適当に翻訳しただけですので、あしからず。</p>
-
-
-
-
-<h5>レベル</h5>
-
-
-
-
-<p><strong>BEGINNER</strong></p>
-
-
-
-
-<!-- more -->
-
-
-
-
-<h5>環境</h5>
-
-
-
-
-<table>
-<thead>
-<tr>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center;"> <strong>PC</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Prosessor</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>RAM</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>OS</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Kernel</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> 3.13.0-44-generic </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Gazebo</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Version 5.0.1 </td>
-</tr>
-</tbody>
-</table>
-
-
-
-
-<h5>参考</h5>
-
-
-
-
-<p><a href="http://gazebosim.org/tutorials?cat=build_robot">GAZEBO Tutorial-Build a Robot</a></p>
-
-
-
-
-<h2>はじめに</h2>
-
-
-
-
-<p>このチュートリアルでは、他の複雑なモデルで構成されたコンポーネントに接続し、タグを使用することによって、Gazeboのモデルデータベースにあるモデルを直接使用した複雑なモデルを作るやり方を説明します。</p>
-
-
-
-
-<h2>レーザーを取り付ける</h2>
-
-
-
-
-<p>ロボットなどにレーザーを取り付けるには、モデルにセンサを含む物体を取り付けるだけです。</p>
-
-
-
-
-<ol>
-<li>前のチュートリアルで、すでに<code>model</code>ディレクトリにいるはずです。:</li>
-</ol>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd</span> ~/.gazebo/models/my_robot
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-
-<ol>
-<li><p>好きなエディタで<code>model.sdf</code>を開いてください。</p></li>
-<li><p>ファイルの最後の方にある<code>&lt;/model&gt;</code>タグの前に、以下の要素を追加してください。</p></li>
-</ol>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>    <span class="nt">&lt;include&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;uri&gt;</span>model://hokuyo<span class="nt">&lt;/uri&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;pose&gt;</span>0.2 0 0.2 0 0 0<span class="nt">&lt;/pose&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/include&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;joint</span> <span class="na">name=</span><span class="s">&quot;hokuyo_joint&quot;</span> <span class="na">type=</span><span class="s">&quot;revolute&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;child&gt;</span>hokuyo::link<span class="nt">&lt;/child&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;parent&gt;</span>chassis<span class="nt">&lt;/parent&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;axis&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;xyz&gt;</span>0 0 1<span class="nt">&lt;/xyz&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;limit&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;upper&gt;</span>0<span class="nt">&lt;/upper&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;lower&gt;</span>0<span class="nt">&lt;/lower&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/limit&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/axis&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/joint&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-
-<p>上記のような<code>&lt;include&gt;</code>ブロックでは、Gazeboにモデルを探させ、<code>&lt;pose&gt;</code>で親モデルとの関係を挿入します。今回は、ロボットの前方上方に<code>hokuyo（北陽）</code>のレーザーモデルを追加します。<code>&lt;uri&gt;</code>ブロックでは、モデルデータベースのどこを探せばいいのかGazeboに知らせます。(チュートリアルで使用するモデルデータのuriリストを<a href="http://gazebosim.org/models/">ここ</a>に示します。これは、<a href="https://bitbucket.org/osrf/gazebo_models">mercurial repository</a>と同じです。)<br/>
-新しい<code>&lt;joint&gt;</code>は、台車ロボットと<code>hokuyo</code>レーザーをつなげます。<code>&lt;joint&gt;</code>には<code>&lt;upper&gt;</code>と<code>&lt;lower&gt;</code>があり、勝手に動かないように0に設定されています。<br/>
-また、<code>&lt;joint&gt;</code>の中にある<code>&lt;child&gt;</code>というのは、以下のソースから始まる<a href="https://bitbucket.org/osrf/gazebo_models/src/6cd587c0a30e/hokuyo/model.sdf?at=default">hokuyo model&rsquo;s SDF</a>から提供されています。</p>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>    <span class="cp">&lt;?xml version=&quot;1.0&quot; ?&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;sdf</span> <span class="na">version=</span><span class="s">&quot;1.4&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;model</span> <span class="na">name=</span><span class="s">&quot;hokuyo&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;link</span> <span class="na">name=</span><span class="s">&quot;link&quot;</span><span class="nt">&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-
-<p>さて、<code>hokuyo</code>モデルが代入できたら、<code>hokuyo</code>のリンクにはそれぞれのモデル名と共に名前空間が生成されます。今回は、モデル名は<code>hokuyo</code>です。なので、<code>hokuyo</code>モデルのリンクはそれぞれ<code>hokuyo::</code>で始まる名前空間で表現されます。</p>
-
-
-
-
-<ol>
-<li>以下のコマンドで、<code>~/.gazebo/models/</code>の下に<code>hokuyo</code>モデルを追加してください。尚、ダウンロードする<code>hokuyo</code>モデルは、 <a href="https://bitbucket.org/osrf/gazebo_models/src/6cd587c0a30e/hokuyo/?at=default">gazebo_models/hokuyo</a>にあります。</li>
-</ol>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd</span> ~/.gazebo/models/
-</span><span class='line'>hg clone https://bitbucket.org/osrf/gazebo_models
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-
-<p>今回は、<code>hokuyo</code>モデルを<code>~/gazebo/models/</code>に追加しました。なので、<code>model.sdf</code>の<code>&lt;include&gt;</code>ブロックにある<code>&lt;uri&gt;</code>の内容を以下の様にしました。</p>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;uri&gt;</span>model://hokuyo<span class="nt">&lt;/uri&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-
-<p>もし、他のディレクトリに置きたい場合には、<code>~/.gazebo/models/</code>ディレクトリからの相対パスを記す必要があります。例えば、<code>~/.gazebo/models/gazebo_models/hokuyo/</code>に<code>hokuyo</code>モデルの本体を配置したのであれば、<code>&lt;include&gt;</code>フロックの<code>&lt;uri&gt;</code>は以下のように記述します。</p>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;uri&gt;</span>model://gazebo_models/hokuyo<span class="nt">&lt;/uri&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-
-<ol>
-<li><p>では、Gazeboを起動してGUIに表示される<strong>Insert</strong>という項目を利用してシミュレーションにロボットを追加しましょう。すると、下図のようにロボットにレーザーが付いていると思います。
-<img src="http://cir-kit.github.io/images/2015-01-31-gazebo-add-a-sensor-to-a-robot/Add_laser_pioneer.png" alt="Add_laser_pioneer" /></p></li>
-<li><p>(オプション)ロボットにカメラを取り付けてみましょう。カメラモデルのURIは<code>model://camera</code>です。このURIは以下のフォルダに収められています。</p></li>
-</ol>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>ls ~/.gazebo/models/camera/
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-
-<p>SDFについてのレファレンスは<a href="http://gazebosim.org/sdf/">ここ</a>にあります。</p>
-
-
-
-
-<h4>Next >> <a href="http://cir-kit.github.io/blog/2015/01/31/gazebo-make-a-simple-gripper/">簡単なグリッパをつくる</a></h4>
 
 ]]></content>
   </entry>
