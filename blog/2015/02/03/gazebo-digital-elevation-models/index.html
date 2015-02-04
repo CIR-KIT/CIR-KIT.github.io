@@ -346,38 +346,82 @@ GazeboをDEMファイルを含む<code>world</code>と共に立ち上げ、以�
 
 <h2>興味のある地域のDEMファイルを手に入れるにはどうしたらよいですか?</h2>
 
+<h3>GLCF(Global Land Cover Facillity)について</h3>
+
 <p>続いて、興味のある特定の地域のDEMファイルを手に入れる方法を説明します。<br/>
 <a href="http://glcf.umd.edu/">Global Land Cover Facility</a>では地球の高解像度なデジタル地形データを提供し、維持しています。<a href="http://glcfapp.glcf.umd.edu:8080/esdi/index.jsp">Search and Preview tool</a>へ行ってみましょう。すると、イメージしたシミュレータを見つけることができるでしょう。すべての地形パッチはあなたがこのツールを使う前から知っているであろう個々の<a href="http://www.shinko-keirin.co.jp/keirinkan/tea/sho/jissen/rika/201303_4/index.html">pathとrow</a>を持っています。私達は、QGISを使い興味のあるpath/rowを発見するのです。以下のキャプチャはその検索画面です。
 <img src="/images/2015-02-04-gazebo-digital-elevation-model/glcf_search_tool.png" alt="glcf_search_tool" /></p>
 
+<h3>QIGSについて</h3>
+
 <p><a href="http://www.qgis.org/">QIGS</a>とはクロスプラットフォームのオープンソース地理情報システムプログラムです。以下のように、このプログラムでは閲覧、編集、調査で使用することができます。<a href="http://www.qgis.org/en/site/forusers/download.html">QGISのサイトの指示</a>にしたがってQGISをダウンロードしてください。<br/>
 <img src="/images/2015-02-04-gazebo-digital-elevation-model/qgis.png" alt="qgis" /></p>
 
+<h5>QIGSのダウンロード</h5>
+
+<p><a href="http://www.qgis.org/en/site/forusers/download.html">QGISのダウンロード</a>を参考にしてQGISをダウンロードします。<br/>
+以下のように、aptを使ってQGISをインストールします。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>  sudo apt-get update
+</span><span class='line'>  sudo apt-get install qgis python-qgis
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h5>QGISの使い方</h5>
+
 <ol>
-<li><p>QGISを開いたら、画面左にある<strong>WMS/WMTS</strong>とラベル付されたアイコンをクリックし、<strong>Add default servers</strong>をクリックし、<strong>Lizardtch server</strong>を選択し、<strong>connect</strong>ボタンを押してください。</p></li>
-<li><p><strong>MODIS</strong>値を選んで、<strong>Add</strong>を押してください。また、ポップアップウィンドウを消してください。</p></li>
-<li><p>続いてのステップは他のレイヤーを利用可能なパッチと共に追加します。<a href="http://landsat.usgs.gov/documents/wrs2_descending.zip">このshapeファイル</a>をダウンロードし、どこでも良いのでフォルダに解凍してください。</p></li>
-<li><p>QGISに戻り、<strong>Add Vector Layer</strong>(画面左のアイコン)を押してください。</p></li>
-<li><p><strong>Browse</strong>を押し、前もって解凍しておいた<code>wrs2descending.shp</code>ファイルを選択してください。</p></li>
-<li><p>開いたウィンドウの<strong>OK</strong>を押してください。</p></li>
+<li><p>QGISを開いたら、以下のように、画面左にある<strong>WMS/WMTSレイヤの追加</strong>というアイコンをクリックしましょう。
+<img src="/images/2015-02-04-gazebo-digital-elevation-model/qgis-add-wms-wmts.png" alt="qgis-add-wms-wmts" /></p></li>
+<li><p>すると以下のようなウィンドウが出るので、以下のように、バーをクリックし、<strong>Lizardtch server</strong>を選択し、<strong>接続</strong>ボタンを押してください。
+<img src="/images/2015-02-04-gazebo-digital-elevation-model/qgis-lizardtech-server.png" alt="qgis-lizardtech-server" /></p></li>
+<li><p>すると、以下の一枚目のように、レイヤを選択できるようになるので、タイトルが<strong>MODIS</strong>であるレイヤを選んで、一番下の<strong>追加</strong>を押してください。終わったら、このウィンドウィンドウを閉じてください。<br/>
+うまく行くと、二枚目の写真のように、世界地図がレイヤに表示されるはずです。
+<img src="/images/2015-02-04-gazebo-digital-elevation-model/qgis-add-modis.png" alt="qgis-add-modis" />
+<img src="/images/2015-02-04-gazebo-digital-elevation-model/qgis-modis-layer.png" alt="qgis-modis-layer" /></p></li>
+<li><p>続いてのステップは他のレイヤーを利用可能なパッチと共に追加します。<a href="http://landsat.usgs.gov/documents/wrs2_descending.zip">このshapeファイル</a>をダウンロードし、どこでも良いのでフォルダに解凍してください。私は、<code>~/Downloads/</code>に保存し、そこで展開しました。</p></li>
+<li><p>QGISに戻り、以下の一枚目のように、<strong>ベクタレイヤの追加</strong>というアイコンを押してください。すると、<strong>開く前に、現在のプロジェクトを保存しますか？</strong>と聞かれるポップアプが表示されるので、<strong>保存する</strong>を選んでください。その後、先ほど解凍したフォルダの中の<code>wrs2descending.shp</code>ファイルを選択してください。うまく開けると、2枚目の様なレイヤが表示されるはずです。
+<img src="/images/2015-02-04-gazebo-digital-elevation-model/qgis-add-vector-layer.png" alt="qgis-add-vector-layer" />
+<img src="/images/2015-02-04-gazebo-digital-elevation-model/qgis-wrs2-descending-layer.png" alt="qgis-wrs2-descending-layer" /></p></li>
 </ol>
 
 
 <p>ここまでで、メインウィンドウに２つのレイヤが開いていることを確認できるはずです。２つのレイヤーを同時に確認できるようにするため、<code>wrs2desceding</code>レイヤの透明度を変更しましょう。<br/>
-レイヤ<code>wrsdescending</code>をダブルクリックし、透明度を85%程度に修正しましょう。</p>
+ウィンドウ左側のレイヤ一覧より、<code>wrsdescending</code>レイヤをダブルクリックすると、以下の一枚目のようなウィンドウが出るので、透明度を85%程度に修正しましょう。成功すれば、二枚目のようなレイヤになっているはずです。
+<img src="/images/2015-02-04-gazebo-digital-elevation-model/qgis-wrs2-descending-%20transparency.png" alt="qgis-wrs2-descending- transparency" />
+<img src="/images/2015-02-04-gazebo-digital-elevation-model/qgis-modis-wrs2-descending.png" alt="qgis-modis-wrs2-descending" /></p>
+
+<h3>QGISとGLCFを使って地形データを取得するまでの手順</h3>
+
+<h5>QGISの操作</h5>
 
 <ol>
-<li><p>スクロールと左ボタンを使用し、興味のある地域まで移動してください。</p></li>
-<li><p>上部のバーにある、<strong>Identify Features</strong>というラベリングがされたアイコンをクリックしてください。</p></li>
-<li><p>興味のある地域をクリックすると、そのエリア一体の地形パッチがハイライトされます。</p></li>
-<li><p>以下のキャプチャの例では、スペイン、カナリア諸島の素晴らしい地域、<a href="http://ja.wikipedia.org/wiki/%E3%83%A9%E3%82%B9%E3%83%BB%E3%83%91%E3%83%AB%E3%83%9E%E3%82%B9%E3%83%BB%E3%83%87%E3%83%BB%E3%82%B0%E3%83%A9%E3%83%B3%E3%83%BB%E3%82%AB%E3%83%8A%E3%83%AA%E3%82%A2">ラスパルマス</a>を含むDEMのpathとrowが確認できます。
+<li><p>脇ほどまでのレイヤを使って、スクロールと左ボタンを使用し、興味のある地域まで移動してください。<br/>
+今回は、富士山まで移動してみました。
+<img src="/images/2015-02-04-gazebo-digital-elevation-model/qgis-mtfuji.png" alt="qgis-mtfuji" /></p></li>
+<li><p>以下のように、上部のバーにある、<strong>地物情報表示</strong>というアイコンをクリックしてください。<br/>
+その状態で、興味のある地域をクリックすると、以下のように、そのエリア一体の地形パッチがハイライトされます。
+<img src="/images/2015-02-04-gazebo-digital-elevation-model/qgis-identify-features.png" alt="qgis-identify-features" /></p></li>
+<li><p>以下のキャプチャの例では、富士山近辺の地域のDEMのためのpathとrowを確認することができます。
+<img src="/images/2015-02-04-gazebo-digital-elevation-model/qgis-identify-features-detail.png" alt="qgis-identify-features-detail" />
+ちなみに、公式チュートリアルでは、以下のキャプチャのように、スペイン、カナリア諸島の、<a href="http://ja.wikipedia.org/wiki/%E3%83%A9%E3%82%B9%E3%83%BB%E3%83%91%E3%83%AB%E3%83%9E%E3%82%B9%E3%83%BB%E3%83%87%E3%83%BB%E3%82%B0%E3%83%A9%E3%83%B3%E3%83%BB%E3%82%AB%E3%83%8A%E3%83%AA%E3%82%A2">ラスパルマス</a>のDEMのpathとrowを確認しています。
 <img src="/images/2015-02-04-gazebo-digital-elevation-model/qgis_las_palmas.png" alt="qgis_las_palmas" /></p></li>
-<li><p>GLCF検索ツールのあるブラウザに戻り、path/rowの値を<strong>Start Path</strong>と<strong>Start Row</strong>とラベリングされているカラムに入力しましょう。</p></li>
-<li><p><strong>Submit Quenry</strong>をクリックしてください。</p></li>
-<li><p><strong>Preview and Download</strong>を押すと結果を表示できます。</p></li>
-<li><p>地形ファイルを選び、<strong>Download</strong>を押してください。</p></li>
-<li><p>最後に、拡張子を<code>.gz</code>としてファイルを選び、好きなディレクトリで展開してください。
-<a href="http://glcf.umd.edu/">GLCF(Global Land Cover Facility)</a>ファイルはDEMが利用できるゴーマットとしては最も標準的なな<a href="http://ja.wikipedia.org/wiki/GeoTIFF">GeoTiffフォーマット</a>になっています。</p></li>
+</ol>
+
+
+<h5>GLCFの操作</h5>
+
+<ol>
+<li><p><a href="http://glcfapp.glcf.umd.edu:8080/esdi/index.jsp">GLCF検索ツール</a>に戻り、調べたpath/rowの値を<strong>Start Path</strong>と<strong>Start Row</strong>とラベリングされているカラムに入力しましょう。</p></li>
+<li><p>入力したら、<strong>Submit Quenry</strong>をクリックしてください。</p></li>
+<li><p><strong>Preview and Download</strong>を押すと結果を表示できます。以下の結果は、富士山近傍のもので、path = 108、row = 35とした時の結果です。
+<img src="/images/2015-02-04-gazebo-digital-elevation-model/glcf-mtfuji.png" alt="glcf-mtfuji" /></p></li>
+<li><p>地形ファイルを選び、<strong>Download</strong>を押してください。<br/>
+今回は、計測年度が一番新しい、2011年のもの、ID:294-863を選びました。（上図参照）</p></li>
+<li><p>最後に、拡張子が<code>.TIF.gz</code>のファイルを選び、好きなディレクトリに保存し、展開してください。<br/>
+尚、<code>.gz</code>が付いているデータは複数ありますが、<code>README.GTF</code>によると、<code>*_B62.TIF.gz</code>となっているものが程よい解像度で、良いみたいです。また、<code>README.GTF</code>によると、<code>*.TIF.*</code>は<code>GeoTiff</code>フォーマットになっているそうなので、これを選びましょう。尚、<code>*</code>はワイルドカードです。<br/>
+<a href="http://glcf.umd.edu/">GLCF(Global Land Cover Facility)</a>ファイルは、DEMが利用できるフォーマットとして、最も標準的なな<a href="http://ja.wikipedia.org/wiki/GeoTIFF">GeoTiffフォーマット</a>になっています。</p></li>
 </ol>
 
 
@@ -402,12 +446,12 @@ GazeboをDEMファイルを含む<code>world</code>と共に立ち上げ、以�
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>すると、<code>dem_merged.tif</code>ファイルを<code>world</code>ファイルの中で使用できますし、Gazeboはすべてのパッチがマージされた状態で、地形を読み込むでしょう。以下のスクリーンショットでは、カナリア諸島一帯を囲む４つのち京パッチをマージした結果です。
+<p>すると、<code>dem_merged.tif</code>ファイルを<code>world</code>ファイルの中で使用できますし、Gazeboはすべてのパッチがマージされた状態で、地形を読み込むでしょう。以下のスクリーンショットでは、カナリア諸島一帯を囲む４つのパッチをマージした結果です。
 <img src="/images/2015-02-04-gazebo-digital-elevation-model/gazebo_dem_merged.png" alt="gazebo_dem_merged" /></p>
 
 <h2>最後に</h2>
 
-<p>チュートリアルを試してみて、もう少し詳しく起動の様子などを述べたいと思いますので、更新をお待ちください。(02/04/2015 17:18)</p>
+<p>自分で取得した地図をとりあえず表示することは出来ましたが、縮尺とかがおかしいままなので、解決したら、また投稿します。とりあえず今は、先に進みたいです。(02/04/2015 21:51)</p>
 </div>
 
 
