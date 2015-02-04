@@ -4,7 +4,7 @@
   <title><![CDATA[九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-02-03T19:56:23+09:00</updated>
+  <updated>2015-02-04T14:13:50+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -12,6 +12,106 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[環境をつくろう ! (Digital Elevation Models 編)]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/02/03/gazebo-digital-elevation-models/"/>
+    <updated>2015-02-03T19:58:17+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/02/03/gazebo-digital-elevation-models</id>
+    <content type="html"><![CDATA[<p><img src="http://cir-kit.github.io/images/gazebo_logo.png" alt="gazebo_logo" /></p>
+
+<h5>検証日時</h5>
+
+<p>02/03/2015 (Tue)</p>
+
+<h5>概要</h5>
+
+<p>Gazeboのチュートリアル第三弾「Build a World」。
+このチュートリアルでは、シミュレーション中の環境をどのように構築するかについて説明します。<br/>
+今回はその「Digital Elevation Models」編です。<br/>
+公式サイトを適当に翻訳しただけですので、あしからず。</p>
+
+<h5>レベル</h5>
+
+<p><strong>ADVANCED</strong></p>
+
+<!-- more -->
+
+
+<h5>環境</h5>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> <strong>PC</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Prosessor</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>RAM</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>OS</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Kernel</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> 3.13.0-44-generic </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Gazebo</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Version 5.0.1 </td>
+</tr>
+</tbody>
+</table>
+
+
+<h5>参考</h5>
+
+<p><a href="http://gazebosim.org/tutorials?cat=build_world">GAZEBO Tutorial-Build a World</a></p>
+
+<h2>はじめに</h2>
+
+<p><strong>Digital Elevation Model (DEM)</strong>は3Dの植物や建物のような物体を含まないような地形です。DEMはLIDARやradar、カメラなどによるセンサフュージョンによって生成されます。グラウンドポジションの地形の標高は、定期的に水平間隔でサンプリングされています。<a href="http://en.wikipedia.org/wiki/Digital_elevation_model">Wikipedia</a>でDEMのより詳しい情報があります。<br/>
+DEMという言葉は一般的な名称であり、至って普通のフォーマットです。実際、DEMは代表的なグリッド立体図（水平捜線）や、ベクトルベースの基板地図変換である<strong>vector-based triangular irregular network (TIN)</strong>なのです。現在Gazeboは<a href="http://www.gdal.org/">GOAL</a>ライブラリでサポートされているraster(水平捜線)データのみをサポートしています。<br/>
+GazeboをDEMをサポートする主な動機付けは、リアルな地形をシミュレートできるようにしたいというものです。ロボットを現実の世界のと同じ地形でシミュレーションし、その動向をテストし、救助用または農業用への応用を図ることは興味深いものとなるでしょう。</p>
+
+<h2>GazeboにDEMサポートを適用する</h2>
+
+<p>DEMファイルをサポートするには、GOALライブラリをインストールする必要があります。</p>
+
+<h5>Ubuntu Trusty/Utopic の場合:</h5>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>  sudo apt-get install gdal-bin libgdal-dev libgdal1h python-gdal
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h5>Ubuntu Precise の場合:</h5>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>  sudo apt-get install gdal-bin libgdal1-1.7.0 libgdal1-dev python-gdal
+</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[環境をつくろう ! (環境を修正する 編)]]></title>
