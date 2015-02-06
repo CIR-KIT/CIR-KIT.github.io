@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Ubuntu | 九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/blog/categories/ubuntu/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-02-06T05:31:59+09:00</updated>
+  <updated>2015-02-06T14:33:25+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -304,7 +304,7 @@
 <h2>終了する</h2>
 
 <p><strong>Note : 一度、建築エディタを終了すると、建築物を編集することはできません。</strong><br/>
-建築物を製作し、保存したら、ファイルのところ兵器、建築エディタを終了させてください。<br/>
+建築物を製作し、保存したら、ファイルのところへ行き、建築エディタを終了させてください。<br/>
 あなたの建築物がメインウィンドウに表示されます。将来的には、建築物を<code>Insert</code>タブで見つけることができます。
 <img src="/images/2015-02-06-gazebo-building-editor/saved_building.png" alt="saved_building" />
 <img src="/images/2015-02-06-gazebo-building-editor/final_model_angles.png" alt="final_model_angles" /></p>
