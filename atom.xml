@@ -4,7 +4,7 @@
   <title><![CDATA[九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-02-12T15:24:55+09:00</updated>
+  <updated>2015-02-12T15:26:14+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -12,6 +12,148 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[GAZEBOを使ってみよう ! (Quick Start 編) No.1.1]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/01/31/gazebo-quickstart/"/>
+    <updated>2015-01-31T17:12:33+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/01/31/gazebo-quickstart</id>
+    <content type="html"><![CDATA[<p><img src="http://cir-kit.github.io/images/gazebo_logo.png" alt="gazebo_logo" /></p>
+
+<h5>検証日時</h5>
+
+<p>01/31/2015 (Sat)</p>
+
+<h5>概要</h5>
+
+<p>Gazeboのチュートリアル第一弾「Get Started」。その、「Quick Start」編です。<br/>
+公式サイトを適当に翻訳しただけですので、あしからず。</p>
+
+<h5>レベル</h5>
+
+<p><strong>BEGINNER</strong></p>
+
+<!-- more -->
+
+
+<h5>環境</h5>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> <strong>PC</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Prosessor</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>RAM</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>OS</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Kernel</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> 3.13.0-44-generic </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Gazebo</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Version 5.0.1 </td>
+</tr>
+</tbody>
+</table>
+
+
+<h5>参考</h5>
+
+<p><a href="http://gazebosim.org/tutorials?cat=get_started">GAZEBO Tutorial-GetStarted</a></p>
+
+<h2>クイックスタート</h2>
+
+<h3>GAZEBOを立ち上げる</h3>
+
+<p>Gazeboをデフォルト環境で実行するには以下の3つの手順が必要です。</p>
+
+<ol>
+<li><p>Gazeboを<a href="https://cir-kit.github.io/blog/2015/01/31/gazebo-install/">インストール</a>する。</p></li>
+<li><p>ターミナルを立ち上げる。ほとんどのUbuntuシステムなら、<code>Ctrl+Alt+t</code>でもターミナルが立ち上がります。</p></li>
+<li>コマンドプロンプトに以下のコマンドを入力して<code>gazebo</code>を立ち上げる。</li>
+</ol>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>GAZEBOをロボットと一緒に動かす</h3>
+
+<p>pionieer2dxと共にworldを読み込んで、シミュレータを立ち上げてみましょう !</p>
+
+<ol>
+<li>ターミナルを開いて、以下のコマンドを入力してください。</li>
+</ol>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo worlds/pioneer2dx.world
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>worldデータはどこにあるのでしょうか?</h4>
+
+<p>さっき入力したコマンドの中に、不可思議な引数<code>worlds/pioneer2dx.world</code>があることに気づいたでしょう。これは、gazeboに<code>worlds/pioneer2dx.world</code>ファイルを探させ、ロードしスタートさせるようにする引数です。worldデータはバージョンシステムディレクトリに配置されています。例えば、Ubuntuの場合だと、<code>/usr/share/gazebo-4.0</code>にあります。もし、UbuntuにGazebo4.0をインストールしているのなら、以下のコマンドをターミナルに撃ちこむことで、worldデータの一覧を確認することができます。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>ls /usr/share/gazebo-4.0/worlds
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Homebrewを利用してOSXにGazebo4.0をインストールしている場合、以下を入力して、worldデータの一覧を確認することができます。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>ls /usr/local/share/gazebo-4.0/worlds
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>クライアントとサーバーの区別</h3>
+
+<p>実際は、<code>gazebo</code>コマンドでは、２つの異なるコマンドを実行しています。１つ目は、<code>gzserver</code> と呼ばれるもので、２つ目は <code>gzclient</code> と呼ばれるものです。 <code>gzserver</code> では、物理エンジンのアップデートループやセンサデータの更新などを実行可能にします。これはGazeboのコアであり、他のGUIとは独立して使用することができます。また、<strong>&ldquo;run headless&rdquo;</strong>というフレーズをフォーラムに確認することができるでしょう。このフレーズは <code>gzserver</code> のみを実行しているということを意味しています。例として、ユーザーインターフェースの必要ないクラウドコンピュータで実行している <code>gzserver</code> とworldデータが関連付けられているときなどがあります。<br/>
+また、<code>gzclient</code> では<a href="http://qt-project.org/">QT</a>を基本としたユーザーインターフェースを利用可能にします。このアプリケーションは素晴らしい見た目のシミュレーションを提供するだけでなく、様々なシミュレーションプロパティを操作する便利なコントロールも提供してくれます。<br/>
+これらを実行可能にし、実行するために、ターミナルを開いて、サーバーを起動してください。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gzserver
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>もうひとつ別のターミナルを開いて、GUIクライアントを実行してください</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gzclient
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>この時点で、Gazeboのユーザーインターフェースを確認できるはずです。また、<code>gzclient</code>は好きなタイミングで再起動することができますし、複数実行することも可能です。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Gazeboのインストール No.0]]></title>
