@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Build a World | 九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/blog/categories/build-a-world/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-02-13T05:19:57+09:00</updated>
+  <updated>2015-02-13T05:27:19+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -12,6 +12,497 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[環境をつくろう ! (建築エディタ 編) No.3.5]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/02/06/gazebo-building-editor/"/>
+    <updated>2015-02-06T02:14:35+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/02/06/gazebo-building-editor</id>
+    <content type="html"><![CDATA[<p><img src="http://cir-kit.github.io/images/gazebo_logo.png" alt="gazebo_logo" /></p>
+
+
+
+
+<h5>検証日時</h5>
+
+
+
+
+<p>02/06/2015 (Tue)</p>
+
+
+
+
+<h5>概要</h5>
+
+
+
+
+<p>Gazeboのチュートリアル第三弾「Build a World」。
+このチュートリアルでは、シミュレーション中の環境をどのように構築するかについて説明します。<br/>
+今回はその「Building Edito」編です。<br/>
+公式サイトを適当に翻訳しただけですので、あしからず。</p>
+
+
+
+
+<h5>レベル</h5>
+
+
+
+
+<p><strong>BEGINNER</strong></p>
+
+
+
+
+<!-- more -->
+
+
+
+
+<h5>環境</h5>
+
+
+
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> <strong>PC</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Prosessor</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>RAM</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>OS</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Kernel</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> 3.13.0-44-generic </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Gazebo</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Version 5.0.1 </td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+<h5>参考</h5>
+
+
+
+
+<p><a href="http://gazebosim.org/tutorials?cat=build_world">GAZEBO Tutorial-Build a World</a></p>
+
+
+
+
+<h2>はじめに</h2>
+
+
+
+
+<p>このチュートリアルでは、建築エディタを使って建築物を作る過程を説明します。</p>
+
+
+
+
+<h3>建築エディタを開く。</h3>
+
+
+
+
+<ol>
+<li><p>Gazeboがインストールされていることを確認してください。インストールしていない場合には、<a href="http://cir-kit.github.io/blog/2015/01/31/gazebo-install/">Gazeboのインストール</a>をご覧ください。</p></li>
+<li><p>Gazeboを立ち上げてください。</p></li>
+</ol>
+
+
+
+
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+
+
+
+<ol>
+<li><strong>Edit</strong>メニューより、<strong>Building Editor</strong>を選ぶか、<strong>Ctrl+B</strong>を押して、エディタを立ち上げてください。すると、以下のような画面が立ち上がるはずです。
+<img src="http://cir-kit.github.io/images/2015-02-06-gazebo-building-editor/empty_editor.png" alt="empty_editor" /></li>
+</ol>
+
+
+
+
+<h3>GUIについて</h3>
+
+
+
+
+<p>エディタは以下のように、３つのエリアからできています。</p>
+
+
+
+
+<ol>
+<li><p>Palette : 建築物の素材や特徴を選べます。</p></li>
+<li><p>2DView : トレースするフロアイメージをインポートできます。また、それに沿って、壁、窓、ドア、階段を追加することができます。</p></li>
+<li><p>3DView : 建築物のプレビューを確認できます。色やテクスチャを他の建築物の部品に適用することもできます。
+<img src="http://cir-kit.github.io/images/2015-02-06-gazebo-building-editor/editor_zones.png" alt="editor_zones" /></p></li>
+</ol>
+
+
+
+
+<h2>フロアをインポートする</h2>
+
+
+
+
+<p>スクラッチでシーンを作るか、すでにあるイメージをトレーするイメージとしてとして使います。このイメージは、例えば、2Dのレーザースキャンイメージ出会ったりもします。<br/>
+<a href="https://bitbucket.org/osrf/gazebo_tutorials/raw/default/building_editor/files/floorplan.png">ここ</a>をクリックしてフロアイメージの例をダウンロードしてください。手順は以下のとおりです。</p>
+
+
+
+
+<ol>
+<li><p>以下のように、先ほどの建築エディタを開いたまま、エディタウィンドウの左側にある、<strong>Import</strong>ボタンを押してください。すると、インポートするイメージのダイアログが出てきます。
+<img src="http://cir-kit.github.io/images/2015-02-06-gazebo-building-editor/building_editor-import.png" alt="building_editor-import" /></p></li>
+<li><p>先ほど手に入れたイメージを選んでください。選んだら、<strong>Next</strong>を押してください。
+<img src="http://cir-kit.github.io/images/2015-02-06-gazebo-building-editor/building_editor-next.png" alt="building_editor-next" /></p></li>
+<li><p>トレースする壁が、正しい大きさで出力できているか確かめるために、メートルピクセル比[px/m]を設定しなければなりません。比を知っているなら、ダイアログに直接入力して、クリックすればOKです。今回の例では、比がわかっていないとします。しかし、トレースイメージ中の実世界での二点間の距離がわかっているとすると、（例えば。一番長い壁が7.5 [m]であるとか）比を計算することで、使用できるようになります。:</p></li>
+<li><p> 壁の一端をクリックしてください。すると、以下のように、オリジナルのラインが現れます。</p></li>
+<li><p> 壁の一端をクリックしてください。すると、ラインが定義されます。</p></li>
+<li><p> 個々で、ダイアログに距離を単位[m]で入力してください(今回は7.5 [m]です)。すると、ピクセルメートル比は先ほど指定したラインに沿って自動で計算されます。</p></li>
+<li><p> 完了したら、OKをクリックしてください。
+<img src="http://cir-kit.github.io/images/2015-02-06-gazebo-building-editor/import_step_2.png" alt="import_step_2" /></p></li>
+<li><p>うまく行けば、2DViewの部分に、イメージが表示されます。<br/>
+<strong>コツ : </strong>レベルあ上がれば、それぞれのフロアを同じプロセスでインポートすることができます。</p></li>
+</ol>
+
+
+
+
+<h2>特徴を加える</h2>
+
+
+
+
+<h3>壁を追加する</h3>
+
+
+
+
+<p>以下の手順にしたがって、すべての壁をフロアイメージに沿ってトレースsてください。後でドアや窓を付け加えることを覚えておいてください。一旦は、それらを無視して壁を作ることができます。壁を完璧に作れなくても慌てないでください。後でまた編集することができます。</p>
+
+
+
+
+<ol>
+<li><p>Palleteの、壁の上でクリックしてください。</p></li>
+<li><p>2DViewの上で、壁の端点からクリックをしてください。マウスを動かしたら、壁の長さが表示されます。</p></li>
+<li><p>同じ壁のもう一方の端点でクリックし、微調整を行ってください。</p></li>
+<li><p>新しい壁を作り始めることなく、ダブルクリックして終了します。<br/>
+<strong>コツ : </strong>右クリックもしくはEscを押すと、現在の壁の編集をキャンセルできます。<br/>
+<strong>コツ : </strong>デフォルトでは、壁は15°ごと、0.25[m]ごとに増減します。また、存在する壁の端点も同じです。Shiftを押しながら操作すると、これらの制限が解除できます。
+<img src="http://cir-kit.github.io/images/2015-02-06-gazebo-building-editor/add_walls.png" alt="add_walls" /></p></li>
+</ol>
+
+
+
+
+<h3>窓とドアを追加する</h3>
+
+
+
+
+<p><strong>Note : 正確には、窓や、ドアは壁にただ穴を開けるだけです。</strong><br/>
+窓とドアをフロアイメージに沿って追加してみましょう。</p>
+
+
+
+
+<ol>
+<li><p>Paletteにある<strong>Window</strong>もしくは<strong>Door</strong>をクリックしましょう。</p></li>
+<li><p>2DViewの上でマウスを動かすと、それらも一緒に動きます。また、それと一緒に、3DViewの上でも動きます。<br/>
+<strong>コツ : </strong>窓やドアは自動で壁に沿って動きます。壁の端までの距離は動かすごとに、ディスプレイに表示されます。</p></li>
+<li><p>気に入ったところでクリックしましょう。
+<img src="http://cir-kit.github.io/images/2015-02-06-gazebo-building-editor/add_windows_doors.png" alt="add_windows_doors" />
+<strong>コツ : </strong>最初に壁を作った後に、フロアプランにある窓やドアの位置を探すのは無ヅカ敷く感じるでしょう。これを簡単にするには、2DViewの上で、フロアプランをもしくは現在までの窓やドアの表示、非表示を選択することができます。
+<img src="http://cir-kit.github.io/images/2015-02-06-gazebo-building-editor/view_floorplan.png" alt="view_floorplan" /></p></li>
+</ol>
+
+
+
+
+<h3>階段を追加する</h3>
+
+
+
+
+<p>このフロアプランには階段はありませんが、階段を一つ追加したいと思います。</p>
+
+
+
+
+<ol>
+<li><p>Palletの<strong>Stairs</strong>をクリックしてください。</p></li>
+<li><p>2DViewの上でマウスを動かすと、階段もそれと一緒に動きます。3DViewに写っているものも同様です。</p></li>
+<li><p>気に入ったところでクリックしましょう。
+<img src="http://cir-kit.github.io/images/2015-02-06-gazebo-building-editor/add_stairs.png" alt="add_stairs" /></p></li>
+</ol>
+
+
+
+
+<h2>階数を追加する</h2>
+
+
+
+
+<p>一階については、だいぶ完成しました。階段の先もないことですし、階数を追加しましょう。<br/>
+2DViewの上にある、<strong>+</strong>の上でクリックし、階数を足しましょう。あるいは、2DViewを右クリックし、<strong>Add a level</strong>を選びましょう。<br/>
+新しい階数が追加できたら、フロアは自動で追加されます。すでに下の階に階段が設置されている場合は、建築物がセーブされるときに、フロアに自動で階段用の穴が飽きます。<br/>
+<strong>Note : 現在は、すべてのフロアは矩形です。</strong><br/>
+<strong>コツ : </strong>階数を追加する前に、現在の階数の壁が設置されていることを確認してください。<br/>
+<strong>コツ : </strong>現在は、前の海の壁は、デフォルトの素材で、新しい階の壁としてコピーされます。窓やドアはコピーされません。いらない壁は、手動で削除できます。
+<img src="http://cir-kit.github.io/images/2015-02-06-gazebo-building-editor/add_level.png" alt="add_level" /></p>
+
+
+
+
+<h2>建築物を編集する</h2>
+
+
+
+
+<p><strong>Note : 建築物を編集する際は気をつけてください。というのも、現在、エディタにはUndoオプションがありません。<br/>
+</strong>コツ : **すべての長さはメートル単位系です。</p>
+
+
+
+
+<h3>階を変更する</h3>
+
+
+
+
+<p>階を追加したので、2DViewも新しい階に移動しましょう。2DViewの上にあるリストから選べば、一階にも戻れます。<br/>
+<strong>コツ : </strong>現在2DViewで選択されている階数は3DViewに半島名で表示されています。また、すべての下の階は半透明です。上の階は隠れています。しかし、建築物の一部であるということを覚えておいてください。<br/>
+階の形状を編集することもできます。</p>
+
+
+
+
+<ul>
+<li>階の形状オプションと一緒にインスペクターを開くために、2DViewをダブルクリックしてください。もしくは、右クリックし、<strong>Open level Inspector</strong>を選んでください。</li>
+</ul>
+
+
+
+
+<p>あなたが望まない階を追加したことでしょう。もしくは現在の階をめちゃくちゃにしいてしまい、初めからやり直したいでしょう。</p>
+
+
+
+
+<ul>
+<li>現在の階を削除したいなら、2DViewの上のボタンをオス化、右クリックし、<strong>Delete Level</strong>を選んでください。
+<img src="http://cir-kit.github.io/images/2015-02-06-gazebo-building-editor/edit_level.png" alt="edit_level" /></li>
+</ul>
+
+
+
+
+<h3>壁を編集する</h3>
+
+
+
+
+<p>最初の方に、たくさんの壁を制作しました。しかし、希望通りには作成できていないかもしれません。</p>
+
+
+
+
+<ul>
+<li>2DViewで壁をクリックしてください。</li>
+<li>ドラッグによって壁を新しい位置に変更してください。</li>
+<li><p>端点をドラッグし、リサイズもしくは回転を行ってください。<br/>
+<strong>コツ ; </strong>デフォルトでは、壁は15°ごと、0.25[m]ごとに増減します。また、存在する壁の端点も同じです。Shiftを押しながら操作すると、これらの制限が解除できます。</p></li>
+<li><p>階の形状オプションと一緒にインスペクターを開くために、2DViewをダブルクリックしてください。もしくは、右クリックし、<strong>Open level Inspector</strong>を選んでください。いくつかのフィールドを編集し、それらの変更を反映するために、<strong>Apply</strong>を押してください。</p></li>
+<li><p>2DViewで壁の選択中に、右クリックを押して、<strong>Delete</strong>を選ぶか、Deleteを押すと、選択中の壁を削除できます。<br/>
+<strong>コツ : </strong>壁を編集すると、付属の壁と統合されます。<br/>
+<strong>コツ : </strong>壁を削除すると、付属の窓と壁も削除します。
+<img src="http://cir-kit.github.io/images/2015-02-06-gazebo-building-editor/edit_walls.png" alt="edit_walls" /></p></li>
+</ul>
+
+
+
+
+<h3>窓とドアを編集する</h3>
+
+
+
+
+<p>続いては、窓とドアについて編集しましょう。壁で行ったように、多少の違いはありますが、窓やドアを正確に編集することができます。</p>
+
+
+
+
+<ul>
+<li>2DViewで、窓やドアをクリックしてください。</li>
+<li>新しいポジションまでドラッグして運んでください。窓やドアは自動で壁に沿って動きますし、壁から話してsってすることはできませんし、窓やドアは壁に穴を開けるだけであると言ったことを忘れないようにしてください。</li>
+<li>回転ハンドルを使って回転させてください。現在は、できるだけ、壁に沿おうとしますし、回転原点を変更することはできません。</li>
+<li><p>窓やドアの幅を端点をドラッグすることでリサイズしてください。</p></li>
+<li><p>階の形状オプションと一緒にインスペクターを開くために、2DViewをダブルクリックしてください。もしくは、右クリックし、<strong>Window/Dooe</strong>を選んでください。</p></li>
+<li><p>2DViewで壁の選択中に、右クリックを押して、<strong>Delete</strong>を選ぶか、Deleteを押すと、選択中の窓やドアを削除できます。<br/>
+<img src="http://cir-kit.github.io/images/2015-02-06-gazebo-building-editor/edit_windows_doors.png" alt="edit_windows_doors" /></p></li>
+</ul>
+
+
+
+
+<h3>階段を編集する</h3>
+
+
+
+
+<p>最後に、最初の方に追加した階段を編集しましょう。フロアプランにはないので、好きなように編集しましょう。</p>
+
+
+
+
+<ul>
+<li>2DViewで、階段をクリックしてください。</li>
+<li>新しいポジションまでドラッグして運んでください</li>
+<li>回転ハンドルを使って90°回転させてください。現在は、できるだけ、壁に沿おうとしますし、回転原点を変更することはできません。</li>
+<li><p>端点をドラッグすることでリサイズしてください。</p></li>
+<li><p>階の形状オプションと一緒にインスペクターを開くために、2DViewをダブルクリックしてください。もしくは、右クリックし、<strong>Window/Dooe</strong>を選んでください。</p></li>
+<li><p>2DViewで壁の選択中に、右クリックを押して、<strong>Delete</strong>を選ぶか、Deleteを押すと、選択中の階段を削除できます。<br/>
+<strong>コツ : </strong>2DViewでは、階段の始まりも終わりも見ることができます。
+<img src="http://cir-kit.github.io/images/2015-02-06-gazebo-building-editor/edit_stairs.png" alt="edit_stairs" /></p></li>
+</ul>
+
+
+
+
+<h2>色とテクスチャを追加する</h2>
+
+
+
+
+<p>さて、すべての物が設置され、リサイズされました。今度は、壁や床、そして階段の色やテクスチャを決定していきます。窓やドアはただ壁に穴を開けているだけなので、物質要素がないということを覚えておいてください。<br/>
+<strong>コツ : </strong>デフォルトは、色は白で、テクスチャはありません。<br/>
+建築物に色やテクスチャを追加する方法は２つあります。</p>
+
+
+
+
+<h3>インスペクタから変更する</h3>
+
+
+
+
+<p>壁、床、階段に色やテクスチャを追加するには、壁インスペクタ、床インスペクタ、階段インスペクタのそれぞれから追加することができます。まずは、インスペクタを開、物質を選んだら、<strong>Apply</strong>を押してください。インスペクタを表示するには、それぞれの物体の上でダブルクリックするか、右クリックから選択してください。
+<img src="http://cir-kit.github.io/images/2015-02-06-gazebo-building-editor/color_texture_inspector.png" alt="color_texture_inspector" /></p>
+
+
+
+
+<h3>パレットから変更する。</h3>
+
+
+
+
+<p>3DViewで物体をクリックすることで、建築物のアイテムの色やテクスチャをパレットから選ぶことができます。</p>
+
+
+
+
+<ol>
+<li><p>Paletteから色とテクスチャを選んでください。</p></li>
+<li><p>3DViewでマウスを動かすと、選択された物体のpレビューが表示され、選択された要素がハイライトされます。</p></li>
+<li>選択した用をに適用する、もしくは、3DViewを右クリックする、もしくは、マテリアルモードを終了するために、物体の外をクリックすると、操作が完了します。</li>
+</ol>
+
+
+
+
+<p><img src="http://cir-kit.github.io/images/2015-02-06-gazebo-building-editor/color_texture_palette.png" alt="color_texture_palette" />
+<strong>Gazebo5.1の新機能 : </strong>カスタムカラーを選ぶには、paletteの<strong>More</strong>をクリックします。すると、カスタムカラーを決定するためのダイアログが開きます。
+<img src="http://cir-kit.github.io/images/2015-02-06-gazebo-building-editor/custom_color.png" alt="custom_color" />
+<strong>コツ : </strong>それぞれの物体には、一つの色とテクスチャ歯科適用できません。同じ物体はすべて同じ見た目になります。<br/>
+<strong>Note : 現在は、カスタムテクスチャをこのエディタで使用することはできません。</strong></p>
+
+
+
+
+<h2>建築物を保存する</h2>
+
+
+
+
+<p>セーブをすると、<a href="http://gazebosim.org/tutorials?tut=model_structure&amp;cat=build_robot">SDFとConfigファイル</a>を直接生成します。<br/>
+セーブする前に、Paletteで建築物の名前を決定してください。<br/>
+<img src="http://cir-kit.github.io/images/2015-02-06-gazebo-building-editor/edit_name.png" alt="edit_name" /><br/>
+トップメニューでファイルを選び、<strong>Save As</strong>もしくは、Ctrl+Sでセーブしてください。モデルを保存する場所を聞くダイアログが出現します。<br/>
+<strong>コツ : </strong>アドバンスオプションでは、メタデータを設定することもできます。<br/>
+<img src="http://cir-kit.github.io/images/2015-02-06-gazebo-building-editor/save_dialog.png" alt="save_dialog" /></p>
+
+
+
+
+<h2>終了する</h2>
+
+
+
+
+<p><strong>Note : 一度、建築エディタを終了すると、建築物を編集することはできません。</strong><br/>
+建築物を製作し、保存したら、ファイルのところへ行き、建築エディタを終了させてください。<br/>
+あなたの建築物がメインウィンドウに表示されます。将来的には、建築物を<code>Insert</code>タブで見つけることができます。
+<img src="http://cir-kit.github.io/images/2015-02-06-gazebo-building-editor/saved_building.png" alt="saved_building" />
+<img src="http://cir-kit.github.io/images/2015-02-06-gazebo-building-editor/final_model_angles.png" alt="final_model_angles" /></p>
+
+
+
+
+<h2>最後に</h2>
+
+
+
+
+<p>私も、学校の施設を作って遊んでみました。元にした見取り図は、案内板にあったので、スマホで写真をとって作りました。シミュレーションなら、PR2も遊びに来てくれますw<br/>
+奥に見えるのはWillowGarageのモデルです。
+<img src="http://cir-kit.github.io/images/2015-02-06-gazebo-building-editor/DSC_0332.JPG" alt="control-1st-2D" />
+<img src="http://cir-kit.github.io/images/2015-02-06-gazebo-building-editor/capture.jpg" alt="capture" /></p>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[環境をつくろう ! (Modelの集合化 編) No.3.4]]></title>
