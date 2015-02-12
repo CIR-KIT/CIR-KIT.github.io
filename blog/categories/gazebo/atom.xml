@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[九州工業大学 CIR-KIT Blog]]></title>
-  <link href="http://cir-kit.github.io/atom.xml" rel="self"/>
+  <title><![CDATA[Category: Gazebo | 九州工業大学 CIR-KIT Blog]]></title>
+  <link href="http://cir-kit.github.io/blog/categories/gazebo/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
   <updated>2015-02-12T15:18:22+09:00</updated>
   <id>http://cir-kit.github.io/</id>
@@ -18,7 +18,7 @@
     <link href="http://cir-kit.github.io/blog/2015/01/31/gazebo-install/"/>
     <updated>2015-01-31T15:28:43+09:00</updated>
     <id>http://cir-kit.github.io/blog/2015/01/31/gazebo-install</id>
-    <content type="html"><![CDATA[<p><img src="http://cir-kit.github.io/images/gazebo_logo.png" alt="gazebo_logo" /></p>
+    <content type="html"><![CDATA[<p><img src="/images/gazebo_logo.png" alt="gazebo_logo" /></p>
 
 <h5>検証日時</h5>
 
@@ -118,57 +118,35 @@
 <h3>Online-Install</h3>
 
 <ol>
-<li>インストール</li>
+<li><p>インストール
+<code>bash
+wget -O /tmp/gazebo4_install.sh http://osrf-distributions.s3.amazonaws.com/gazebo/gazebo4_install.sh; sudo sh /tmp/gazebo4_install.sh
+</code></p></li>
+<li><p>実行
+<code>bash
+gazebo
+</code></p></li>
 </ol>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>wget -O /tmp/gazebo4_install.sh http://osrf-distributions.s3.amazonaws.com/gazebo/gazebo4_install.sh<span class="p">;</span> sudo sh /tmp/gazebo4_install.sh
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ol>
-<li>実行</li>
-</ol>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo
-</span></code></pre></td></tr></table></div></figure>
 
 
 <h3>Step-by-step Install</h3>
 
 <ol>
-<li><code>packages.osrfoundation.org.</code> パッケージからのソフトウェア取得を許可するようコンピュータを設定します。
-<strong>Note : </strong>このパッケージの<a href="https://bitbucket.org/osrf/gazebo/wiki/gazebo_mirrors">ダウンロードミラー</a>があるので、それを使うと、ダウンロード速度が早くなるかもしれません。</li>
+<li><p><code>packages.osrfoundation.org.</code> パッケージからのソフトウェア取得を許可するようコンピュータを設定します。
+<strong>Note : </strong>このパッケージの<a href="https://bitbucket.org/osrf/gazebo/wiki/gazebo_mirrors">ダウンロードミラー</a>があるので、それを使うと、ダウンロード速度が早くなるかもしれません。
+<code>bash
+sudo sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu `lsb_release -cs` main" &gt; /etc/apt/sources.list.d/gazebo-latest.list'
+</code></p></li>
+<li><p>Keyの設定
+<code>bash
+wget http://packages.osrfoundation.org/gazebo.key -O - | sudo apt-key add -
+</code></p></li>
+<li><p>インストールのチェック(実行)
+<strong>Note : </strong>初めて<code>gazebo</code>コマンドを実行する時には、ダウンロードなどを行うので時間がかかります。落ち着いて待ちましょう。
+<code>bash
+gazebo
+</code></p></li>
 </ol>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo sh -c <span class="s1">&#39;echo &quot;deb http://packages.osrfoundation.org/gazebo/ubuntu `lsb_release -cs` main&quot; &gt; /etc/apt/sources.list.d/gazebo-latest.list&#39;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ol>
-<li>Keyの設定</li>
-</ol>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>wget http://packages.osrfoundation.org/gazebo.key -O - <span class="p">|</span> sudo apt-key add -
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ol>
-<li>インストールのチェック(実行)
-<strong>Note : </strong>初めて<code>gazebo</code>コマンドを実行する時には、ダウンロードなどを行うので時間がかかります。落ち着いて待ちましょう。</li>
-</ol>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo
-</span></code></pre></td></tr></table></div></figure>
 
 
 <h3>他のdebパッケージ</h3>
