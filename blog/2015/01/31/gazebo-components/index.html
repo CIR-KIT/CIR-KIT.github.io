@@ -1,0 +1,376 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>GAZEBOを使ってみよう ! (Gazebo コンポーネント 編) No.1.2 - 九州工業大学 CIR-KIT Blog</title>
+  <meta name="author" content="">
+
+  
+  <meta name="description" content="検証日時 01/31/2015 (Sat) 概要 Gazeboのチュートリアル第一弾「Get Started」。その「Gazebo Components」編です。
+公式サイトを適当に翻訳しただけですので、あしからず。 レベル BEGINNER 環境 PC : Lenovo ThinkPad &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://cir-kit.github.io/blog/2015/01/31/gazebo-components/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="九州工業大学 CIR-KIT Blog" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-59178596-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">九州工業大学 CIR-KIT Blog</a></h1>
+  
+    <h2>九工大自律移動ロボット製作プロジェクトCIR-KITの技術系ブログ</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="cir-kit.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">GAZEBOを使ってみよう ! (Gazebo コンポーネント 編) No.1.2</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-01-31T18:01:34+09:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>31</span><span class='date-suffix'>st</span>, <span class='date-year'>2015</span></span> <span class='time'>6:01 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><img src="/images/gazebo_logo.png" alt="gazebo*logo" /></p>
+
+<h5>検証日時</h5>
+
+<p>01/31/2015 (Sat)</p>
+
+<h5>概要</h5>
+
+<p>Gazeboのチュートリアル第一弾「Get Started」。その「Gazebo Components」編です。<br/>
+公式サイトを適当に翻訳しただけですので、あしからず。</p>
+
+<h5>レベル</h5>
+
+<p><strong>BEGINNER</strong></p>
+
+<!-- more -->
+
+
+<h5>環境</h5>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> <strong>PC</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Prosessor</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>RAM</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>OS</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Kernel</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> 3.13.0-44-generic </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Gazebo</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Version 5.0.1 </td>
+</tr>
+</tbody>
+</table>
+
+
+<h5>参考</h5>
+
+<p><a href="http://gazebosim.org/tutorials?cat=get_started">GAZEBO Tutorial-GetStarted</a></p>
+
+<hr />
+
+<p>このページではGazeboシミュレーションを実行するときに一緒に実行されるそれぞれのアイテムについて説明します。</p>
+
+<h2>worldファイル</h2>
+
+<p>worldディスクリプションファイルにはロボット、ライト、センサ、静的物体などのシミュレーションのすべての要素が含まれています。このふぁいるは<a href="http://sdformat.org/spec">SDF (Simulation Description Format)</a>フォーマットを使用しており、<code>.world</code>という拡張子がついています。<br/>
+Gazeboサーバー(<code>gzserver</code>)はこのファイルを読み込み、シミュレーションの環境を構築します。<br/>
+Gazeboでは宅sなんのworldデータの例が提供されています。それらのworldデータは<code>&lt;install_path&gt;/share/gazebo-&lt;version&gt;/worlds</code>に配置してあります。</p>
+
+<h2>modelファイル</h2>
+
+<p>modelファイルもworldファイルと同じように<a href="http://sdformat.org/spec">SDF</a>フォーマットを使用していますが、唯一ひとつだけ<code>&lt;model&gt; ... &lt;/model&gt;</code>を含んでいなければなりません。これらのファイルの目的はモデルの再利用を用意にし、worldファイルを簡単化するというものです。一度modelファイルが生成されると、以下のようなSDF文法にしたがったコードを記入することでworldファイルにincludeすることが可能です。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;include&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;uri&gt;</span>model://model_file_name<span class="nt">&lt;/uri&gt;</span>
+</span><span class='line'><span class="nt">&lt;/include&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>多くのmodelは一行のmodelデータベース（バージョン情報、Gazeboによって提供されるいくつかのモデル例）によって提供されます。Gazeboをインターネット接続が有効な環境で使用しているとすると、たくさんのモデルを<a href="http://bitbucket.org/osrf/gazebo_models">データベース</a>から挿入することが可能ですし、実行中に必要なコンテンツをダウンロードすることも可能です。</p>
+
+<h3>環境変数</h3>
+
+<p>ファイルを配置するために、また、クライアントとサーバーの間の通信をセットアップするために、Gazeboにはたくさんの<a href="http://gazebosim.org/user_guide/started__components__env.html">環境変数</a>があります。<br/>
+Gazebo 1.9.0より、ほとんどの場合に使用するデフォルト変数は編纂されています。つまり、多くの変数は設定する必要がないということです。これらのデフォルト変数は以下のシェルスクリプトの中にも含まれています。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">source</span> &lt;install_path&gt;/share/gazebo/setup.sh
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>例えば、もし、モジュールを検索するためのパスを拡張するなどして、Gazeboの挙動を修正したいなら、まず最初に<code>source</code>コマンドで上記のェルスクリプトを実行したあと、設定されている変数を修正するということです。</p>
+
+<h3>Gazeboサーバー</h3>
+
+<p>このサーバーはGazeboの実体です。コマンドラインから与えられるworldディスクリプションファイルを解読し、物理エンジンやセンサエンジンを使ってシミュレータを実行します。<br/>
+このサーバーは以下のコマンドを使うことで実行できます。サーバーにはグラフィックが含まれていない、つまり、GUIが存在しないということに留意してください。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gzserver &lt;world_filename&gt;
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ここで、<code>&lt;world_filename&gt;</code>は：</p>
+
+<ol>
+<li><p>カレントディレクトリ（現在のディレクトリ）との相対パス</p></li>
+<li><p>絶対パス</p></li>
+<li><p>GAZEBO_RESOURCE_PATHに記されるパスとの相対パス</p></li>
+</ol>
+
+
+<p>のいずれかである必要があります。<br/>
+Gazeboによって提供されるworldデータは<code>/share/gazebo-*/worlds</code>にあります。<br/>
+例えば、Gazeboによって提供される<code>empty.world</code>を使用する場合、以下のコマンドを使います。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gzserver worlds/empty.world
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>グラフィカルクライアント</h2>
+
+<p>グラフィカルクライアントは実行中の<code>gzserver</code>と接続し、要素を表示します。実行中のシミュレーションを修正することができるツールでもあります。<br/>
+グラフィカルクライアントは以下のコマンドで実行されます。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gzclient
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>サーバー + グラフィカルクライアントを一度に</h3>
+
+<p>コマンド<code>gazebo</code>はサーバーとクライアントを一度に利用可能にするコマンドです。<code>gzserver worlds/empty.world</code>と<code>gzclient</code>をそれぞれ実行する代わりに、以下のように実行することができます</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo worlds/empty.world
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>プラグイン</h2>
+
+<p>プラグインではGazeboにシンプルでかつ便利なインターフェース接続メカニズムを提供しています。プラグインはコマンドラインでの記述とworld/modelファイル（<a href="http://sdformat.org/spec">SDF</a>フォーマットを参照）での記述のどちらも読み込むことができます。コマンドラインに記述されたものが最初に読み込まれ、world/modelファイルに記述されたプラグインを次に読み込みます。ほとんどのプラグインがサーバーによって読み込まれますが、プラグインはグラフィカルクライアントでもまた、GUIのカスタムを用意にするために読み込まれます。<br/>
+コマンドラインからプラグインを読み込む例:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gzserver -s
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>グラフィカルクライアントでも同じように：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gzclient -g
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>プラグインについてもっと情報が必要なら<a href="http://gazebosim.org/tutorials/?tut=plugins_hello_world">プラグインのオーバービュー</a>を参照してください。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">RyodoTanaka</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2015-01-31T18:01:34+09:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>31</span><span class='date-suffix'>st</span>, <span class='date-year'>2015</span></span> <span class='time'>6:01 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/gazebo/'>gazebo</a>, <a class='category' href='/blog/categories/getstarted/'>getstarted</a>, <a class='category' href='/blog/categories/ubuntu/'>ubuntu</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://cir-kit.github.io/blog/2015/01/31/gazebo-components/" data-via="" data-counturl="http://cir-kit.github.io/blog/2015/01/31/gazebo-components/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2015/01/31/gazebo-quickstart/" title="Previous Post: GAZEBOを使ってみよう ! (Quick Start 編) No.1.1">&laquo; GAZEBOを使ってみよう ! (Quick Start 編) No.1.1</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/01/31/gazebo-components/">GAZEBOを使ってみよう ! (Gazebo コンポーネント 編) No.1.2</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/01/31/gazebo-quickstart/">GAZEBOを使ってみよう ! (Quick Start 編) No.1.1</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/01/31/gazebo-install/">Gazeboのインストール No.0</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 -  -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
