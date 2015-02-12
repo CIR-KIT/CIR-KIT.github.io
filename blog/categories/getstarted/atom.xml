@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Getstarted | 九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/blog/categories/getstarted/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-02-13T04:41:06+09:00</updated>
+  <updated>2015-02-13T05:10:24+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -18,51 +18,25 @@
     <link href="http://cir-kit.github.io/blog/2015/01/31/gazebo-capture-screenshot/"/>
     <updated>2015-01-31T18:39:31+09:00</updated>
     <id>http://cir-kit.github.io/blog/2015/01/31/gazebo-capture-screenshot</id>
-    <content type="html"><![CDATA[<p><img src="http://cir-kit.github.io/images/gazebo_logo.png" alt="gazebo_logo" /></p>
-
-
-
+    <content type="html"><![CDATA[<p><img src="/images/gazebo_logo.png" alt="gazebo_logo" /></p>
 
 <h5>検証日時</h5>
 
-
-
-
 <p>01/25/2015 (Sun)</p>
 
-
-
-
 <h5>概要</h5>
-
-
-
 
 <p>Gazeboのチュートリアル第一弾「Get Started」。その「Capture Screeenshots」編です。
 公式サイトを適当に翻訳しただけですので、あしからず。</p>
 
-
-
-
 <h5>レベル</h5>
 
-
-
-
 <p><strong>BEGINNER</strong></p>
-
-
-
 
 <!-- more -->
 
 
-
-
 <h5>環境</h5>
-
-
-
 
 <table>
 <thead>
@@ -107,37 +81,19 @@
 </table>
 
 
-
-
 <h5>参考</h5>
-
-
-
 
 <p><a href="http://gazebosim.org/tutorials?cat=get_started">GAZEBO Tutorial-GetStarted</a></p>
 
-
-
-
 <h2>スクリーンショットのキャプチャ</h2>
-
-
-
 
 <p>スクリーンショット機能はgzclientのGUIに追加されています。<br/>
 スクリーンショットを撮るには描画ウィンドウのツールバーにあるカメラアイコンを見つけ、クリックしてください。（下図参照）
-<img src="http://cir-kit.github.io/images/2015-01-31-gazebo-capture-screenshot/gazebo_screen_shots.png" alt="screen_shots" /></p>
-
-
-
+<img src="/images/2015-01-31-gazebo-capture-screenshot/gazebo_screen_shots.png" alt="screen_shots" /></p>
 
 <h2>スクリーンショットの保存アイコン</h2>
 
-
-
-
 <p>キャプチャされたイメージはタイムスタンプを付加したファイル名で<code>~/.gazebo/pictures</code>に保存されます。</p>
-
 ]]></content>
   </entry>
   
@@ -146,51 +102,25 @@
     <link href="http://cir-kit.github.io/blog/2015/01/31/gazebo-architecture/"/>
     <updated>2015-01-31T18:21:33+09:00</updated>
     <id>http://cir-kit.github.io/blog/2015/01/31/gazebo-architecture</id>
-    <content type="html"><![CDATA[<p><img src="http://cir-kit.github.io/images/gazebo_logo.png" alt="gazebo_logo" /></p>
-
-
-
+    <content type="html"><![CDATA[<p><img src="/images/gazebo_logo.png" alt="gazebo_logo" /></p>
 
 <h5>検証日時</h5>
 
-
-
-
 <p>01/31/2015 (Sat)</p>
 
-
-
-
 <h5>概要</h5>
-
-
-
 
 <p>Gazeboのチュートリアル第一弾「Get Started」。その「Gazebo Architecture」編です。<br/>
 公式サイトを適当に翻訳しただけですので、あしからず。</p>
 
-
-
-
 <h5>レベル</h5>
 
-
-
-
 <p><strong>BEGINNER</strong></p>
-
-
-
 
 <!-- more -->
 
 
-
-
 <h5>環境</h5>
-
-
-
 
 <table>
 <thead>
@@ -235,53 +165,24 @@
 </table>
 
 
-
-
 <h5>参考</h5>
-
-
-
 
 <p><a href="http://gazebosim.org/tutorials?cat=get_started">GAZEBO Tutorial-GetStarted</a></p>
 
-
-
-
 <h2>はじめに</h2>
-
-
-
 
 <p>Gazeboに伴う要求を処理し、現在の問題を解決するために、システムを提案しています。Gazeboは物理シミュレーション、レンダリング、ユーザーインターフェース、コミュニケーション、そしてセンサ型などのためのライブラリとなるでしょう。以下のような３つの異なるプロセスが提供されています：<code>physics_sim</code>、<code>sensor_gen</code>、<code>gui</code>そして共同作業のための<code>master</code>です。</p>
 
-
-
-
 <h2>プロセス間の通信</h2>
-
-
-
 
 <p>互いのプロセス間での通信にはgoogle::protobufsとソケットを結合したものを使用しています。シミュレーションされたworldはbody poseをアップデートし、センサ型とGUIは出力を生成するためにそれらのメッセージを使用します。<br/>
 この仕組みは実行中のシミュレーションの内省を可能とし、Gazeboをコントロールするための便利なメカニズムを供給可能とします。</p>
 
-
-
-
 <h2>システム</h2>
-
-
-
 
 <h3>Gazeboマスター</h3>
 
-
-
-
 <p>これは必要不可欠なネームサーバートピックです。Gazeboマスターは、名前探索とトピックマネジメントを提供します。一つのマスターで多様な物理シミュレーション、センサ型、GUIを制御することができます。</p>
-
-
-
 
 <table>
 <thead>
@@ -315,17 +216,9 @@
 </table>
 
 
-
-
 <p>このライブラリは後続のほとんどすべてのライブラリに使用されています。コミュニケーションや運搬メカニズムとして動作します。最近では、publish/subscribeのみをサポートしています。しかし、RPCを使うことも簡単にできます。</p>
 
-
-
-
 <h3>Pysicsライブラリ</h3>
-
-
-
 
 <table>
 <thead>
@@ -351,17 +244,9 @@
 </table>
 
 
-
-
 <p>物理ライブラリには内部API（TBD）に適応しているダイナミックエンジンなら何でも使用することができます。物理シミュレーションを動かすために、シンプルな外部インタフェースを使用することもできます。</p>
 
-
-
-
 <h3>Collisionライブラリ</h3>
-
-
-
 
 <table>
 <thead>
@@ -395,17 +280,9 @@
 </table>
 
 
-
-
 <p>このライブラリは、異なるcollisionエンジンを制御するための仮想ライブラリです。また、ユーザーのためにシンプルな外部インターフェースを提供します。</p>
 
-
-
-
 <h3>Renderingライブラリ</h3>
-
-
-
 
 <table>
 <thead>
@@ -431,17 +308,9 @@
 </table>
 
 
-
-
 <p>GUIとセンサ型の両方のシンプルなインターフェースを供給するライブラリです。他に良いものがないので、現在はOGREのみを使用しています。レンダリングエンジン用のプラグインへの書き込みが可能となるでしょう。</p>
 
-
-
-
 <h3>センサGeneration</h3>
-
-
-
 
 <table>
 <thead>
@@ -467,17 +336,9 @@
 </table>
 
 
-
-
 <p>このライブラリは多種多様なすべてのタイプのセンサを実行します。そのセンサは物理シミュレータからアップロードされる環境の状態を取得し、初期化されたセンサにより作られた出力を生成します。</p>
 
-
-
-
 <h3>GUI</h3>
-
-
-
 
 <table>
 <thead>
@@ -503,20 +364,11 @@
 </table>
 
 
-
-
 <p>GUIの主要な関数はシミュレーションの現在の状態を表示と、ユーザの入力用の便利なインt−フェースの提供を含んでいます。wxWidgetsを使用しているので、内部もしくは外部APIは必要ありません。</p>
-
-
-
 
 <h3>プラグイン</h3>
 
-
-
-
 <p>Phisics、センサ、Renderingライブラリはプラグインをサポートしています。それらのプラグインでは、ユーザーはコミュニケーションシステムを使用することなく、それぞれのライブラリにアクセスすることができます。</p>
-
 ]]></content>
   </entry>
   
@@ -525,51 +377,25 @@
     <link href="http://cir-kit.github.io/blog/2015/01/31/gazebo-components/"/>
     <updated>2015-01-31T18:01:34+09:00</updated>
     <id>http://cir-kit.github.io/blog/2015/01/31/gazebo-components</id>
-    <content type="html"><![CDATA[<p><img src="http://cir-kit.github.io/images/gazebo_logo.png" alt="gazebo*logo" /></p>
-
-
-
+    <content type="html"><![CDATA[<p><img src="/images/gazebo_logo.png" alt="gazebo*logo" /></p>
 
 <h5>検証日時</h5>
 
-
-
-
 <p>01/31/2015 (Sat)</p>
 
-
-
-
 <h5>概要</h5>
-
-
-
 
 <p>Gazeboのチュートリアル第一弾「Get Started」。その「Gazebo Components」編です。<br/>
 公式サイトを適当に翻訳しただけですので、あしからず。</p>
 
-
-
-
 <h5>レベル</h5>
 
-
-
-
 <p><strong>BEGINNER</strong></p>
-
-
-
 
 <!-- more -->
 
 
-
-
 <h5>環境</h5>
-
-
-
 
 <table>
 <thead>
@@ -614,111 +440,47 @@
 </table>
 
 
-
-
 <h5>参考</h5>
-
-
-
 
 <p><a href="http://gazebosim.org/tutorials?cat=get_started">GAZEBO Tutorial-GetStarted</a></p>
 
-
-
-
 <hr />
-
-
-
 
 <p>このページではGazeboシミュレーションを実行するときに一緒に実行されるそれぞれのアイテムについて説明します。</p>
 
-
-
-
 <h2>worldファイル</h2>
-
-
-
 
 <p>worldディスクリプションファイルにはロボット、ライト、センサ、静的物体などのシミュレーションのすべての要素が含まれています。このふぁいるは<a href="http://sdformat.org/spec">SDF (Simulation Description Format)</a>フォーマットを使用しており、<code>.world</code>という拡張子がついています。<br/>
 Gazeboサーバー(<code>gzserver</code>)はこのファイルを読み込み、シミュレーションの環境を構築します。<br/>
 Gazeboでは宅sなんのworldデータの例が提供されています。それらのworldデータは<code>&lt;install_path&gt;/share/gazebo-&lt;version&gt;/worlds</code>に配置してあります。</p>
 
-
-
-
 <h2>modelファイル</h2>
 
-
-
-
-<p>modelファイルもworldファイルと同じように<a href="http://sdformat.org/spec">SDF</a>フォーマットを使用していますが、唯一ひとつだけ<code>&lt;model&gt; ... &lt;/model&gt;</code>を含んでいなければなりません。これらのファイルの目的はモデルの再利用を用意にし、worldファイルを簡単化するというものです。一度modelファイルが生成されると、以下のようなSDF文法にしたがったコードを記入することでworldファイルにincludeすることが可能です。</p>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;include&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;uri&gt;</span>model://model_file_name<span class="nt">&lt;/uri&gt;</span>
-</span><span class='line'><span class="nt">&lt;/include&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-
-<p>多くのmodelは一行のmodelデータベース（バージョン情報、Gazeboによって提供されるいくつかのモデル例）によって提供されます。Gazeboをインターネット接続が有効な環境で使用しているとすると、たくさんのモデルを<a href="http://bitbucket.org/osrf/gazebo_models">データベース</a>から挿入することが可能ですし、実行中に必要なコンテンツをダウンロードすることも可能です。</p>
-
-
-
+<p>modelファイルもworldファイルと同じように<a href="http://sdformat.org/spec">SDF</a>フォーマットを使用していますが、唯一ひとつだけ<code>&lt;model&gt; ... &lt;/model&gt;</code>を含んでいなければなりません。これらのファイルの目的はモデルの再利用を用意にし、worldファイルを簡単化するというものです。一度modelファイルが生成されると、以下のようなSDF文法にしたがったコードを記入することでworldファイルにincludeすることが可能です。
+<code>xml
+&lt;include&gt;
+  &lt;uri&gt;model://model_file_name&lt;/uri&gt;
+&lt;/include&gt;
+</code>
+多くのmodelは一行のmodelデータベース（バージョン情報、Gazeboによって提供されるいくつかのモデル例）によって提供されます。Gazeboをインターネット接続が有効な環境で使用しているとすると、たくさんのモデルを<a href="http://bitbucket.org/osrf/gazebo_models">データベース</a>から挿入することが可能ですし、実行中に必要なコンテンツをダウンロードすることも可能です。</p>
 
 <h3>環境変数</h3>
 
-
-
-
 <p>ファイルを配置するために、また、クライアントとサーバーの間の通信をセットアップするために、Gazeboにはたくさんの<a href="http://gazebosim.org/user_guide/started__components__env.html">環境変数</a>があります。<br/>
-Gazebo 1.9.0より、ほとんどの場合に使用するデフォルト変数は編纂されています。つまり、多くの変数は設定する必要がないということです。これらのデフォルト変数は以下のシェルスクリプトの中にも含まれています。</p>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">source</span> &lt;install_path&gt;/share/gazebo/setup.sh
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-
-<p>例えば、もし、モジュールを検索するためのパスを拡張するなどして、Gazeboの挙動を修正したいなら、まず最初に<code>source</code>コマンドで上記のェルスクリプトを実行したあと、設定されている変数を修正するということです。</p>
-
-
-
+Gazebo 1.9.0より、ほとんどの場合に使用するデフォルト変数は編纂されています。つまり、多くの変数は設定する必要がないということです。これらのデフォルト変数は以下のシェルスクリプトの中にも含まれています。
+<code>bash
+source &lt;install_path&gt;/share/gazebo/setup.sh
+</code>
+例えば、もし、モジュールを検索するためのパスを拡張するなどして、Gazeboの挙動を修正したいなら、まず最初に<code>source</code>コマンドで上記のェルスクリプトを実行したあと、設定されている変数を修正するということです。</p>
 
 <h3>Gazeboサーバー</h3>
 
-
-
-
 <p>このサーバーはGazeboの実体です。コマンドラインから与えられるworldディスクリプションファイルを解読し、物理エンジンやセンサエンジンを使ってシミュレータを実行します。<br/>
-このサーバーは以下のコマンドを使うことで実行できます。サーバーにはグラフィックが含まれていない、つまり、GUIが存在しないということに留意してください。</p>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gzserver &lt;world_filename&gt;
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-
-<p>ここで、<code>&lt;world_filename&gt;</code>は：</p>
-
-
-
+このサーバーは以下のコマンドを使うことで実行できます。サーバーにはグラフィックが含まれていない、つまり、GUIが存在しないということに留意してください。
+<code>bash
+gzserver &lt;world_filename&gt;
+</code>
+ここで、<code>&lt;world_filename&gt;</code>は：</p>
 
 <ol>
 <li><p>カレントディレクトリ（現在のディレクトリ）との相対パス</p></li>
@@ -727,89 +489,40 @@ Gazebo 1.9.0より、ほとんどの場合に使用するデフォルト変数�
 </ol>
 
 
-
-
 <p>のいずれかである必要があります。<br/>
 Gazeboによって提供されるworldデータは<code>/share/gazebo-*/worlds</code>にあります。<br/>
-例えば、Gazeboによって提供される<code>empty.world</code>を使用する場合、以下のコマンドを使います。</p>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gzserver worlds/empty.world
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
+例えば、Gazeboによって提供される<code>empty.world</code>を使用する場合、以下のコマンドを使います。
+<code>bash
+gzserver worlds/empty.world
+</code></p>
 
 <h2>グラフィカルクライアント</h2>
 
-
-
-
 <p>グラフィカルクライアントは実行中の<code>gzserver</code>と接続し、要素を表示します。実行中のシミュレーションを修正することができるツールでもあります。<br/>
-グラフィカルクライアントは以下のコマンドで実行されます。</p>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gzclient
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
+グラフィカルクライアントは以下のコマンドで実行されます。<br/>
+<code>bash
+gzclient
+</code></p>
 
 <h3>サーバー + グラフィカルクライアントを一度に</h3>
 
-
-
-
-<p>コマンド<code>gazebo</code>はサーバーとクライアントを一度に利用可能にするコマンドです。<code>gzserver worlds/empty.world</code>と<code>gzclient</code>をそれぞれ実行する代わりに、以下のように実行することができます</p>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo worlds/empty.world
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
+<p>コマンド<code>gazebo</code>はサーバーとクライアントを一度に利用可能にするコマンドです。<code>gzserver worlds/empty.world</code>と<code>gzclient</code>をそれぞれ実行する代わりに、以下のように実行することができます
+<code>bash
+gazebo worlds/empty.world
+</code></p>
 
 <h2>プラグイン</h2>
 
-
-
-
 <p>プラグインではGazeboにシンプルでかつ便利なインターフェース接続メカニズムを提供しています。プラグインはコマンドラインでの記述とworld/modelファイル（<a href="http://sdformat.org/spec">SDF</a>フォーマットを参照）での記述のどちらも読み込むことができます。コマンドラインに記述されたものが最初に読み込まれ、world/modelファイルに記述されたプラグインを次に読み込みます。ほとんどのプラグインがサーバーによって読み込まれますが、プラグインはグラフィカルクライアントでもまた、GUIのカスタムを用意にするために読み込まれます。<br/>
-コマンドラインからプラグインを読み込む例:</p>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gzserver -s
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-
-<p>グラフィカルクライアントでも同じように：</p>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gzclient -g
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-
-<p>プラグインについてもっと情報が必要なら<a href="http://gazebosim.org/tutorials/?tut=plugins_hello_world">プラグインのオーバービュー</a>を参照してください。</p>
-
+コマンドラインからプラグインを読み込む例:
+<code>bash
+gzserver -s
+</code>
+グラフィカルクライアントでも同じように：
+<code>bash
+gzclient -g
+</code>
+プラグインについてもっと情報が必要なら<a href="http://gazebosim.org/tutorials/?tut=plugins_hello_world">プラグインのオーバービュー</a>を参照してください。</p>
 ]]></content>
   </entry>
   
@@ -818,51 +531,25 @@ Gazeboによって提供されるworldデータは<code>/share/gazebo-*/worlds</
     <link href="http://cir-kit.github.io/blog/2015/01/31/gazebo-quickstart/"/>
     <updated>2015-01-31T17:12:33+09:00</updated>
     <id>http://cir-kit.github.io/blog/2015/01/31/gazebo-quickstart</id>
-    <content type="html"><![CDATA[<p><img src="http://cir-kit.github.io/images/gazebo_logo.png" alt="gazebo_logo" /></p>
-
-
-
+    <content type="html"><![CDATA[<p><img src="/images/gazebo_logo.png" alt="gazebo_logo" /></p>
 
 <h5>検証日時</h5>
 
-
-
-
 <p>01/31/2015 (Sat)</p>
 
-
-
-
 <h5>概要</h5>
-
-
-
 
 <p>Gazeboのチュートリアル第一弾「Get Started」。その、「Quick Start」編です。<br/>
 公式サイトを適当に翻訳しただけですので、あしからず。</p>
 
-
-
-
 <h5>レベル</h5>
 
-
-
-
 <p><strong>BEGINNER</strong></p>
-
-
-
 
 <!-- more -->
 
 
-
-
 <h5>環境</h5>
-
-
-
 
 <table>
 <thead>
@@ -907,135 +594,62 @@ Gazeboによって提供されるworldデータは<code>/share/gazebo-*/worlds</
 </table>
 
 
-
-
 <h5>参考</h5>
-
-
-
 
 <p><a href="http://gazebosim.org/tutorials?cat=get_started">GAZEBO Tutorial-GetStarted</a></p>
 
-
-
-
 <h2>クイックスタート</h2>
-
-
-
 
 <h3>GAZEBOを立ち上げる</h3>
 
-
-
-
 <p>Gazeboをデフォルト環境で実行するには以下の3つの手順が必要です。</p>
-
-
-
 
 <ol>
 <li><p>Gazeboを<a href="https://cir-kit.github.io/blog/2015/01/31/gazebo-install/">インストール</a>する。</p></li>
 <li><p>ターミナルを立ち上げる。ほとんどのUbuntuシステムなら、<code>Ctrl+Alt+t</code>でもターミナルが立ち上がります。</p></li>
-<li>コマンドプロンプトに以下のコマンドを入力して<code>gazebo</code>を立ち上げる。</li>
+<li>コマンドプロンプトに以下のコマンドを入力して<code>gazebo</code>を立ち上げる。
+<code>bash
+gazebo
+</code></li>
 </ol>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
 
 
 <h3>GAZEBOをロボットと一緒に動かす</h3>
 
-
-
-
 <p>pionieer2dxと共にworldを読み込んで、シミュレータを立ち上げてみましょう !</p>
 
-
-
-
 <ol>
-<li>ターミナルを開いて、以下のコマンドを入力してください。</li>
+<li>ターミナルを開いて、以下のコマンドを入力してください。
+<code>bash
+gazebo worlds/pioneer2dx.world
+</code></li>
 </ol>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo worlds/pioneer2dx.world
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
 
 
 <h4>worldデータはどこにあるのでしょうか?</h4>
 
-
-
-
-<p>さっき入力したコマンドの中に、不可思議な引数<code>worlds/pioneer2dx.world</code>があることに気づいたでしょう。これは、gazeboに<code>worlds/pioneer2dx.world</code>ファイルを探させ、ロードしスタートさせるようにする引数です。worldデータはバージョンシステムディレクトリに配置されています。例えば、Ubuntuの場合だと、<code>/usr/share/gazebo-4.0</code>にあります。もし、UbuntuにGazebo4.0をインストールしているのなら、以下のコマンドをターミナルに撃ちこむことで、worldデータの一覧を確認することができます。</p>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>ls /usr/share/gazebo-4.0/worlds
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-
-<p>Homebrewを利用してOSXにGazebo4.0をインストールしている場合、以下を入力して、worldデータの一覧を確認することができます。</p>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>ls /usr/local/share/gazebo-4.0/worlds
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
+<p>さっき入力したコマンドの中に、不可思議な引数<code>worlds/pioneer2dx.world</code>があることに気づいたでしょう。これは、gazeboに<code>worlds/pioneer2dx.world</code>ファイルを探させ、ロードしスタートさせるようにする引数です。worldデータはバージョンシステムディレクトリに配置されています。例えば、Ubuntuの場合だと、<code>/usr/share/gazebo-4.0</code>にあります。もし、UbuntuにGazebo4.0をインストールしているのなら、以下のコマンドをターミナルに撃ちこむことで、worldデータの一覧を確認することができます。
+<code>bash
+ls /usr/share/gazebo-4.0/worlds
+</code>
+Homebrewを利用してOSXにGazebo4.0をインストールしている場合、以下を入力して、worldデータの一覧を確認することができます。
+<code>bash
+ls /usr/local/share/gazebo-4.0/worlds
+</code></p>
 
 <h3>クライアントとサーバーの区別</h3>
 
-
-
-
 <p>実際は、<code>gazebo</code>コマンドでは、２つの異なるコマンドを実行しています。１つ目は、<code>gzserver</code> と呼ばれるもので、２つ目は <code>gzclient</code> と呼ばれるものです。 <code>gzserver</code> では、物理エンジンのアップデートループやセンサデータの更新などを実行可能にします。これはGazeboのコアであり、他のGUIとは独立して使用することができます。また、<strong>&ldquo;run headless&rdquo;</strong>というフレーズをフォーラムに確認することができるでしょう。このフレーズは <code>gzserver</code> のみを実行しているということを意味しています。例として、ユーザーインターフェースの必要ないクラウドコンピュータで実行している <code>gzserver</code> とworldデータが関連付けられているときなどがあります。<br/>
 また、<code>gzclient</code> では<a href="http://qt-project.org/">QT</a>を基本としたユーザーインターフェースを利用可能にします。このアプリケーションは素晴らしい見た目のシミュレーションを提供するだけでなく、様々なシミュレーションプロパティを操作する便利なコントロールも提供してくれます。<br/>
-これらを実行可能にし、実行するために、ターミナルを開いて、サーバーを起動してください。</p>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gzserver
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-
-<p>もうひとつ別のターミナルを開いて、GUIクライアントを実行してください</p>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gzclient
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-
-<p>この時点で、Gazeboのユーザーインターフェースを確認できるはずです。また、<code>gzclient</code>は好きなタイミングで再起動することができますし、複数実行することも可能です。</p>
-
+これらを実行可能にし、実行するために、ターミナルを開いて、サーバーを起動してください。
+<code>bash
+gzserver
+</code>
+もうひとつ別のターミナルを開いて、GUIクライアントを実行してください
+<code>bash
+gzclient
+</code>
+この時点で、Gazeboのユーザーインターフェースを確認できるはずです。また、<code>gzclient</code>は好きなタイミングで再起動することができますし、複数実行することも可能です。</p>
 ]]></content>
   </entry>
   
