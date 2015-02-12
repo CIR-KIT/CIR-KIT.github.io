@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Gazebo | 九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/blog/categories/gazebo/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-02-12T17:39:10+09:00</updated>
+  <updated>2015-02-12T17:54:39+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -12,6 +12,441 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[ロボットを作ってみよう ! (簡単なグリッパーを作る 編) No.2.8]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/01/31/gazebo-make-a-simple-gripper/"/>
+    <updated>2015-01-31T22:35:00+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/01/31/gazebo-make-a-simple-gripper</id>
+    <content type="html"><![CDATA[<p><img src="/images/gazebo_logo.png" alt="gazebo_logo" /></p>
+
+<h5>検証日時</h5>
+
+<p>01/30/2015 (Fri)</p>
+
+<h5>概要</h5>
+
+<p>Gazeboのチュートリアル第二弾「Build a Robot」。<br/>
+このチュートリアルではロボットを作ったり、修正したりします。また、センサ、アクチュエータを搭載した車輪型ロボットを作り、モデルを描画するなどの実践例も行います。<br/>
+今回はその「Make a simple gripper」編です。<br/>
+公式サイトを適当に翻訳しただけですので、あしからず。</p>
+
+<h5>レベル</h5>
+
+<p><strong>BEGINNER</strong></p>
+
+<!-- more -->
+
+
+<h5>環境</h5>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> <strong>PC</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Prosessor</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>RAM</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>OS</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Kernel</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> 3.13.0-44-generic </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Gazebo</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Version 5.0.1 </td>
+</tr>
+</tbody>
+</table>
+
+
+<h5>参考</h5>
+
+<p><a href="http://gazebosim.org/tutorials?cat=build_robot">GAZEBO Tutorial-Build a Robot</a></p>
+
+<h2>はじめに</h2>
+
+<p>このチュートリアルでは，２つの棒を使ったピンチンググリッパーの作り方を説明します。</p>
+
+<h2>モデルディレクトリを作る</h2>
+
+<p>このチュートリアルを始めるために、<a href="http://gazebosim.org/user_guide/started__models__database.html">モデルデータベースドキュメント</a>と<a href="http://sdformat.org/spec">SDF</a>のレファレンスをご覧ください。</p>
+
+<h2>モデルを作る</h2>
+
+<ol>
+<li><p><code>world</code> ファイルのためのディレクトリを作成しましょう。
+<code>bash
+ mkdir ~/simple_gripper_tutorial
+ cd ~/simple_gripper_tutorial
+</code></p></li>
+<li><p>まずはシンプルな空の<code>world</code>から始めます。<code>world</code>ファイルを作成しましょう。
+<code>bash
+ gedit ~/simple_gripper_tutorial/gripper.world
+</code>
+以下のSDFファイル<a href="http://bitbucket.org/osrf/gazebo_tutorials/raw/default/simple_gripper/files/box.sdf">gripper.world</a>をコピペしてください。
+<code>xml
+ &lt;?xml version="1.0"?&gt;
+   &lt;sdf version="1.4"&gt;
+     &lt;world name="default"&gt;
+     &lt;!-- A ground plane --&gt;
+     &lt;include&gt;
+       &lt;uri&gt;model://ground_plane&lt;/uri&gt;
+     &lt;/include&gt;
+     &lt;!-- A global light source --&gt;
+     &lt;include&gt;
+       &lt;uri&gt;model://sun&lt;/uri&gt;
+     &lt;/include&gt;
+     &lt;include&gt;
+       &lt;uri&gt;model://my_gripper&lt;/uri&gt;
+     &lt;/include&gt;
+     &lt;/world&gt;
+   &lt;/sdf&gt;
+</code></p></li>
+<li><p><code>~/.gazebo</code> ディレクトリの中に，<code>model</code> ディレクトリを作成してください。作成したディレクトリには、これから作成するモデルを置いてゆきます。:
+<code>bash
+ mkdir -p ~/.gazebo/models/my_gripper
+</code></p></li>
+<li><p>作成するグリッパの基本的な構造を作りましょう。その最も簡単な方法は静的モデルを作り、リンクを一つ追加することです。静的モデルとは、シミュレーションがスタートしてもリンクが動かないということを意味します。これにより、シミュレータをスタートさせ、ジョイントを追加する前に、モデルを見ながら、リンクの位置を調べることができます。</p></li>
+<li><p>以下のように、<a href="http://bitbucket.org/osrf/gazebo_tutorials/raw/default/simple_gripper/files/model.config">model.config</a>を作成しましょう。
+<code>xml
+ &lt;?xml version="1.0"?&gt;
+ &lt;model&gt;
+   &lt;name&gt;My Gripper&lt;/name&gt;
+   &lt;version&gt;1.0&lt;/version&gt;
+   &lt;sdf version='1.4'&gt;simple_gripper.sdf&lt;/sdf&gt;
+   &lt;author&gt;
+     &lt;name&gt;My Name&lt;/name&gt;
+     &lt;email&gt;me@my.email&lt;/email&gt;
+   &lt;/author&gt;
+   &lt;description&gt;
+     My awesome robot.
+   &lt;/description&gt;
+ &lt;/model&gt;
+</code></p></li>
+<li><p>以下の<a href="http://bitbucket.org/osrf/gazebo_tutorials/raw/default/simple_gripper/files/simple_gripper.sdf">simple_gripper.sdf</a>ファイルをコピペしてください。
+<code>xml
+&lt;?xml version="1.0"?&gt;
+&lt;sdf version="1.4"&gt;
+ &lt;model name="simple_gripper"&gt;
+     &lt;link name="riser"&gt;
+         &lt;pose&gt;-0.15 0.0 0.5 0 0 0&lt;/pose&gt;
+         &lt;inertial&gt;
+             &lt;pose&gt;0 0 -0.5 0 0 0&lt;/pose&gt;
+             &lt;inertia&gt;
+                 &lt;ixx&gt;0.01&lt;/ixx&gt;
+                 &lt;ixy&gt;0&lt;/ixy&gt;
+                 &lt;ixz&gt;0&lt;/ixz&gt;
+                 &lt;iyy&gt;0.01&lt;/iyy&gt;
+                 &lt;iyz&gt;0&lt;/iyz&gt;
+                 &lt;izz&gt;0.01&lt;/izz&gt;
+             &lt;/inertia&gt;
+             &lt;mass&gt;10.0&lt;/mass&gt;
+         &lt;/inertial&gt;
+         &lt;collision name="collision"&gt;
+             &lt;geometry&gt;
+                 &lt;box&gt;
+                     &lt;size&gt;0.2 0.2 1.0&lt;/size&gt;
+                 &lt;/box&gt;
+             &lt;/geometry&gt;
+         &lt;/collision&gt;
+         &lt;visual name="visual"&gt;
+             &lt;geometry&gt;
+                 &lt;box&gt;
+                     &lt;size&gt;0.2 0.2 1.0&lt;/size&gt;
+                 &lt;/box&gt;
+             &lt;/geometry&gt;
+             &lt;material&gt;
+                 &lt;script&gt;Gazebo/Purple&lt;/script&gt;
+             &lt;/material&gt;
+         &lt;/visual&gt;
+     &lt;/link&gt;
+     &lt;link name="palm"&gt;
+         &lt;pose&gt;0.0 0.0 0.05 0 0 0&lt;/pose&gt;
+         &lt;inertial&gt;
+             &lt;inertia&gt;
+                 &lt;ixx&gt;0.01&lt;/ixx&gt;
+                 &lt;ixy&gt;0&lt;/ixy&gt;
+                 &lt;ixz&gt;0&lt;/ixz&gt;
+                 &lt;iyy&gt;0.01&lt;/iyy&gt;
+                 &lt;iyz&gt;0&lt;/iyz&gt;
+                 &lt;izz&gt;0.01&lt;/izz&gt;
+             &lt;/inertia&gt;
+             &lt;mass&gt;0.5&lt;/mass&gt;
+         &lt;/inertial&gt;
+         &lt;collision name="collision"&gt;
+             &lt;geometry&gt;
+                 &lt;box&gt;
+                     &lt;size&gt;0.1 0.2 0.1&lt;/size&gt;
+                 &lt;/box&gt;
+             &lt;/geometry&gt;
+         &lt;/collision&gt;
+         &lt;visual name="visual"&gt;
+             &lt;geometry&gt;
+                 &lt;box&gt;
+                     &lt;size&gt;0.1 0.2 0.1&lt;/size&gt;
+                 &lt;/box&gt;
+             &lt;/geometry&gt;
+             &lt;material&gt;
+                 &lt;script&gt;Gazebo/Red&lt;/script&gt;
+             &lt;/material&gt;
+         &lt;/visual&gt;
+     &lt;/link&gt;
+     &lt;link name="left_finger"&gt;
+         &lt;pose&gt;0.1 0.2 0.05 0 0 -0.78539&lt;/pose&gt;
+         &lt;inertial&gt;
+             &lt;inertia&gt;
+                 &lt;ixx&gt;0.01&lt;/ixx&gt;
+                 &lt;ixy&gt;0&lt;/ixy&gt;
+                 &lt;ixz&gt;0&lt;/ixz&gt;
+                 &lt;iyy&gt;0.01&lt;/iyy&gt;
+                 &lt;iyz&gt;0&lt;/iyz&gt;
+                 &lt;izz&gt;0.01&lt;/izz&gt;
+             &lt;/inertia&gt;
+             &lt;mass&gt;0.1&lt;/mass&gt;
+         &lt;/inertial&gt;
+         &lt;collision name="collision"&gt;
+             &lt;geometry&gt;
+                 &lt;box&gt;
+                     &lt;size&gt;0.1 0.3 0.1&lt;/size&gt;
+                 &lt;/box&gt;
+             &lt;/geometry&gt;
+         &lt;/collision&gt;
+         &lt;visual name="visual"&gt;
+             &lt;geometry&gt;
+                 &lt;box&gt;
+                     &lt;size&gt;0.1 0.3 0.1&lt;/size&gt;
+                 &lt;/box&gt;
+             &lt;/geometry&gt;
+             &lt;material&gt;
+                 &lt;script&gt;Gazebo/Blue&lt;/script&gt;
+             &lt;/material&gt;
+         &lt;/visual&gt;
+     &lt;/link&gt;
+     &lt;link name="left_finger_tip"&gt;
+         &lt;pose&gt;0.336 0.3 0.05 0 0 1.5707&lt;/pose&gt;
+         &lt;inertial&gt;
+             &lt;inertia&gt;
+                 &lt;ixx&gt;0.01&lt;/ixx&gt;
+                 &lt;ixy&gt;0&lt;/ixy&gt;
+                 &lt;ixz&gt;0&lt;/ixz&gt;
+                 &lt;iyy&gt;0.01&lt;/iyy&gt;
+                 &lt;iyz&gt;0&lt;/iyz&gt;
+                 &lt;izz&gt;0.01&lt;/izz&gt;
+             &lt;/inertia&gt;
+             &lt;mass&gt;0.1&lt;/mass&gt;
+         &lt;/inertial&gt;
+         &lt;collision name="collision"&gt;
+             &lt;geometry&gt;
+                 &lt;box&gt;
+                     &lt;size&gt;0.1 0.2 0.1&lt;/size&gt;
+                 &lt;/box&gt;
+             &lt;/geometry&gt;
+         &lt;/collision&gt;
+         &lt;visual name="visual"&gt;
+             &lt;geometry&gt;
+                 &lt;box&gt;
+                     &lt;size&gt;0.1 0.2 0.1&lt;/size&gt;
+                 &lt;/box&gt;
+             &lt;/geometry&gt;
+             &lt;material&gt;
+                 &lt;script&gt;Gazebo/Blue&lt;/script&gt;
+             &lt;/material&gt;
+         &lt;/visual&gt;
+     &lt;/link&gt;
+     &lt;link name="right_finger"&gt;
+         &lt;pose&gt;0.1 -0.2 0.05 0 0 .78539&lt;/pose&gt;
+         &lt;inertial&gt;
+             &lt;inertia&gt;
+                 &lt;ixx&gt;0.01&lt;/ixx&gt;
+                 &lt;ixy&gt;0&lt;/ixy&gt;
+                 &lt;ixz&gt;0&lt;/ixz&gt;
+                 &lt;iyy&gt;0.01&lt;/iyy&gt;
+                 &lt;iyz&gt;0&lt;/iyz&gt;
+                 &lt;izz&gt;0.01&lt;/izz&gt;
+             &lt;/inertia&gt;
+             &lt;mass&gt;0.1&lt;/mass&gt;
+         &lt;/inertial&gt;
+         &lt;collision name="collision"&gt;
+             &lt;geometry&gt;
+                 &lt;box&gt;
+                     &lt;size&gt;0.1 0.3 0.1&lt;/size&gt;
+                 &lt;/box&gt;
+             &lt;/geometry&gt;
+         &lt;/collision&gt;
+         &lt;visual name="visual"&gt;
+             &lt;geometry&gt;
+                 &lt;box&gt;
+                     &lt;size&gt;0.1 0.3 0.1&lt;/size&gt;
+                 &lt;/box&gt;
+             &lt;/geometry&gt;
+             &lt;material&gt;
+                 &lt;script&gt;Gazebo/Green&lt;/script&gt;
+             &lt;/material&gt;
+         &lt;/visual&gt;
+     &lt;/link&gt;
+     &lt;link name="right_finger_tip"&gt;
+         &lt;pose&gt;0.336 -0.3 0.05 0 0 1.5707&lt;/pose&gt;
+         &lt;inertial&gt;
+             &lt;inertia&gt;
+                 &lt;ixx&gt;0.01&lt;/ixx&gt;
+                 &lt;ixy&gt;0&lt;/ixy&gt;
+                 &lt;ixz&gt;0&lt;/ixz&gt;
+                 &lt;iyy&gt;0.01&lt;/iyy&gt;
+                 &lt;iyz&gt;0&lt;/iyz&gt;
+                 &lt;izz&gt;0.01&lt;/izz&gt;
+             &lt;/inertia&gt;
+             &lt;mass&gt;0.1&lt;/mass&gt;
+         &lt;/inertial&gt;
+         &lt;collision name="collision"&gt;
+             &lt;geometry&gt;
+                 &lt;box&gt;
+                     &lt;size&gt;0.1 0.2 0.1&lt;/size&gt;
+                 &lt;/box&gt;
+             &lt;/geometry&gt;
+         &lt;/collision&gt;
+         &lt;visual name="visual"&gt;
+             &lt;geometry&gt;
+                 &lt;box&gt;
+                     &lt;size&gt;0.1 0.2 0.1&lt;/size&gt;
+                 &lt;/box&gt;
+             &lt;/geometry&gt;
+             &lt;material&gt;
+                 &lt;script&gt;Gazebo/Green&lt;/script&gt;
+             &lt;/material&gt;
+         &lt;/visual&gt;
+     &lt;/link&gt;
+     &lt;static&gt;true&lt;/static&gt;
+ &lt;/model&gt;
+&lt;/sdf&gt;
+</code></p></li>
+<li><p>ここまでで、何が作成できたのかを見るために、<code>world</code>ファイルを実行しましょう。
+<code>bash
+gazebo ~/simple_gripper_tutorial/gripper.world
+</code>
+すると、以下のようになっているはずです。
+<img src="/images/2015-01-31-gazebo-make-a-simple-gripper/Simple-gripper-1.png" alt="Simple-gripper-1" /></p></li>
+<li><p>一度でもリンクを作成できたら安心です。<code>simple_gripper.sdf</code>ファイルの中の<code>&lt;/model&gt;</code>と書いてある前に、以下のコードを追加することで、ジョイントを追加することができます。
+<code>bash
+ gedit ~/.gazebo/models/my_gripper/simple_gripper.sdf
+</code>
+<code>xml
+         &lt;joint name="palm_left_finger" type="revolute"&gt;
+             &lt;pose&gt;0 -0.15 0 0 0 0&lt;/pose&gt;
+             &lt;child&gt;left_finger&lt;/child&gt;
+             &lt;parent&gt;palm&lt;/parent&gt;
+             &lt;axis&gt;
+                 &lt;limit&gt;
+                     &lt;lower&gt;-0.4&lt;/lower&gt;
+                     &lt;upper&gt;0.4&lt;/upper&gt;
+                 &lt;/limit&gt;
+                 &lt;xyz&gt;0 0 1&lt;/xyz&gt;
+             &lt;/axis&gt;
+         &lt;/joint&gt;
+         &lt;joint name="left_finger_tip" type="revolute"&gt;
+             &lt;pose&gt;0 0.1 0 0 0 0&lt;/pose&gt;
+             &lt;child&gt;left_finger_tip&lt;/child&gt;
+             &lt;parent&gt;left_finger&lt;/parent&gt;
+             &lt;axis&gt;
+                 &lt;limit&gt;
+                     &lt;lower&gt;-0.4&lt;/lower&gt;
+                     &lt;upper&gt;0.4&lt;/upper&gt;
+                 &lt;/limit&gt;
+                 &lt;xyz&gt;0 0 1&lt;/xyz&gt;
+             &lt;/axis&gt;
+         &lt;/joint&gt;
+         &lt;joint name="palm_right_finger" type="revolute"&gt;
+             &lt;pose&gt;0 0.15 0 0 0 0&lt;/pose&gt;
+             &lt;child&gt;right_finger&lt;/child&gt;
+             &lt;parent&gt;palm&lt;/parent&gt;
+             &lt;axis&gt;
+                 &lt;limit&gt;
+                     &lt;lower&gt;-0.4&lt;/lower&gt;
+                     &lt;upper&gt;0.4&lt;/upper&gt;
+                 &lt;/limit&gt;
+                 &lt;xyz&gt;0 0 1&lt;/xyz&gt;
+             &lt;/axis&gt;
+         &lt;/joint&gt;
+         &lt;joint name="right_finger_tip" type="revolute"&gt;
+             &lt;pose&gt;0 0.1 0 0 0 0&lt;/pose&gt;
+             &lt;child&gt;right_finger_tip&lt;/child&gt;
+             &lt;parent&gt;right_finger&lt;/parent&gt;
+             &lt;axis&gt;
+                 &lt;limit&gt;
+                     &lt;lower&gt;-0.4&lt;/lower&gt;
+                     &lt;upper&gt;0.4&lt;/upper&gt;
+                 &lt;/limit&gt;
+                 &lt;xyz&gt;0 0 1&lt;/xyz&gt;
+             &lt;/axis&gt;
+         &lt;/joint&gt;
+         &lt;joint name="palm_riser" type="prismatic"&gt;
+             &lt;child&gt;palm&lt;/child&gt;
+             &lt;parent&gt;riser&lt;/parent&gt;
+             &lt;axis&gt;
+                 &lt;limit&gt;
+                     &lt;lower&gt;0&lt;/lower&gt;
+                     &lt;upper&gt;0.9&lt;/upper&gt;
+                 &lt;/limit&gt;
+                 &lt;xyz&gt;0 0 1&lt;/xyz&gt;
+             &lt;/axis&gt;
+         &lt;/joint&gt;
+</code>
+また、モデルを<code>non-static</code>にしましょう。：
+<code>xml
+         ...
+         &lt;static&gt;false&lt;/static&gt;
+         ...
+</code></p></li>
+<li><p>Gazeboをもう一度立ち上げましょう。
+<code>bash
+ gazebo ~/simple_gripper_tutorial/gripper.world
+</code></p></li>
+<li><p>モデルの上で右クリックをし、<strong>&ldquo;View->Joints&rdquo;</strong>というのを選択しましょう。新たに作成したジョイントが表示されます。
+<img src="/images/2015-01-31-gazebo-make-a-simple-gripper/Simple-gripper-joints.png" alt="Simple-gripper-joints" /></p></li>
+<li><p>ジョイントコントロールウィジェットを使えば、それぞれのジョイントの力をコントロールすることができます。グリッパーモデルをクリックしてください。次に、GUIの右端にある直立したハンドル(白いポチが３つ付いているところ)を左にドラックしてください。するとウィジェットが表示されます。ウィジェットでは、それぞれのジョイントのリストとそのスライダーを表示しています。<strong>Force</strong>タブを選択し、スライダーを使ってそれぞれのジョイントに力を適用し、グリッパが動くことを確認してください。例えば、<code>palm_riser</code>の値を<code>10[N]</code>にセットすると、以下のようになるはずです。:</p></li>
+</ol>
+
+
+<div class="youtube-container">
+<iframe width="420" height="315" src="https://www.youtube.com/embed/lPvVqTvr_BA" frameborder="0" allowfullscreen></iframe>
+</div>
+
+
+<ol>
+<li><p>オプション</p></li>
+<li><p>小さい箱もしくは円柱をシミュレータに追加し、グリッパーのところに置いてください。</p></li>
+<li><p>GUIインターフェースを使って物体を持ち上げてみましょう。</p>
+
+<p><strong>コツ : </strong>物体への慣性力をなるべく少なくするとうまく行くでしょう。</p></li>
+</ol>
+
+
+<h4>Next >> <a href="http://cir-kit.github.io/blog/2015/02/01/gazebo-attach-gripper-to-robot/:">グリッパをロボットに取り付ける</a></h4>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[ロボットを作ってみよう ! (ロボットにセンサを取り付ける 編) No.2.7]]></title>
@@ -1021,188 +1456,6 @@ gazebo my_mesh.world
 
 
 <h4>Next >> <a href="http://cir-kit.github.io/blog/2015/01/31/gazebo-attach-meshes/">メッシュを取り付ける</a></h4>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[ロボットを作ってみよう ! (モデルをつくる 編) No.2.3]]></title>
-    <link href="http://cir-kit.github.io/blog/2015/01/31/gazebo-make-a-model/"/>
-    <updated>2015-01-31T19:22:14+09:00</updated>
-    <id>http://cir-kit.github.io/blog/2015/01/31/gazebo-make-a-model</id>
-    <content type="html"><![CDATA[<p><img src="/images/gazebo_logo.png" alt="gazebo_logo" /></p>
-
-<h5>検証日時</h5>
-
-<p>01/25/2015 (Sun)</p>
-
-<h5>概要</h5>
-
-<p>Gazeboのチュートリアル第二弾「Build a Robot」。<br/>
-このチュートリアルではロボットを作ったり、修正したりします。また、センサ、アクチュエータを搭載した車輪型ロボットを作り、モデルを描画するなどの実践例も行います。<br/>
-今回はその「Make a model」編です。<br/>
-公式サイトを適当に翻訳しただけですので、あしからず。</p>
-
-<h5>レベル</h5>
-
-<p><strong>BEGINNER</strong></p>
-
-<!-- more -->
-
-
-<h5>環境</h5>
-
-<table>
-<thead>
-<tr>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center;"> <strong>PC</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Prosessor</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>RAM</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>OS</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Kernel</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> 3.13.0-44-generic </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Gazebo</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Version 5.0.1 </td>
-</tr>
-</tbody>
-</table>
-
-
-<h5>参考</h5>
-
-<p><a href="http://gazebosim.org/tutorials?cat=build_robot">GAZEBO Tutorial-Build a Robot</a></p>
-
-<h2>はじめに</h2>
-
-<p>このチュートリアルでは、SDFモデルオブジェクトについて説明します。<br/>
-SDFモデルは複雑なロボットの形状を整理して記述することができます。これには、<code>&lt;model&gt;</code><a href="http://gazebosim.org/sdf.html">SDF</a>タグが必要です。また、リンク、ジョイント、物体の衝突情報、外観、プラグインなどの要素が必要です。必要なモデルのが複雑な依存関係にあるとき、modelファイルを作るのは困難になります。このページでは自身のモデルをどうやってビルドするのかについて、いくつかの方法を説明します。</p>
-
-<h2>SDFモデルの構成</h2>
-
-<ul>
-<li><p><strong>Links : </strong>リンクにはモデル本体の物理的な情報が記述されています。例えば、タイヤ出会ったりジョイントチェーンのリンクであったりします。それぞれのリンクには多くの衝突判定や外観要素が含まれています。パフォーマンスや安定性を向上させるためには、モデルのリンクの数を減らしてみてください。例えば、テーブルのモデルには、5つのリンク(４つは脚で、１つは天板)がジョイントで結合されています。しかし、これはとても複雑です。特にジョイントが決して動かない場合などです。なので、テーブルを1つのリンクと5つの衝突要素で生成します。</p>
-
-<ul>
-<li><p><strong>Collision : </strong>衝突要素は衝突判定に使用される幾何学にカプセル化されています。これは単純な形状（そのほうが好ましい）、もしくは、三角形のメッシュ（こちらの方がよりリソースを必要とします）です。リンクはたくさんの衝突要素が含まれています。</p></li>
-<li><p><strong>Visual : </strong>外観要素はリンクの外観部分に使われます。リンクには０もしくはそれ以上の外観要素が含まれています。</p></li>
-<li><p><strong>Inertial : </strong>慣性要素は質量や回転慣性行列などのリンクの物理的特性を記述します。</p></li>
-<li><p><strong>Sensor : </strong>センサはプラグインの中で使用するための環境データを取得します。リンクには0もしくはそれ以上のセンサが含まれています。</p></li>
-</ul>
-</li>
-<li><p><strong>Joints : </strong>ジョイントは２つのリンクを接続します。回転のやじる地とジョイントの限界のように、親子関係が他の親との間に生成されます。</p></li>
-<li><p><strong>Plugins : </strong>プラグインはモデルを制御するためのサードパーティーによって作られた共有ライブラリです。</p></li>
-</ul>
-
-
-<h2>モデルを作る</h2>
-
-<h3>ステップ 1 : メッシュを集める</h3>
-
-<p>モデルを作成する際に必要な３Dメッシュファイルのすべて集めることを意味します。Gazeboは簡単な形状のセット（：箱、球、円柱）を提供しています。もし、あなたのモデルがもう少し複雑であるなら、このまま読み進めてください。<br/>
-メッシュはいろいろな方法で生成できます。<a href="http://sketchup.google.com/3dwarehouse/">Google&rsquo;s 3D wharehouse</a>は良い３Dモデルのレポジトリです。あるいは、必要なファイルをすでに持っているかもしれない。いずれにせよ、最終的には、<a href="http://blender.org/">Blender</a>や<a href="http://sketchup.google.com/">Sketchup</a>などの3Dモデラーを使って独自のメッシュを作ることができます。<br/>
-GazeboではメッシュファイルはSTLもしくはColladaフォーマットでなければなりません。Colladaフォーマットの方が好ましいです。</p>
-
-<ul>
-<li><p><strong>コツ : </strong>原点が中心となるように、３Dモデリングソフトウェアを使ってメッシュを動かしておきましょう。これを行っておけばGazeboの中で、メッシュを動かすのがとtも簡単になります。</p></li>
-<li><p><strong>コツ : </strong>Colladaファイルフォーマットでは、マテリアルにメッシュを貼り付けることができます。作成したメッシュの外見の体裁を良くするためにこの仕組みを使いましょう。</p></li>
-<li><p><strong>コツ : </strong>メッシュはシンプルにしてください。これは、特に、メッシュを衝突要素として使用する場合に重要です。衝突要素には単純なポリゴンメッシュを使用し、見た目には複雑なポリゴンメッシュを使用するというのが一般的です．すでに提供されている形状（箱、球、円柱）を衝突要素として使用するのも、良い方法です。</p></li>
-</ul>
-
-
-<h3>ステップ 2 : モデルのSDFファイルを作る</h3>
-
-<p>極端に簡単なモデルファイルを作る、もしくはすでにあるモデルファイルをコピーしてくるところから始めてください。機能がすでにわかっているもしくは、デバッグがとても簡単なものからスタートするのが鍵です。<br/>
-とても単純な最小単位のボックスモデルファイルを衝突、幾何形状のユニットボックスとして、更に慣性ボックスユニット、外観ユニットとする。：<br/>
-モデルファイル<code>box.sdf</code> を生成する。
-<code>bash
-gedit box.sdf
-</code>
-以下を<a href="http://bitbucket.org/osrf/gazebo_tutorials/raw/default/build_model/files/box.sdf">box.sdf</a>にコピーしてください。
-<code>xml
-&lt;?xml version='1.0'?&gt;
-&lt;sdf version="1.4"&gt;
-&lt;model name="my_model"&gt;
-  &lt;pose&gt;0 0 0.5 0 0 0&lt;/pose&gt;
-  &lt;static&gt;true&lt;/static&gt;
-    &lt;link name="link"&gt;
-      &lt;inertial&gt;
-        &lt;mass&gt;1.0&lt;/mass&gt;
-        &lt;inertia&gt; &lt;!-- interias are tricky to compute --&gt;
-          &lt;!-- http://answers.gazebosim.org/question/4372/the-inertia-matrix-explained/ --&gt;
-          &lt;ixx&gt;0.083&lt;/ixx&gt;       &lt;!-- for a box: ixx = 0.083 * mass * (y*y + z*z) --&gt;
-          &lt;ixy&gt;0.0&lt;/ixy&gt;         &lt;!-- for a box: ixy = 0 --&gt;
-          &lt;ixz&gt;0.0&lt;/ixz&gt;         &lt;!-- for a box: ixz = 0 --&gt;
-          &lt;iyy&gt;0.083&lt;/iyy&gt;       &lt;!-- for a box: iyy = 0.083 * mass * (x*x + z*z) --&gt;
-          &lt;iyz&gt;0.0&lt;/iyz&gt;         &lt;!-- for a box: iyz = 0 --&gt;
-          &lt;izz&gt;0.083&lt;/izz&gt;       &lt;!-- for a box: izz = 0.083 * mass * (x*x + y*y) --&gt;
-        &lt;/inertia&gt;
-      &lt;/inertial&gt;
-      &lt;collision name="collision"&gt;
-        &lt;geometry&gt;
-          &lt;box&gt;
-            &lt;size&gt;1 1 1&lt;/size&gt;
-          &lt;/box&gt;
-        &lt;/geometry&gt;
-      &lt;/collision&gt;
-      &lt;visual name="visual"&gt;
-        &lt;geometry&gt;
-          &lt;box&gt;
-            &lt;size&gt;1 1 1&lt;/size&gt;
-          &lt;/box&gt;
-        &lt;/geometry&gt;
-      &lt;/visual&gt;
-    &lt;/link&gt;
-  &lt;/model&gt;
-&lt;/sdf&gt;
-</code>
-Box-geometryの原点はboxの幾何学的中心に置くことに留意してください、なので、地面の水平面と共に更新されるboxの底面を生成するために、地面の水平面の上へboxを引き上げるように、<code>&lt;pose&gt;0 0 0.5 0 0 0&lt;/pose&gt;</code>の原点を加えます。</p>
-
-<ul>
-<li><strong>コツ : </strong>上記の例だとシンプルなboxモデルを静的に設置しました。モデルを作る際に有効なのが特徴です。一回でもモデルを生成し、モデルを動かせるようにしたいなら、<code>&lt;static</code>タグを<code>false</code>にしてください。</li>
-</ul>
-
-
-<h3>ステップ 3 : モデルをSDFファイルに加える</h3>
-
-<p>起動中の<code>.sdf</code>ファイルと共に、慎重にモデルを加えていき、少しずつ複雑にしていきましょう。それぞれの要素を加えていく際に、モデルがGUIクライアントできちんと動作していることを確認しながら、加えていきましょう。<br/>
-以下に、要素を追加していく際に見習ったほうが良い手順を示します。</p>
-
-<ol>
-<li><p>リンクを追加</p></li>
-<li><p>衝突要素を追加</p></li>
-<li><p>外観要素を追加</p></li>
-<li><p>慣性情報を追加</p></li>
-<li><p>すべてのリンクを追加し終わるまで、1.に戻る</p></li>
-<li><p>すべてのジョイントを追加(使うなら)</p></li>
-<li><p>すべてのプラグインを追加（使うなら）</p></li>
-</ol>
-
 ]]></content>
   </entry>
   
