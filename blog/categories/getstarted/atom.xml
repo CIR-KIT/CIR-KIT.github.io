@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Getstarted | 九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/blog/categories/getstarted/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-02-12T15:29:19+09:00</updated>
+  <updated>2015-02-12T15:30:35+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -12,6 +12,281 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[GAZEBOを使ってみよう ! (Gazebo 構造編) No.1.3]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/01/31/gazebo-architecture/"/>
+    <updated>2015-01-31T18:21:33+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/01/31/gazebo-architecture</id>
+    <content type="html"><![CDATA[<p><img src="/images/gazebo_logo.png" alt="gazebo_logo" /></p>
+
+<h5>検証日時</h5>
+
+<p>01/31/2015 (Sat)</p>
+
+<h5>概要</h5>
+
+<p>Gazeboのチュートリアル第一弾「Get Started」。その「Gazebo Architecture」編です。<br/>
+公式サイトを適当に翻訳しただけですので、あしからず。</p>
+
+<h5>レベル</h5>
+
+<p><strong>BEGINNER</strong></p>
+
+<!-- more -->
+
+
+<h5>環境</h5>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> <strong>PC</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Prosessor</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>RAM</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>OS</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Kernel</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> 3.13.0-44-generic </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Gazebo</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Version 5.0.1 </td>
+</tr>
+</tbody>
+</table>
+
+
+<h5>参考</h5>
+
+<p><a href="http://gazebosim.org/tutorials?cat=get_started">GAZEBO Tutorial-GetStarted</a></p>
+
+<h2>はじめに</h2>
+
+<p>Gazeboに伴う要求を処理し、現在の問題を解決するために、システムを提案しています。Gazeboは物理シミュレーション、レンダリング、ユーザーインターフェース、コミュニケーション、そしてセンサ型などのためのライブラリとなるでしょう。以下のような３つの異なるプロセスが提供されています：<code>physics_sim</code>、<code>sensor_gen</code>、<code>gui</code>そして共同作業のための<code>master</code>です。</p>
+
+<h2>プロセス間の通信</h2>
+
+<p>互いのプロセス間での通信にはgoogle::protobufsとソケットを結合したものを使用しています。シミュレーションされたworldはbody poseをアップデートし、センサ型とGUIは出力を生成するためにそれらのメッセージを使用します。<br/>
+この仕組みは実行中のシミュレーションの内省を可能とし、Gazeboをコントロールするための便利なメカニズムを供給可能とします。</p>
+
+<h2>システム</h2>
+
+<h3>Gazeboマスター</h3>
+
+<p>これは必要不可欠なネームサーバートピックです。Gazeboマスターは、名前探索とトピックマネジメントを提供します。一つのマスターで多様な物理シミュレーション、センサ型、GUIを制御することができます。</p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> 依存関係 </td>
+<td style="text-align:center;"> Protobuf &amp; boost::ASIO </td>
+</tr>
+<tr>
+<td style="text-align:center;"> 外部API </td>
+<td style="text-align:center;"> なし </td>
+</tr>
+<tr>
+<td style="text-align:center;"> 内部API </td>
+<td style="text-align:center;"> なし </td>
+</tr>
+<tr>
+<td style="text-align:center;"> 配信トピック </td>
+<td style="text-align:center;"> なし </td>
+</tr>
+<tr>
+<td style="text-align:center;"> 購読トピック </td>
+<td style="text-align:center;"> なし </td>
+</tr>
+</tbody>
+</table>
+
+
+<p>このライブラリは後続のほとんどすべてのライブラリに使用されています。コミュニケーションや運搬メカニズムとして動作します。最近では、publish/subscribeのみをサポートしています。しかし、RPCを使うことも簡単にできます。</p>
+
+<h3>Pysicsライブラリ</h3>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> 依存関係 </td>
+<td style="text-align:center;"> Dynamicsエンジン &amp; Collisionライブラリ </td>
+</tr>
+<tr>
+<td style="text-align:center;"> 外部API </td>
+<td style="text-align:center;"> 物理シミュレーションのためのシンプルで一般的なインターフェースを提供する </td>
+</tr>
+<tr>
+<td style="text-align:center;"> 内部API </td>
+<td style="text-align:center;"> サードパーティーのダイナミックエンジンの物理ライブラリのために基本的なインターフェースを定義する </td>
+</tr>
+</tbody>
+</table>
+
+
+<p>物理ライブラリには内部API（TBD）に適応しているダイナミックエンジンなら何でも使用することができます。物理シミュレーションを動かすために、シンプルな外部インタフェースを使用することもできます。</p>
+
+<h3>Collisionライブラリ</h3>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> 依存関係 </td>
+<td style="text-align:center;"> サードパーティーのcollision(衝突)エンジン </td>
+</tr>
+<tr>
+<td style="text-align:center;"> 外部API </td>
+<td style="text-align:center;"> TBD</td>
+</tr>
+<tr>
+<td style="text-align:center;"> 内部API </td>
+<td style="text-align:center;"> colisionエンジン用の一般的なインターフェース </td>
+</tr>
+<tr>
+<td style="text-align:center;"> 配信トピック </td>
+<td style="text-align:center;"> なし </td>
+</tr>
+<tr>
+<td style="text-align:center;"> 購読トピック </td>
+<td style="text-align:center;"> なし </td>
+</tr>
+</tbody>
+</table>
+
+
+<p>このライブラリは、異なるcollisionエンジンを制御するための仮想ライブラリです。また、ユーザーのためにシンプルな外部インターフェースを提供します。</p>
+
+<h3>Renderingライブラリ</h3>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> 依存関係 </td>
+<td style="text-align:center;"> OGRE </td>
+</tr>
+<tr>
+<td style="text-align:center;"> 外部API </td>
+<td style="text-align:center;"> 読み込み、初期化、シーンの生成が可能 </td>
+</tr>
+<tr>
+<td style="text-align:center;"> 内部API </td>
+<td style="text-align:center;"> なし。OGREのみを使用する予定 </td>
+</tr>
+</tbody>
+</table>
+
+
+<p>GUIとセンサ型の両方のシンプルなインターフェースを供給するライブラリです。他に良いものがないので、現在はOGREのみを使用しています。レンダリングエンジン用のプラグインへの書き込みが可能となるでしょう。</p>
+
+<h3>センサGeneration</h3>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> 依存関係 </td>
+<td style="text-align:center;"> Renderingライブラリ、Collisionライブラリ </td>
+</tr>
+<tr>
+<td style="text-align:center;"> 外部API </td>
+<td style="text-align:center;"> センサ郡の初期化と起動の機能を提供する </td>
+</tr>
+<tr>
+<td style="text-align:center;"> 内部API </td>
+<td style="text-align:center;"> TBD </td>
+</tr>
+</tbody>
+</table>
+
+
+<p>このライブラリは多種多様なすべてのタイプのセンサを実行します。そのセンサは物理シミュレータからアップロードされる環境の状態を取得し、初期化されたセンサにより作られた出力を生成します。</p>
+
+<h3>GUI</h3>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> 依存関係 </td>
+<td style="text-align:center;"> Renderingライブラリ、wxWidgeets </td>
+</tr>
+<tr>
+<td style="text-align:center;"> 外部API </td>
+<td style="text-align:center;"> なし </td>
+</tr>
+<tr>
+<td style="text-align:center;"> 内部API </td>
+<td style="text-align:center;"> なし </td>
+</tr>
+</tbody>
+</table>
+
+
+<p>GUIの主要な関数はシミュレーションの現在の状態を表示と、ユーザの入力用の便利なインt−フェースの提供を含んでいます。wxWidgetsを使用しているので、内部もしくは外部APIは必要ありません。</p>
+
+<h3>プラグイン</h3>
+
+<p>Phisics、センサ、Renderingライブラリはプラグインをサポートしています。それらのプラグインでは、ユーザーはコミュニケーションシステムを使用することなく、それぞれのライブラリにアクセスすることができます。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[GAZEBOを使ってみよう ! (Gazebo コンポーネント 編) No.1.2]]></title>
