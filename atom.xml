@@ -4,7 +4,7 @@
   <title><![CDATA[九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-02-13T05:10:24+09:00</updated>
+  <updated>2015-02-13T05:19:57+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -12,6 +12,266 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[環境をつくろう ! (Modelの集合化 編) No.3.4]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/02/05/gazebo-population-of-models/"/>
+    <updated>2015-02-05T23:10:04+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/02/05/gazebo-population-of-models</id>
+    <content type="html"><![CDATA[<p><img src="http://cir-kit.github.io/images/gazebo_logo.png" alt="gazebo_logo" /></p>
+
+<h5>検証日時</h5>
+
+<p>02/03/2015 (Tue)</p>
+
+<h5>概要</h5>
+
+<p>Gazeboのチュートリアル第三弾「Build a World」。
+このチュートリアルでは、シミュレーション中の環境をどのように構築するかについて説明します。<br/>
+今回はその「Population of models」編です。<br/>
+公式サイトを適当に翻訳しただけですので、あしからず。</p>
+
+<h5>レベル</h5>
+
+<p><strong>INTERMEDIATE</strong></p>
+
+<!-- more -->
+
+
+<h5>環境</h5>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> <strong>PC</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Prosessor</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>RAM</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>OS</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Kernel</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> 3.13.0-44-generic </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Gazebo</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Version 5.0.1 </td>
+</tr>
+</tbody>
+</table>
+
+
+<h5>参考</h5>
+
+<p><a href="http://gazebosim.org/tutorials?cat=build_world">GAZEBO Tutorial-Build a World</a></p>
+
+<h2>はじめに</h2>
+
+<p>このチュートリアルでは、SDFの<code>&lt;population&gt;</code>タグを使ってどのようにしてモデルを集合化するかを説明します。集合は個々のモデルによって構成されています。<br/>
+モデルの集合を追加することは以下のようなパラメータをいちいち定義する問題であるということです。</p>
+
+<ul>
+<li><p>モデル : 机や缶など</p></li>
+<li><p>いくつかの集合の一部となる物体</p></li>
+<li><p>集合を入れておくコンテナの形状と寸法 : 箱、円柱などです。これらのパラメータを知るには、SDFのAPIをご覧ください。</p></li>
+<li><p>集合のポジションと原点</p></li>
+<li><p>集合に含まれる物体の配置 : ランダム、グリッド</p></li>
+</ul>
+
+
+<p>詳しい説明は、<code>&lt;population&gt;</code>タグとそのパラメータについての<a href="http://gazebosim.org/sdf.html">SDF API</a>をチェックしてください。</p>
+
+<h2>物体の集合を作る</h2>
+
+<ol>
+<li>チュートリアル用のディレクトリを作りましょう。</li>
+</ol>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>mkdir ~/tutorial_model_population
+</span><span class='line'><span class="nb">cd</span> ~/tutorial_model_population
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ol>
+<li>作ったディレクトリに、以下のような内容で、<code>can_population.world</code>を作成してください。</li>
+</ol>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>    <span class="cp">&lt;?xml version=&quot;1.0&quot; ?&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;sdf</span> <span class="na">version=</span><span class="s">&quot;1.5&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;world</span> <span class="na">name=</span><span class="s">&quot;default&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>        <span class="c">&lt;!-- A global light source --&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;include&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;uri&gt;</span>model://sun<span class="nt">&lt;/uri&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/include&gt;</span>
+</span><span class='line'>        <span class="c">&lt;!-- A ground plane --&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;include&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;uri&gt;</span>model://ground_plane<span class="nt">&lt;/uri&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/include&gt;</span>
+</span><span class='line'>        <span class="c">&lt;!-- Testing the automatic population of objects --&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;population</span> <span class="na">name=</span><span class="s">&quot;can_population1&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;model</span> <span class="na">name=</span><span class="s">&quot;can1&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;include&gt;</span>
+</span><span class='line'>              <span class="nt">&lt;static&gt;</span>true<span class="nt">&lt;/static&gt;</span>
+</span><span class='line'>              <span class="nt">&lt;uri&gt;</span>model://coke_can<span class="nt">&lt;/uri&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;/include&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;/model&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;pose&gt;</span>0 0 0 0 0 0<span class="nt">&lt;/pose&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;box&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;size&gt;</span>2 2 0.01<span class="nt">&lt;/size&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;/box&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;model_count&gt;</span>10<span class="nt">&lt;/model_count&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;distribution&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;type&gt;</span>random<span class="nt">&lt;/type&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;/distribution&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/population&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/world&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/sdf&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>また、<a href="https://bitbucket.org/osrf/gazebo_models/src/63e268d393f03ae6ec5b6930b439c4b7873dacd8/coke_can/?at=default">coke_cam model</a>より、<strong>coke_can</strong>のモデルを取得し、<code>~/.gazebo/models/</code>に置いておきましょう。<br/>
+その後、Gazeboを立ち上げましょう。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo can_population.world
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>すると、ソーダの缶の集合がバラバラに置いてあるのが確認できるでしょう。缶は2 x 2 x 0.01 [m]の大きさの箱に収まるようにしてあります。<br/>
+より深く理解するために、先ほどの<code>can_population.world</code>に他の要素を追加してみましょう。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>    <span class="nt">&lt;population</span> <span class="na">name=</span><span class="s">&quot;can_population1&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;model</span> <span class="na">name=</span><span class="s">&quot;can1&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;include&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;static&gt;</span>true<span class="nt">&lt;/static&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;uri&gt;</span>model://coke_can<span class="nt">&lt;/uri&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/include&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/model&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ここまでで、<code>&lt;population&gt;</code>タグを使い、どのようにして集合の要素を決定するかがわかりました。すべての集合は、同一でない、個々の名前を持つ必要があり、<code>name</code>の部分で定義されています。<code>population</code>タグの中では、<code>&lt;model&gt;</code>タグを使ってモデルを選択できます。集合のそれぞれの要素は、重複しない名前でシミュレーションに挿入されます。また、その名前というのは、サフィックス<code>_clone_i</code>(<code>i</code>は集合の要素の個数で決定されます)によって名付けられます。Gazeboには以下のようなモデルのリストと共に、物体が表示されます。
+<img src="http://cir-kit.github.io/images/2015-02-05-gazebo-population-of-models/model_list.png" alt="model_list" />
+集合の最も一般的なタイプは、木や岩、建物などの動かない物体で構成されています。<code>&lt;population&gt;</code>タグはそのような静的なモデルで使用することをおすすめます。また、より詳しい定義が必要で、数が少ない、ロボットの様な動的物体には使用しないことをおすすめします。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>  <span class="nt">&lt;pose&gt;</span>0 0 0 0 0 0<span class="nt">&lt;/pose&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;box&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;size&gt;</span>2 2 0.01<span class="nt">&lt;/size&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/box&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上記のコードは物体をどこに設置するのかについて定義しています。今回は、すべての物体は、2 2 0.01の3Dの箱の中にスポーンします。また、原点(0, 0, 0)を(0, 0, 0)にセンタリングしてあります。続いて、<code>&lt;box&gt;</code>について説明します。<code>&lt;cylinder&gt;</code>の部分では、半径、長さを定義することができます。<code>&lt;cylinder&gt;</code>パラメータについて詳しく知りたい場合は、<a href="http://gazebosim.org/sdf.html">SDF Specification</a>をチェックしてみてください。<code>&lt;pose&gt;</code>要素では、集合の場所のフレームを定義しています。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>  <span class="nt">&lt;model_count&gt;</span>10<span class="nt">&lt;/model_count&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上記部分では、集合に、何個の物体を定義するかを決定します。正の数字であれば何でも良いですが、数を大きくすると、パフォーマンスに大きな影響を及ぼすといういうことを念頭に置いておいてください。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>  <span class="nt">&lt;distribution&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;type&gt;</span>random<span class="nt">&lt;/type&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/distribution&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上記に示す<code>&lt;distribution&gt;</code>要素では、物体をどのように配置するかを定義します。</p>
+
+<h2>Distributionの種類</h2>
+
+<ul>
+<li><p>random : モデルをランダムに配置します。物体同士がぶつかる可能性があることを覚えておいてください。</p></li>
+<li><p>uniform : 偽似2Dグリッドパターンに沿ってモデルを配置します。<code>K-Means</code>を使うことにより、解決に近づき、範囲内に定義された物体の数を定義できます。</p></li>
+<li><p>grid : モデルを2Dのグリッドパターン上に配置します。この配置は行、列, 物体間距離を定義する必要があります。<code>&lt;model_count&gt;</code>要素は、この配置では無視されるということを覚えておいてください。シミュレーションに挿入される物体は行と列の数を掛けあわせた数と一致します。</p></li>
+<li><p>linear-x : X軸に沿ってモデルが並びます。</p></li>
+<li><p>linear-y : Y軸に沿ってモデルが並びます。</p></li>
+<li><p>linear-z : Z軸に沿ってモデルが並びます。</p></li>
+</ul>
+
+
+<p>もっとたくさんの例を確認したいならば、<a href="http://bitbucket.org/osrf/gazebo/raw/default/worlds/population.world">population.world</a>ファイルをGazeboと共に立ち上げてください。<br/>
+もちろん、その場合には、以下のように入力しましょう。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>  gazebo worlds/population.world
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>以下のキャプチャは、<code>population.world</code>を実行した様子です。
+<img src="http://cir-kit.github.io/images/2015-02-05-gazebo-population-of-models/gazebo_population.png" alt="gazebo_population" /></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[環境をつくろう ! (Digital Elevation Models 編) No.3.3]]></title>
