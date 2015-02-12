@@ -4,7 +4,7 @@
   <title><![CDATA[九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-02-12T15:49:00+09:00</updated>
+  <updated>2015-02-12T15:52:25+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -12,6 +12,212 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[ロボットを作ってみよう ! (モデルの作り方 編) No.2.2]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/01/31/gazebo-how-to-contribute-a-model/"/>
+    <updated>2015-01-31T19:07:55+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/01/31/gazebo-how-to-contribute-a-model</id>
+    <content type="html"><![CDATA[<p><img src="http://cir-kit.github.io/images/gazebo_logo.png" alt="gazebo_logo" /></p>
+
+<h5>検証日時</h5>
+
+<p>01/25/2015 (Sun)</p>
+
+<h5>概要</h5>
+
+<p>Gazeboのチュートリアル第二弾「Build a Robot」。<br/>
+このチュートリアルではロボットを作ったり、修正したりします。また、センサ、アクチュエータを搭載した車輪型ロボットを作り、モデルを描画するなどの実践例も行います。<br/>
+今回はその「How to contribute a model」編です。<br/>
+公式サイトを適当に翻訳しただけですので、あしからず。</p>
+
+<h5>レベル</h5>
+
+<p><strong>BEGINNER</strong></p>
+
+<!-- more -->
+
+
+<h5>環境</h5>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> <strong>PC</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Prosessor</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>RAM</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>OS</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Kernel</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> 3.13.0-44-generic </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Gazebo</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Version 5.0.1 </td>
+</tr>
+</tbody>
+</table>
+
+
+<h5>参考</h5>
+
+<p><a href="http://gazebosim.org/tutorials?cat=build_robot">GAZEBO Tutorial-Build a Robot</a></p>
+
+<hr />
+
+<p>このチュートリアルでは、すでに<a href="https://www.atlassian.com/ja/software/bitbucket/overview">Bitbucket</a>のアカウントと<a href="http://mercurial.selenic.com/">Mercurial</a>のクライアントを取得している前提で進みます。</p>
+
+<h2>osrf/gazebo_modelsレポジトリをForkし、Cloneする</h2>
+
+<p><a href="https://bitbucket.org/osrf/gazebo_models">https://bitbucket.org/osrf/gazebo_models</a>に行き、画面左側のメニューより、<strong>Fork</strong>を選んでください。オプションはデフォルトをおすすめします。レポジトリをForkした後、Cloneしてください。レポジトリの名前をデフォルト名で選択すると、以下のコマンドでcloneできます：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>code<span class="nv">$ </span>hg clone https://yourname@bitbucket.org/yourname/gazebo_models
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ただし、<code>yourname</code>の部分は、あなたのBitbucketのユーザーネームです。</p>
+
+<h2>モデルを作る</h2>
+
+<p>gazebo_modelsディレクトリの下にあなたのmodelディレクトリを作ってください。このチュートリアルでは、新たに生成するディレクトリの名前を<code>mymodel</code>とします。生成したディレクトリには、必ず、&#8220;model.config&#8220;`必要です。他のファイル(plugins, makefiles, README, etc&hellip;)も必要になってきます。</p>
+
+<h2><strong>model.config</strong>の中身</h2>
+
+<p>ファイル<code>model.config</code>は使用するのに必要なSDFファイル(モデルの著作情報、原文情報)の詳細情報を提供します。<br/>
+単純な<code>model.config</code>は以下のようになっています。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot;?&gt;</span>
+</span><span class='line'><span class="nt">&lt;model&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;name&gt;</span>Wedge juggler<span class="nt">&lt;/name&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;version&gt;</span>1.0<span class="nt">&lt;/version&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;sdf</span> <span class="na">version=</span><span class="s">&quot;1.5&quot;</span><span class="nt">&gt;</span>model.sdf<span class="nt">&lt;/sdf&gt;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nt">&lt;author&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;name&gt;</span>Evan Drumwright<span class="nt">&lt;/name&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;email&gt;</span>drum@gwu.edu<span class="nt">&lt;/email&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/author&gt;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nt">&lt;description&gt;</span>
+</span><span class='line'>    A ball-in-wedge juggler.
+</span><span class='line'>  <span class="nt">&lt;/description&gt;</span>
+</span><span class='line'><span class="nt">&lt;/model&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>この<code>odel.config</code>ファイルは<code>model.sdf</code>に記述され、<a href="http://sdformat.org/spec">SDF standard 1.5</a>に準拠したモデルのシミュレート定義(例えば、外観、慣性、キネマティクス、幾何学特性など)を記述しています。様々なバージョンのモデルを定義することが可能であり、異なるバージョンのGazeboで定義したモデルを使用するときに便利です。<br/>
+例えば、前述のファイルを変更して、異なる３つのバージョンのSDFをサポートするには、以下のように記述します。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot;?&gt;</span>
+</span><span class='line'><span class="nt">&lt;model&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;name&gt;</span>Wedge juggler<span class="nt">&lt;/name&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;version&gt;</span>1.0<span class="nt">&lt;/version&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;sdf</span> <span class="na">version=</span><span class="s">&quot;1.5&quot;</span><span class="nt">&gt;</span>model.sdf<span class="nt">&lt;/sdf&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;sdf</span> <span class="na">version=</span><span class="s">&quot;1.4&quot;</span><span class="nt">&gt;</span>model-1.4.sdf<span class="nt">&lt;/sdf&gt;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nt">&lt;author&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;name&gt;</span>Evan Drumwright<span class="nt">&lt;/name&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;email&gt;</span>drum@gwu.edu<span class="nt">&lt;/email&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/author&gt;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nt">&lt;description&gt;</span>
+</span><span class='line'>    A ball-in-wedge juggler.
+</span><span class='line'>  <span class="nt">&lt;/description&gt;</span>
+</span><span class='line'><span class="nt">&lt;/model&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>レポジトリにディレクトリ（ファイルも）を追加する</h2>
+
+<p>レポジトリにファイルを追加するときは、以下のように入力します。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo_modules<span class="nv">$ </span>hg add mymodel
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>または、もしトラックしたくないファイルがある場合は、以下のようにして、ファイルを別々に追加することができます。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo_models<span class="nv">$ </span>hg add mymodel/model.config
+</span><span class='line'>gazebo_models<span class="nv">$ </span>hg add mymodel/model.sdf
+</span><span class='line'>etc...
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>CommitとPublish</h2>
+
+<p>Bitbucketに変更をCommitし、Pushするには、以下のように行います。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo_models<span class="nv">$ </span>hg commit
+</span><span class='line'>gazebo_models<span class="nv">$ </span>hg push
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>最終ステップ：　Pullリクエストを作る</h3>
+
+<p>あなたのBitbucketレポジトリ<a href="https://bitbucket.org/yourname/gazebo%5C_models">https://bitbucket.org/yourname/gazebo_models</a>(<code>yourname</code>の部分はあなたのBicbucketのユーザーネームとし、forkにはデフォルト設定を使用しているとします。これは、あなたがforkしたレポジトリにあります)がpullリクエストを生成します。ウェブページの左側にある<strong>Create pull request</strong>をクリックしてください。ただし、<strong>osrf/gazebo_models</strong>が矢印の右側に選択されていることを確認してください。他のオプションなども記入し終わったら、<strong>Create pull request</strong>をクリックしてください。OSRFがあなたのリクエストを評価し、モデルデータベースにあなたの変更を適用し始めるはずです。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[ロボットを作ってみよう ! (モデルの構成と必要条件 編) No.2.1]]></title>
