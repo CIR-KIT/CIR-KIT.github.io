@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Gazebo | 九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/blog/categories/gazebo/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-02-12T15:54:21+09:00</updated>
+  <updated>2015-02-12T16:50:00+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -12,6 +12,540 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[ロボットを作ってみよう ! (移動ロボットをつくる 編) No.2.4]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/01/31/gazebo-make-a-mobile-robot/"/>
+    <updated>2015-01-31T19:28:40+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/01/31/gazebo-make-a-mobile-robot</id>
+    <content type="html"><![CDATA[<p><img src="/images/gazebo_logo.png" alt="gazebo_logo" /></p>
+
+<h5>検証日時</h5>
+
+<p>01/25/2015 (Sun)</p>
+
+<h5>概要</h5>
+
+<p>Gazeboのチュートリアル第二弾「Build a Robot」。<br/>
+このチュートリアルではロボットを作ったり、修正したりします。また、センサ、アクチュエータを搭載した車輪型ロボットを作り、モデルを描画するなどの実践例も行います。<br/>
+今回はその「Make a Mobile Robot」編です。<br/>
+公式サイトを適当に翻訳しただけですので、あしからず。</p>
+
+<h5>レベル</h5>
+
+<p><strong>BEGINNER</strong></p>
+
+<!-- more -->
+
+
+<h5>環境</h5>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> <strong>PC</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Prosessor</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>RAM</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>OS</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Kernel</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> 3.13.0-44-generic </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Gazebo</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Version 5.0.1 </td>
+</tr>
+</tbody>
+</table>
+
+
+<h5>参考</h5>
+
+<p><a href="http://gazebosim.org/tutorials?cat=build_robot">GAZEBO Tutorial-Build a Robot</a></p>
+
+<h5>レベル</h5>
+
+<p><strong>BEGINNER</strong></p>
+
+<h2>はじめに</h2>
+
+<p>このチュートリアルでは、デファレンシャル駆動機構をもつ二輪移動ロボットを作るプロセスを通じて、Gazeboの基本的なモデルマネジメントを学び、モデルデータベースの中でのベーシックモデル描写についても詳しく学びます。</p>
+
+<h2>モデルディレクトリのセットアップ</h2>
+
+<p><a href="http://gazebosim.org/user_guide/started__models__database.html">モデルデータベースドキュメント</a>を読んでください。Gazeboモデルデータベースディレクトリ構成のフォーマットルールに従ったモデルを作成します。また、モデルの構成フォーマットについての詳細は<a href="http://gazebosim.org/sdf">SDFリファレンス</a>をご覧ください。<br/>
+モデルディレクトリを作成します。：
+<code>bash
+  mkdir -p ~/.gazebo/models/my_robot
+</code>
+ファイル<code>model.config</code>を作成します。:
+<code>bash
+  gedit ~/.gazebo/models/my_robot/model.config
+</code>
+中身は以下の内容にしてください。：
+<code>xml
+    &lt;?xml version="1.0"?&gt;
+    &lt;model&gt;
+      &lt;name&gt;My Robot&lt;/name&gt;
+      &lt;version&gt;1.0&lt;/version&gt;
+      &lt;sdf version='1.4'&gt;model.sdf&lt;/sdf&gt;
+      &lt;author&gt;
+       &lt;name&gt;My Name&lt;/name&gt;
+       &lt;email&gt;me@my.email&lt;/email&gt;
+      &lt;/author&gt;
+      &lt;description&gt;
+        My awesome robot.
+      &lt;/description&gt;
+    &lt;/model&gt;
+</code>
+ファイル<code>~/.gazebo/models/my_robot/model.sdf</code>を作成してください。
+<code>bash
+  gedit ~/.gazebo/models/my_robot/model.sdf
+</code>
+また、その中身は以下の内容にしてください。
+<code>xml
+    &lt;?xml version='1.0'?&gt;
+    &lt;sdf version='1.4'&gt;
+      &lt;model name="my_robot"&gt;
+      &lt;/model&gt;
+    &lt;/sdf&gt;
+</code>
+ここまでで、モデルの基本的なコンテンツを作成しました。<code>model.config</code>ファイルではいくつかの追加メタデータによりロボットを記述しています。<code>model.sdf</code>ファイルにはSDF version 1.4にリンクされたGazeboを使用する<code>my_robot</code>という名前のモデルを初期化するために必要なタグが記述されています。</p>
+
+<h2>モデルの構成を作成する</h2>
+
+<p>このステップでは、長方形の本体に２つの車輪も持つモデルを制作してゆきます。
+まずは、シンプルなモデルから始め、段階を踏んでモデルを組み立ててゆくことが重要です。最初のステップはモデルの基本的な形状を作成することです。そのために、まずは、静的なモデルを作成します。つまり、物理エンジンについては無視したものから作成するということです。その結果、モデルは一定の場所から移動せず、構成要素を詳細に整理することができるようになります。</p>
+
+<ol>
+<li><p>モデルを静的にするために、<code>~/.gazebo/models/my_robot/model.sdf</code>ファイルに<code>&lt;static&gt;true&lt;/static&gt;</code>を追加してください。すると、以下のようなソースコードになるはずです。
+<strong>コピーはしないでください。手書きで追加していくことが、今回のチュートリアルです。</strong>
+<code>xml
+ &lt;?xml version='1.0'?&gt;
+ &lt;sdf version='1.4'&gt;
+   &lt;model name="my_robot"&gt;
+     &lt;static&gt;true&lt;/static&gt;
+   &lt;/model&gt;
+ &lt;/sdf&gt;
+</code></p></li>
+<li><p>長方形のロボット本体のモデルを追加するために、<code>~/.gazebo/models/my_robot/model.sdf</code>を以下のように編集してください。すると以下のようなソースコードになるはずです。<br/>
+<strong>コピーはしないでください。手書きで追加していくことが、今回のチュートリアルです。</strong>
+<code>xml
+ &lt;?xml version='1.0'?&gt;
+   &lt;sdf version='1.4'&gt;
+     &lt;model name="my_robot"&gt;
+     &lt;static&gt;true&lt;/static&gt;
+       &lt;link name='chassis'&gt;
+         &lt;pose&gt;0 0 .1 0 0 0&lt;/pose&gt;
+         &lt;collision name='collision'&gt;
+           &lt;geometry&gt;
+             &lt;box&gt;
+               &lt;size&gt;.4 .2 .1&lt;/size&gt;
+             &lt;/box&gt;
+           &lt;/geometry&gt;
+         &lt;/collision&gt;
+         &lt;visual name='visual'&gt;
+           &lt;geometry&gt;
+             &lt;box&gt;
+               &lt;size&gt;.4 .2 .1&lt;/size&gt;
+             &lt;/box&gt;
+           &lt;/geometry&gt;
+         &lt;/visual&gt;
+       &lt;/link&gt;
+   &lt;/model&gt;
+ &lt;/sdf&gt;
+</code>
+これで、大きさが<code>0.4 x 0.2 x 0.1 [m]</code>の<code>箱</code>を作ることが出来ました。衝突要素は衝突判定エンジンに使用されるような形状で定義されています。外観要素はレンダリングエンジンに使用されるような形状で定義されています。ほとんどのケースでは、衝突要素と外観要素は同じです。外観要素と衝突要素が異なる場合というのは、外観要素が複雑なメッシュを使用しており、外観要素より、衝突要素のほうがシンプルになる様な場合です。そのような場合には、パフォーマンスの向上を図るために行います。</p></li>
+<li><p>Gazeboを起動し、作成したモデルを確認しましょう。GUIに表示される<strong>insertmodelgui</strong>というボタンから<strong>Insert Model</strong>というボタンを押して作成したモデルをインポートしましょう。以下のコマンドで、Gazeboを起動します。:
+<code>bash
+ gazebo
+</code>
+うまく行けば、写真のように白い箱が見えるでしょう。また、地面から<code>1[m]</code>浮かんでいるはずです。<br/>
+<img src="/images/2015-01-31-gazebo-make-a-mobile-robot/My_robot_box.png" alt="My_robot_box" /></p></li>
+<li><p>今度は、ロボットにキャスターを追加しましょう。物理エンジンにおいて、ジョイントを用いたタイヤを使ってキャスターにするより、摩擦なしの球を使うほうが、モデルを単純化できるため、キャスターは摩擦なしの球にします。それでは、<code>model.sdf</code>に要素を追加しましょう。最終的には、以下のようになるはずです。:<br/>
+<strong>コピーはしないでください。手書きで追加していくことが、今回のチュートリアルです。</strong>
+<code>xml
+    &lt;?xml version='1.0'?&gt;
+ &lt;sdf version='1.4'&gt;
+   &lt;model name="my_robot"&gt;
+     &lt;static&gt;true&lt;/static&gt;
+     &lt;link name='chassis'&gt;
+       &lt;pose&gt;0 0 .1 0 0 0&lt;/pose&gt;
+       &lt;collision name='collision'&gt;
+         &lt;geometry&gt;
+           &lt;box&gt;
+             &lt;size&gt;.4 .2 .1&lt;/size&gt;
+           &lt;/box&gt;
+         &lt;/geometry&gt;
+       &lt;/collision&gt;
+       &lt;visual name='visual'&gt;
+         &lt;geometry&gt;
+           &lt;box&gt;
+             &lt;size&gt;.4 .2 .1&lt;/size&gt;
+           &lt;/box&gt;
+         &lt;/geometry&gt;
+       &lt;/visual&gt;
+       &lt;collision name='caster_collision'&gt;
+         &lt;pose&gt;-0.15 0 -0.05 0 0 0&lt;/pose&gt;
+         &lt;geometry&gt;
+             &lt;sphere&gt;
+             &lt;radius&gt;.05&lt;/radius&gt;
+           &lt;/sphere&gt;
+         &lt;/geometry&gt;
+         &lt;surface&gt;
+           &lt;friction&gt;
+             &lt;ode&gt;
+               &lt;mu&gt;0&lt;/mu&gt;
+               &lt;mu2&gt;0&lt;/mu2&gt;
+               &lt;slip1&gt;1.0&lt;/slip1&gt;
+               &lt;slip2&gt;1.0&lt;/slip2&gt;
+             &lt;/ode&gt;
+           &lt;/friction&gt;
+         &lt;/surface&gt;
+       &lt;/collision&gt;
+       &lt;visual name='caster_visual'&gt;
+         &lt;pose&gt;-0.15 0 -0.05 0 0 0&lt;/pose&gt;
+         &lt;geometry&gt;
+           &lt;sphere&gt;
+             &lt;radius&gt;.05&lt;/radius&gt;
+           &lt;/sphere&gt;
+         &lt;/geometry&gt;
+       &lt;/visual&gt;
+     &lt;/link&gt;
+   &lt;/model&gt;
+ &lt;/sdf&gt;
+</code>
+ロボットの後方にキャスターが追加されることを確認してください。先ほどの手順と同じようにしてGazeboにモデルをスポーンさせてください。<strong>（Gazeboを再起動する必要はありません。というのも、コードを変更するたびに、Gazeboはモデルをリロードするためです。）</strong><br/>
+うまく行けば、以下のようになります。
+<img src="/images/2015-01-31-gazebo-make-a-mobile-robot/My_robot_caster.png" alt="My_robot_caster" /></p></li>
+<li><p>続いて、左タイヤを追加しましょう。<code>model.sdf</code>を以下のように編集しましょう。<br/>
+<strong>コピーはしないでください。手書きで追加していくことが、今回のチュートリアルです。</strong>
+<code>xml
+     &lt;?xml version='1.0'?&gt;
+     &lt;sdf version='1.4'&gt;
+       &lt;model name="my_robot"&gt;
+         &lt;static&gt;true&lt;/static&gt;
+         &lt;link name='chassis'&gt;
+           &lt;pose&gt;0 0 .1 0 0 0&lt;/pose&gt;
+           &lt;collision name='collision'&gt;
+             &lt;geometry&gt;
+               &lt;box&gt;
+                 &lt;size&gt;.4 .2 .1&lt;/size&gt;
+               &lt;/box&gt;
+             &lt;/geometry&gt;
+           &lt;/collision&gt;
+           &lt;visual name='visual'&gt;
+             &lt;geometry&gt;
+               &lt;box&gt;
+                 &lt;size&gt;.4 .2 .1&lt;/size&gt;
+               &lt;/box&gt;
+             &lt;/geometry&gt;
+           &lt;/visual&gt;
+           &lt;collision name='caster_collision'&gt;
+             &lt;pose&gt;-0.15 0 -0.05 0 0 0&lt;/pose&gt;
+             &lt;geometry&gt;
+               &lt;sphere&gt;
+               &lt;radius&gt;.05&lt;/radius&gt;
+             &lt;/sphere&gt;
+           &lt;/geometry&gt;
+           &lt;surface&gt;
+             &lt;friction&gt;
+               &lt;ode&gt;
+                 &lt;mu&gt;0&lt;/mu&gt;
+                 &lt;mu2&gt;0&lt;/mu2&gt;
+                 &lt;slip1&gt;1.0&lt;/slip1&gt;
+                 &lt;slip2&gt;1.0&lt;/slip2&gt;
+               &lt;/ode&gt;
+             &lt;/friction&gt;
+           &lt;/surface&gt;
+         &lt;/collision&gt;
+         &lt;visual name='caster_visual'&gt;
+           &lt;pose&gt;-0.15 0 -0.05 0 0 0&lt;/pose&gt;
+           &lt;geometry&gt;
+             &lt;sphere&gt;
+               &lt;radius&gt;.05&lt;/radius&gt;
+             &lt;/sphere&gt;
+           &lt;/geometry&gt;
+         &lt;/visual&gt;
+       &lt;/link&gt;
+       &lt;link name="left_wheel"&gt;
+         &lt;pose&gt;0.1 0.13 0.1 0 1.5707 1.5707&lt;/pose&gt;
+         &lt;collision name="collision"&gt;
+           &lt;geometry&gt;
+             &lt;cylinder&gt;
+               &lt;radius&gt;.1&lt;/radius&gt;
+               &lt;length&gt;.05&lt;/length&gt;
+             &lt;/cylinder&gt;
+           &lt;/geometry&gt;
+         &lt;/collision&gt;
+         &lt;visual name="visual"&gt;
+           &lt;geometry&gt;
+             &lt;cylinder&gt;
+               &lt;radius&gt;.1&lt;/radius&gt;
+               &lt;length&gt;.05&lt;/length&gt;
+             &lt;/cylinder&gt;
+           &lt;/geometry&gt;
+         &lt;/visual&gt;
+       &lt;/link&gt;
+       &lt;/model&gt;
+     &lt;/sdf&gt;
+</code>
+先ほどと同じように、Gazeboで作成したモデルを確認し、追加したタイヤが正しく付いていることを確認しましょう。ちなみに、さっきまでのモデルは削除しました。(モデルを右クリックし、<strong>Delete</strong>をクリックすれば、削除できます)
+<img src="/images/2015-01-31-gazebo-make-a-mobile-robot/My_robot_caster_left_wheel.png" alt="My_robot_caster_left_wheel" /></p></li>
+<li><p>左タイヤをコピーして右タイヤを作り、リンクの姿勢にタイヤを合わせましょう。以下のように<code>model.sdf</code>を編集してください。:
+<strong>コピーはしないでください。手書きで追加していくことが、今回のチュートリアルです。</strong>
+<code>xml
+     &lt;?xml version='1.0'?&gt;
+     &lt;sdf version='1.4'&gt;
+       &lt;model name="my_robot"&gt;
+         &lt;static&gt;true&lt;/static&gt;
+         &lt;link name='chassis'&gt;
+           &lt;pose&gt;0 0 .1 0 0 0&lt;/pose&gt;
+           &lt;collision name='collision'&gt;
+             &lt;geometry&gt;
+               &lt;box&gt;
+                 &lt;size&gt;.4 .2 .1&lt;/size&gt;
+               &lt;/box&gt;
+             &lt;/geometry&gt;
+           &lt;/collision&gt;
+           &lt;visual name='visual'&gt;
+             &lt;geometry&gt;
+               &lt;box&gt;
+                 &lt;size&gt;.4 .2 .1&lt;/size&gt;
+               &lt;/box&gt;
+             &lt;/geometry&gt;
+           &lt;/visual&gt;
+           &lt;collision name='caster_collision'&gt;
+             &lt;pose&gt;-0.15 0 -0.05 0 0 0&lt;/pose&gt;
+             &lt;geometry&gt;
+               &lt;sphere&gt;
+               &lt;radius&gt;.05&lt;/radius&gt;
+             &lt;/sphere&gt;
+           &lt;/geometry&gt;
+           &lt;surface&gt;
+             &lt;friction&gt;
+               &lt;ode&gt;
+                 &lt;mu&gt;0&lt;/mu&gt;
+                 &lt;mu2&gt;0&lt;/mu2&gt;
+                 &lt;slip1&gt;1.0&lt;/slip1&gt;
+                 &lt;slip2&gt;1.0&lt;/slip2&gt;
+               &lt;/ode&gt;
+             &lt;/friction&gt;
+           &lt;/surface&gt;
+         &lt;/collision&gt;
+         &lt;visual name='caster_visual'&gt;
+           &lt;pose&gt;-0.15 0 -0.05 0 0 0&lt;/pose&gt;
+           &lt;geometry&gt;
+             &lt;sphere&gt;
+               &lt;radius&gt;.05&lt;/radius&gt;
+             &lt;/sphere&gt;
+           &lt;/geometry&gt;
+         &lt;/visual&gt;
+       &lt;/link&gt;
+       &lt;link name="left_wheel"&gt;
+         &lt;pose&gt;0.1 0.13 0.1 0 1.5707 1.5707&lt;/pose&gt;
+         &lt;collision name="collision"&gt;
+           &lt;geometry&gt;
+             &lt;cylinder&gt;
+               &lt;radius&gt;.1&lt;/radius&gt;
+               &lt;length&gt;.05&lt;/length&gt;
+             &lt;/cylinder&gt;
+           &lt;/geometry&gt;
+         &lt;/collision&gt;
+         &lt;visual name="visual"&gt;
+           &lt;geometry&gt;
+             &lt;cylinder&gt;
+               &lt;radius&gt;.1&lt;/radius&gt;
+               &lt;length&gt;.05&lt;/length&gt;
+             &lt;/cylinder&gt;
+           &lt;/geometry&gt;
+         &lt;/visual&gt;
+       &lt;/link&gt;
+       &lt;link name="right_wheel"&gt;
+         &lt;pose&gt;0.1 -0.13 0.1 0 1.5707 1.5707&lt;/pose&gt;
+         &lt;collision name="collision"&gt;
+           &lt;geometry&gt;
+             &lt;cylinder&gt;
+               &lt;radius&gt;.1&lt;/radius&gt;
+               &lt;length&gt;.05&lt;/length&gt;
+             &lt;/cylinder&gt;
+           &lt;/geometry&gt;
+         &lt;/collision&gt;
+         &lt;visual name="visual"&gt;
+           &lt;geometry&gt;
+             &lt;cylinder&gt;
+               &lt;radius&gt;.1&lt;/radius&gt;
+               &lt;length&gt;.05&lt;/length&gt;
+             &lt;/cylinder&gt;
+           &lt;/geometry&gt;
+         &lt;/visual&gt;
+       &lt;/link&gt;
+       &lt;/model&gt;
+     &lt;/sdf&gt;
+</code>
+これで、２つの車輪を持った台車を作ることが出来ました。先ほどと同じように、Gazeboで確認してみましょう。以下のようになっているはずです。
+<img src="/images/2015-01-31-gazebo-make-a-mobile-robot/My_robot_caster_wheels.png" alt="My_robot_caster_wheels" /></p></li>
+<li><p><code>&lt;static&gt;</code>を<code>false</code>にし、左右のタイヤのヒンジを追加しましょう。以下のように<code>model.sdf</code> を編集してください。
+<strong>コピーはしないでください。手書きで追加していくことが、今回のチュートリアルです。</strong>
+<code>xml
+ &lt;?xml version='1.0'?&gt;
+ &lt;sdf version='1.4'&gt;
+   &lt;model name="my_robot"&gt;
+     &lt;static&gt;false&lt;/static&gt;
+     &lt;link name='chassis'&gt;
+       &lt;pose&gt;0 0 .1 0 0 0&lt;/pose&gt;
+       &lt;collision name='collision'&gt;
+         &lt;geometry&gt;
+           &lt;box&gt;
+             &lt;size&gt;.4 .2 .1&lt;/size&gt;
+           &lt;/box&gt;
+         &lt;/geometry&gt;
+       &lt;/collision&gt;
+       &lt;visual name='visual'&gt;
+         &lt;geometry&gt;
+           &lt;box&gt;
+             &lt;size&gt;.4 .2 .1&lt;/size&gt;
+           &lt;/box&gt;
+         &lt;/geometry&gt;
+       &lt;/visual&gt;
+       &lt;collision name='caster_collision'&gt;
+         &lt;pose&gt;-0.15 0 -0.05 0 0 0&lt;/pose&gt;
+         &lt;geometry&gt;
+           &lt;sphere&gt;
+           &lt;radius&gt;.05&lt;/radius&gt;
+         &lt;/sphere&gt;
+       &lt;/geometry&gt;
+       &lt;surface&gt;
+         &lt;friction&gt;
+           &lt;ode&gt;
+             &lt;mu&gt;0&lt;/mu&gt;
+             &lt;mu2&gt;0&lt;/mu2&gt;
+             &lt;slip1&gt;1.0&lt;/slip1&gt;
+             &lt;slip2&gt;1.0&lt;/slip2&gt;
+           &lt;/ode&gt;
+         &lt;/friction&gt;
+       &lt;/surface&gt;
+     &lt;/collision&gt;
+     &lt;visual name='caster_visual'&gt;
+       &lt;pose&gt;-0.15 0 -0.05 0 0 0&lt;/pose&gt;
+       &lt;geometry&gt;
+         &lt;sphere&gt;
+           &lt;radius&gt;.05&lt;/radius&gt;
+         &lt;/sphere&gt;
+       &lt;/geometry&gt;
+     &lt;/visual&gt;
+   &lt;/link&gt;
+   &lt;link name="left_wheel"&gt;
+     &lt;pose&gt;0.1 0.13 0.1 0 1.5707 1.5707&lt;/pose&gt;
+     &lt;collision name="collision"&gt;
+       &lt;geometry&gt;
+         &lt;cylinder&gt;
+           &lt;radius&gt;.1&lt;/radius&gt;
+           &lt;length&gt;.05&lt;/length&gt;
+         &lt;/cylinder&gt;
+       &lt;/geometry&gt;
+     &lt;/collision&gt;
+     &lt;visual name="visual"&gt;
+       &lt;geometry&gt;
+         &lt;cylinder&gt;
+           &lt;radius&gt;.1&lt;/radius&gt;
+           &lt;length&gt;.05&lt;/length&gt;
+         &lt;/cylinder&gt;
+       &lt;/geometry&gt;
+     &lt;/visual&gt;
+   &lt;/link&gt;
+   &lt;link name="right_wheel"&gt;
+     &lt;pose&gt;0.1 -0.13 0.1 0 1.5707 1.5707&lt;/pose&gt;
+     &lt;collision name="collision"&gt;
+       &lt;geometry&gt;
+         &lt;cylinder&gt;
+           &lt;radius&gt;.1&lt;/radius&gt;
+           &lt;length&gt;.05&lt;/length&gt;
+         &lt;/cylinder&gt;
+       &lt;/geometry&gt;
+     &lt;/collision&gt;
+     &lt;visual name="visual"&gt;
+       &lt;geometry&gt;
+         &lt;cylinder&gt;
+           &lt;radius&gt;.1&lt;/radius&gt;
+           &lt;length&gt;.05&lt;/length&gt;
+         &lt;/cylinder&gt;
+       &lt;/geometry&gt;
+     &lt;/visual&gt;
+   &lt;/link&gt;
+   &lt;joint type="revolute" name="left_wheel_hinge"&gt;
+     &lt;pose&gt;0 0 -0.03 0 0 0&lt;/pose&gt;
+     &lt;child&gt;left_wheel&lt;/child&gt;
+     &lt;parent&gt;chassis&lt;/parent&gt;
+     &lt;axis&gt;
+       &lt;xyz&gt;0 1 0&lt;/xyz&gt;
+     &lt;/axis&gt;
+   &lt;/joint&gt;
+   &lt;joint type="revolute" name="right_wheel_hinge"&gt;
+     &lt;pose&gt;0 0 0.03 0 0 0&lt;/pose&gt;
+     &lt;child&gt;right_wheel&lt;/child&gt;
+     &lt;parent&gt;chassis&lt;/parent&gt;
+     &lt;axis&gt;
+       &lt;xyz&gt;0 1 0&lt;/xyz&gt;
+     &lt;/axis&gt;
+   &lt;/joint&gt;
+   &lt;/model&gt;
+ &lt;/sdf&gt;
+</code>
+２つのジョイントを<code>y</code>方向<code>&lt;xyz&gt;0 1 0&lt;/xyz&gt;</code>に回るようにし、台車に接続します。</p></li>
+<li><p>Gazeboを起動し、今作成したモデルを挿入してください。画面右側に写っている白い長方形（カラム）をクリックし、左側にドラッグしてください。</p></li>
+<li><p>すると、それぞれのジョイントの様々なコントロールを含むウィンドウが出現するでしょう。(コントロールしたいモデルが選択されていることを確認してください。)</p></li>
+<li><p><strong>Force</strong>タブの下にあるコントロールから、それぞれのジョイントの力を<code>約0.1[N・m]</code>に増加させてください。すると、ロボットが動き始めるはずです。(下動画を参考にしてください)</p></li>
+</ol>
+
+
+<div class="youtube-container">
+<iframe width="420" height="315" src="https://www.youtube.com/embed/ilkfZQrWuW0" frameborder="0" allowfullscreen></iframe>
+</div>
+
+
+<ol>
+<li>おめでとうございまぁす！これで基本的なロボットモデルが作れました!</li>
+</ol>
+
+
+<h2>自分で試してみましょう</h2>
+
+<p>新しいロボットをどんどん作りましょう !</p>
+
+<ul>
+<li><p><strong>アイデア : </strong>円柱形の脚の生えた四足の動物なんかどうでしょう。脚は半時計回りのジョイントで胴体にくっつけるなどすると良いでしょう。</p></li>
+<li><p><strong>アイデア : </strong>前にシャベルがついた6輪の移動体なんかもどうでしょう。</p></li>
+</ul>
+
+
+<h4>Next >> <a href="http://cir-kit.github.io/blog/2015/01/31/gazebo-attach-meshes/">メッシュを取り付ける</a></h4>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[ロボットを作ってみよう ! (モデルをつくる 編) No.2.3]]></title>
@@ -332,7 +866,7 @@ code$ hg clone https://yourname@bitbucket.org/yourname/gazebo_models
 </span><span class='line'>
 </span><span class='line'><span class="nt">&lt;p&gt;</span>  <span class="nt">&lt;author&gt;</span>
 </span><span class='line'>    <span class="nt">&lt;name&gt;</span>Evan Drumwright<span class="nt">&lt;/name&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;email&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;&amp;#x6d;&amp;#x61;&amp;#105;&amp;#x6c;&amp;#x74;&amp;#111;&amp;#58;&amp;#x64;&amp;#x72;&amp;#x75;&amp;#x6d;&amp;#x40;&amp;#x67;&amp;#x77;&amp;#x75;&amp;#46;&amp;#101;&amp;#100;&amp;#x75;&quot;</span><span class="nt">&gt;</span><span class="ni">&amp;#x64;&amp;#114;&amp;#117;&amp;#x6d;&amp;#64;&amp;#103;&amp;#x77;&amp;#x75;&amp;#46;&amp;#101;&amp;#x64;&amp;#x75;</span><span class="nt">&lt;/a&gt;&lt;/email&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;email&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;&amp;#109;&amp;#97;&amp;#x69;&amp;#x6c;&amp;#116;&amp;#111;&amp;#58;&amp;#100;&amp;#x72;&amp;#117;&amp;#109;&amp;#64;&amp;#103;&amp;#119;&amp;#x75;&amp;#46;&amp;#101;&amp;#x64;&amp;#117;&quot;</span><span class="nt">&gt;</span><span class="ni">&amp;#x64;&amp;#114;&amp;#x75;&amp;#x6d;&amp;#x40;&amp;#103;&amp;#x77;&amp;#x75;&amp;#x2e;&amp;#101;&amp;#100;&amp;#117;</span><span class="nt">&lt;/a&gt;&lt;/email&gt;</span>
 </span><span class='line'>  <span class="nt">&lt;/author&gt;&lt;/p&gt;</span>
 </span><span class='line'>
 </span><span class='line'><span class="nt">&lt;p&gt;</span>  <span class="nt">&lt;description&gt;</span>
@@ -352,7 +886,7 @@ code$ hg clone https://yourname@bitbucket.org/yourname/gazebo_models
 </span><span class='line'>
 </span><span class='line'><span class="nt">&lt;p&gt;</span>  <span class="nt">&lt;author&gt;</span>
 </span><span class='line'>    <span class="nt">&lt;name&gt;</span>Evan Drumwright<span class="nt">&lt;/name&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;email&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;&amp;#x6d;&amp;#97;&amp;#105;&amp;#108;&amp;#x74;&amp;#111;&amp;#58;&amp;#100;&amp;#114;&amp;#x75;&amp;#x6d;&amp;#x40;&amp;#x67;&amp;#119;&amp;#117;&amp;#x2e;&amp;#101;&amp;#100;&amp;#117;&quot;</span><span class="nt">&gt;</span><span class="ni">&amp;#x64;&amp;#x72;&amp;#117;&amp;#x6d;&amp;#x40;&amp;#103;&amp;#119;&amp;#117;&amp;#46;&amp;#x65;&amp;#x64;&amp;#117;</span><span class="nt">&lt;/a&gt;&lt;/email&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;email&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;&amp;#109;&amp;#97;&amp;#x69;&amp;#108;&amp;#x74;&amp;#x6f;&amp;#58;&amp;#x64;&amp;#x72;&amp;#117;&amp;#109;&amp;#x40;&amp;#103;&amp;#119;&amp;#x75;&amp;#x2e;&amp;#x65;&amp;#100;&amp;#x75;&quot;</span><span class="nt">&gt;</span><span class="ni">&amp;#100;&amp;#114;&amp;#117;&amp;#x6d;&amp;#x40;&amp;#103;&amp;#x77;&amp;#117;&amp;#x2e;&amp;#x65;&amp;#100;&amp;#x75;</span><span class="nt">&lt;/a&gt;&lt;/email&gt;</span>
 </span><span class='line'>  <span class="nt">&lt;/author&gt;&lt;/p&gt;</span>
 </span><span class='line'>
 </span><span class='line'><span class="nt">&lt;p&gt;</span>  <span class="nt">&lt;description&gt;</span>
@@ -562,7 +1096,7 @@ Database
 </span><span class='line'>
 </span><span class='line'><span class="nt">&lt;p&gt;</span>  <span class="nt">&lt;author&gt;</span>
 </span><span class='line'>    <span class="nt">&lt;name&gt;</span>My name<span class="nt">&lt;/name&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;email&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;&amp;#109;&amp;#x61;&amp;#105;&amp;#x6c;&amp;#116;&amp;#111;&amp;#x3a;&amp;#110;&amp;#97;&amp;#x6d;&amp;#x65;&amp;#x40;&amp;#101;&amp;#x6d;&amp;#97;&amp;#x69;&amp;#108;&amp;#46;&amp;#97;&amp;#x64;&amp;#x64;&amp;#114;&amp;#101;&amp;#115;&amp;#x73;&quot;</span><span class="nt">&gt;</span><span class="ni">&amp;#x6e;&amp;#x61;&amp;#x6d;&amp;#101;&amp;#64;&amp;#x65;&amp;#109;&amp;#97;&amp;#x69;&amp;#x6c;&amp;#46;&amp;#97;&amp;#x64;&amp;#x64;&amp;#114;&amp;#101;&amp;#115;&amp;#115;</span><span class="nt">&lt;/a&gt;&lt;/email&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;email&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;&amp;#109;&amp;#x61;&amp;#105;&amp;#108;&amp;#116;&amp;#111;&amp;#58;&amp;#x6e;&amp;#x61;&amp;#109;&amp;#x65;&amp;#64;&amp;#x65;&amp;#109;&amp;#x61;&amp;#105;&amp;#x6c;&amp;#x2e;&amp;#x61;&amp;#x64;&amp;#100;&amp;#x72;&amp;#x65;&amp;#x73;&amp;#x73;&quot;</span><span class="nt">&gt;</span><span class="ni">&amp;#110;&amp;#97;&amp;#109;&amp;#x65;&amp;#64;&amp;#101;&amp;#x6d;&amp;#x61;&amp;#105;&amp;#x6c;&amp;#x2e;&amp;#97;&amp;#x64;&amp;#x64;&amp;#x72;&amp;#101;&amp;#115;&amp;#115;</span><span class="nt">&lt;/a&gt;&lt;/email&gt;</span>
 </span><span class='line'>  <span class="nt">&lt;/author&gt;&lt;/p&gt;</span>
 </span><span class='line'>
 </span><span class='line'><span class="nt">&lt;p&gt;</span>  <span class="nt">&lt;description&gt;</span>
@@ -697,281 +1231,6 @@ Database
 <h2>スクリーンショットの保存アイコン</h2>
 
 <p>キャプチャされたイメージはタイムスタンプを付加したファイル名で<code>~/.gazebo/pictures</code>に保存されます。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[GAZEBOを使ってみよう ! (Gazebo 構造編) No.1.3]]></title>
-    <link href="http://cir-kit.github.io/blog/2015/01/31/gazebo-architecture/"/>
-    <updated>2015-01-31T18:21:33+09:00</updated>
-    <id>http://cir-kit.github.io/blog/2015/01/31/gazebo-architecture</id>
-    <content type="html"><![CDATA[<p><img src="/images/gazebo_logo.png" alt="gazebo_logo" /></p>
-
-<h5>検証日時</h5>
-
-<p>01/31/2015 (Sat)</p>
-
-<h5>概要</h5>
-
-<p>Gazeboのチュートリアル第一弾「Get Started」。その「Gazebo Architecture」編です。<br/>
-公式サイトを適当に翻訳しただけですので、あしからず。</p>
-
-<h5>レベル</h5>
-
-<p><strong>BEGINNER</strong></p>
-
-<!-- more -->
-
-
-<h5>環境</h5>
-
-<table>
-<thead>
-<tr>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center;"> <strong>PC</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Prosessor</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>RAM</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>OS</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Kernel</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> 3.13.0-44-generic </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Gazebo</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Version 5.0.1 </td>
-</tr>
-</tbody>
-</table>
-
-
-<h5>参考</h5>
-
-<p><a href="http://gazebosim.org/tutorials?cat=get_started">GAZEBO Tutorial-GetStarted</a></p>
-
-<h2>はじめに</h2>
-
-<p>Gazeboに伴う要求を処理し、現在の問題を解決するために、システムを提案しています。Gazeboは物理シミュレーション、レンダリング、ユーザーインターフェース、コミュニケーション、そしてセンサ型などのためのライブラリとなるでしょう。以下のような３つの異なるプロセスが提供されています：<code>physics_sim</code>、<code>sensor_gen</code>、<code>gui</code>そして共同作業のための<code>master</code>です。</p>
-
-<h2>プロセス間の通信</h2>
-
-<p>互いのプロセス間での通信にはgoogle::protobufsとソケットを結合したものを使用しています。シミュレーションされたworldはbody poseをアップデートし、センサ型とGUIは出力を生成するためにそれらのメッセージを使用します。<br/>
-この仕組みは実行中のシミュレーションの内省を可能とし、Gazeboをコントロールするための便利なメカニズムを供給可能とします。</p>
-
-<h2>システム</h2>
-
-<h3>Gazeboマスター</h3>
-
-<p>これは必要不可欠なネームサーバートピックです。Gazeboマスターは、名前探索とトピックマネジメントを提供します。一つのマスターで多様な物理シミュレーション、センサ型、GUIを制御することができます。</p>
-
-<table>
-<thead>
-<tr>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center;"> 依存関係 </td>
-<td style="text-align:center;"> Protobuf &amp; boost::ASIO </td>
-</tr>
-<tr>
-<td style="text-align:center;"> 外部API </td>
-<td style="text-align:center;"> なし </td>
-</tr>
-<tr>
-<td style="text-align:center;"> 内部API </td>
-<td style="text-align:center;"> なし </td>
-</tr>
-<tr>
-<td style="text-align:center;"> 配信トピック </td>
-<td style="text-align:center;"> なし </td>
-</tr>
-<tr>
-<td style="text-align:center;"> 購読トピック </td>
-<td style="text-align:center;"> なし </td>
-</tr>
-</tbody>
-</table>
-
-
-<p>このライブラリは後続のほとんどすべてのライブラリに使用されています。コミュニケーションや運搬メカニズムとして動作します。最近では、publish/subscribeのみをサポートしています。しかし、RPCを使うことも簡単にできます。</p>
-
-<h3>Pysicsライブラリ</h3>
-
-<table>
-<thead>
-<tr>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center;"> 依存関係 </td>
-<td style="text-align:center;"> Dynamicsエンジン &amp; Collisionライブラリ </td>
-</tr>
-<tr>
-<td style="text-align:center;"> 外部API </td>
-<td style="text-align:center;"> 物理シミュレーションのためのシンプルで一般的なインターフェースを提供する </td>
-</tr>
-<tr>
-<td style="text-align:center;"> 内部API </td>
-<td style="text-align:center;"> サードパーティーのダイナミックエンジンの物理ライブラリのために基本的なインターフェースを定義する </td>
-</tr>
-</tbody>
-</table>
-
-
-<p>物理ライブラリには内部API（TBD）に適応しているダイナミックエンジンなら何でも使用することができます。物理シミュレーションを動かすために、シンプルな外部インタフェースを使用することもできます。</p>
-
-<h3>Collisionライブラリ</h3>
-
-<table>
-<thead>
-<tr>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center;"> 依存関係 </td>
-<td style="text-align:center;"> サードパーティーのcollision(衝突)エンジン </td>
-</tr>
-<tr>
-<td style="text-align:center;"> 外部API </td>
-<td style="text-align:center;"> TBD</td>
-</tr>
-<tr>
-<td style="text-align:center;"> 内部API </td>
-<td style="text-align:center;"> colisionエンジン用の一般的なインターフェース </td>
-</tr>
-<tr>
-<td style="text-align:center;"> 配信トピック </td>
-<td style="text-align:center;"> なし </td>
-</tr>
-<tr>
-<td style="text-align:center;"> 購読トピック </td>
-<td style="text-align:center;"> なし </td>
-</tr>
-</tbody>
-</table>
-
-
-<p>このライブラリは、異なるcollisionエンジンを制御するための仮想ライブラリです。また、ユーザーのためにシンプルな外部インターフェースを提供します。</p>
-
-<h3>Renderingライブラリ</h3>
-
-<table>
-<thead>
-<tr>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center;"> 依存関係 </td>
-<td style="text-align:center;"> OGRE </td>
-</tr>
-<tr>
-<td style="text-align:center;"> 外部API </td>
-<td style="text-align:center;"> 読み込み、初期化、シーンの生成が可能 </td>
-</tr>
-<tr>
-<td style="text-align:center;"> 内部API </td>
-<td style="text-align:center;"> なし。OGREのみを使用する予定 </td>
-</tr>
-</tbody>
-</table>
-
-
-<p>GUIとセンサ型の両方のシンプルなインターフェースを供給するライブラリです。他に良いものがないので、現在はOGREのみを使用しています。レンダリングエンジン用のプラグインへの書き込みが可能となるでしょう。</p>
-
-<h3>センサGeneration</h3>
-
-<table>
-<thead>
-<tr>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center;"> 依存関係 </td>
-<td style="text-align:center;"> Renderingライブラリ、Collisionライブラリ </td>
-</tr>
-<tr>
-<td style="text-align:center;"> 外部API </td>
-<td style="text-align:center;"> センサ郡の初期化と起動の機能を提供する </td>
-</tr>
-<tr>
-<td style="text-align:center;"> 内部API </td>
-<td style="text-align:center;"> TBD </td>
-</tr>
-</tbody>
-</table>
-
-
-<p>このライブラリは多種多様なすべてのタイプのセンサを実行します。そのセンサは物理シミュレータからアップロードされる環境の状態を取得し、初期化されたセンサにより作られた出力を生成します。</p>
-
-<h3>GUI</h3>
-
-<table>
-<thead>
-<tr>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center;"> 依存関係 </td>
-<td style="text-align:center;"> Renderingライブラリ、wxWidgeets </td>
-</tr>
-<tr>
-<td style="text-align:center;"> 外部API </td>
-<td style="text-align:center;"> なし </td>
-</tr>
-<tr>
-<td style="text-align:center;"> 内部API </td>
-<td style="text-align:center;"> なし </td>
-</tr>
-</tbody>
-</table>
-
-
-<p>GUIの主要な関数はシミュレーションの現在の状態を表示と、ユーザの入力用の便利なインt−フェースの提供を含んでいます。wxWidgetsを使用しているので、内部もしくは外部APIは必要ありません。</p>
-
-<h3>プラグイン</h3>
-
-<p>Phisics、センサ、Renderingライブラリはプラグインをサポートしています。それらのプラグインでは、ユーザーはコミュニケーションシステムを使用することなく、それぞれのライブラリにアクセスすることができます。</p>
 ]]></content>
   </entry>
   
