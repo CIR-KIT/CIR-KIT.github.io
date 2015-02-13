@@ -4,7 +4,7 @@
   <title><![CDATA[九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-02-13T05:27:19+09:00</updated>
+  <updated>2015-02-13T17:09:03+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -112,14 +112,16 @@
 
 <h3>GUIについて</h3>
 
-<p>エディタは以下のように、３つのエリアからできています。</p>
+<p>エディタは、３つのエリアからできています。</p>
 
 <ol>
 <li><p>Palette : 建築物の素材や特徴を選べます。</p></li>
 <li><p>2DView : トレースするフロアイメージをインポートできます。また、それに沿って、壁、窓、ドア、階段を追加することができます。</p></li>
-<li><p>3DView : 建築物のプレビューを確認できます。色やテクスチャを他の建築物の部品に適用することもできます。
-<img src="http://cir-kit.github.io/images/2015-02-06-gazebo-building-editor/editor_zones.png" alt="editor_zones" /></p></li>
+<li><p>3DView : 建築物のプレビューを確認できます。色やテクスチャを他の建築物の部品に適用することもできます。</p></li>
 </ol>
+
+
+<!-- ![editor_zones](/images/2015-02-06-gazebo-building-editor/editor_zones.png) -->
 
 
 <h2>フロアをインポートする</h2>
@@ -133,10 +135,10 @@
 <li><p>先ほど手に入れたイメージを選んでください。選んだら、<strong>Next</strong>を押してください。
 <img src="http://cir-kit.github.io/images/2015-02-06-gazebo-building-editor/building_editor-next.png" alt="building_editor-next" /></p></li>
 <li><p>トレースする壁が、正しい大きさで出力できているか確かめるために、メートルピクセル比[px/m]を設定しなければなりません。比を知っているなら、ダイアログに直接入力して、クリックすればOKです。今回の例では、比がわかっていないとします。しかし、トレースイメージ中の実世界での二点間の距離がわかっているとすると、（例えば。一番長い壁が7.5 [m]であるとか）比を計算することで、使用できるようになります。:</p></li>
-<li><p> 壁の一端をクリックしてください。すると、以下のように、オリジナルのラインが現れます。</p></li>
-<li><p> 壁の一端をクリックしてください。すると、ラインが定義されます。</p></li>
-<li><p> 個々で、ダイアログに距離を単位[m]で入力してください(今回は7.5 [m]です)。すると、ピクセルメートル比は先ほど指定したラインに沿って自動で計算されます。</p></li>
-<li><p> 完了したら、OKをクリックしてください。
+<li><p>壁の一端をクリックしてください。すると、以下のように、オリジナルのラインが現れます。</p></li>
+<li><p>壁の一端をクリックしてください。すると、ラインが定義されます。</p></li>
+<li><p>個々で、ダイアログに距離を単位[m]で入力してください(今回は7.5 [m]です)。すると、ピクセルメートル比は先ほど指定したラインに沿って自動で計算されます。</p></li>
+<li><p>完了したら、OKをクリックしてください。
 <img src="http://cir-kit.github.io/images/2015-02-06-gazebo-building-editor/import_step_2.png" alt="import_step_2" /></p></li>
 <li><p>うまく行けば、2DViewの部分に、イメージが表示されます。<br/>
 <strong>コツ : </strong>レベルあ上がれば、それぞれのフロアを同じプロセスでインポートすることができます。</p></li>
@@ -147,7 +149,7 @@
 
 <h3>壁を追加する</h3>
 
-<p>以下の手順にしたがって、すべての壁をフロアイメージに沿ってトレースsてください。後でドアや窓を付け加えることを覚えておいてください。一旦は、それらを無視して壁を作ることができます。壁を完璧に作れなくても慌てないでください。後でまた編集することができます。</p>
+<p>以下の手順にしたがって、すべての壁をフロアイメージに沿ってトレースしてください。後でドアや窓を付け加えることを覚えておいてください。一旦は、それらを無視して壁を作ることができます。壁を完璧に作れなくても慌てないでください。後でまた編集することができます。</p>
 
 <ol>
 <li><p>Palleteの、壁の上でクリックしてください。</p></li>
@@ -171,7 +173,7 @@
 <strong>コツ : </strong>窓やドアは自動で壁に沿って動きます。壁の端までの距離は動かすごとに、ディスプレイに表示されます。</p></li>
 <li><p>気に入ったところでクリックしましょう。
 <img src="http://cir-kit.github.io/images/2015-02-06-gazebo-building-editor/add_windows_doors.png" alt="add_windows_doors" />
-<strong>コツ : </strong>最初に壁を作った後に、フロアプランにある窓やドアの位置を探すのは無ヅカ敷く感じるでしょう。これを簡単にするには、2DViewの上で、フロアプランをもしくは現在までの窓やドアの表示、非表示を選択することができます。
+<strong>コツ : </strong>最初に壁を作った後に、フロアプランにある窓やドアの位置を探すのは難しく感じるでしょう。これを簡単にするには、2DViewの上で、フロアプランをもしくは現在までの窓やドアの表示、非表示を選択することができます。
 <img src="http://cir-kit.github.io/images/2015-02-06-gazebo-building-editor/view_floorplan.png" alt="view_floorplan" /></p></li>
 </ol>
 
@@ -281,7 +283,7 @@
 <p>壁、床、階段に色やテクスチャを追加するには、壁インスペクタ、床インスペクタ、階段インスペクタのそれぞれから追加することができます。まずは、インスペクタを開、物質を選んだら、<strong>Apply</strong>を押してください。インスペクタを表示するには、それぞれの物体の上でダブルクリックするか、右クリックから選択してください。
 <img src="http://cir-kit.github.io/images/2015-02-06-gazebo-building-editor/color_texture_inspector.png" alt="color_texture_inspector" /></p>
 
-<h3>パレットから変更する。</h3>
+<h3>パレットから変更する</h3>
 
 <p>3DViewで物体をクリックすることで、建築物のアイテムの色やテクスチャをパレットから選ぶことができます。</p>
 
@@ -293,9 +295,11 @@
 
 
 <p><img src="http://cir-kit.github.io/images/2015-02-06-gazebo-building-editor/color_texture_palette.png" alt="color_texture_palette" />
-<strong>Gazebo5.1の新機能 : </strong>カスタムカラーを選ぶには、paletteの<strong>More</strong>をクリックします。すると、カスタムカラーを決定するためのダイアログが開きます。
+<strong>Gazebo5.1の新機能 : </strong>カスタムカラーを選ぶには、paletteの<strong>More</strong>をクリックします。すると、カスタムカラーを決定するためのダイアログが開きます。<br/>
+私の環境は、Ver.5.0.1なので、確認できません。<br/>
+下図は、公式チュートリアル掲載のものです。
 <img src="http://cir-kit.github.io/images/2015-02-06-gazebo-building-editor/custom_color.png" alt="custom_color" />
-<strong>コツ : </strong>それぞれの物体には、一つの色とテクスチャ歯科適用できません。同じ物体はすべて同じ見た目になります。<br/>
+<strong>コツ : </strong>それぞれの物体には、一つの色とテクスチャしか適用できません。同じ物体はすべて同じ見た目になります。<br/>
 <strong>Note : 現在は、カスタムテクスチャをこのエディタで使用することはできません。</strong></p>
 
 <h2>建築物を保存する</h2>
