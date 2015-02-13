@@ -4,7 +4,7 @@
   <title><![CDATA[九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-02-13T21:14:02+09:00</updated>
+  <updated>2015-02-14T00:53:33+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -12,6 +12,168 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[センサについて (センサノイズモデル 編) No.5.1]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/02/13/gazebo-sensor-noise-model/"/>
+    <updated>2015-02-13T21:50:50+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/02/13/gazebo-sensor-noise-model</id>
+    <content type="html"><![CDATA[<p><img src="http://cir-kit.github.io/images/gazebo_logo.png" alt="gazebo_logo" /></p>
+
+<h5>検証日時</h5>
+
+<p>02/06/2015 (Tue)</p>
+
+<h5>概要</h5>
+
+<p>Gazeboのチュートリアル第五弾「Sensors」。<br/>
+シミュレーションのセンサは環境を分析し、センサになるべくよく似たデータストリームを生成します。<br/>
+チュートリアルでは、センサの使い方と修正方法について説明します。
+今回はその「Sensor Noise Model」編です。<br/>
+公式サイトを適当に翻訳しただけですので、あしからず。</p>
+
+<h5>レベル</h5>
+
+<p><strong>BEGINNER</strong></p>
+
+<!-- more -->
+
+
+<h5>環境</h5>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> <strong>PC</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Prosessor</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>RAM</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>OS</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Kernel</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> 3.13.0-44-generic </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Gazebo</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Version 5.0.1 </td>
+</tr>
+</tbody>
+</table>
+
+
+<h5>参考</h5>
+
+<p><a href="http://gazebosim.org/tutorials?cat=tools_utilities">GAZEBO Tutorial-Tools and Utilities</a></p>
+
+<h2>はじめに</h2>
+
+<p>Gazeboでは、たくさんの一般的なセンサを提供しています。現実世界では、センサにはノイズが存在し、実環境を完全に観測することは出来ません。デフォルトでは、Gazeboのセンサは環境を完全に観測します(IMUは含みません;続きを参照ください)。認識プログラムを試してみる様な、よりリアルな環境を提供するには、Gazeboのセンサが生成したデータにあえてノイズを付け加える必要があります。<br/>
+この記事を書いている時点で、Gazeboは以下のタイプのセンサにノイズを付加することができます。</p>
+
+<blockquote><ul>
+<li>Ray (e.g., lasers)</li>
+<li>Camera</li>
+<li>IMU</li>
+</ul>
+</blockquote>
+
+<h2>Ray(Laser)ノイズ</h2>
+
+<p>rayセンサでは、それぞれのビームの距離値にガウシアンノイズを付加します。ノイズの値として付加されるガウシアン分布の平均値と標準偏差を設定することができます。ノイズの値はそれぞれのビームに独立して付加されます。ノイズを付加した後、距離はセンサの最小距離と最大距離の間で偽の値（ノイズが付加された値）になります。<br/>
+rayノイズモデルをテストするには:</p>
+
+<ol>
+<li>モデルのディレクトリを作る</li>
+</ol>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>  mkdir -p ~/.gazebo/models/noisy_laser
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ol>
+<li><code>config</code>ファイルを生成する</li>
+</ol>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>  gedit ~/.gazebo/models/noisy_laser/model.config
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ol>
+<li><code>model.config</code>ファイルに以下をコピペする</li>
+</ol>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot;?&gt;</span>
+</span><span class='line'><span class="nt">&lt;model&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;name&gt;</span>Noisy laser<span class="nt">&lt;/name&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;version&gt;</span>1.0<span class="nt">&lt;/version&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;sdf</span> <span class="na">version=</span><span class="s">&#39;1.4&#39;</span><span class="nt">&gt;</span>model.sdf<span class="nt">&lt;/sdf&gt;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nt">&lt;author&gt;</span>
+</span><span class='line'>   <span class="nt">&lt;name&gt;</span>My Name<span class="nt">&lt;/name&gt;</span>
+</span><span class='line'>   <span class="nt">&lt;email&gt;</span>me@my.email<span class="nt">&lt;/email&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/author&gt;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nt">&lt;description&gt;</span>
+</span><span class='line'>    My noisy laser.
+</span><span class='line'>  <span class="nt">&lt;/description&gt;</span>
+</span><span class='line'><span class="nt">&lt;/model&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ol>
+<li><code>~/.gazebo/models/noisy_laser/model.sdf</code>ファイルを生成する</li>
+</ol>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gedit ~/.gazebo/models/noisy_laser/model.sdf
+</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[ツールとユーティリティ (ログフィルタリング 編) No.4.1]]></title>
@@ -120,21 +282,68 @@ Gazeboには多くのツールとユーティリティがあります。<br/>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>We will use the PR2 world to create a state log file.</p>
+<p>今回は、ログファイルを生成するのに、PR2ワールドを使用します。<br/>
+Gazeboサーバを<code>-r</code>コマンドラインオプションをつけて実行しましょう。</p>
 
-<p>Start by running the Gazebo server with the -r command line option</p>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gzserver -r worlds/pr2.world
+</span></code></pre></td></tr></table></div></figure>
 
-<p>gzserver -r worlds/pr2.world</p>
 
-<p>After a few seconds, stop the server using ctrl-c.</p>
+<p>数秒後に、サーバを<code>Ctrl-c</code>で停止しましょう。<br/>
+新しいタイムスタンプのあるディレクトリが<code>~/.gazebo/log/</code>の中に、一つのサブディレクトリと<code>state.log</code>ファイルがあるはずです。例えば以下のような感じです。</p>
 
-<p>A new time stamped directory should exist in ~/.gazebo/log with one subdirectory and a state.log file. Here is an example</p>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>~/.gazebo/log/2015-02-13T21:18:11.849250/gzserverstate.log
+</span></code></pre></td></tr></table></div></figure>
 
-<p>~/.gazebo/log/2013-07-25T07:29:05.122275/gzserver/state.log</p>
 
-<p>You can verify this log file by replaying it in Gazebo.</p>
+<p>Gazeboでこれをリプレイすることにより、このログファイルを確認することができます。</p>
 
-<p>gazebo -p ~/.gazebo/log/*/gzserver/state.lgo</p>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo -p ~/.gazebo/log/*/gzserver/state.lgo
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ステップ 2:ログファイルをフィルタリングする</h3>
+
+<p><code>gz log</code>コマンドラインツールでは、ログファイルを通じたステッピングとログファイル表示のコンテンツのエコーのためのメカニズムを提供しています。表示エコーの特徴は、モデルやリンクの姿勢などの情報を定義するようなログファイルを生成するフィルタと結合したものとなります。<br/>
+記録した状態ログファイルをスクリーンにエコーしてみましょう。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gz log -e -f ~/.gazebo/log/*/gzserver/state.log
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>すると、スクロールできるほどたくさんの情報を確認することができるでしょう。<br/>
+では、ログファイルにあるすべての速度、加速度、力の情報を消してみましょう。つまり、姿勢の情報だけを残します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gz log -e -f ~/.gazebo/log/*/gzserver/state.log --filter *.pose/*.pose
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>--filter</code>オプションは、ログファイルの情報を間引くには、柔軟で便利なコマンドライン引数です。<br/>
+<code>Hz</code>フィルタを使えば、シミュレーション時間についてもフィルタリングをオコナウことができます。例えば、30 [Hz]で状態情報を出力したいとすると、以下のようにコマンド入力を行います。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gz log -e -f ~/.gazebo/log/*/gzserver/state.log -z 30
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>これらのフィルタはプレイバックのためのファイルに結合することができます。このことは<code>state.log</code>ファイルの大きさに依存することもあります。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gz log -e -f ~/.gazebo/log/*/gzserver/state.log -z <span class="m">30</span> --filter *.pose/*.pose &gt; /tmp/filtered_state.log
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>このログファイルは、以下のようにしてGazeboでリプレイすることができます。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo -p /tmp/filtered_state.log
+</span></code></pre></td></tr></table></div></figure>
+
 ]]></content>
   </entry>
   
@@ -5357,186 +5566,6 @@ Gazeboによって提供されるworldデータは<code>/share/gazebo-*/worlds</
 
 
 <p>この時点で、Gazeboのユーザーインターフェースを確認できるはずです。また、<code>gzclient</code>は好きなタイミングで再起動することができますし、複数実行することも可能です。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Gazeboのインストール No.0]]></title>
-    <link href="http://cir-kit.github.io/blog/2015/01/31/gazebo-install/"/>
-    <updated>2015-01-31T15:28:43+09:00</updated>
-    <id>http://cir-kit.github.io/blog/2015/01/31/gazebo-install</id>
-    <content type="html"><![CDATA[<p><img src="http://cir-kit.github.io/images/gazebo_logo.png" alt="gazebo_logo" /></p>
-
-<h5>検証日時</h5>
-
-<p>01/31/2015 (Sat)</p>
-
-<h5>概要</h5>
-
-<p>Robot Simulaterの<code>gazebo</code>の概要とそのインストールについてです。<br/>
-インストール編は、公式サイトを適当に翻訳しただけですので、あしからず。</p>
-
-<h5>レベル</h5>
-
-<p><strong>BEGINNER</strong></p>
-
-<!-- more -->
-
-
-<h5>環境</h5>
-
-<table>
-<thead>
-<tr>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center;"> <strong>PC</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Prosessor</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>RAM</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>OS</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Kernel</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> 3.13.0-44-generic </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Gazebo</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Version 5.0.1 </td>
-</tr>
-</tbody>
-</table>
-
-
-<h5>参考</h5>
-
-<p><a href="http://gazebosim.org/tutorials?cat=install">GAZEBO Tutorial-Installation</a><br/>
-<a href="http://www.slideshare.net/akio19937/1rosrosgazebo">第1回ROS勉強会発表資料 ROS+Gazeboではじめるロボットシミュレーション</a></p>
-
-<h2>「GAZEBO」ってなに?</h2>
-
-<p>gazeboは以下のような特徴を持っています。</p>
-
-<ul>
-<li><p>オープンソース（Apache ライセンス）の3Dロボットシミュレータ</p></li>
-<li><p><a href="http://qt-project.org/">Qt</a>を利用した強力なGUI</p></li>
-<li><p>複数の物理エンジンを切り替えられる(<a href="http://www.ode.org/">ODE</a>含む)</p></li>
-<li><p>カメラ、LRFなどのセンサシミュレーションが豊富</p></li>
-<li><p>センサだけでなく、ロボットモデルも豊富(<a href="http://www.nihonbinary.co.jp/Products/Robot/TurtleBot.html">TurtleBot</a>、<a href="https://www.willowgarage.com/pages/pr2/overview">PR2</a>etc&hellip;)</p></li>
-<li><p><a href="http://www.ros.org/">ROS</a>との連携も充実</p></li>
-</ul>
-
-
-<p>という感じで、もはや使わない手はないロボットシミュレータです。</p>
-
-<!-- 下図みたいな感じで使えるのでとってもGoodですね !   -->
-
-
-
-
-<!-- ![gazebo_example](/images/2015-01-31-gazebo-install/gazebo_example.jpg) -->
-
-
-<h2>GAZEBOのインストール</h2>
-
-<p>通常は、OnlineInstallの方の手順にしたがってインストールしてください。<br/>
-尚、<code>gazebo</code>コマンドを入力したあと、アプリケーションが立ち上がるまでに時間がかかるみたいなので、落ち着いて待ちましょう。</p>
-
-<h3>Online-Install</h3>
-
-<ol>
-<li>インストール</li>
-</ol>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>wget -O /tmp/gazebo4_install.sh http://osrf-distributions.s3.amazonaws.com/gazebo/gazebo4_install.sh<span class="p">;</span> sudo sh /tmp/gazebo4_install.sh
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ol>
-<li>実行</li>
-</ol>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>Step-by-step Install</h3>
-
-<ol>
-<li><code>packages.osrfoundation.org.</code> パッケージからのソフトウェア取得を許可するようコンピュータを設定します。
-<strong>Note : </strong>このパッケージの<a href="https://bitbucket.org/osrf/gazebo/wiki/gazebo_mirrors">ダウンロードミラー</a>があるので、それを使うと、ダウンロード速度が早くなるかもしれません。</li>
-</ol>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo sh -c <span class="s1">&#39;echo &quot;deb http://packages.osrfoundation.org/gazebo/ubuntu `lsb_release -cs` main&quot; &gt; /etc/apt/sources.list.d/gazebo-latest.list&#39;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ol>
-<li>Keyの設定</li>
-</ol>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>wget http://packages.osrfoundation.org/gazebo.key -O - <span class="p">|</span> sudo apt-key add -
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ol>
-<li>インストールのチェック(実行)
-<strong>Note : </strong>初めて<code>gazebo</code>コマンドを実行する時には、ダウンロードなどを行うので時間がかかります。落ち着いて待ちましょう。</li>
-</ol>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>他のdebパッケージ</h3>
-
-<p>Gazeboでは<a href="https://www.debian.org/doc/manuals/maint-guide/">公式パッケージガイドライン</a>にそったその他のUbuntu debian パッケージを用意しています。これらではgazeboのオプションのインストール方法が更新されます。</p>
-
-<ul>
-<li><p>Gazeboをアプリケーショんとして使用する場合：Gazeboを提供済みのプラグイン、モデルとともにシミュレータとしてのみ使用し、ソフトウェア開発においてgazeboの最新版を利用する予定のないユーザ用。Gazebo4.0を使用するためには、<code>gazebo4</code>と呼ばれるパッケージをインストールしてください。</p></li>
-<li><p>Gzeboのライブラリを使用してGazeboを開発ツールとして使用する場合：最新のGazeboやライブラリが必要とする様々なソフトウェアやプラグインを開発するユーザ用。この場合、<code>gazebo4</code>パッケージと共に、<code>libgazebo4-dev</code>もインストールしてください。</p></li>
-</ul>
-
-
-<h4>Gazeboマルチ物理エンジンサポート</h4>
-
-<p>Gazeboではシミュレーション実行のためにいろいろな物理エンジンを使用することができます。<br/>
-<a href="http://www.ode.org/">ODE</a>はデフォルトで使用されているものです。しかし、Ubuntuパッケージでは、<a href="http://bulletphysics.org/wordpress/">Bullet</a>や<a href="https://simtk.org/home/simbody/">Simbody</a>もまたサポートされています。<br/>
-それらを使用するユーザはgazeboをソースコードからインストールする<a href="http://dartsim.github.io/">DART</a>に接続(wan)する事になります。なので、<code>.deb</code>パッケージは使用しないでください。</p>
-
-<h3>ROSとGazebo</h3>
-
-<p>GazeboをROSと共に使用するためには、<a href="http://gazebosim.org/tutorials?cat=connect_ros">ROSとつなぐ</a>というチュートリアルを参照してください。</p>
 ]]></content>
   </entry>
   

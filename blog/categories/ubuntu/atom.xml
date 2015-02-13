@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Ubuntu | 九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/blog/categories/ubuntu/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-02-13T21:14:02+09:00</updated>
+  <updated>2015-02-14T00:53:33+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -12,6 +12,233 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[センサについて (センサノイズモデル 編) No.5.1]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/02/13/gazebo-sensor-noise-model/"/>
+    <updated>2015-02-13T21:50:50+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/02/13/gazebo-sensor-noise-model</id>
+    <content type="html"><![CDATA[<p><img src="http://cir-kit.github.io/images/gazebo_logo.png" alt="gazebo_logo" /></p>
+
+
+
+
+<h5>検証日時</h5>
+
+
+
+
+<p>02/06/2015 (Tue)</p>
+
+
+
+
+<h5>概要</h5>
+
+
+
+
+<p>Gazeboのチュートリアル第五弾「Sensors」。<br/>
+シミュレーションのセンサは環境を分析し、センサになるべくよく似たデータストリームを生成します。<br/>
+チュートリアルでは、センサの使い方と修正方法について説明します。
+今回はその「Sensor Noise Model」編です。<br/>
+公式サイトを適当に翻訳しただけですので、あしからず。</p>
+
+
+
+
+<h5>レベル</h5>
+
+
+
+
+<p><strong>BEGINNER</strong></p>
+
+
+
+
+<!-- more -->
+
+
+
+
+<h5>環境</h5>
+
+
+
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> <strong>PC</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Prosessor</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>RAM</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>OS</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Kernel</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> 3.13.0-44-generic </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Gazebo</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Version 5.0.1 </td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+<h5>参考</h5>
+
+
+
+
+<p><a href="http://gazebosim.org/tutorials?cat=tools_utilities">GAZEBO Tutorial-Tools and Utilities</a></p>
+
+
+
+
+<h2>はじめに</h2>
+
+
+
+
+<p>Gazeboでは、たくさんの一般的なセンサを提供しています。現実世界では、センサにはノイズが存在し、実環境を完全に観測することは出来ません。デフォルトでは、Gazeboのセンサは環境を完全に観測します(IMUは含みません;続きを参照ください)。認識プログラムを試してみる様な、よりリアルな環境を提供するには、Gazeboのセンサが生成したデータにあえてノイズを付け加える必要があります。<br/>
+この記事を書いている時点で、Gazeboは以下のタイプのセンサにノイズを付加することができます。</p>
+
+
+
+
+<blockquote><ul>
+<li>Ray (e.g., lasers)</li>
+<li>Camera</li>
+<li>IMU</li>
+</ul>
+</blockquote>
+
+
+
+
+<h2>Ray(Laser)ノイズ</h2>
+
+
+
+
+<p>rayセンサでは、それぞれのビームの距離値にガウシアンノイズを付加します。ノイズの値として付加されるガウシアン分布の平均値と標準偏差を設定することができます。ノイズの値はそれぞれのビームに独立して付加されます。ノイズを付加した後、距離はセンサの最小距離と最大距離の間で偽の値（ノイズが付加された値）になります。<br/>
+rayノイズモデルをテストするには:</p>
+
+
+
+
+<ol>
+<li>モデルのディレクトリを作る</li>
+</ol>
+
+
+
+
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>  mkdir -p ~/.gazebo/models/noisy_laser
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+
+
+
+<ol>
+<li><code>config</code>ファイルを生成する</li>
+</ol>
+
+
+
+
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>  gedit ~/.gazebo/models/noisy_laser/model.config
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+
+
+
+<ol>
+<li><code>model.config</code>ファイルに以下をコピペする</li>
+</ol>
+
+
+
+
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot;?&gt;</span>
+</span><span class='line'><span class="nt">&lt;model&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;name&gt;</span>Noisy laser<span class="nt">&lt;/name&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;version&gt;</span>1.0<span class="nt">&lt;/version&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;sdf</span> <span class="na">version=</span><span class="s">&#39;1.4&#39;</span><span class="nt">&gt;</span>model.sdf<span class="nt">&lt;/sdf&gt;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nt">&lt;author&gt;</span>
+</span><span class='line'>   <span class="nt">&lt;name&gt;</span>My Name<span class="nt">&lt;/name&gt;</span>
+</span><span class='line'>   <span class="nt">&lt;email&gt;</span>me@my.email<span class="nt">&lt;/email&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/author&gt;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nt">&lt;description&gt;</span>
+</span><span class='line'>    My noisy laser.
+</span><span class='line'>  <span class="nt">&lt;/description&gt;</span>
+</span><span class='line'><span class="nt">&lt;/model&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+
+
+
+<ol>
+<li><code>~/.gazebo/models/noisy_laser/model.sdf</code>ファイルを生成する</li>
+</ol>
+
+
+
+
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gedit ~/.gazebo/models/noisy_laser/model.sdf
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[ツールとユーティリティ (ログフィルタリング 編) No.4.1]]></title>
@@ -184,42 +411,110 @@ Gazeboには多くのツールとユーティリティがあります。<br/>
 
 
 
-<p>We will use the PR2 world to create a state log file.</p>
+<p>今回は、ログファイルを生成するのに、PR2ワールドを使用します。<br/>
+Gazeboサーバを<code>-r</code>コマンドラインオプションをつけて実行しましょう。</p>
 
 
 
 
-<p>Start by running the Gazebo server with the -r command line option</p>
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gzserver -r worlds/pr2.world
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 
 
 
-<p>gzserver -r worlds/pr2.world</p>
+<p>数秒後に、サーバを<code>Ctrl-c</code>で停止しましょう。<br/>
+新しいタイムスタンプのあるディレクトリが<code>~/.gazebo/log/</code>の中に、一つのサブディレクトリと<code>state.log</code>ファイルがあるはずです。例えば以下のような感じです。</p>
 
 
 
 
-<p>After a few seconds, stop the server using ctrl-c.</p>
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>~/.gazebo/log/2015-02-13T21:18:11.849250/gzserverstate.log
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 
 
 
-<p>A new time stamped directory should exist in ~/.gazebo/log with one subdirectory and a state.log file. Here is an example</p>
+<p>Gazeboでこれをリプレイすることにより、このログファイルを確認することができます。</p>
 
 
 
 
-<p>~/.gazebo/log/2013-07-25T07:29:05.122275/gzserver/state.log</p>
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo -p ~/.gazebo/log/*/gzserver/state.lgo
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 
 
 
-<p>You can verify this log file by replaying it in Gazebo.</p>
+<h3>ステップ 2:ログファイルをフィルタリングする</h3>
 
 
 
 
-<p>gazebo -p ~/.gazebo/log/*/gzserver/state.lgo</p>
+<p><code>gz log</code>コマンドラインツールでは、ログファイルを通じたステッピングとログファイル表示のコンテンツのエコーのためのメカニズムを提供しています。表示エコーの特徴は、モデルやリンクの姿勢などの情報を定義するようなログファイルを生成するフィルタと結合したものとなります。<br/>
+記録した状態ログファイルをスクリーンにエコーしてみましょう。</p>
+
+
+
+
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gz log -e -f ~/.gazebo/log/*/gzserver/state.log
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+
+
+
+<p>すると、スクロールできるほどたくさんの情報を確認することができるでしょう。<br/>
+では、ログファイルにあるすべての速度、加速度、力の情報を消してみましょう。つまり、姿勢の情報だけを残します。</p>
+
+
+
+
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gz log -e -f ~/.gazebo/log/*/gzserver/state.log --filter *.pose/*.pose
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+
+
+
+<p><code>--filter</code>オプションは、ログファイルの情報を間引くには、柔軟で便利なコマンドライン引数です。<br/>
+<code>Hz</code>フィルタを使えば、シミュレーション時間についてもフィルタリングをオコナウことができます。例えば、30 [Hz]で状態情報を出力したいとすると、以下のようにコマンド入力を行います。:</p>
+
+
+
+
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gz log -e -f ~/.gazebo/log/*/gzserver/state.log -z 30
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+
+
+
+<p>これらのフィルタはプレイバックのためのファイルに結合することができます。このことは<code>state.log</code>ファイルの大きさに依存することもあります。</p>
+
+
+
+
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gz log -e -f ~/.gazebo/log/*/gzserver/state.log -z <span class="m">30</span> --filter *.pose/*.pose &gt; /tmp/filtered_state.log
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+
+
+
+<p>このログファイルは、以下のようにしてGazeboでリプレイすることができます。</p>
+
+
+
+
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo -p /tmp/filtered_state.log
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+
 
 ]]></content>
   </entry>
@@ -1590,225 +1885,6 @@ GazeboをDEMファイルを含む<code>world</code>と共に立ち上げ、以�
 
 
 <p>自分で取得した地図をとりあえず表示することは出来ましたが、縮尺とかがおかしいままなので、解決したら、また投稿します。とりあえず今は、先に進みたいです。(02/04/2015 21:51)</p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[環境をつくろう ! (環境を修正する 編) No.3.2]]></title>
-    <link href="http://cir-kit.github.io/blog/2015/02/03/gazebo-modifying-a-world/"/>
-    <updated>2015-02-03T18:59:45+09:00</updated>
-    <id>http://cir-kit.github.io/blog/2015/02/03/gazebo-modifying-a-world</id>
-    <content type="html"><![CDATA[<p><img src="http://cir-kit.github.io/images/gazebo_logo.png" alt="gazebo_logo" /></p>
-
-
-
-
-<h5>検証日時</h5>
-
-
-
-
-<p>02/03/2015 (Tue)</p>
-
-
-
-
-<h5>概要</h5>
-
-
-
-
-<p>Gazeboのチュートリアル第三弾「Build a World」。
-このチュートリアルでは、シミュレーション中の環境をどのように構築するかについて説明します。<br/>
-今回はその「Modifying a World」編です。<br/>
-公式サイトを適当に翻訳しただけですので、あしからず。</p>
-
-
-
-
-<h5>レベル</h5>
-
-
-
-
-<p><strong>BEGINNER</strong></p>
-
-
-
-
-<!-- more -->
-
-
-
-
-<h5>環境</h5>
-
-
-
-
-<table>
-<thead>
-<tr>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center;"> <strong>PC</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Prosessor</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>RAM</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>OS</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Kernel</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> 3.13.0-44-generic </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Gazebo</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Version 5.0.1 </td>
-</tr>
-</tbody>
-</table>
-
-
-
-
-<h5>参考</h5>
-
-
-
-
-<p><a href="http://gazebosim.org/tutorials?cat=build_world">GAZEBO Tutorial-Build a World</a></p>
-
-
-
-
-<h2>はじめに</h2>
-
-
-
-
-<p>このチュートリアルでは、どのようにして物理プロパティや場面プロパティを含むグローバルプロパティを修正するか説明します。<br/>
-Gazeboを起動してください。:</p>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>  gazebo
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-
-<h2>場面プロパティ</h2>
-
-
-
-
-<p><strong>World</strong>タブの中で、<strong>scene</strong>を選んでください。すると、以下のような場面プロパティのリストが表示されたはずです。続いてプロパティの詳細を表示するために、三角形のボタンをクリックしてプロパティを展開してください。</p>
-
-
-
-
-<!-- ![tutorialSceneTab](/images/2015-02-03-gazebo-modifying-a-world/tutorialSceneTab.png) -->
-
-
-
-
-<!-- ![tutorialSceneTabExpanded](/images/2015-02-03-gazebo-modifying-a-world/tutorialSceneTabExpanded.png)   -->
-
-
-
-
-<p>これらのプロパティでは照明についての詳細を変更することができます。<br/>
-<strong>メモ : </strong>skyが選択されている場合、背景色は変更できません。</p>
-
-
-
-
-<h2>物理プロパティ</h2>
-
-
-
-
-<p><strong>World</strong>タブの中で、<strong>physics</strong>を選択してください。すると、以下のように物理プロパティのリストが表示されたはずです。</p>
-
-
-
-
-<ul>
-<li><p>チェックボックスはプラグインやセンサが起動している間、物理エンジンを起動するかどうかを選択できます。</p></li>
-<li><p><strong>rial time update rate parameter</strong>は物理エンジンのアプデートの時間を[Hz]で指定します。もし、この値を0にしたら、可能な限り速い速度でアップデートを行います。<strong>rial time update rate</strong>と<strong>step size</strong>はリアルタイム要素を代表する要素であり、シミュレーション時間をリアルタイムにするかどうかを決定します。</p></li>
-<li><p><strong>max step size</strong>は一秒間にどれだけの間物理シミュレータのアップデートステップを維持するかを定義します。</p></li>
-</ul>
-
-
-
-
-<p><strong>grabity</strong>ブロックでは:</p>
-
-
-
-
-<ul>
-<li>x,y,zのパラメータで全体の重力をベクトルで設定します。単位は[$m/s<sup>2</sup>$]です。</li>
-</ul>
-
-
-
-
-<p><strong>solver</strong>ブロックでは:</p>
-
-
-
-
-<ul>
-<li><p>慣性パラメータによりLCP solver（ODEやbulletで使用されています）で使用するための慣性データを設定します。</p></li>
-<li><p>SORパラメータは<a href="http://en.wikipedia.org/wiki/Successive_over-relaxation">連続する加速緩和</a>を記述します。この、加速緩和とは慣性要素を収束させるために使用します。</p></li>
-</ul>
-
-
-
-
-<p><strong>constraints</strong>ブロックには制約を解除するパラメータがいくつか含まれています。</p>
-
-
-
-
-<ul>
-<li>CFMやERPパラメータは<a href="http://ode-wiki.org/wiki/index.php?title=Manual:_Concepts#Constraint_Force_Mixing_.28CFM.29">Constant Force Mixing</a>や<a href="http://ode-wiki.org/wiki/index.php?title=Manual:_Concepts#Joint_error_and_the_Error_Reduction_Parameter_.28ERP.29">Error Reduction</a>のパラメータにを記述し、ODEやbulletで使用されます。CFMやERｐパラメータは<a href="http://ode-wiki.org/wiki/index.php?title=Manual:_Concepts#How_To_Use_ERP_and_CFM">linear stiffness や damping coefficients</a>に関連付けることができます。<strong>max velocity</strong>や<strong>surface layer</strong>パラメータは<strong>split inpulse method</strong>の解決に使用されます。どのようなcontactにおいても、<strong>surface layer</strong>やバウンドしないような<strong>max velocity</strong>より遅い速度による深さより深い。(????)<strong>私もよくわからない</strong>ので、ちょっと勘弁してください。すみませんorz&hellip;<br/>
-パラメータについての詳しい説明は、<a href="http://osrf-distributions.s3.amazonaws.com/sdformat/api/dev.html#physics12">sdf physics documentation</a>をご覧ください。</li>
-</ul>
-
-
-
-
-<!-- ![tutorialPhysicsTab](/images/2015-02-03-gazebo-modifying-a-world/tutorialPhysicsTab.png) -->
-
-
-
-
-<h4>Next >> <a href="">GazeboでのDEMｓの使い方</a></h4>
 
 ]]></content>
   </entry>
