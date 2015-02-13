@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Ubuntu | 九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/blog/categories/ubuntu/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-02-14T04:06:45+09:00</updated>
+  <updated>2015-02-14T04:58:40+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -12,6 +12,377 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[センサについて（カメラの歪み 編）No.5.2]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/02/14/gazebo-camera-distortion/"/>
+    <updated>2015-02-14T04:06:22+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/02/14/gazebo-camera-distortion</id>
+    <content type="html"><![CDATA[<p><img src="http://cir-kit.github.io/images/gazebo_logo.png" alt="gazebo_logo" /></p>
+
+
+
+
+<h5>検証日時</h5>
+
+
+
+
+<p>02/06/2015 (Tue)</p>
+
+
+
+
+<h5>概要</h5>
+
+
+
+
+<p>Gazeboのチュートリアル第五弾「Sensors」。<br/>
+シミュレーションのセンサは環境を分析し、センサになるべくよく似たデータストリームを生成します。<br/>
+チュートリアルでは、センサの使い方と修正方法について説明します。
+今回はその「Camera Distortion」編です。<br/>
+公式サイトを適当に翻訳しただけですので、あしからず。</p>
+
+
+
+
+<h5>レベル</h5>
+
+
+
+
+<p><strong>BEGINNER</strong></p>
+
+
+
+
+<!-- more -->
+
+
+
+
+<h5>環境</h5>
+
+
+
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> <strong>PC</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Prosessor</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>RAM</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>OS</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Kernel</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> 3.13.0-44-generic </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Gazebo</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Version 5.0.1 </td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+<h5>参考</h5>
+
+
+
+
+<p><a href="http://gazebosim.org/tutorials?cat=sensors">GAZEBO Tutorial-Sensors</a></p>
+
+
+
+
+<h2>はじめに</h2>
+
+
+
+
+<p>カメラのレンズはたいてい光学の角度ゆがみがあり、これにより、イメージ（像）が歪む。例として、タスクを実行したり、物体を発見するのに、より広い範囲の環境視野を確保する目的でロボティクスの分野で広く使用されている、魚眼カメラが挙げられる。<br/>
+MatlabやOpenCVのようなカメラキャリブレーションツールを使うと、カメラ固有のパラメータに付随した、歪み係数をなしにすることができる。そのような歪み系数とともに、Gazeboの中に歪んだカメラセンサを生成することができる。</p>
+
+
+
+
+<h3>現在の実装</h3>
+
+
+
+
+<p>Gazeboでは、現在、<a href="http://en.wikipedia.org/wiki/Distortion_(optics">Brown&rsquo;s distortion model</a>#Software_correction)に基づいたカメラのシミュレーションをサポートしています。このモデルでは、カメラのキャリブレーションツールから取得できる歪み系数を<code>k1</code>、<code>k2</code>、<code>k3</code>、<code>p1</code>、<code>p2</code>としている。<code>k</code>という係数は歪みモデルの放射状の構成であり、<code>p</code>という係数はタンジェントの構成を示す。　　
+現在の実装には以下のようないくつかの制限がある。</p>
+
+
+
+
+<ol>
+<li><p>樽状の歪みだけがサポートされており、たいていは、<code>k1</code>の値が負である。</p></li>
+<li><p>歪みは、カメラのイメージテクスチャに適用されています。これは、イメージデータを生成し、ねじっているだけのものを使っていることを意味する。このことは、最終的なイメージ（特に角では）が現実の樽状の歪みを持ったカメラレンズよりも、狭い視野になるという警告を持つことになる。この現象を償う一つの解決策はGazeboの中で、カメラセンサの視野を増加させるという方法である。</p></li>
+</ol>
+
+
+
+
+<h2>カメラを歪みとともに生成する</h2>
+
+
+
+
+<p>歪みのあるカメラモデルを追加するには:</p>
+
+
+
+
+<ol>
+<li>モデルのディレクトリを作る</li>
+</ol>
+
+
+
+
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>mkdir -p ~/.gazebo/models/distorted_camera
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+
+
+
+<ol>
+<li><code>model.config</code>ファイルを生成する</li>
+</ol>
+
+
+
+
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gedit ~/.gazebo/models/distorted_camera/model.config
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+
+
+
+<ol>
+<li><code>model.config</code>に以下の内容をコピペする</li>
+</ol>
+
+
+
+
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot;?&gt;</span>
+</span><span class='line'><span class="nt">&lt;model&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;name&gt;</span>Distorted Camera<span class="nt">&lt;/name&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;version&gt;</span>1.0<span class="nt">&lt;/version&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;sdf</span> <span class="na">version=</span><span class="s">&#39;1.5&#39;</span><span class="nt">&gt;</span>model.sdf<span class="nt">&lt;/sdf&gt;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nt">&lt;author&gt;</span>
+</span><span class='line'>   <span class="nt">&lt;name&gt;</span>My Name<span class="nt">&lt;/name&gt;</span>
+</span><span class='line'>   <span class="nt">&lt;email&gt;</span>me@my.email<span class="nt">&lt;/email&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/author&gt;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nt">&lt;description&gt;</span>
+</span><span class='line'>    My distorted camera.
+</span><span class='line'>  <span class="nt">&lt;/description&gt;</span>
+</span><span class='line'><span class="nt">&lt;/model&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+
+
+
+<ol>
+<li><code>~/.gazebo/models/distorted_camera/model.sdf</code>ファイルを生成する</li>
+</ol>
+
+
+
+
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gedit ~/.gazebo/models/distorted_camera/model.sdf
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+
+
+
+<ol>
+<li><code>model.sdf</code>に以下の内容をコピペする。以下のモデルはスタンダードなカメラモデルに歪みを付加したものです。:</li>
+</ol>
+
+
+
+
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; ?&gt;</span>
+</span><span class='line'><span class="nt">&lt;sdf</span> <span class="na">version=</span><span class="s">&quot;1.5&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;model</span> <span class="na">name=</span><span class="s">&quot;distorted_camera&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;link</span> <span class="na">name=</span><span class="s">&quot;link&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;pose&gt;</span>0.05 0.05 0.05 0 0 0<span class="nt">&lt;/pose&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;inertial&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;mass&gt;</span>0.1<span class="nt">&lt;/mass&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/inertial&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;collision</span> <span class="na">name=</span><span class="s">&quot;collision&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;geometry&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;box&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;size&gt;</span>0.1 0.1 0.1<span class="nt">&lt;/size&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;/box&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/geometry&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/collision&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;visual</span> <span class="na">name=</span><span class="s">&quot;visual&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;geometry&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;box&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;size&gt;</span>0.1 0.1 0.1<span class="nt">&lt;/size&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;/box&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/geometry&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/visual&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;sensor</span> <span class="na">name=</span><span class="s">&quot;camera&quot;</span> <span class="na">type=</span><span class="s">&quot;camera&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;camera&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;horizontal_fov&gt;</span>1.047<span class="nt">&lt;/horizontal_fov&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;image&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;width&gt;</span>320<span class="nt">&lt;/width&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;height&gt;</span>240<span class="nt">&lt;/height&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;/image&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;clip&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;near&gt;</span>0.1<span class="nt">&lt;/near&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;far&gt;</span>100<span class="nt">&lt;/far&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;/clip&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;distortion&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;k1&gt;</span>-0.25<span class="nt">&lt;/k1&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;k2&gt;</span>0.12<span class="nt">&lt;/k2&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;k3&gt;</span>0.0<span class="nt">&lt;/k3&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;p1&gt;</span>-0.00028<span class="nt">&lt;/p1&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;p2&gt;</span>-0.00005<span class="nt">&lt;/p2&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;center&gt;</span>0.5 0.5<span class="nt">&lt;/center&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;/distortion&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/camera&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;always_on&gt;</span>1<span class="nt">&lt;/always_on&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;update_rate&gt;</span>30<span class="nt">&lt;/update_rate&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;visualize&gt;</span>true<span class="nt">&lt;/visualize&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/sensor&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/link&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/model&gt;</span>
+</span><span class='line'><span class="nt">&lt;/sdf&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+
+
+
+<ol>
+<li>Gazeboを起動する</li>
+</ol>
+
+
+
+
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+
+
+
+<ol>
+<li><p>歪みを付加したカメラモデルを挿入する : 画面左側の枠の中で、<strong>Insert</strong>タブを選び、<strong>Distorted Camera</strong>をクリックする。その後、シミュレータにそれを設置する。</p></li>
+<li><p>歪みを付加したカメラモデルを観測する : <strong>Topis Selector</strong>を表示するために、<strong>Window</strong>-><strong>Topic Visualazation</strong>をクリックする(もしくは、<code>Ctrl-T</code>を押す)。</p></li>
+<li><p><code>/gazebo/default/hokuyo/link/camera/image</code>のような名前のトピックを探し、クリックしたら、<strong>Okay</strong>をクリックしてください。すると、カメライメージが表示されたウィンドウが見えるはずです。</p></li>
+</ol>
+
+
+
+
+<p>手順は、以下の動画を参照ください。また、動画でご覧いただくように、カメラのイメージは湯がんでおり、箱のエッジが曲がって見えます。歪みを調整するには、<code>model.sdf</code>ファイルにある、<code>k1</code>,<code>k2</code>,<code>k3</code>,<code>p1</code>,<code>p2</code>の歪み係数を変更するだけでよいです。</p>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[センサについて (センサノイズモデル 編) No.5.1]]></title>
@@ -117,7 +488,7 @@
 
 
 
-<p><a href="http://gazebosim.org/tutorials?cat=tools_utilities">GAZEBO Tutorial-Tools and Utilities</a></p>
+<p><a href="http://gazebosim.org/tutorials?cat=sensors">GAZEBO Tutorial-Sensors</a></p>
 
 
 
@@ -161,9 +532,9 @@ rayノイズモデルをテストするには:</p>
 
 
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>  mkdir -p ~/.gazebo/models/noisy_laser
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 
 
@@ -175,9 +546,9 @@ rayノイズモデルをテストするには:</p>
 
 
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>  gedit ~/.gazebo/models/noisy_laser/model.config
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 
 
@@ -189,7 +560,7 @@ rayノイズモデルをテストするには:</p>
 
 
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -219,7 +590,7 @@ rayノイズモデルをテストするには:</p>
 </span><span class='line'>    My noisy laser.
 </span><span class='line'>  <span class="nt">&lt;/description&gt;</span>
 </span><span class='line'><span class="nt">&lt;/model&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 
 
@@ -231,9 +602,9 @@ rayノイズモデルをテストするには:</p>
 
 
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>gedit ~/.gazebo/models/noisy_laser/model.sdf
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 
 
@@ -245,7 +616,7 @@ rayノイズモデルをテストするには:</p>
 
 
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -335,7 +706,7 @@ rayノイズモデルをテストするには:</p>
 </span><span class='line'>    <span class="nt">&lt;/link&gt;</span>
 </span><span class='line'>  <span class="nt">&lt;/model&gt;</span>
 </span><span class='line'><span class="nt">&lt;/sdf&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 
 
@@ -347,9 +718,9 @@ rayノイズモデルをテストするには:</p>
 
 
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 
 
@@ -368,7 +739,7 @@ rayノイズモデルをテストするには:</p>
 
 
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -378,7 +749,7 @@ rayノイズモデルをテストするには:</p>
 </span><span class='line'>  <span class="nt">&lt;mean&gt;</span>0.0<span class="nt">&lt;/mean&gt;</span>
 </span><span class='line'>  <span class="nt">&lt;stddev&gt;</span>0.01<span class="nt">&lt;/stddev&gt;</span>
 </span><span class='line'><span class="nt">&lt;/noise&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 
 
@@ -415,9 +786,9 @@ rayノイズモデルをテストするには:</p>
 
 
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>mkdir -p ~/.gazebo/models/noisy_camera
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 
 
@@ -429,9 +800,9 @@ rayノイズモデルをテストするには:</p>
 
 
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>gedit ~/.gazebo/models/noisy_camera/model.config
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 
 
@@ -443,7 +814,7 @@ rayノイズモデルをテストするには:</p>
 
 
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -473,7 +844,7 @@ rayノイズモデルをテストするには:</p>
 </span><span class='line'>    My noisy camera.
 </span><span class='line'>  <span class="nt">&lt;/description&gt;</span>
 </span><span class='line'><span class="nt">&lt;/model&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 
 
@@ -485,9 +856,9 @@ rayノイズモデルをテストするには:</p>
 
 
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>gedit ~/.gazebo/models/noisy_camera/model.sdf
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 
 
@@ -499,7 +870,7 @@ rayノイズモデルをテストするには:</p>
 
 
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -579,7 +950,7 @@ rayノイズモデルをテストするには:</p>
 </span><span class='line'>    <span class="nt">&lt;/link&gt;</span>
 </span><span class='line'>  <span class="nt">&lt;/model&gt;</span>
 </span><span class='line'><span class="nt">&lt;/sdf&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 
 
@@ -591,9 +962,9 @@ rayノイズモデルをテストするには:</p>
 
 
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 
 
@@ -613,7 +984,7 @@ rayノイズモデルをテストするには:</p>
 
 
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -623,7 +994,7 @@ rayノイズモデルをテストするには:</p>
 </span><span class='line'>  <span class="nt">&lt;mean&gt;</span>0.0<span class="nt">&lt;/mean&gt;</span>
 </span><span class='line'>  <span class="nt">&lt;stddev&gt;</span>0.007<span class="nt">&lt;/stddev&gt;</span>
 </span><span class='line'><span class="nt">&lt;/noise&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 
 
@@ -662,9 +1033,9 @@ IMUノイズモデルをテストするには:</p>
 
 
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>mkdir -p ~/.gazebo/models/noisy_imu
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 
 
@@ -676,9 +1047,9 @@ IMUノイズモデルをテストするには:</p>
 
 
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>gedit ~/.gazebo/models/noisy_imu/model.config
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 
 
@@ -690,7 +1061,7 @@ IMUノイズモデルをテストするには:</p>
 
 
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -720,7 +1091,7 @@ IMUノイズモデルをテストするには:</p>
 </span><span class='line'>    My noisy IMU.
 </span><span class='line'>  <span class="nt">&lt;/description&gt;</span>
 </span><span class='line'><span class="nt">&lt;/model&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 
 
@@ -732,9 +1103,9 @@ IMUノイズモデルをテストするには:</p>
 
 
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='xml'><span class='line'>gedit ~/.gazebo/models/noisy_imu/model.sdf
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 
 
@@ -746,7 +1117,7 @@ IMUノイズモデルをテストするには:</p>
 
 
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -836,7 +1207,7 @@ IMUノイズモデルをテストするには:</p>
 </span><span class='line'>    <span class="nt">&lt;/link&gt;</span>
 </span><span class='line'>  <span class="nt">&lt;/model&gt;</span>
 </span><span class='line'><span class="nt">&lt;/sdf&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 
 
@@ -848,9 +1219,9 @@ IMUノイズモデルをテストするには:</p>
 
 
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 
 
@@ -870,7 +1241,7 @@ IMUノイズモデルをテストするには:</p>
 
 
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -900,7 +1271,7 @@ IMUノイズモデルをテストするには:</p>
 </span><span class='line'>    <span class="nt">&lt;bias_stddev&gt;</span>0.001<span class="nt">&lt;/bias_stddev&gt;</span>
 </span><span class='line'>  <span class="nt">&lt;/accel&gt;</span>
 </span><span class='line'><span class="nt">&lt;/noise&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 
 
@@ -1050,9 +1421,9 @@ Gazeboには多くのツールとユーティリティがあります。<br/>
 
 
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>gz <span class="nb">help </span>log
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 
 
@@ -1062,9 +1433,9 @@ Gazeboには多くのツールとユーティリティがあります。<br/>
 
 
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>gz log -h
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 
 
@@ -1084,9 +1455,9 @@ Gazeboには多くのツールとユーティリティがあります。<br/>
 
 
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>rm -rf ~/.gazebo/log/*
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 
 
@@ -1097,9 +1468,9 @@ Gazeboサーバを<code>-r</code>コマンドラインオプションをつけ�
 
 
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>gzserver -r worlds/pr2.world
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 
 
@@ -1110,9 +1481,9 @@ Gazeboサーバを<code>-r</code>コマンドラインオプションをつけ�
 
 
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>~/.gazebo/log/2015-02-13T21:18:11.849250/gzserverstate.log
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 
 
@@ -1122,9 +1493,9 @@ Gazeboサーバを<code>-r</code>コマンドラインオプションをつけ�
 
 
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo -p ~/.gazebo/log/*/gzserver/state.lgo
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 
 
@@ -1140,9 +1511,9 @@ Gazeboサーバを<code>-r</code>コマンドラインオプションをつけ�
 
 
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>gz log -e -f ~/.gazebo/log/*/gzserver/state.log
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 
 
@@ -1153,9 +1524,9 @@ Gazeboサーバを<code>-r</code>コマンドラインオプションをつけ�
 
 
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>gz log -e -f ~/.gazebo/log/*/gzserver/state.log --filter *.pose/*.pose
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 
 
@@ -1166,9 +1537,9 @@ Gazeboサーバを<code>-r</code>コマンドラインオプションをつけ�
 
 
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>gz log -e -f ~/.gazebo/log/*/gzserver/state.log -z 30
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 
 
@@ -1178,9 +1549,9 @@ Gazeboサーバを<code>-r</code>コマンドラインオプションをつけ�
 
 
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>gz log -e -f ~/.gazebo/log/*/gzserver/state.log -z <span class="m">30</span> --filter *.pose/*.pose &gt; /tmp/filtered_state.log
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 
 
@@ -1190,9 +1561,9 @@ Gazeboサーバを<code>-r</code>コマンドラインオプションをつけ�
 
 
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo -p /tmp/filtered_state.log
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 
 
@@ -1330,9 +1701,9 @@ Gazeboサーバを<code>-r</code>コマンドラインオプションをつけ�
 
 
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 
 
@@ -1843,11 +2214,11 @@ Gazeboサーバを<code>-r</code>コマンドラインオプションをつけ�
 
 
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>mkdir ~/tutorial_model_population
 </span><span class='line'><span class="nb">cd</span> ~/tutorial_model_population
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 
 
@@ -1859,7 +2230,7 @@ Gazeboサーバを<code>-r</code>コマンドラインオプションをつけ�
 
 
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -1919,7 +2290,7 @@ Gazeboサーバを<code>-r</code>コマンドラインオプションをつけ�
 </span><span class='line'>        <span class="nt">&lt;/population&gt;</span>
 </span><span class='line'>      <span class="nt">&lt;/world&gt;</span>
 </span><span class='line'>    <span class="nt">&lt;/sdf&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 
 
@@ -1930,9 +2301,9 @@ Gazeboサーバを<code>-r</code>コマンドラインオプションをつけ�
 
 
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo can_population.world
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 
 
@@ -1943,7 +2314,7 @@ Gazeboサーバを<code>-r</code>コマンドラインオプションをつけ�
 
 
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -1957,7 +2328,7 @@ Gazeboサーバを<code>-r</code>コマンドラインオプションをつけ�
 </span><span class='line'>          <span class="nt">&lt;uri&gt;</span>model://coke_can<span class="nt">&lt;/uri&gt;</span>
 </span><span class='line'>        <span class="nt">&lt;/include&gt;</span>
 </span><span class='line'>      <span class="nt">&lt;/model&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 
 
@@ -1969,7 +2340,7 @@ Gazeboサーバを<code>-r</code>コマンドラインオプションをつけ�
 
 
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -1977,7 +2348,7 @@ Gazeboサーバを<code>-r</code>コマンドラインオプションをつけ�
 </span><span class='line'>  <span class="nt">&lt;box&gt;</span>
 </span><span class='line'>    <span class="nt">&lt;size&gt;</span>2 2 0.01<span class="nt">&lt;/size&gt;</span>
 </span><span class='line'>  <span class="nt">&lt;/box&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 
 
@@ -1987,9 +2358,9 @@ Gazeboサーバを<code>-r</code>コマンドラインオプションをつけ�
 
 
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='xml'><span class='line'>  <span class="nt">&lt;model_count&gt;</span>10<span class="nt">&lt;/model_count&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 
 
@@ -1999,13 +2370,13 @@ Gazeboサーバを<code>-r</code>コマンドラインオプションをつけ�
 
 
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 </pre></td><td class='code'><pre><code class='xml'><span class='line'>  <span class="nt">&lt;distribution&gt;</span>
 </span><span class='line'>    <span class="nt">&lt;type&gt;</span>random<span class="nt">&lt;/type&gt;</span>
 </span><span class='line'>  <span class="nt">&lt;/distribution&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 
 
@@ -2038,533 +2409,15 @@ Gazeboサーバを<code>-r</code>コマンドラインオプションをつけ�
 
 
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>  gazebo worlds/population.world
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 
 
 
 <p>以下のキャプチャは、<code>population.world</code>を実行した様子です。
 <img src="http://cir-kit.github.io/images/2015-02-05-gazebo-population-of-models/gazebo_population.png" alt="gazebo_population" /></p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[環境をつくろう ! (Digital Elevation Models 編) No.3.3]]></title>
-    <link href="http://cir-kit.github.io/blog/2015/02/03/gazebo-digital-elevation-models/"/>
-    <updated>2015-02-03T19:58:17+09:00</updated>
-    <id>http://cir-kit.github.io/blog/2015/02/03/gazebo-digital-elevation-models</id>
-    <content type="html"><![CDATA[<p><img src="http://cir-kit.github.io/images/gazebo_logo.png" alt="gazebo_logo" /></p>
-
-
-
-
-<h5>検証日時</h5>
-
-
-
-
-<p>02/03/2015 (Tue)</p>
-
-
-
-
-<h5>概要</h5>
-
-
-
-
-<p>Gazeboのチュートリアル第三弾「Build a World」。
-このチュートリアルでは、シミュレーション中の環境をどのように構築するかについて説明します。<br/>
-今回はその「Digital Elevation Models」編です。<br/>
-公式サイトを適当に翻訳しただけですので、あしからず。</p>
-
-
-
-
-<h5>レベル</h5>
-
-
-
-
-<p><strong>ADVANCED</strong></p>
-
-
-
-
-<!-- more -->
-
-
-
-
-<h5>環境</h5>
-
-
-
-
-<table>
-<thead>
-<tr>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center;"> <strong>PC</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Prosessor</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>RAM</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>OS</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Kernel</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> 3.13.0-44-generic </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Gazebo</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Version 5.0.1 </td>
-</tr>
-</tbody>
-</table>
-
-
-
-
-<h5>参考</h5>
-
-
-
-
-<p><a href="http://gazebosim.org/tutorials?cat=build_world">GAZEBO Tutorial-Build a World</a></p>
-
-
-
-
-<h2>はじめに</h2>
-
-
-
-
-<p><strong>Digital Elevation Model (DEM)</strong>は3Dの植物や建物のような物体を含まないような地形です。DEMはLIDARやradar、カメラなどによるセンサフュージョンによって生成されます。グラウンドポジションの地形の標高は、定期的に水平間隔でサンプリングされています。<a href="http://en.wikipedia.org/wiki/Digital_elevation_model">Wikipedia</a>でDEMのより詳しい情報があります。<br/>
-DEMという言葉は一般的な名称であり、至って普通のフォーマットです。実際、DEMは代表的なグリッド立体図（水平捜線）や、ベクトルベースの基板地図変換である<strong>vector-based triangular irregular network (TIN)</strong>なのです。現在Gazeboは<a href="http://www.gdal.org/">GDAL</a>ライブラリでサポートされているraster(水平捜線)データのみをサポートしています。<br/>
-GazeboをDEMをサポートする主な動機付けは、リアルな地形をシミュレートできるようにしたいというものです。ロボットを現実の世界のと同じ地形でシミュレーションし、その動向をテストし、救助用または農業用への応用を図ることは興味深いものとなるでしょう。</p>
-
-
-
-
-<h2>GazeboにDEMサポートを適用する</h2>
-
-
-
-
-<p>DEMファイルをサポートするには、GDALライブラリをインストールする必要があります。</p>
-
-
-
-
-<h5>Ubuntu Trusty/Utopic の場合:</h5>
-
-
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>  sudo apt-get install gdal-bin libgdal-dev libgdal1h python-gdal
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<h5>Ubuntu Precise の場合:</h5>
-
-
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>  sudo apt-get install gdal-bin libgdal1-1.7.0 libgdal1-dev python-gdal
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<h2>DEMファイルとSDFフォーマットでの定義</h2>
-
-
-
-
-<p>立体データを提供する団体はいくつかあります。例えば、80年代の<a href="http://extract.cr.usgs.gov/public/NED/mtsthelens_before.zip">噴火前</a>か<a href="http://extract.cr.usgs.gov/public/NED/mtsthelens_after.zip">噴火後</a>のセント・ヘレンズ山のDEMフォーマットファイルをダウンロードしましょう。ダウンロードしたら、Unzipで解凍し、<code>mtsthelens.dem</code>という名前をつけましょう。</p>
-
-
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>  <span class="nb">cd</span> ~/Downloads
-</span><span class='line'>  wget http://extract.cr.usgs.gov/public/NED/mtsthelens_before.zip
-</span><span class='line'>  unzip ~/Downloads/mtsthelens_before.zip -d /tmp
-</span><span class='line'>  mv /tmp/30.1.1.1282760.dem /tmp/mtsthelens.dem
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<p>通常、DEMファイルにはたくさんの取り決めがあるので、Gazeboでは扱えません。なので、DEMの取り決めに合わせる良いアイデアがあります。i日のコマンドで地形を129x129に縮小し、Gazeboの<code>media/dem/</code>ディレクトリにそれをコピーします。</p>
-
-
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>  mkdir -p /tmp/media/dem/
-</span><span class='line'>  gdalwarp -ts <span class="m">129</span> <span class="m">129</span> /tmp/mtsthelens.dem /tmp/media/dem/mtsthelens_129.dem
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<p>GazeboでDEMファイルを読み込むのは高低地図を読み込む方法と同じです。Gazeboは読み込みファイルがプレーンファイルかDEMファイルであった場合、自動でファイルを検出します。<code>volcano.world</code>ファイルを作成し、以下の内容をコピペしてください。できたら<code>/tmp</code>のように、どこにでも好きなところに保存してください。。</p>
-
-
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; ?&gt;</span>
-</span><span class='line'><span class="nt">&lt;sdf</span> <span class="na">version=</span><span class="s">&quot;1.4&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;world</span> <span class="na">name=</span><span class="s">&quot;default&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>    <span class="c">&lt;!-- A global light source --&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;include&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;uri&gt;</span>model://sun<span class="nt">&lt;/uri&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/include&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;model</span> <span class="na">name=</span><span class="s">&quot;heightmap&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;static&gt;</span>true<span class="nt">&lt;/static&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;link</span> <span class="na">name=</span><span class="s">&quot;link&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;collision</span> <span class="na">name=</span><span class="s">&quot;collision&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;heightmap&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;uri&gt;</span>file://media/dem/mtsthelens_129.dem<span class="nt">&lt;/uri&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;size&gt;</span>150 150 50<span class="nt">&lt;/size&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;pos&gt;</span>0 0 0<span class="nt">&lt;/pos&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/heightmap&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/collision&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;visual</span> <span class="na">name=</span><span class="s">&quot;visual_abcedf&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;heightmap&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;texture&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;diffuse&gt;</span>file://media/materials/textures/dirt_diffusespecular.png<span class="nt">&lt;/diffuse&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;normal&gt;</span>file://media/materials/textures/flat_normal.png<span class="nt">&lt;/normal&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;size&gt;</span>1<span class="nt">&lt;/size&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;/texture&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;texture&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;diffuse&gt;</span>file://media/materials/textures/grass_diffusespecular.png<span class="nt">&lt;/diffuse&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;normal&gt;</span>file://media/materials/textures/flat_normal.png<span class="nt">&lt;/normal&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;size&gt;</span>1<span class="nt">&lt;/size&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;/texture&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;texture&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;diffuse&gt;</span>file://media/materials/textures/fungus_diffusespecular.png<span class="nt">&lt;/diffuse&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;normal&gt;</span>file://media/materials/textures/flat_normal.png<span class="nt">&lt;/normal&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;size&gt;</span>1<span class="nt">&lt;/size&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;/texture&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;blend&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;min_height&gt;</span>2<span class="nt">&lt;/min_height&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;fade_dist&gt;</span>5<span class="nt">&lt;/fade_dist&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;/blend&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;blend&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;min_height&gt;</span>4<span class="nt">&lt;/min_height&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;fade_dist&gt;</span>5<span class="nt">&lt;/fade_dist&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;/blend&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;uri&gt;</span>file://media/dem/mtsthelens_129.dem<span class="nt">&lt;/uri&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;size&gt;</span>150 150 50<span class="nt">&lt;/size&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;pos&gt;</span>0 0 0<span class="nt">&lt;/pos&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/heightmap&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/visual&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/link&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/model&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;/world&gt;</span>
-</span><span class='line'><span class="nt">&lt;/sdf&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<p>コードの上部にある<code>&lt;heightmap&gt;&lt;size&gt;</code>要素は、(<code>&lt;size&gt;</code>要素がないときは)Gazeboが原寸でDEMファイルを読み込むかどうかを決定し、(<code>&lt;size&gt;</code>要素があるときは)リサイズします。今回は、DEMファイルをリサイズします。<code>&lt;size&gt;</code>要素はGazeboにシミュレーションで使用し、リサイズする大きさをメートル単位で定義します。もし、正しいアスペクト比を維持したいなら横幅、高さ、海抜（<code>&lt;size&gt;</code>の三番目です）を詳細に計算して定義してください。今回の例では、DEMファイルは150 x 150 [m]で最も高いところで、海抜50 [m] となるようにリサイズしています。<br/>
-GazeboをDEMファイルを含む<code>world</code>と共に立ち上げ、以下のような火山の立体図が表示されることを確認してください。以下のコマンドの例では、ファイルを<code>/tmp</code>ディレクトリに置いています。</p>
-
-
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>　# インストールパスにあるgazeboのsetup.shにsourceコマンドを実行することを確認してください。
-</span><span class='line'>　source /usr/share/gazebo/setup.sh
-</span><span class='line'>　GAZEBO_RESOURCE_PATH<span class="o">=</span><span class="s2">&quot;$GAZEBO_RESOURCE_PATH:/tmp&quot;</span> gazebo /tmp/volcano.world
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<p><img src="http://cir-kit.github.io/images/2015-02-04-gazebo-digital-elevation-model/gazebo_sthelens.png" alt="gazebo_sthelens" /></p>
-
-
-
-
-<h2>興味のある地域のDEMファイルを手に入れるにはどうしたらよいですか?</h2>
-
-
-
-
-<h3>GLCF(Global Land Cover Facillity)について</h3>
-
-
-
-
-<p>続いて、興味のある特定の地域のDEMファイルを手に入れる方法を説明します。<br/>
-<a href="http://glcf.umd.edu/">Global Land Cover Facility</a>では地球の高解像度なデジタル地形データを提供し、維持しています。<a href="http://glcfapp.glcf.umd.edu:8080/esdi/index.jsp">Search and Preview tool</a>へ行ってみましょう。すると、イメージしたシミュレータを見つけることができるでしょう。すべての地形パッチはあなたがこのツールを使う前から知っているであろう個々の<a href="http://www.shinko-keirin.co.jp/keirinkan/tea/sho/jissen/rika/201303_4/index.html">pathとrow</a>を持っています。私達は、QGISを使い興味のあるpath/rowを発見するのです。以下のキャプチャはその検索画面です。
-<img src="http://cir-kit.github.io/images/2015-02-04-gazebo-digital-elevation-model/glcf_search_tool.png" alt="glcf_search_tool" /></p>
-
-
-
-
-<h3>QIGSについて</h3>
-
-
-
-
-<p><a href="http://www.qgis.org/">QIGS</a>とはクロスプラットフォームのオープンソース地理情報システムプログラムです。以下のように、このプログラムでは閲覧、編集、調査で使用することができます。<a href="http://www.qgis.org/en/site/forusers/download.html">QGISのサイトの指示</a>にしたがってQGISをダウンロードしてください。</p>
-
-
-
-
-<!-- ![qgis](/images/2015-02-04-gazebo-digital-elevation-model/qgis.png) -->
-
-
-
-
-<h5>QIGSのダウンロード</h5>
-
-
-
-
-<p><a href="http://www.qgis.org/en/site/forusers/download.html">QGISのダウンロード</a>を参考にしてQGISをダウンロードします。<br/>
-以下のように、aptを使ってQGISをインストールします。</p>
-
-
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>  sudo apt-get update
-</span><span class='line'>  sudo apt-get install qgis python-qgis
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<h5>QGISの使い方</h5>
-
-
-
-
-<ol>
-<li><p>QGISを開いたら、以下のように、画面左にある<strong>WMS/WMTSレイヤの追加</strong>というアイコンをクリックしましょう。
-<img src="http://cir-kit.github.io/images/2015-02-04-gazebo-digital-elevation-model/qgis-add-wms-wmts.png" alt="qgis-add-wms-wmts" /></p></li>
-<li><p>すると以下のようなウィンドウが出るので、以下のように、バーをクリックし、<strong>Lizardtch server</strong>を選択し、<strong>接続</strong>ボタンを押してください。
-<img src="http://cir-kit.github.io/images/2015-02-04-gazebo-digital-elevation-model/qgis-lizardtech-server.png" alt="qgis-lizardtech-server" /></p></li>
-<li><p>すると、以下の一枚目のように、レイヤを選択できるようになるので、タイトルが<strong>MODIS</strong>であるレイヤを選んで、一番下の<strong>追加</strong>を押してください。終わったら、このウィンドウィンドウを閉じてください。<br/>
-うまく行くと、二枚目の写真のように、世界地図がレイヤに表示されるはずです。
-<img src="http://cir-kit.github.io/images/2015-02-04-gazebo-digital-elevation-model/qgis-add-modis.png" alt="qgis-add-modis" />
-<img src="http://cir-kit.github.io/images/2015-02-04-gazebo-digital-elevation-model/qgis-modis-layer.png" alt="qgis-modis-layer" /></p></li>
-<li><p>続いてのステップは他のレイヤーを利用可能なパッチと共に追加します。<a href="http://landsat.usgs.gov/documents/wrs2_descending.zip">このshapeファイル</a>をダウンロードし、どこでも良いのでフォルダに解凍してください。私は、<code>~/Downloads/</code>に保存し、そこで展開しました。</p></li>
-<li><p>QGISに戻り、以下の一枚目のように、<strong>ベクタレイヤの追加</strong>というアイコンを押してください。すると、<strong>開く前に、現在のプロジェクトを保存しますか？</strong>と聞かれるポップアプが表示されるので、<strong>保存する</strong>を選んでください。その後、先ほど解凍したフォルダの中の<code>wrs2descending.shp</code>ファイルを選択してください。うまく開けると、2枚目の様なレイヤが表示されるはずです。
-<img src="http://cir-kit.github.io/images/2015-02-04-gazebo-digital-elevation-model/qgis-add-vector-layer.png" alt="qgis-add-vector-layer" />
-<img src="http://cir-kit.github.io/images/2015-02-04-gazebo-digital-elevation-model/qgis-wrs2-descending-layer.png" alt="qgis-wrs2-descending-layer" /></p></li>
-</ol>
-
-
-
-
-<p>ここまでで、メインウィンドウに２つのレイヤが開いていることを確認できるはずです。２つのレイヤーを同時に確認できるようにするため、<code>wrs2desceding</code>レイヤの透明度を変更しましょう。<br/>
-ウィンドウ左側のレイヤ一覧より、<code>wrsdescending</code>レイヤをダブルクリックすると、以下の一枚目のようなウィンドウが出るので、透明度を85%程度に修正しましょう。成功すれば、二枚目のようなレイヤになっているはずです。
-<img src="http://cir-kit.github.io/images/2015-02-04-gazebo-digital-elevation-model/qgis-wrs2-descending-%20transparency.png" alt="qgis-wrs2-descending- transparency" />
-<img src="http://cir-kit.github.io/images/2015-02-04-gazebo-digital-elevation-model/qgis-modis-wrs2-descending.png" alt="qgis-modis-wrs2-descending" /></p>
-
-
-
-
-<h3>QGISとGLCFを使って地形データを取得するまでの手順</h3>
-
-
-
-
-<h5>QGISの操作</h5>
-
-
-
-
-<ol>
-<li><p>脇ほどまでのレイヤを使って、スクロールと左ボタンを使用し、興味のある地域まで移動してください。<br/>
-今回は、富士山まで移動してみました。
-<img src="http://cir-kit.github.io/images/2015-02-04-gazebo-digital-elevation-model/qgis-mtfuji.png" alt="qgis-mtfuji" /></p></li>
-<li><p>以下のように、上部のバーにある、<strong>地物情報表示</strong>というアイコンをクリックしてください。<br/>
-その状態で、興味のある地域をクリックすると、以下のように、そのエリア一体の地形パッチがハイライトされます。
-<img src="http://cir-kit.github.io/images/2015-02-04-gazebo-digital-elevation-model/qgis-identify-features.png" alt="qgis-identify-features" /></p></li>
-<li><p>以下のキャプチャの例では、富士山近辺の地域のDEMのためのpathとrowを確認することができます。
-<img src="http://cir-kit.github.io/images/2015-02-04-gazebo-digital-elevation-model/qgis-identify-features-detail.png" alt="qgis-identify-features-detail" />
-ちなみに、公式チュートリアルでは、以下のキャプチャのように、スペイン、カナリア諸島の、<a href="http://ja.wikipedia.org/wiki/%E3%83%A9%E3%82%B9%E3%83%BB%E3%83%91%E3%83%AB%E3%83%9E%E3%82%B9%E3%83%BB%E3%83%87%E3%83%BB%E3%82%B0%E3%83%A9%E3%83%B3%E3%83%BB%E3%82%AB%E3%83%8A%E3%83%AA%E3%82%A2">ラスパルマス</a>のDEMのpathとrowを確認しています。
-<img src="http://cir-kit.github.io/images/2015-02-04-gazebo-digital-elevation-model/qgis_las_palmas.png" alt="qgis_las_palmas" /></p></li>
-</ol>
-
-
-
-
-<h5>GLCFの操作</h5>
-
-
-
-
-<ol>
-<li><p><a href="http://glcfapp.glcf.umd.edu:8080/esdi/index.jsp">GLCF検索ツール</a>に戻り、調べたpath/rowの値を<strong>Start Path</strong>と<strong>Start Row</strong>とラベリングされているカラムに入力しましょう。</p></li>
-<li><p>入力したら、<strong>Submit Quenry</strong>をクリックしてください。</p></li>
-<li><p><strong>Preview and Download</strong>を押すと結果を表示できます。以下の結果は、富士山近傍のもので、path = 108、row = 35とした時の結果です。
-<img src="http://cir-kit.github.io/images/2015-02-04-gazebo-digital-elevation-model/glcf-mtfuji.png" alt="glcf-mtfuji" /></p></li>
-<li><p>地形ファイルを選び、<strong>Download</strong>を押してください。<br/>
-今回は、計測年度が一番新しい、2011年のもの、ID:294-863を選びました。（上図参照）</p></li>
-<li><p>最後に、拡張子が<code>.TIF.gz</code>のファイルを選び、好きなディレクトリに保存し、展開してください。<br/>
-尚、<code>.gz</code>が付いているデータは複数ありますが、<code>README.GTF</code>によると、<code>*_B62.TIF.gz</code>となっているものが程よい解像度で、良いみたいです。また、<code>README.GTF</code>によると、<code>*.TIF.*</code>は<code>GeoTiff</code>フォーマットになっているそうなので、これを選びましょう。尚、<code>*</code>はワイルドカードです。<br/>
-<a href="http://glcf.umd.edu/">GLCF(Global Land Cover Facility)</a>ファイルは、DEMが利用できるフォーマットとして、最も標準的なな<a href="http://ja.wikipedia.org/wiki/GeoTIFF">GeoTiffフォーマット</a>になっています。</p></li>
-</ol>
-
-
-
-
-<h2>GazeboでDEMデータを使用するための準備</h2>
-
-
-
-
-<p>DEMデータは通常、高精細に作られています。Gazeboで使用する前に、<code>gdalwarp</code>を使って地形の解像度を扱いやすいサイズにします。</p>
-
-
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>  gdalwarp -ts &lt;width&gt; &lt;height&gt; &lt;srcDEM&gt; &lt;targetDEM&gt;
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<p>DEMデータは、しばしば、<code>holes</code>や<code>void</code>エリアを含んでいます。そういったエリアはDEMが生成された時に作成できなかったデータがあるエリアと一致します。<code>hole</code>というデータの場合、<code>hole</code>には、DEMで使用された、データタイプの最大値もしくは最小値が割り当てられています。<br/>
-上記のような<code>hols</code>が埋められたDEMのデータセットである、<code>finished</code>バージョンをダウンロードするよう、常に心がけてください。もし、あなたのDEMの地形データが<code>hols</code>(<code>NODATA</code>値としても知られている)を含んでいる場合、<code>gdal_fillnodata.py</code>のような、<code>gdal</code>のツールを使って手動で修復してみてください。</p>
-
-
-
-
-<h2>Gazeboで様々なDEMを使う</h2>
-
-
-
-
-<p>Gazeboは、直接様々なDEMをサポートしていないにも関わらず、GDALにはDEMを一つにするマージのための有益なツールセットがあります。DEMのセットをダウンロードする最初のステップはマージすることです。パッチは他のパッチと重なることがあるということを覚えておいてください。GDALはそれらの重なりをシームレスにマージできるのです。今あなたがいるディレクトリにマージする準備ができた状態で<code>Geofiff</code>ファイルがあるとすると、次のコマンドで、それをマージできます。</p>
-
-
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>  gdal_merge.py *.tif -o dem_merged.tif
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<p>すると、<code>dem_merged.tif</code>ファイルを<code>world</code>ファイルの中で使用できますし、Gazeboはすべてのパッチがマージされた状態で、地形を読み込むでしょう。以下のスクリーンショットは、公式サイトのもので、カナリア諸島一帯を囲む４つのパッチをマージした結果だそうです。
-<img src="http://cir-kit.github.io/images/2015-02-04-gazebo-digital-elevation-model/gazebo_dem_merged.png" alt="gazebo_dem_merged" /></p>
-
-
-
-
-<h2>最後に</h2>
-
-
-
-
-<p>自分で取得した地図をとりあえず表示することは出来ましたが、縮尺とかがおかしいままなので、解決したら、また投稿します。とりあえず今は、先に進みたいです。(02/04/2015 21:51)</p>
 
 ]]></content>
   </entry>
