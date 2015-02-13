@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Sensors | 九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/blog/categories/sensors/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-02-14T04:58:40+09:00</updated>
+  <updated>2015-02-14T05:11:14+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -380,6 +380,15 @@ MatlabやOpenCVのようなカメラキャリブレーションツールを使�
 
 
 <p>手順は、以下の動画を参照ください。また、動画でご覧いただくように、カメラのイメージは湯がんでおり、箱のエッジが曲がって見えます。歪みを調整するには、<code>model.sdf</code>ファイルにある、<code>k1</code>,<code>k2</code>,<code>k3</code>,<code>p1</code>,<code>p2</code>の歪み係数を変更するだけでよいです。</p>
+
+
+
+
+<div class="youtube-container">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/lZ41gqMjbV4" frameborder="0" allowfullscreen></iframe>
+</div>
+
+
 
 ]]></content>
   </entry>
