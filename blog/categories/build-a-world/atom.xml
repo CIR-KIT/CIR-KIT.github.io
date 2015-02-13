@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Build a World | 九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/blog/categories/build-a-world/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-02-14T00:53:33+09:00</updated>
+  <updated>2015-02-14T04:06:45+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -144,9 +144,9 @@
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -657,11 +657,11 @@
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>mkdir ~/tutorial_model_population
 </span><span class='line'><span class="nb">cd</span> ~/tutorial_model_population
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -673,7 +673,7 @@
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -733,7 +733,7 @@
 </span><span class='line'>        <span class="nt">&lt;/population&gt;</span>
 </span><span class='line'>      <span class="nt">&lt;/world&gt;</span>
 </span><span class='line'>    <span class="nt">&lt;/sdf&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -744,9 +744,9 @@
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo can_population.world
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -757,7 +757,7 @@
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -771,7 +771,7 @@
 </span><span class='line'>          <span class="nt">&lt;uri&gt;</span>model://coke_can<span class="nt">&lt;/uri&gt;</span>
 </span><span class='line'>        <span class="nt">&lt;/include&gt;</span>
 </span><span class='line'>      <span class="nt">&lt;/model&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -783,7 +783,7 @@
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -791,7 +791,7 @@
 </span><span class='line'>  <span class="nt">&lt;box&gt;</span>
 </span><span class='line'>    <span class="nt">&lt;size&gt;</span>2 2 0.01<span class="nt">&lt;/size&gt;</span>
 </span><span class='line'>  <span class="nt">&lt;/box&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -801,9 +801,9 @@
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='xml'><span class='line'>  <span class="nt">&lt;model_count&gt;</span>10<span class="nt">&lt;/model_count&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -813,13 +813,13 @@
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 </pre></td><td class='code'><pre><code class='xml'><span class='line'>  <span class="nt">&lt;distribution&gt;</span>
 </span><span class='line'>    <span class="nt">&lt;type&gt;</span>random<span class="nt">&lt;/type&gt;</span>
 </span><span class='line'>  <span class="nt">&lt;/distribution&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -852,9 +852,9 @@
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>  gazebo worlds/population.world
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -1000,9 +1000,9 @@ GazeboをDEMをサポートする主な動機付けは、リアルな地形を�
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>  sudo apt-get install gdal-bin libgdal-dev libgdal1h python-gdal
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -1012,9 +1012,9 @@ GazeboをDEMをサポートする主な動機付けは、リアルな地形を�
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>  sudo apt-get install gdal-bin libgdal1-1.7.0 libgdal1-dev python-gdal
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -1029,7 +1029,7 @@ GazeboをDEMをサポートする主な動機付けは、リアルな地形を�
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -1037,7 +1037,7 @@ GazeboをDEMをサポートする主な動機付けは、リアルな地形を�
 </span><span class='line'>  wget http://extract.cr.usgs.gov/public/NED/mtsthelens_before.zip
 </span><span class='line'>  unzip ~/Downloads/mtsthelens_before.zip -d /tmp
 </span><span class='line'>  mv /tmp/30.1.1.1282760.dem /tmp/mtsthelens.dem
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -1047,11 +1047,11 @@ GazeboをDEMをサポートする主な動機付けは、リアルな地形を�
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>  mkdir -p /tmp/media/dem/
 </span><span class='line'>  gdalwarp -ts <span class="m">129</span> <span class="m">129</span> /tmp/mtsthelens.dem /tmp/media/dem/mtsthelens_129.dem
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -1061,7 +1061,7 @@ GazeboをDEMをサポートする主な動機付けは、リアルな地形を�
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -1171,7 +1171,7 @@ GazeboをDEMをサポートする主な動機付けは、リアルな地形を�
 </span><span class='line'>    <span class="nt">&lt;/model&gt;</span>
 </span><span class='line'>  <span class="nt">&lt;/world&gt;</span>
 </span><span class='line'><span class="nt">&lt;/sdf&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -1182,13 +1182,13 @@ GazeboをDEMファイルを含む<code>world</code>と共に立ち上げ、以�
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>　# インストールパスにあるgazeboのsetup.shにsourceコマンドを実行することを確認してください。
 </span><span class='line'>　source /usr/share/gazebo/setup.sh
 </span><span class='line'>　GAZEBO_RESOURCE_PATH<span class="o">=</span><span class="s2">&quot;$GAZEBO_RESOURCE_PATH:/tmp&quot;</span> gazebo /tmp/volcano.world
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -1241,11 +1241,11 @@ GazeboをDEMファイルを含む<code>world</code>と共に立ち上げ、以�
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>  sudo apt-get update
 </span><span class='line'>  sudo apt-get install qgis python-qgis
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -1337,9 +1337,9 @@ GazeboをDEMファイルを含む<code>world</code>と共に立ち上げ、以�
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>  gdalwarp -ts &lt;width&gt; &lt;height&gt; &lt;srcDEM&gt; &lt;targetDEM&gt;
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -1360,9 +1360,9 @@ GazeboをDEMファイルを含む<code>world</code>と共に立ち上げ、以�
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>  gdal_merge.py *.tif -o dem_merged.tif
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -1502,9 +1502,9 @@ Gazeboを起動してください。:</p>
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>  gazebo
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -1747,11 +1747,11 @@ Gazeboを起動してください。:</p>
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>mkdir ~/build_world_tutorial
 </span><span class='line'><span class="nb">cd</span> ~/build_world_tutorial
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -1763,9 +1763,9 @@ Gazeboを起動してください。:</p>
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -1922,9 +1922,9 @@ Gazeboを起動してください。:</p>
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo my_world.sdf
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 

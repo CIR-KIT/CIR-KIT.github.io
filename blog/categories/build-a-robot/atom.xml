@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Build a Robot | 九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/blog/categories/build-a-robot/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-02-14T00:53:33+09:00</updated>
+  <updated>2015-02-14T04:06:45+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -143,11 +143,11 @@
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>mkdir ~/gazebo_animatebox_tutorial
 </span><span class='line'><span class="nb">cd</span> ~/gazebo_animatebox_tutorial
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -162,7 +162,7 @@
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -172,7 +172,7 @@
 </span><span class='line'>wget http://bitbucket.org/osrf/gazebo/raw/gazebo_4.0/examples/stand_alone/animated_box/integrated_main.cc
 </span><span class='line'>wget http://bitbucket.org/osrf/gazebo/raw/gazebo_4.0/examples/stand_alone/animated_box/CMakeLists.txt
 </span><span class='line'>wget http://bitbucket.org/osrf/gazebo/raw/gazebo_4.0/examples/stand_alone/animated_box/animated_box.world
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -182,7 +182,7 @@
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -190,7 +190,7 @@
 </span><span class='line'><span class="nb">cd </span>build
 </span><span class='line'>cmake ../
 </span><span class='line'>make
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -200,9 +200,9 @@
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">export </span><span class="nv">GAZEBO_PLUGIN_PATH</span><span class="o">=</span><span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>:<span class="nv">$GAZEBO_PLUGIN_PATH</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -218,11 +218,11 @@
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd</span> ~/gazebo_animatebox_tutorial
 </span><span class='line'>gazebo animated_box.world
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -232,9 +232,9 @@
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>gz topic -v /gazebo/animated_box_world/pose/local/info
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -263,11 +263,11 @@
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd</span> ~/gazebo_animatebox_tutorial
 </span><span class='line'>gazebo animated_box.world <span class="p">&amp;</span> ./build/independent_listener
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -279,9 +279,9 @@
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">export </span><span class="nv">GAZEBO_PLUGIN_PATH</span><span class="o">=</span><span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>:<span class="nv">$GAZEBO_PLUGIN_PATH</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -323,11 +323,11 @@
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd</span> ~/gazebo_animatebox_tutorial
 </span><span class='line'>./build/integrated_main animated_box.world
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -337,9 +337,9 @@
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>gzclient
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -552,11 +552,11 @@
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>mkdir ~/simple_gripper_tutorial
 </span><span class='line'><span class="nb">cd</span> ~/simple_gripper_tutorial
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -568,9 +568,9 @@
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>gedit ~/simple_gripper_tutorial/gripper.world
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -580,7 +580,7 @@
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -612,7 +612,7 @@
 </span><span class='line'>    <span class="nt">&lt;/include&gt;</span>
 </span><span class='line'>    <span class="nt">&lt;/world&gt;</span>
 </span><span class='line'>  <span class="nt">&lt;/sdf&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -624,9 +624,9 @@
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>mkdir -p ~/.gazebo/models/my_gripper
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -639,7 +639,7 @@
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -665,7 +665,7 @@
 </span><span class='line'>    My awesome robot.
 </span><span class='line'>  <span class="nt">&lt;/description&gt;</span>
 </span><span class='line'><span class="nt">&lt;/model&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -677,7 +677,7 @@
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -1063,7 +1063,7 @@
 </span><span class='line'>        <span class="nt">&lt;static&gt;</span>true<span class="nt">&lt;/static&gt;</span>
 </span><span class='line'>    <span class="nt">&lt;/model&gt;</span>
 </span><span class='line'><span class="nt">&lt;/sdf&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -1075,9 +1075,9 @@
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo ~/simple_gripper_tutorial/gripper.world
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -1095,14 +1095,14 @@
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>gedit ~/.gazebo/models/my_gripper/simple_gripper.sdf
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -1220,7 +1220,7 @@
 </span><span class='line'>                <span class="nt">&lt;xyz&gt;</span>0 0 1<span class="nt">&lt;/xyz&gt;</span>
 </span><span class='line'>            <span class="nt">&lt;/axis&gt;</span>
 </span><span class='line'>        <span class="nt">&lt;/joint&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -1230,13 +1230,13 @@
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 </pre></td><td class='code'><pre><code class='xml'><span class='line'>        ...
 </span><span class='line'>        <span class="nt">&lt;static&gt;</span>false<span class="nt">&lt;/static&gt;</span>
 </span><span class='line'>        ...
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -1248,9 +1248,9 @@
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo ~/simple_gripper_tutorial/gripper.world
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -1422,9 +1422,9 @@
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd</span> ~/.gazebo/models/my_robot
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -1437,7 +1437,7 @@
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -1467,7 +1467,7 @@
 </span><span class='line'>        <span class="nt">&lt;/limit&gt;</span>
 </span><span class='line'>      <span class="nt">&lt;/axis&gt;</span>
 </span><span class='line'>    <span class="nt">&lt;/joint&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -1479,7 +1479,7 @@
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -1487,7 +1487,7 @@
 </span><span class='line'>    <span class="nt">&lt;sdf</span> <span class="na">version=</span><span class="s">&quot;1.4&quot;</span><span class="nt">&gt;</span>
 </span><span class='line'>      <span class="nt">&lt;model</span> <span class="na">name=</span><span class="s">&quot;hokuyo&quot;</span><span class="nt">&gt;</span>
 </span><span class='line'>        <span class="nt">&lt;link</span> <span class="na">name=</span><span class="s">&quot;link&quot;</span><span class="nt">&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -1504,11 +1504,11 @@
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd</span> ~/.gazebo/models/
 </span><span class='line'>hg clone https://bitbucket.org/osrf/gazebo_models
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -1518,9 +1518,9 @@
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;uri&gt;</span>model://hokuyo<span class="nt">&lt;/uri&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -1530,9 +1530,9 @@
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;uri&gt;</span>model://gazebo_models/hokuyo<span class="nt">&lt;/uri&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -1546,9 +1546,9 @@
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>ls ~/.gazebo/models/camera/
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -1698,9 +1698,9 @@
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd</span> ~/.gazebo/models/my_robot
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -1712,9 +1712,9 @@
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>gedit ~/.gazebo/models/my_robot/model.sdf
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -1726,7 +1726,7 @@
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -1740,7 +1740,7 @@
 </span><span class='line'>        <span class="nt">&lt;/box&gt;</span>
 </span><span class='line'>      <span class="nt">&lt;/geometry&gt;</span>
 </span><span class='line'>    <span class="nt">&lt;/visual&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -1752,7 +1752,7 @@
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -1766,7 +1766,7 @@
 </span><span class='line'>        <span class="nt">&lt;/mesh&gt;</span>
 </span><span class='line'>      <span class="nt">&lt;/geometry&gt;</span>
 </span><span class='line'>    <span class="nt">&lt;/visual&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -1778,9 +1778,9 @@
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>ls -l ~/.gazebo/models/pioneer2dx/meshes/chassis.dae
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -1791,11 +1791,11 @@
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd</span> ~/.gazebo/models
 </span><span class='line'>wget -R *index.html*,*.tar.gz --cut-dirs<span class="o">=</span><span class="m">1</span> --no-parent -r -x -nH http://gazebosim.org/models/pioneer2dx/
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -1821,7 +1821,7 @@
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -1837,7 +1837,7 @@
 </span><span class='line'>        <span class="nt">&lt;/mesh&gt;</span>
 </span><span class='line'>      <span class="nt">&lt;/geometry&gt;</span>
 </span><span class='line'>    <span class="nt">&lt;/visual&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -1860,7 +1860,7 @@
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -1878,7 +1878,7 @@
 </span><span class='line'>    <span class="nt">&lt;/mesh&gt;</span>
 </span><span class='line'>  <span class="nt">&lt;/geometry&gt;</span>
 </span><span class='line'><span class="nt">&lt;/visual&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -2106,7 +2106,7 @@
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -2150,7 +2150,7 @@
 </span><span class='line'>    <span class="nt">&lt;/model&gt;</span>
 </span><span class='line'>  <span class="nt">&lt;/world&gt;</span>
 </span><span class='line'><span class="nt">&lt;/sdf&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -2160,9 +2160,9 @@
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo my_mesh.world
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -2177,7 +2177,7 @@
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -2189,7 +2189,7 @@
 </span><span class='line'>    <span class="nt">&lt;mesh&gt;&lt;uri&gt;</span>file://duck.dae<span class="nt">&lt;/uri&gt;&lt;/mesh&gt;</span>
 </span><span class='line'>  <span class="nt">&lt;/geometry&gt;</span>
 </span><span class='line'><span class="nt">&lt;/visual&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 

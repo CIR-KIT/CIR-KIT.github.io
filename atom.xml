@@ -4,7 +4,7 @@
   <title><![CDATA[九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-02-14T00:53:33+09:00</updated>
+  <updated>2015-02-14T04:06:45+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -171,6 +171,582 @@ rayノイズモデルをテストするには:</p>
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>gedit ~/.gazebo/models/noisy_laser/model.sdf
 </span></code></pre></td></tr></table></div></figure>
+
+
+<ol>
+<li>以下を<code>model.sdf</code>ファイルにコピペする。以下のモデルはスタンダードな<code>Hokuyo</code>モデルにノイズを付加したものです。:</li>
+</ol>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; ?&gt;</span>
+</span><span class='line'><span class="nt">&lt;sdf</span> <span class="na">version=</span><span class="s">&quot;1.4&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;model</span> <span class="na">name=</span><span class="s">&quot;hokuyo&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;link</span> <span class="na">name=</span><span class="s">&quot;link&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;gravity&gt;</span>false<span class="nt">&lt;/gravity&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;inertial&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;mass&gt;</span>0.1<span class="nt">&lt;/mass&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/inertial&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;visual</span> <span class="na">name=</span><span class="s">&quot;visual&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;geometry&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;mesh&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;uri&gt;</span>model://hokuyo/meshes/hokuyo.dae<span class="nt">&lt;/uri&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;/mesh&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/geometry&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/visual&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;sensor</span> <span class="na">name=</span><span class="s">&quot;laser&quot;</span> <span class="na">type=</span><span class="s">&quot;ray&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;pose&gt;</span>0.01 0 0.03 0 -0 0<span class="nt">&lt;/pose&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;ray&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;scan&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;horizontal&gt;</span>
+</span><span class='line'>              <span class="nt">&lt;samples&gt;</span>640<span class="nt">&lt;/samples&gt;</span>
+</span><span class='line'>              <span class="nt">&lt;resolution&gt;</span>1<span class="nt">&lt;/resolution&gt;</span>
+</span><span class='line'>              <span class="nt">&lt;min_angle&gt;</span>-2.26889<span class="nt">&lt;/min_angle&gt;</span>
+</span><span class='line'>              <span class="nt">&lt;max_angle&gt;</span>2.268899<span class="nt">&lt;/max_angle&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;/horizontal&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;/scan&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;range&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;min&gt;</span>0.08<span class="nt">&lt;/min&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;max&gt;</span>10<span class="nt">&lt;/max&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;resolution&gt;</span>0.01<span class="nt">&lt;/resolution&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;/range&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;noise&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;type&gt;</span>gaussian<span class="nt">&lt;/type&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;mean&gt;</span>0.0<span class="nt">&lt;/mean&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;stddev&gt;</span>0.01<span class="nt">&lt;/stddev&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;/noise&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/ray&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;plugin</span> <span class="na">name=</span><span class="s">&quot;laser&quot;</span> <span class="na">filename=</span><span class="s">&quot;libRayPlugin.so&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;always_on&gt;</span>1<span class="nt">&lt;/always_on&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;update_rate&gt;</span>30<span class="nt">&lt;/update_rate&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;visualize&gt;</span>true<span class="nt">&lt;/visualize&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/sensor&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/link&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/model&gt;</span>
+</span><span class='line'><span class="nt">&lt;/sdf&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ol>
+<li>Gazeboを起動する:</li>
+</ol>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ol>
+<li><p>ノイズを付加したレーザーセンサを挿入する : 画面左側の枠の中で、<strong>Insert</strong>タブを選び、<strong>Noisy laser</strong>をクリックする。その後、シミュレータにそれを設置する。</p></li>
+<li><p>ノイズを付加したレーザーセンサを観測する : <strong>Topis Selector</strong>を表示するために、<strong>Window</strong>-><strong>Topic Visualazation</strong>をクリックする(もしくは、<code>Ctrl-T</code>を押す)。</p></li>
+<li><p><code>/gazebo/default/hokuyo/link/laser/scan</code>のような名前のトピックを探し、クリックしたら、<strong>Okay</strong>をクリックしてください。すると、レーザーデータが表示されたウィンドウが見えるはずです。</p></li>
+</ol>
+
+
+<p>スキャンデータにノイズが付加されているのを確認できます。ノイズを調節するには、平均値と標準偏差を<code>model.sdf</code>にある以下のブロックでで変更するだけでよいです。なお、それらの要素はすべてメートル単位系です。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;noise&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;type&gt;</span>gaussian<span class="nt">&lt;/type&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;mean&gt;</span>0.0<span class="nt">&lt;/mean&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;stddev&gt;</span>0.01<span class="nt">&lt;/stddev&gt;</span>
+</span><span class='line'><span class="nt">&lt;/noise&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>Hokuyo</code>レーザーにはピッタリの値があります。<br/>
+尚、これらの手順は、以下の動画を参照してください。動画では、ノイズを見やすくするために、平均値を0、標準偏差を0.1としてあります。</p>
+
+<div class="youtube-container">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/_y-m1fQxZjA" frameborder="0" allowfullscreen></iframe>
+</div>
+
+
+<h2>カメラノイズ</h2>
+
+<p>カメラのノイズでは、<a href="http://en.wikipedia.org/wiki/Image_noise#Amplifier_noise_.28Gaussian_noise.29">output amplifier noise</a>を付加します。これは、各ピクセルに独立したガウシアンサンプルノイズを付加するものです。各ピクセルにでサンプリングされる値に、ガウシアン分布の平均値と標準偏差を設定することができます。ノイズの値は各ピクセルで独立しており、ノイズの値は各ピクセルの各色チャンネルにも独立して付加されます。ノイズを付加した後、色チャンネルの値は0.0から1.0の間で偽の値を取ります。;このfloat型のポイントの色の値はイメージの中では、unsigned int型として扱われます。普通は、0から255の間の値です。(8 [ビット/チャンネル] を使用します)<br/>
+このノイズモデルは<a href="">GLSL</a>の中で、シェーダーやGPUを起動するときの必要要件として実行されます。<br/>
+カメラノイズモデルをテストするには:</p>
+
+<ol>
+<li>モデルディレクトリをつくります:</li>
+</ol>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>mkdir -p ~/.gazebo/models/noisy_camera
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ol>
+<li><code>model.config</code>ファイルを生成する</li>
+</ol>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gedit ~/.gazebo/models/noisy_camera/model.config
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ol>
+<li><code>model.config</code>に以下の内容をコピペする</li>
+</ol>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot;?&gt;</span>
+</span><span class='line'><span class="nt">&lt;model&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;name&gt;</span>Noisy camera<span class="nt">&lt;/name&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;version&gt;</span>1.0<span class="nt">&lt;/version&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;sdf</span> <span class="na">version=</span><span class="s">&#39;1.4&#39;</span><span class="nt">&gt;</span>model.sdf<span class="nt">&lt;/sdf&gt;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nt">&lt;author&gt;</span>
+</span><span class='line'>   <span class="nt">&lt;name&gt;</span>My Name<span class="nt">&lt;/name&gt;</span>
+</span><span class='line'>   <span class="nt">&lt;email&gt;</span>me@my.email<span class="nt">&lt;/email&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/author&gt;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nt">&lt;description&gt;</span>
+</span><span class='line'>    My noisy camera.
+</span><span class='line'>  <span class="nt">&lt;/description&gt;</span>
+</span><span class='line'><span class="nt">&lt;/model&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ol>
+<li><code>~/.gazebo/models/noisy_camera/model.sdf</code>ファイルを生成する</li>
+</ol>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gedit ~/.gazebo/models/noisy_camera/model.sdf
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ol>
+<li>以下の内容を<code>model.sdf</code>にコピペする。これは、基本的なカメラモデルにノイズを付加したモデルです。:</li>
+</ol>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; ?&gt;</span>
+</span><span class='line'><span class="nt">&lt;sdf</span> <span class="na">version=</span><span class="s">&quot;1.4&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;model</span> <span class="na">name=</span><span class="s">&quot;camera&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;link</span> <span class="na">name=</span><span class="s">&quot;link&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;gravity&gt;</span>false<span class="nt">&lt;/gravity&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;pose&gt;</span>0.05 0.05 0.05 0 0 0<span class="nt">&lt;/pose&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;inertial&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;mass&gt;</span>0.1<span class="nt">&lt;/mass&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/inertial&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;visual</span> <span class="na">name=</span><span class="s">&quot;visual&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;geometry&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;box&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;size&gt;</span>0.1 0.1 0.1<span class="nt">&lt;/size&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;/box&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/geometry&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/visual&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;sensor</span> <span class="na">name=</span><span class="s">&quot;camera&quot;</span> <span class="na">type=</span><span class="s">&quot;camera&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;camera&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;horizontal_fov&gt;</span>1.047<span class="nt">&lt;/horizontal_fov&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;image&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;width&gt;</span>1024<span class="nt">&lt;/width&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;height&gt;</span>1024<span class="nt">&lt;/height&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;/image&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;clip&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;near&gt;</span>0.1<span class="nt">&lt;/near&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;far&gt;</span>100<span class="nt">&lt;/far&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;/clip&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;noise&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;type&gt;</span>gaussian<span class="nt">&lt;/type&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;mean&gt;</span>0.0<span class="nt">&lt;/mean&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;stddev&gt;</span>0.07<span class="nt">&lt;/stddev&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;/noise&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/camera&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;always_on&gt;</span>1<span class="nt">&lt;/always_on&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;update_rate&gt;</span>30<span class="nt">&lt;/update_rate&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;visualize&gt;</span>true<span class="nt">&lt;/visualize&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/sensor&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/link&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/model&gt;</span>
+</span><span class='line'><span class="nt">&lt;/sdf&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ol>
+<li>Gazeboを起動する:</li>
+</ol>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ol>
+<li><p>ノイズが付加されたカメラを挿入する : 画面左側の枠の中で、<strong>Insert</strong>タブを選び、<strong>Noisy camera</strong>をクリックする。その後、シミュレータにそれを設置する。</p></li>
+<li><p>ノイズを付加したカメラを観測する : <strong>Topis Selector</strong>を表示するために、<strong>Window</strong>-><strong>Topic Visualazation</strong>をクリックする(もしくは、<code>Ctrl-T</code>を押す)。</p></li>
+<li><p><code>/gazebo/default/camera/link/camera/image</code>のような名前のトピックを探し、クリックしたら、<strong>Okay</strong>をクリックしてください。すると、カメラのイメージが表示されたウィンドウが見えるはずです。</p></li>
+</ol>
+
+
+<p>よく見ると、イメージにノイズが付加されているのが見えると思います。ノイズを調整するには、<code>model.sdf</code>ファイルの中にある以下のようなセクションで、平均値と標準偏差を調節してやるだけで良いです。これらには単位系はありません。;各色チャンネルに0.0以上、1.0以下の値でノイズを付加します。<br/>
+以下のレイは、<code>&lt;stddev&gt;</code>の値をとても大きくしています。この値を減らしてみてください。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;noise&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;type&gt;</span>gaussian<span class="nt">&lt;/type&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;mean&gt;</span>0.0<span class="nt">&lt;/mean&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;stddev&gt;</span>0.007<span class="nt">&lt;/stddev&gt;</span>
+</span><span class='line'><span class="nt">&lt;/noise&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>デジタルカメラには、最適なノイズの値があります。<br/>
+尚、これらの手順は、以下の動画を参照してください。動画では、ノイズを見やすくするために、平均値を0、標準偏差を0.07としたものと、平均値を0、標準偏差を0.007としたものを表示しています。</p>
+
+<div class="youtube-container">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/Vp-0OPoECws" frameborder="0" allowfullscreen></iframe>
+</div>
+
+
+<h2>IMUノイズ</h2>
+
+<p>IMUセンサでは、角度速度と並進加速度に対する2種類の外乱(ノイズとバイアス)を考えます。角速度と並進加速度は分かれているものとして、このモデルでは、速度ノイズ、速度バイアス、加速度ノイズ、加速度バイアスの4つのパラメータを導出します。世界座標系（将来的には変化する）の中で、完全な値として表現されるようなIMUの元データから応用するノイズはありません。<br/>
+ノイズは付加的であり、ガウシアン分布からサンプリングされます。ノイズの値をサンプリングしてくる、ガウシアン分布（速度や、角速度の一つ一つに対するもの）の平均値と標準偏差を設定することができます。ノイズの値は、互いのサンプリング要素(X,Y,Z)では独立しており、それらの要素に付加されます。<br/>
+バイアスもまた付加的でありますが、これは、シミュレーションがスタートした時の一度だけしかサンプリングされません。バイアスの値をサンプリングしてくる、ガウシアン分布（速度や、角速度の一つ一つに対するもの）の平均値と標準偏差を設定することができます。バイアスは設定されたパラメータに沿ってサンプリングされます;提供される平均値はバイアスの大きさを定義し、各方向にバイアスがかかっており、バイアスは修正された値で、各要素(X,Y,Z)に付加されていると仮定されます。<br/>
+<strong>Note : </strong>シミュレートされているシステムと物理エンジンの構成に依存しているので、シミュレーションされたIMUのデータはすでにいくぶんかノイズがのっていることがあります。なぜなら、システムはすべての収斂の方法を解決しているわけではないからです。なので、アプリケーションに依存するという点では、ノイズを付加する必要はないかもしれません。<br/>
+IMUノイズモデルをテストするには:</p>
+
+<ol>
+<li>モデルのディレクトリを作る:</li>
+</ol>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>mkdir -p ~/.gazebo/models/noisy_imu
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ol>
+<li><code>model.config</code>ファイルを生成する</li>
+</ol>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gedit ~/.gazebo/models/noisy_imu/model.config
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ol>
+<li><code>model.config</code>に以下の内容をコピペする</li>
+</ol>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot;?&gt;</span>
+</span><span class='line'><span class="nt">&lt;model&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;name&gt;</span>Noisy IMU<span class="nt">&lt;/name&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;version&gt;</span>1.0<span class="nt">&lt;/version&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;sdf</span> <span class="na">version=</span><span class="s">&#39;1.4&#39;</span><span class="nt">&gt;</span>model.sdf<span class="nt">&lt;/sdf&gt;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nt">&lt;author&gt;</span>
+</span><span class='line'>   <span class="nt">&lt;name&gt;</span>My Name<span class="nt">&lt;/name&gt;</span>
+</span><span class='line'>   <span class="nt">&lt;email&gt;</span>me@my.email<span class="nt">&lt;/email&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/author&gt;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nt">&lt;description&gt;</span>
+</span><span class='line'>    My noisy IMU.
+</span><span class='line'>  <span class="nt">&lt;/description&gt;</span>
+</span><span class='line'><span class="nt">&lt;/model&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ol>
+<li><code>~/.gazebo/models/noisy_imu/model.sdf</code>ファイルを生成する</li>
+</ol>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>gedit ~/.gazebo/models/noisy_imu/model.sdf
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ol>
+<li><code>model.sdf</code>に以下の内容をコピペする:</li>
+</ol>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; ?&gt;</span>
+</span><span class='line'><span class="nt">&lt;sdf</span> <span class="na">version=</span><span class="s">&quot;1.4&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;model</span> <span class="na">name=</span><span class="s">&quot;imu&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;link</span> <span class="na">name=</span><span class="s">&quot;link&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;inertial&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;mass&gt;</span>0.1<span class="nt">&lt;/mass&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/inertial&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;visual</span> <span class="na">name=</span><span class="s">&quot;visual&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;geometry&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;box&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;size&gt;</span>0.1 0.1 0.1<span class="nt">&lt;/size&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;/box&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/geometry&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/visual&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;collision</span> <span class="na">name=</span><span class="s">&quot;collision&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;geometry&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;box&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;size&gt;</span>0.1 0.1 0.1<span class="nt">&lt;/size&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;/box&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/geometry&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/collision&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;sensor</span> <span class="na">name=</span><span class="s">&quot;imu&quot;</span> <span class="na">type=</span><span class="s">&quot;imu&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;imu&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;noise&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;type&gt;</span>gaussian<span class="nt">&lt;/type&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;rate&gt;</span>
+</span><span class='line'>              <span class="nt">&lt;mean&gt;</span>0.0<span class="nt">&lt;/mean&gt;</span>
+</span><span class='line'>              <span class="nt">&lt;stddev&gt;</span>2e-4<span class="nt">&lt;/stddev&gt;</span>
+</span><span class='line'>              <span class="nt">&lt;bias_mean&gt;</span>0.0000075<span class="nt">&lt;/bias_mean&gt;</span>
+</span><span class='line'>              <span class="nt">&lt;bias_stddev&gt;</span>0.0000008<span class="nt">&lt;/bias_stddev&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;/rate&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;accel&gt;</span>
+</span><span class='line'>              <span class="nt">&lt;mean&gt;</span>0.0<span class="nt">&lt;/mean&gt;</span>
+</span><span class='line'>              <span class="nt">&lt;stddev&gt;</span>1.7e-2<span class="nt">&lt;/stddev&gt;</span>
+</span><span class='line'>              <span class="nt">&lt;bias_mean&gt;</span>0.1<span class="nt">&lt;/bias_mean&gt;</span>
+</span><span class='line'>              <span class="nt">&lt;bias_stddev&gt;</span>0.001<span class="nt">&lt;/bias_stddev&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;/accel&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;/noise&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/imu&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;always_on&gt;</span>1<span class="nt">&lt;/always_on&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;update_rate&gt;</span>1000<span class="nt">&lt;/update_rate&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/sensor&gt;</span>Laser
+</span><span class='line'>    <span class="nt">&lt;/link&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/model&gt;</span>
+</span><span class='line'><span class="nt">&lt;/sdf&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ol>
+<li>Gazeboを起動する:</li>
+</ol>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ol>
+<li><p>ノイズを付加したIMUを挿入する : 画面左側の枠の中で、<strong>Insert</strong>タブを選び、<strong>Noisy IMU</strong>をクリックする。その後、シミュレータにそれを設置する。</p></li>
+<li><p>ノイズを付加したIMUを観測する : <strong>Topis Selector</strong>を表示するために、<strong>Window</strong>-><strong>Topic Visualazation</strong>をクリックする(もしくは、<code>Ctrl-T</code>を押す)。</p></li>
+<li><p><code>/gazebo/default/camera/link/imu/imu</code>のような名前のトピックを探し、クリックしたら、<strong>Okay</strong>をクリックしてください。すると、IMUデータのテキストビューウィンドウが見えるはずです。</p></li>
+</ol>
+
+
+<p>ノイズをIMUのような高レートのセンサに適用するのは難しくなりがちです。特に複雑なシステムにおいてはそれはなおさらです。ノイズでゼロではない大きな値の平均値をとる　かつ/もしくは バイアスパラメータをとるのが友好的であるとわかるでしょう。<br/>
+ノイズを調整するには、<code>model.sdf</code>ファイルの中にある以下のようなセクションで、平均値と標準偏差を調節してやるだけで良いです。角速度のノイズとバイアスの単位系は[rad/s]で加速度のノイズとバイアスの単位系は[m/s<sup>2</sup>]です。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;noise&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;type&gt;</span>gaussian<span class="nt">&lt;/type&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;rate&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;mean&gt;</span>0.0<span class="nt">&lt;/mean&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;stddev&gt;</span>2e-4<span class="nt">&lt;/stddev&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;bias_mean&gt;</span>0.0000075<span class="nt">&lt;/bias_mean&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;bias_stddev&gt;</span>0.0000008<span class="nt">&lt;/bias_stddev&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/rate&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;accel&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;mean&gt;</span>0.0<span class="nt">&lt;/mean&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;stddev&gt;</span>1.7e-2<span class="nt">&lt;/stddev&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;bias_mean&gt;</span>0.1<span class="nt">&lt;/bias_mean&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;bias_stddev&gt;</span>0.001<span class="nt">&lt;/bias_stddev&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/accel&gt;</span>
+</span><span class='line'><span class="nt">&lt;/noise&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>高い品質のIMU装置には、最適なノイズの値があります。<br/>
+尚、これらの手順は、以下の動画を参照してください。平均値や標準偏差などは、上記の設定のものを使用しています。</p>
+
+<div class="youtube-container">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/LZTzUgkLfwk" frameborder="0" allowfullscreen></iframe>
+</div>
 
 ]]></content>
   </entry>

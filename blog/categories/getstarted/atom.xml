@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Getstarted | 九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/blog/categories/getstarted/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-02-14T00:53:33+09:00</updated>
+  <updated>2015-02-14T04:06:45+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -658,13 +658,13 @@ Gazeboでは宅sなんのworldデータの例が提供されています。そ�
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 </pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;include&gt;</span>
 </span><span class='line'>  <span class="nt">&lt;uri&gt;</span>model://model_file_name<span class="nt">&lt;/uri&gt;</span>
 </span><span class='line'><span class="nt">&lt;/include&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -685,9 +685,9 @@ Gazebo 1.9.0より、ほとんどの場合に使用するデフォルト変数�
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">source</span> &lt;install_path&gt;/share/gazebo/setup.sh
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -708,9 +708,9 @@ Gazebo 1.9.0より、ほとんどの場合に使用するデフォルト変数�
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>gzserver &lt;world_filename&gt;
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -736,9 +736,9 @@ Gazeboによって提供されるworldデータは<code>/share/gazebo-*/worlds</
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>gzserver worlds/empty.world
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -754,9 +754,9 @@ Gazeboによって提供されるworldデータは<code>/share/gazebo-*/worlds</
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>gzclient
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -771,9 +771,9 @@ Gazeboによって提供されるworldデータは<code>/share/gazebo-*/worlds</
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo worlds/empty.world
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -789,9 +789,9 @@ Gazeboによって提供されるworldデータは<code>/share/gazebo-*/worlds</
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>gzserver -s
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -801,9 +801,9 @@ Gazeboによって提供されるworldデータは<code>/share/gazebo-*/worlds</
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>gzclient -g
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -943,9 +943,9 @@ Gazeboによって提供されるworldデータは<code>/share/gazebo-*/worlds</
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -967,9 +967,9 @@ Gazeboによって提供されるworldデータは<code>/share/gazebo-*/worlds</
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo worlds/pioneer2dx.world
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -984,9 +984,9 @@ Gazeboによって提供されるworldデータは<code>/share/gazebo-*/worlds</
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>ls /usr/share/gazebo-4.0/worlds
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -996,9 +996,9 @@ Gazeboによって提供されるworldデータは<code>/share/gazebo-*/worlds</
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>ls /usr/local/share/gazebo-4.0/worlds
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -1015,9 +1015,9 @@ Gazeboによって提供されるworldデータは<code>/share/gazebo-*/worlds</
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>gzserver
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -1027,9 +1027,9 @@ Gazeboによって提供されるworldデータは<code>/share/gazebo-*/worlds</
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>gzclient
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 

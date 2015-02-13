@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Tools and Utilities | 九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/blog/categories/tools-and-utilities/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-02-14T00:53:33+09:00</updated>
+  <updated>2015-02-14T04:06:45+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -12,233 +12,6 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
-  
-  <entry>
-    <title type="html"><![CDATA[センサについて (センサノイズモデル 編) No.5.1]]></title>
-    <link href="http://cir-kit.github.io/blog/2015/02/13/gazebo-sensor-noise-model/"/>
-    <updated>2015-02-13T21:50:50+09:00</updated>
-    <id>http://cir-kit.github.io/blog/2015/02/13/gazebo-sensor-noise-model</id>
-    <content type="html"><![CDATA[<p><img src="http://cir-kit.github.io/images/gazebo_logo.png" alt="gazebo_logo" /></p>
-
-
-
-
-<h5>検証日時</h5>
-
-
-
-
-<p>02/06/2015 (Tue)</p>
-
-
-
-
-<h5>概要</h5>
-
-
-
-
-<p>Gazeboのチュートリアル第五弾「Sensors」。<br/>
-シミュレーションのセンサは環境を分析し、センサになるべくよく似たデータストリームを生成します。<br/>
-チュートリアルでは、センサの使い方と修正方法について説明します。
-今回はその「Sensor Noise Model」編です。<br/>
-公式サイトを適当に翻訳しただけですので、あしからず。</p>
-
-
-
-
-<h5>レベル</h5>
-
-
-
-
-<p><strong>BEGINNER</strong></p>
-
-
-
-
-<!-- more -->
-
-
-
-
-<h5>環境</h5>
-
-
-
-
-<table>
-<thead>
-<tr>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center;"> <strong>PC</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Prosessor</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>RAM</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>OS</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Kernel</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> 3.13.0-44-generic </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Gazebo</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Version 5.0.1 </td>
-</tr>
-</tbody>
-</table>
-
-
-
-
-<h5>参考</h5>
-
-
-
-
-<p><a href="http://gazebosim.org/tutorials?cat=tools_utilities">GAZEBO Tutorial-Tools and Utilities</a></p>
-
-
-
-
-<h2>はじめに</h2>
-
-
-
-
-<p>Gazeboでは、たくさんの一般的なセンサを提供しています。現実世界では、センサにはノイズが存在し、実環境を完全に観測することは出来ません。デフォルトでは、Gazeboのセンサは環境を完全に観測します(IMUは含みません;続きを参照ください)。認識プログラムを試してみる様な、よりリアルな環境を提供するには、Gazeboのセンサが生成したデータにあえてノイズを付け加える必要があります。<br/>
-この記事を書いている時点で、Gazeboは以下のタイプのセンサにノイズを付加することができます。</p>
-
-
-
-
-<blockquote><ul>
-<li>Ray (e.g., lasers)</li>
-<li>Camera</li>
-<li>IMU</li>
-</ul>
-</blockquote>
-
-
-
-
-<h2>Ray(Laser)ノイズ</h2>
-
-
-
-
-<p>rayセンサでは、それぞれのビームの距離値にガウシアンノイズを付加します。ノイズの値として付加されるガウシアン分布の平均値と標準偏差を設定することができます。ノイズの値はそれぞれのビームに独立して付加されます。ノイズを付加した後、距離はセンサの最小距離と最大距離の間で偽の値（ノイズが付加された値）になります。<br/>
-rayノイズモデルをテストするには:</p>
-
-
-
-
-<ol>
-<li>モデルのディレクトリを作る</li>
-</ol>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>  mkdir -p ~/.gazebo/models/noisy_laser
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-
-<ol>
-<li><code>config</code>ファイルを生成する</li>
-</ol>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>  gedit ~/.gazebo/models/noisy_laser/model.config
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-
-<ol>
-<li><code>model.config</code>ファイルに以下をコピペする</li>
-</ol>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot;?&gt;</span>
-</span><span class='line'><span class="nt">&lt;model&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;name&gt;</span>Noisy laser<span class="nt">&lt;/name&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;version&gt;</span>1.0<span class="nt">&lt;/version&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;sdf</span> <span class="na">version=</span><span class="s">&#39;1.4&#39;</span><span class="nt">&gt;</span>model.sdf<span class="nt">&lt;/sdf&gt;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="nt">&lt;author&gt;</span>
-</span><span class='line'>   <span class="nt">&lt;name&gt;</span>My Name<span class="nt">&lt;/name&gt;</span>
-</span><span class='line'>   <span class="nt">&lt;email&gt;</span>me@my.email<span class="nt">&lt;/email&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;/author&gt;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="nt">&lt;description&gt;</span>
-</span><span class='line'>    My noisy laser.
-</span><span class='line'>  <span class="nt">&lt;/description&gt;</span>
-</span><span class='line'><span class="nt">&lt;/model&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-
-<ol>
-<li><code>~/.gazebo/models/noisy_laser/model.sdf</code>ファイルを生成する</li>
-</ol>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gedit ~/.gazebo/models/noisy_laser/model.sdf
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-]]></content>
-  </entry>
   
   <entry>
     <title type="html"><![CDATA[ツールとユーティリティ (ログフィルタリング 編) No.4.1]]></title>
@@ -370,9 +143,9 @@ Gazeboには多くのツールとユーティリティがあります。<br/>
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>gz <span class="nb">help </span>log
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -382,9 +155,9 @@ Gazeboには多くのツールとユーティリティがあります。<br/>
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>gz log -h
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -404,9 +177,9 @@ Gazeboには多くのツールとユーティリティがあります。<br/>
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>rm -rf ~/.gazebo/log/*
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -417,9 +190,9 @@ Gazeboサーバを<code>-r</code>コマンドラインオプションをつけ�
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>gzserver -r worlds/pr2.world
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -430,9 +203,9 @@ Gazeboサーバを<code>-r</code>コマンドラインオプションをつけ�
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>~/.gazebo/log/2015-02-13T21:18:11.849250/gzserverstate.log
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -442,9 +215,9 @@ Gazeboサーバを<code>-r</code>コマンドラインオプションをつけ�
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo -p ~/.gazebo/log/*/gzserver/state.lgo
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -460,9 +233,9 @@ Gazeboサーバを<code>-r</code>コマンドラインオプションをつけ�
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>gz log -e -f ~/.gazebo/log/*/gzserver/state.log
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -473,9 +246,9 @@ Gazeboサーバを<code>-r</code>コマンドラインオプションをつけ�
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>gz log -e -f ~/.gazebo/log/*/gzserver/state.log --filter *.pose/*.pose
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -486,9 +259,9 @@ Gazeboサーバを<code>-r</code>コマンドラインオプションをつけ�
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>gz log -e -f ~/.gazebo/log/*/gzserver/state.log -z 30
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -498,9 +271,9 @@ Gazeboサーバを<code>-r</code>コマンドラインオプションをつけ�
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>gz log -e -f ~/.gazebo/log/*/gzserver/state.log -z <span class="m">30</span> --filter *.pose/*.pose &gt; /tmp/filtered_state.log
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -510,9 +283,9 @@ Gazeboサーバを<code>-r</code>コマンドラインオプションをつけ�
 
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo -p /tmp/filtered_state.log
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
