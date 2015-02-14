@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Ros | 九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/blog/categories/ros/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-02-14T14:42:43+09:00</updated>
+  <updated>2015-02-14T15:18:52+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -18,53 +18,27 @@
     <link href="http://cir-kit.github.io/blog/2015/02/14/gazebo-ros-overview/"/>
     <updated>2015-02-14T11:25:06+09:00</updated>
     <id>http://cir-kit.github.io/blog/2015/02/14/gazebo-ros-overview</id>
-    <content type="html"><![CDATA[<p><img src="http://cir-kit.github.io/images/gazebo_logo.png" alt="gazebo_logo" /></p>
-
-
-
+    <content type="html"><![CDATA[<p><img src="/images/gazebo_logo.png" alt="gazebo_logo" /></p>
 
 <h5>検証日時</h5>
 
-
-
-
 <p>02/14/2015 (Sat)</p>
 
-
-
-
 <h5>概要</h5>
-
-
-
 
 <p>Gazeboのチュートリアル第六弾「Connect to ROS」。<br/>
 ROSはロボットの制御フレームワークです。このチュートリアルでは、GazeboとROSのインターフェースについて説明します。<br/>
 今回はその「ROS Overview」編です。<br/>
 公式サイトを適当に翻訳しただけですので、あしからず。</p>
 
-
-
-
 <h5>レベル</h5>
 
-
-
-
 <p><strong>INTERMEDIATE</strong></p>
-
-
-
 
 <!-- more -->
 
 
-
-
 <h5>環境</h5>
-
-
-
 
 <table>
 <thead>
@@ -109,28 +83,14 @@ ROSはロボットの制御フレームワークです。このチュートリ�
 </table>
 
 
-
-
 <h5>参考</h5>
-
-
-
 
 <p><a href="http://gazebosim.org/tutorials?cat=connect_ros">GAZEBO Tutorial-Connect to ROS</a></p>
 
-
-
-
 <h2>チュートリアル : ROSの統合概要</h2>
-
-
-
 
 <p>Gazebo1.9と<a href="http://www.ros.org/wiki/hydro/">ROS Hydro</a>では、GazeboはROSの直接的な依存関係はなく、Ubuntuのスタンドアローンなパッケージとしてインストールされていました。歴史的に、GazeboをROSと共に使うには、Legacyの<code>simulator_gazebo</code>スタックと共にビルドされた、特別なバージョンのGazeboが必要でした。<br/>
 ROSとスタンドアローンなGazeboを統合するときに、スタンドアローンなGazeboに関するラッパーである、新しい<code>gazebo_ros_pkds</code>という名前のROSパッケージが作られました。このパッケージでは、ROSのメッセージやサービス、そして動的参照を使ってGazeboの中でロボットをシミュレートするために、必要なインターフェースを供給しています。<code>simulatiorgazebo</code>と<code>gazeboros_pkgs</code>の間の主な違いは現在以下のようになっている。:</p>
-
-
-
 
 <blockquote><ul>
 <li>それ単体ではROSとの接続機能を持たないGazeboの最新スタンドアローンな依存関係をサポートしている</li>
@@ -143,44 +103,20 @@ ROSとスタンドアローンなGazeboを統合するときに、スタンド�
 </ul>
 </blockquote>
 
-
-
-
 <p>新しいインターフェースの概要は下図のようになっているそうです。尚、下図は公式サイトのものです。:
-<img src="http://cir-kit.github.io/images/2015-02-14-gazebo-ros-overview/775px-Gazebo_ros_api.png" alt="775px-Gazebo_ros_api" /></p>
-
-
-
+<img src="/images/2015-02-14-gazebo-ros-overview/775px-Gazebo_ros_api.png" alt="775px-Gazebo_ros_api" /></p>
 
 <h3><code>simulator_gazebo</code>からアップグレードする</h3>
 
-
-
-
 <p>以下のガイドラインは、あなたのGazeboの依存パッケージを、ROSパッケージの中で使用するために、<code>simulator_gazebo</code>からアップグレードするのに役立つでしょう。:</p>
-
-
-
 
 <h4>Catkin</h4>
 
-
-
-
 <p>Gazeboと古い<code>simulatorgazebo</code>スタックによるインターフェースのための現在のパッケージは<a href="http://www.ros.org/wiki/rosbuild">rosbuild</a>のビルドシステムで使われているものに似ています。ROS Hydroの中の<code>gazeboros_pkgs</code>とともに移行するためには、まず最初にパッケージを<strong>&ldquo;catkinize&rdquo;</strong>する必要があります。<a href="http://www.ros.org/wiki/catkin/Tutorials">Catkin Tutorials</a>をご覧ください。</p>
-
-
-
 
 <h4>Launch Files</h4>
 
-
-
-
-<p>Gazeboを起動するためには、以前作成した<code>roslaunch</code>ファイルにいくつかの変更を行う必要があります。それらのパッケージをアップデートする最も良い方法は、Gazeboのチュートリアルにある<a href="http://gazebosim.org/tutorials?tut=ros_roslaunch&amp;cat=connect_ros">roslaunchファイルを使ってモデルをスポーンさせる</a>を読むことです。nutshellでは:</p>
-
-
-
+<p>Gazeboを起動するためには、以前作成した<code>roslaunch</code>ファイルにいくつかの変更を行う必要があります。それらのパッケージをアップデートする最も良い方法は、Gazeboのチュートリアルにある<a href="http://gazebosim.org/tutorials?tut=ros_roslaunch&amp;cat=connect_ros">Gazeboでroslaunchファイルを使ってモデルをスポーンさせる</a>を読むことです。nutshellでは:</p>
 
 <blockquote><ul>
 <li><code>roslaunch</code>ファイルの中では、<code>pkg="gazebo"</code>は<code>pkg="gazebo_ros"</code>とリネームする必要があります。</li>
@@ -189,112 +125,70 @@ ROSとスタンドアローンなGazeboを統合するときに、スタンド�
 </ul>
 </blockquote>
 
-
-
-
 <h4>CMakeLists.txt</h4>
-
-
-
 
 <p>GazeboはもはやROSパッケージではないが、システム依存はあるので、<code>Cmake</code>ファイルを再構成する必要があります。以下に示すのは、<code>CMakeLists.txt</code>の一例です。:</p>
 
+<pre><code class="cmake">cmake_minimum_required(VERSION 2.8.3)
+project(YOURROBOT_gazebo_plugins)
 
+find_package(catkin REQUIRED COMPONENTS
+  gazebo_ros
+)
 
+# Depend on system install of Gazebo
+find_package(gazebo REQUIRED)
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-</pre></td><td class='code'><pre><code class='cmake'><span class='line'><span class="nb">cmake_minimum_required</span><span class="p">(</span><span class="s">VERSION</span> <span class="s">2.8.3</span><span class="p">)</span>
-</span><span class='line'><span class="nb">project</span><span class="p">(</span><span class="s">YOURROBOT_gazebo_plugins</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="nb">find_package</span><span class="p">(</span><span class="s">catkin</span> <span class="s">REQUIRED</span> <span class="s">COMPONENTS</span>
-</span><span class='line'>  <span class="s">gazebo_ros</span>
-</span><span class='line'><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="c"># Depend on system install of Gazebo</span>
-</span><span class='line'><span class="nb">find_package</span><span class="p">(</span><span class="s">gazebo</span> <span class="s">REQUIRED</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="nb">include_directories</span><span class="p">(</span><span class="s">include</span> <span class="o">${</span><span class="nv">catkin_INCLUDE_DIRS</span><span class="o">}</span> <span class="o">${</span><span class="nv">GAZEBO_INCLUDE_DIRS</span><span class="o">}</span> <span class="o">${</span><span class="nv">SDFormat_INCLUDE_DIRS</span><span class="o">}</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="c"># Build whatever you need here</span>
-</span><span class='line'><span class="nb">add_library</span><span class="p">(</span><span class="s">...</span><span class="p">)</span> <span class="c"># TODO</span>
-</span><span class='line'>
-</span><span class='line'><span class="nb">catkin_package</span><span class="p">(</span>
-</span><span class='line'>    <span class="s">DEPENDS</span>
-</span><span class='line'>      <span class="s">gazebo_ros</span>
-</span><span class='line'>    <span class="s">CATKIN_DEPENDS</span>
-</span><span class='line'>    <span class="s">INCLUDE_DIRS</span>
-</span><span class='line'>    <span class="s">LIBRARIES</span>
-</span><span class='line'><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+include_directories(include ${catkin_INCLUDE_DIRS} ${GAZEBO_INCLUDE_DIRS} ${SDFormat_INCLUDE_DIRS})
 
+# Build whatever you need here
+add_library(...) # TODO
 
-
+catkin_package(
+    DEPENDS
+      gazebo_ros
+    CATKIN_DEPENDS
+    INCLUDE_DIRS
+    LIBRARIES
+)
+</code></pre>
 
 <h4>package.xml</h4>
 
+<p>これは<code>rosbuild</code>における<code>manifest.xml</code>を置き換えたものです : 新規の<code>gazebo_ros</code>パッケージに依存関係を追加します。</p>
 
+<h3>Gazeboを起動する</h3>
 
+<p>Gazeboを<code>launch</code>するためのROSノードの名前はGazeboで実行可能な名前に少しだけ変更されます :</p>
 
-<p>これは<code>rosbuild</code>における<code>manifest.xml</code>を置き換えたものです。</p>
+<blockquote><ul>
+<li>rosrun gazebo_ros Gazebo
+GazeboサーバーとGUIを両方起動します。</li>
+<li>rosrun gazebo_ros gui
+<code>rosrun gazebo_ros gzclient</code>に置き換えられています</li>
+<li>rosrun gazebo_ros gzserver
+以下のノードを起動することができるようになります
 
-
-
-
-<p>This is the replacement for the rosbuild &ldquo;manifest.xml&rdquo;: - Add dependency on the new gazebo_ros package: ~~~ gazebo_ros gazebo_ros ~~~ ### Running Gazebo The names of the ROS nodes to launch Gazebo have changes slightly to coincide with the Gazebo executable names: - rosrun gazebo_ros gazebo now launch both the Gazebo server and GUI. - rosrun gazebo_ros gui has been renamed to rosrun gazebo_ros gzclient - rosrun gazebo_ros gzserver has been added Available nodes to run:</p>
-
-
-
-
-<p>rosrun gazebo_ros gazebo
+<blockquote><pre><code class="bash">rosrun gazebo_ros gazebo
 rosrun gazebo_ros gzserver
 rosrun gazebo_ros gzclient
 rosrun gazebo_ros spawn_model
 rosrun gazebo_ros perf
-rosrun gazebo_ros debug</p>
+rosrun gazebo_ros debug
+</code></pre>
 
+<p>これらのノードについては、<a href="">Gazeboでroslaunchファイルを使ってモデルをスポーンさせる</a>というチュートリアルに詳しく述べてあります。</p></blockquote></li>
+</ul>
+</blockquote>
 
+<h3>More</h3>
 
+<p>ここにissueをアップグレードしてください。</p>
 
-<p>These nodes are better documented in the tutorial Using roslaunch files to spawn models in Gazebo.
-More</p>
+<h2>チュートリアル</h2>
 
-
-
-
-<p>Add your upgrade issues here, please
-Tutorials</p>
-
-
-
-
-<p>Tutorials from ros.org have been almost entirely removed and re-written from scratch on this website to reflect the many changes that have occured over the course of Gazebo&rsquo;s history. We&rsquo;ve done our best to thoroughly document how to get your URDF-based robot running smoothly in Gazebo. If you have any question please see answers.ros.org.</p>
-
-
-
-
-<p>Continue to Installing gazebo_ros Packages.</p>
-
+<p>Gazeboの履歴に起因する多くの変更を反映するために、<code>ros.org</code>のチュートリアルは完全に消去され、このウェブサイトの<code>scratch</code>に再投稿されています。Gazeboの中で、URDFベースのロボットをスムーズに動かすためのやり方について、私達は、徹底的なドキュメントを作ることにより、最善を尽くしています。もし、疑問があるなら、<a href="http://answers.ros.org/">answers.ros.org</a>をご覧ください。<br/>
+<a href="">gazebo_rosパッケージをインストールする</a>に続きます。</p>
 ]]></content>
   </entry>
   
