@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Gazebo | 九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/blog/categories/gazebo/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-02-14T10:38:14+09:00</updated>
+  <updated>2015-02-14T11:14:25+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -12,6 +12,882 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[センサについて（カメラの歪み 編）No.5.2]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/02/14/gazebo-camera-distortion/"/>
+    <updated>2015-02-14T04:06:22+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/02/14/gazebo-camera-distortion</id>
+    <content type="html"><![CDATA[<p><img src="/images/gazebo_logo.png" alt="gazebo_logo" /></p>
+
+<h5>検証日時</h5>
+
+<p>02/14/2015 (Sat)</p>
+
+<h5>概要</h5>
+
+<p>Gazeboのチュートリアル第五弾「Sensors」。<br/>
+シミュレーションのセンサは環境を分析し、センサになるべくよく似たデータストリームを生成します。<br/>
+チュートリアルでは、センサの使い方と修正方法について説明します。
+今回はその「Camera Distortion」編です。<br/>
+公式サイトを適当に翻訳しただけですので、あしからず。</p>
+
+<h5>レベル</h5>
+
+<p><strong>BEGINNER</strong></p>
+
+<!-- more -->
+
+
+<h5>環境</h5>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> <strong>PC</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Prosessor</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>RAM</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>OS</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Kernel</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> 3.13.0-44-generic </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Gazebo</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Version 5.0.1 </td>
+</tr>
+</tbody>
+</table>
+
+
+<h5>参考</h5>
+
+<p><a href="http://gazebosim.org/tutorials?cat=sensors">GAZEBO Tutorial-Sensors</a></p>
+
+<h2>はじめに</h2>
+
+<p>カメラのレンズはたいてい光学の角度ゆがみがあり、これにより、イメージ（像）が歪む。例として、タスクを実行したり、物体を発見するのに、より広い範囲の環境視野を確保する目的でロボティクスの分野で広く使用されている、魚眼カメラが挙げられる。<br/>
+MatlabやOpenCVのようなカメラキャリブレーションツールを使うと、カメラ固有のパラメータに付随した、歪み係数をなしにすることができる。そのような歪み系数とともに、Gazeboの中に歪んだカメラセンサを生成することができる。</p>
+
+<h3>現在の実装</h3>
+
+<p>Gazeboでは、現在、<a href="http://en.wikipedia.org/wiki/Distortion_(optics">Brown&rsquo;s distortion model</a>#Software_correction)に基づいたカメラのシミュレーションをサポートしています。このモデルでは、カメラのキャリブレーションツールから取得できる歪み系数を<code>k1</code>、<code>k2</code>、<code>k3</code>、<code>p1</code>、<code>p2</code>としている。<code>k</code>という係数は歪みモデルの放射状の構成であり、<code>p</code>という係数はタンジェントの構成を示す。　　
+現在の実装には以下のようないくつかの制限がある。</p>
+
+<ol>
+<li><p>樽状の歪みだけがサポートされており、たいていは、<code>k1</code>の値が負である。</p></li>
+<li><p>歪みは、カメラのイメージテクスチャに適用されています。これは、イメージデータを生成し、ねじっているだけのものを使っていることを意味する。このことは、最終的なイメージ（特に角では）が現実の樽状の歪みを持ったカメラレンズよりも、狭い視野になるという警告を持つことになる。この現象を償う一つの解決策はGazeboの中で、カメラセンサの視野を増加させるという方法である。</p></li>
+</ol>
+
+
+<h2>カメラを歪みとともに生成する</h2>
+
+<p>歪みのあるカメラモデルを追加するには:</p>
+
+<ol>
+<li>モデルのディレクトリを作る</li>
+</ol>
+
+
+<pre><code class="bash">    mkdir -p ~/.gazebo/models/distorted_camera
+</code></pre>
+
+<ol>
+<li><code>model.config</code>ファイルを生成する</li>
+</ol>
+
+
+<pre><code class="bash">    gedit ~/.gazebo/models/distorted_camera/model.config
+</code></pre>
+
+<ol>
+<li><code>model.config</code>に以下の内容をコピペする</li>
+</ol>
+
+
+<pre><code class="xml">    &lt;?xml version="1.0"?&gt;
+    &lt;model&gt;
+      &lt;name&gt;Distorted Camera&lt;/name&gt;
+      &lt;version&gt;1.0&lt;/version&gt;
+      &lt;sdf version='1.5'&gt;model.sdf&lt;/sdf&gt;
+
+      &lt;author&gt;
+       &lt;name&gt;My Name&lt;/name&gt;
+       &lt;email&gt;me@my.email&lt;/email&gt;
+      &lt;/author&gt;
+
+      &lt;description&gt;
+        My distorted camera.
+      &lt;/description&gt;
+    &lt;/model&gt;
+</code></pre>
+
+<ol>
+<li><code>~/.gazebo/models/distorted_camera/model.sdf</code>ファイルを生成する</li>
+</ol>
+
+
+<pre><code class="bash">    gedit ~/.gazebo/models/distorted_camera/model.sdf
+</code></pre>
+
+<ol>
+<li><code>model.sdf</code>に以下の内容をコピペする。以下のモデルはスタンダードなカメラモデルに歪みを付加したものです。:</li>
+</ol>
+
+
+<pre><code class="xml">&lt;?xml version="1.0" ?&gt;
+&lt;sdf version="1.5"&gt;
+  &lt;model name="distorted_camera"&gt;
+    &lt;link name="link"&gt;
+      &lt;pose&gt;0.05 0.05 0.05 0 0 0&lt;/pose&gt;
+      &lt;inertial&gt;
+        &lt;mass&gt;0.1&lt;/mass&gt;
+      &lt;/inertial&gt;
+      &lt;collision name="collision"&gt;
+        &lt;geometry&gt;
+          &lt;box&gt;
+            &lt;size&gt;0.1 0.1 0.1&lt;/size&gt;
+          &lt;/box&gt;
+        &lt;/geometry&gt;
+      &lt;/collision&gt;
+      &lt;visual name="visual"&gt;
+        &lt;geometry&gt;
+          &lt;box&gt;
+            &lt;size&gt;0.1 0.1 0.1&lt;/size&gt;
+          &lt;/box&gt;
+        &lt;/geometry&gt;
+      &lt;/visual&gt;
+      &lt;sensor name="camera" type="camera"&gt;
+        &lt;camera&gt;
+          &lt;horizontal_fov&gt;1.047&lt;/horizontal_fov&gt;
+          &lt;image&gt;
+            &lt;width&gt;320&lt;/width&gt;
+            &lt;height&gt;240&lt;/height&gt;
+          &lt;/image&gt;
+          &lt;clip&gt;
+            &lt;near&gt;0.1&lt;/near&gt;
+            &lt;far&gt;100&lt;/far&gt;
+          &lt;/clip&gt;
+          &lt;distortion&gt;
+            &lt;k1&gt;-0.25&lt;/k1&gt;
+            &lt;k2&gt;0.12&lt;/k2&gt;
+            &lt;k3&gt;0.0&lt;/k3&gt;
+            &lt;p1&gt;-0.00028&lt;/p1&gt;
+            &lt;p2&gt;-0.00005&lt;/p2&gt;
+            &lt;center&gt;0.5 0.5&lt;/center&gt;
+          &lt;/distortion&gt;
+        &lt;/camera&gt;
+        &lt;always_on&gt;1&lt;/always_on&gt;
+        &lt;update_rate&gt;30&lt;/update_rate&gt;
+        &lt;visualize&gt;true&lt;/visualize&gt;
+      &lt;/sensor&gt;
+    &lt;/link&gt;
+  &lt;/model&gt;
+&lt;/sdf&gt;
+</code></pre>
+
+<ol>
+<li>Gazeboを起動する</li>
+</ol>
+
+
+<pre><code class="bash">gazebo
+</code></pre>
+
+<ol>
+<li><p>歪みを付加したカメラモデルを挿入する : 画面左側の枠の中で、<strong>Insert</strong>タブを選び、<strong>Distorted Camera</strong>をクリックする。その後、シミュレータにそれを設置する。</p></li>
+<li><p>歪みを付加したカメラモデルを観測する : <strong>Topis Selector</strong>を表示するために、<strong>Window</strong>-><strong>Topic Visualazation</strong>をクリックする(もしくは、<code>Ctrl-T</code>を押す)。</p></li>
+<li><p><code>/gazebo/default/hokuyo/link/camera/image</code>のような名前のトピックを探し、クリックしたら、<strong>Okay</strong>をクリックしてください。すると、カメライメージが表示されたウィンドウが見えるはずです。</p></li>
+</ol>
+
+
+<p>手順は、以下の動画を参照ください。また、動画でご覧いただくように、カメラのイメージは湯がんでおり、箱のエッジが曲がって見えます。歪みを調整するには、<code>model.sdf</code>ファイルにある、<code>k1</code>,<code>k2</code>,<code>k3</code>,<code>p1</code>,<code>p2</code>の歪み係数を変更するだけでよいです。</p>
+
+<div class="youtube-container">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/lZ41gqMjbV4" frameborder="0" allowfullscreen></iframe>
+</div>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[センサについて (センサノイズモデル 編) No.5.1]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/02/13/gazebo-sensor-noise-model/"/>
+    <updated>2015-02-13T21:50:50+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/02/13/gazebo-sensor-noise-model</id>
+    <content type="html"><![CDATA[<p><img src="/images/gazebo_logo.png" alt="gazebo_logo" /></p>
+
+<h5>検証日時</h5>
+
+<p>02/14/2015 (Sat)</p>
+
+<h5>概要</h5>
+
+<p>Gazeboのチュートリアル第五弾「Sensors」。<br/>
+シミュレーションのセンサは環境を分析し、センサになるべくよく似たデータストリームを生成します。<br/>
+チュートリアルでは、センサの使い方と修正方法について説明します。
+今回はその「Sensor Noise Model」編です。<br/>
+公式サイトを適当に翻訳しただけですので、あしからず。</p>
+
+<h5>レベル</h5>
+
+<p><strong>BEGINNER</strong></p>
+
+<!-- more -->
+
+
+<h5>環境</h5>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> <strong>PC</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Prosessor</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>RAM</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>OS</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Kernel</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> 3.13.0-44-generic </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Gazebo</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Version 5.0.1 </td>
+</tr>
+</tbody>
+</table>
+
+
+<h5>参考</h5>
+
+<p><a href="http://gazebosim.org/tutorials?cat=sensors">GAZEBO Tutorial-Sensors</a></p>
+
+<h2>はじめに</h2>
+
+<p>Gazeboでは、たくさんの一般的なセンサを提供しています。現実世界では、センサにはノイズが存在し、実環境を完全に観測することは出来ません。デフォルトでは、Gazeboのセンサは環境を完全に観測します(IMUは含みません;続きを参照ください)。認識プログラムを試してみる様な、よりリアルな環境を提供するには、Gazeboのセンサが生成したデータにあえてノイズを付け加える必要があります。<br/>
+この記事を書いている時点で、Gazeboは以下のタイプのセンサにノイズを付加することができます。</p>
+
+<blockquote><ul>
+<li>Ray (e.g., lasers)</li>
+<li>Camera</li>
+<li>IMU</li>
+</ul>
+</blockquote>
+
+<h2>Ray(Laser)ノイズ</h2>
+
+<p>rayセンサでは、それぞれのビームの距離値にガウシアンノイズを付加します。ノイズの値として付加されるガウシアン分布の平均値と標準偏差を設定することができます。ノイズの値はそれぞれのビームに独立して付加されます。ノイズを付加した後、距離はセンサの最小距離と最大距離の間で偽の値（ノイズが付加された値）になります。<br/>
+rayノイズモデルをテストするには:</p>
+
+<ol>
+<li>モデルのディレクトリを作る</li>
+</ol>
+
+
+<pre><code class="bash">  mkdir -p ~/.gazebo/models/noisy_laser
+</code></pre>
+
+<ol>
+<li><code>config</code>ファイルを生成する</li>
+</ol>
+
+
+<pre><code class="bash">  gedit ~/.gazebo/models/noisy_laser/model.config
+</code></pre>
+
+<ol>
+<li><code>model.config</code>ファイルに以下をコピペする</li>
+</ol>
+
+
+<pre><code class="xml">    &lt;?xml version="1.0"?&gt;
+    &lt;model&gt;
+      &lt;name&gt;Noisy laser&lt;/name&gt;
+      &lt;version&gt;1.0&lt;/version&gt;
+      &lt;sdf version='1.4'&gt;model.sdf&lt;/sdf&gt;
+
+      &lt;author&gt;
+       &lt;name&gt;My Name&lt;/name&gt;
+       &lt;email&gt;me@my.email&lt;/email&gt;
+      &lt;/author&gt;
+
+      &lt;description&gt;
+        My noisy laser.
+      &lt;/description&gt;
+    &lt;/model&gt;
+</code></pre>
+
+<ol>
+<li><code>~/.gazebo/models/noisy_laser/model.sdf</code>ファイルを生成する</li>
+</ol>
+
+
+<pre><code class="bash">    gedit ~/.gazebo/models/noisy_laser/model.sdf
+</code></pre>
+
+<ol>
+<li>以下を<code>model.sdf</code>ファイルにコピペする。以下のモデルはスタンダードな<code>Hokuyo</code>モデルにノイズを付加したものです。:</li>
+</ol>
+
+
+<pre><code class="xml">&lt;?xml version="1.0" ?&gt;
+&lt;sdf version="1.4"&gt;
+  &lt;model name="hokuyo"&gt;
+    &lt;link name="link"&gt;
+      &lt;gravity&gt;false&lt;/gravity&gt;
+      &lt;inertial&gt;
+        &lt;mass&gt;0.1&lt;/mass&gt;
+      &lt;/inertial&gt;
+      &lt;visual name="visual"&gt;
+        &lt;geometry&gt;
+          &lt;mesh&gt;
+            &lt;uri&gt;model://hokuyo/meshes/hokuyo.dae&lt;/uri&gt;
+          &lt;/mesh&gt;
+        &lt;/geometry&gt;
+      &lt;/visual&gt;
+      &lt;sensor name="laser" type="ray"&gt;
+        &lt;pose&gt;0.01 0 0.03 0 -0 0&lt;/pose&gt;
+        &lt;ray&gt;
+          &lt;scan&gt;
+            &lt;horizontal&gt;
+              &lt;samples&gt;640&lt;/samples&gt;
+              &lt;resolution&gt;1&lt;/resolution&gt;
+              &lt;min_angle&gt;-2.26889&lt;/min_angle&gt;
+              &lt;max_angle&gt;2.268899&lt;/max_angle&gt;
+            &lt;/horizontal&gt;
+          &lt;/scan&gt;
+          &lt;range&gt;
+            &lt;min&gt;0.08&lt;/min&gt;
+            &lt;max&gt;10&lt;/max&gt;
+            &lt;resolution&gt;0.01&lt;/resolution&gt;
+          &lt;/range&gt;
+          &lt;noise&gt;
+            &lt;type&gt;gaussian&lt;/type&gt;
+            &lt;mean&gt;0.0&lt;/mean&gt;
+            &lt;stddev&gt;0.01&lt;/stddev&gt;
+          &lt;/noise&gt;
+        &lt;/ray&gt;
+        &lt;plugin name="laser" filename="libRayPlugin.so" /&gt;
+        &lt;always_on&gt;1&lt;/always_on&gt;
+        &lt;update_rate&gt;30&lt;/update_rate&gt;
+        &lt;visualize&gt;true&lt;/visualize&gt;
+      &lt;/sensor&gt;
+    &lt;/link&gt;
+  &lt;/model&gt;
+&lt;/sdf&gt;
+</code></pre>
+
+<ol>
+<li>Gazeboを起動する:</li>
+</ol>
+
+
+<pre><code class="bash">gazebo
+</code></pre>
+
+<ol>
+<li><p>ノイズを付加したレーザーセンサを挿入する : 画面左側の枠の中で、<strong>Insert</strong>タブを選び、<strong>Noisy laser</strong>をクリックする。その後、シミュレータにそれを設置する。</p></li>
+<li><p>ノイズを付加したレーザーセンサを観測する : <strong>Topis Selector</strong>を表示するために、<strong>Window</strong>-><strong>Topic Visualazation</strong>をクリックする(もしくは、<code>Ctrl-T</code>を押す)。</p></li>
+<li><p><code>/gazebo/default/hokuyo/link/laser/scan</code>のような名前のトピックを探し、クリックしたら、<strong>Okay</strong>をクリックしてください。すると、レーザーデータが表示されたウィンドウが見えるはずです。</p></li>
+</ol>
+
+
+<p>スキャンデータにノイズが付加されているのを確認できます。ノイズを調節するには、平均値と標準偏差を<code>model.sdf</code>にある以下のブロックでで変更するだけでよいです。なお、それらの要素はすべてメートル単位系です。:</p>
+
+<pre><code class="xml">&lt;noise&gt;
+  &lt;type&gt;gaussian&lt;/type&gt;
+  &lt;mean&gt;0.0&lt;/mean&gt;
+  &lt;stddev&gt;0.01&lt;/stddev&gt;
+&lt;/noise&gt;
+</code></pre>
+
+<p><code>Hokuyo</code>レーザーにはピッタリの値があります。<br/>
+尚、これらの手順は、以下の動画を参照してください。動画では、ノイズを見やすくするために、平均値を0、標準偏差を0.1としてあります。</p>
+
+<div class="youtube-container">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/_y-m1fQxZjA" frameborder="0" allowfullscreen></iframe>
+</div>
+
+
+<h2>カメラノイズ</h2>
+
+<p>カメラのノイズでは、<a href="http://en.wikipedia.org/wiki/Image_noise#Amplifier_noise_.28Gaussian_noise.29">output amplifier noise</a>を付加します。これは、各ピクセルに独立したガウシアンサンプルノイズを付加するものです。各ピクセルにでサンプリングされる値に、ガウシアン分布の平均値と標準偏差を設定することができます。ノイズの値は各ピクセルで独立しており、ノイズの値は各ピクセルの各色チャンネルにも独立して付加されます。ノイズを付加した後、色チャンネルの値は0.0から1.0の間で偽の値を取ります。;このfloat型のポイントの色の値はイメージの中では、unsigned int型として扱われます。普通は、0から255の間の値です。(8 [ビット/チャンネル] を使用します)<br/>
+このノイズモデルは<a href="">GLSL</a>の中で、シェーダーやGPUを起動するときの必要要件として実行されます。<br/>
+カメラノイズモデルをテストするには:</p>
+
+<ol>
+<li>モデルディレクトリをつくります:</li>
+</ol>
+
+
+<pre><code class="bash">    mkdir -p ~/.gazebo/models/noisy_camera
+</code></pre>
+
+<ol>
+<li><code>model.config</code>ファイルを生成する</li>
+</ol>
+
+
+<pre><code class="bash">    gedit ~/.gazebo/models/noisy_camera/model.config
+</code></pre>
+
+<ol>
+<li><code>model.config</code>に以下の内容をコピペする</li>
+</ol>
+
+
+<pre><code class="xml">    &lt;?xml version="1.0"?&gt;
+    &lt;model&gt;
+      &lt;name&gt;Noisy camera&lt;/name&gt;
+      &lt;version&gt;1.0&lt;/version&gt;
+      &lt;sdf version='1.4'&gt;model.sdf&lt;/sdf&gt;
+
+      &lt;author&gt;
+       &lt;name&gt;My Name&lt;/name&gt;
+       &lt;email&gt;me@my.email&lt;/email&gt;
+      &lt;/author&gt;
+
+      &lt;description&gt;
+        My noisy camera.
+      &lt;/description&gt;
+    &lt;/model&gt;
+</code></pre>
+
+<ol>
+<li><code>~/.gazebo/models/noisy_camera/model.sdf</code>ファイルを生成する</li>
+</ol>
+
+
+<pre><code class="bash">    gedit ~/.gazebo/models/noisy_camera/model.sdf
+</code></pre>
+
+<ol>
+<li>以下の内容を<code>model.sdf</code>にコピペする。これは、基本的なカメラモデルにノイズを付加したモデルです。:</li>
+</ol>
+
+
+<pre><code class="xml">    &lt;?xml version="1.0" ?&gt;
+    &lt;sdf version="1.4"&gt;
+      &lt;model name="camera"&gt;
+        &lt;link name="link"&gt;
+          &lt;gravity&gt;false&lt;/gravity&gt;
+          &lt;pose&gt;0.05 0.05 0.05 0 0 0&lt;/pose&gt;
+          &lt;inertial&gt;
+            &lt;mass&gt;0.1&lt;/mass&gt;
+          &lt;/inertial&gt;
+          &lt;visual name="visual"&gt;
+            &lt;geometry&gt;
+              &lt;box&gt;
+                &lt;size&gt;0.1 0.1 0.1&lt;/size&gt;
+              &lt;/box&gt;
+            &lt;/geometry&gt;
+          &lt;/visual&gt;
+          &lt;sensor name="camera" type="camera"&gt;
+            &lt;camera&gt;
+              &lt;horizontal_fov&gt;1.047&lt;/horizontal_fov&gt;
+              &lt;image&gt;
+                &lt;width&gt;1024&lt;/width&gt;
+                &lt;height&gt;1024&lt;/height&gt;
+              &lt;/image&gt;
+              &lt;clip&gt;
+                &lt;near&gt;0.1&lt;/near&gt;
+                &lt;far&gt;100&lt;/far&gt;
+              &lt;/clip&gt;
+              &lt;noise&gt;
+                &lt;type&gt;gaussian&lt;/type&gt;
+                &lt;mean&gt;0.0&lt;/mean&gt;
+                &lt;stddev&gt;0.07&lt;/stddev&gt;
+              &lt;/noise&gt;
+            &lt;/camera&gt;
+            &lt;always_on&gt;1&lt;/always_on&gt;
+            &lt;update_rate&gt;30&lt;/update_rate&gt;
+            &lt;visualize&gt;true&lt;/visualize&gt;
+          &lt;/sensor&gt;
+        &lt;/link&gt;
+      &lt;/model&gt;
+    &lt;/sdf&gt;
+</code></pre>
+
+<ol>
+<li>Gazeboを起動する:</li>
+</ol>
+
+
+<pre><code class="bash">    gazebo
+</code></pre>
+
+<ol>
+<li><p>ノイズが付加されたカメラを挿入する : 画面左側の枠の中で、<strong>Insert</strong>タブを選び、<strong>Noisy camera</strong>をクリックする。その後、シミュレータにそれを設置する。</p></li>
+<li><p>ノイズを付加したカメラを観測する : <strong>Topis Selector</strong>を表示するために、<strong>Window</strong>-><strong>Topic Visualazation</strong>をクリックする(もしくは、<code>Ctrl-T</code>を押す)。</p></li>
+<li><p><code>/gazebo/default/camera/link/camera/image</code>のような名前のトピックを探し、クリックしたら、<strong>Okay</strong>をクリックしてください。すると、カメラのイメージが表示されたウィンドウが見えるはずです。</p></li>
+</ol>
+
+
+<p>よく見ると、イメージにノイズが付加されているのが見えると思います。ノイズを調整するには、<code>model.sdf</code>ファイルの中にある以下のようなセクションで、平均値と標準偏差を調節してやるだけで良いです。これらには単位系はありません。;各色チャンネルに0.0以上、1.0以下の値でノイズを付加します。<br/>
+以下のレイは、<code>&lt;stddev&gt;</code>の値をとても大きくしています。この値を減らしてみてください。:</p>
+
+<pre><code class="xml">&lt;noise&gt;
+  &lt;type&gt;gaussian&lt;/type&gt;
+  &lt;mean&gt;0.0&lt;/mean&gt;
+  &lt;stddev&gt;0.007&lt;/stddev&gt;
+&lt;/noise&gt;
+</code></pre>
+
+<p>デジタルカメラには、最適なノイズの値があります。<br/>
+尚、これらの手順は、以下の動画を参照してください。動画では、ノイズを見やすくするために、平均値を0、標準偏差を0.07としたものと、平均値を0、標準偏差を0.007としたものを表示しています。</p>
+
+<div class="youtube-container">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/Vp-0OPoECws" frameborder="0" allowfullscreen></iframe>
+</div>
+
+
+<h2>IMUノイズ</h2>
+
+<p>IMUセンサでは、角度速度と並進加速度に対する2種類の外乱(ノイズとバイアス)を考えます。角速度と並進加速度は分かれているものとして、このモデルでは、速度ノイズ、速度バイアス、加速度ノイズ、加速度バイアスの4つのパラメータを導出します。世界座標系（将来的には変化する）の中で、完全な値として表現されるようなIMUの元データから応用するノイズはありません。<br/>
+ノイズは付加的であり、ガウシアン分布からサンプリングされます。ノイズの値をサンプリングしてくる、ガウシアン分布（速度や、角速度の一つ一つに対するもの）の平均値と標準偏差を設定することができます。ノイズの値は、互いのサンプリング要素(X,Y,Z)では独立しており、それらの要素に付加されます。<br/>
+バイアスもまた付加的でありますが、これは、シミュレーションがスタートした時の一度だけしかサンプリングされません。バイアスの値をサンプリングしてくる、ガウシアン分布（速度や、角速度の一つ一つに対するもの）の平均値と標準偏差を設定することができます。バイアスは設定されたパラメータに沿ってサンプリングされます;提供される平均値はバイアスの大きさを定義し、各方向にバイアスがかかっており、バイアスは修正された値で、各要素(X,Y,Z)に付加されていると仮定されます。<br/>
+<strong>Note : </strong>シミュレートされているシステムと物理エンジンの構成に依存しているので、シミュレーションされたIMUのデータはすでにいくぶんかノイズがのっていることがあります。なぜなら、システムはすべての収斂の方法を解決しているわけではないからです。なので、アプリケーションに依存するという点では、ノイズを付加する必要はないかもしれません。<br/>
+IMUノイズモデルをテストするには:</p>
+
+<ol>
+<li>モデルのディレクトリを作る:</li>
+</ol>
+
+
+<pre><code class="bash">    mkdir -p ~/.gazebo/models/noisy_imu
+</code></pre>
+
+<ol>
+<li><code>model.config</code>ファイルを生成する</li>
+</ol>
+
+
+<pre><code class="bash">    gedit ~/.gazebo/models/noisy_imu/model.config
+</code></pre>
+
+<ol>
+<li><code>model.config</code>に以下の内容をコピペする</li>
+</ol>
+
+
+<pre><code class="xml">    &lt;?xml version="1.0"?&gt;
+    &lt;model&gt;
+      &lt;name&gt;Noisy IMU&lt;/name&gt;
+      &lt;version&gt;1.0&lt;/version&gt;
+      &lt;sdf version='1.4'&gt;model.sdf&lt;/sdf&gt;
+
+      &lt;author&gt;
+       &lt;name&gt;My Name&lt;/name&gt;
+       &lt;email&gt;me@my.email&lt;/email&gt;
+      &lt;/author&gt;
+
+      &lt;description&gt;
+        My noisy IMU.
+      &lt;/description&gt;
+    &lt;/model&gt;
+</code></pre>
+
+<ol>
+<li><code>~/.gazebo/models/noisy_imu/model.sdf</code>ファイルを生成する</li>
+</ol>
+
+
+<pre><code class="xml">    gedit ~/.gazebo/models/noisy_imu/model.sdf
+</code></pre>
+
+<ol>
+<li><code>model.sdf</code>に以下の内容をコピペする:</li>
+</ol>
+
+
+<pre><code class="xml">    &lt;?xml version="1.0" ?&gt;
+    &lt;sdf version="1.4"&gt;
+      &lt;model name="imu"&gt;
+        &lt;link name="link"&gt;
+          &lt;inertial&gt;
+            &lt;mass&gt;0.1&lt;/mass&gt;
+          &lt;/inertial&gt;
+          &lt;visual name="visual"&gt;
+            &lt;geometry&gt;
+              &lt;box&gt;
+                &lt;size&gt;0.1 0.1 0.1&lt;/size&gt;
+              &lt;/box&gt;
+            &lt;/geometry&gt;
+          &lt;/visual&gt;
+          &lt;collision name="collision"&gt;
+            &lt;geometry&gt;
+              &lt;box&gt;
+                &lt;size&gt;0.1 0.1 0.1&lt;/size&gt;
+              &lt;/box&gt;
+            &lt;/geometry&gt;
+          &lt;/collision&gt;
+          &lt;sensor name="imu" type="imu"&gt;
+            &lt;imu&gt;
+              &lt;noise&gt;
+                &lt;type&gt;gaussian&lt;/type&gt;
+                &lt;rate&gt;
+                  &lt;mean&gt;0.0&lt;/mean&gt;
+                  &lt;stddev&gt;2e-4&lt;/stddev&gt;
+                  &lt;bias_mean&gt;0.0000075&lt;/bias_mean&gt;
+                  &lt;bias_stddev&gt;0.0000008&lt;/bias_stddev&gt;
+                &lt;/rate&gt;
+                &lt;accel&gt;
+                  &lt;mean&gt;0.0&lt;/mean&gt;
+                  &lt;stddev&gt;1.7e-2&lt;/stddev&gt;
+                  &lt;bias_mean&gt;0.1&lt;/bias_mean&gt;
+                  &lt;bias_stddev&gt;0.001&lt;/bias_stddev&gt;
+                &lt;/accel&gt;
+              &lt;/noise&gt;
+            &lt;/imu&gt;
+            &lt;always_on&gt;1&lt;/always_on&gt;
+            &lt;update_rate&gt;1000&lt;/update_rate&gt;
+          &lt;/sensor&gt;Laser
+        &lt;/link&gt;
+      &lt;/model&gt;
+    &lt;/sdf&gt;
+</code></pre>
+
+<ol>
+<li>Gazeboを起動する:</li>
+</ol>
+
+
+<pre><code class="bash">    gazebo
+</code></pre>
+
+<ol>
+<li><p>ノイズを付加したIMUを挿入する : 画面左側の枠の中で、<strong>Insert</strong>タブを選び、<strong>Noisy IMU</strong>をクリックする。その後、シミュレータにそれを設置する。</p></li>
+<li><p>ノイズを付加したIMUを観測する : <strong>Topis Selector</strong>を表示するために、<strong>Window</strong>-><strong>Topic Visualazation</strong>をクリックする(もしくは、<code>Ctrl-T</code>を押す)。</p></li>
+<li><p><code>/gazebo/default/camera/link/imu/imu</code>のような名前のトピックを探し、クリックしたら、<strong>Okay</strong>をクリックしてください。すると、IMUデータのテキストビューウィンドウが見えるはずです。</p></li>
+</ol>
+
+
+<p>ノイズをIMUのような高レートのセンサに適用するのは難しくなりがちです。特に複雑なシステムにおいてはそれはなおさらです。ノイズでゼロではない大きな値の平均値をとる　かつ/もしくは バイアスパラメータをとるのが友好的であるとわかるでしょう。<br/>
+ノイズを調整するには、<code>model.sdf</code>ファイルの中にある以下のようなセクションで、平均値と標準偏差を調節してやるだけで良いです。角速度のノイズとバイアスの単位系は[rad/s]で加速度のノイズとバイアスの単位系は[m/s<sup>2</sup>]です。</p>
+
+<pre><code class="xml">&lt;noise&gt;
+  &lt;type&gt;gaussian&lt;/type&gt;
+  &lt;rate&gt;
+    &lt;mean&gt;0.0&lt;/mean&gt;
+    &lt;stddev&gt;2e-4&lt;/stddev&gt;
+    &lt;bias_mean&gt;0.0000075&lt;/bias_mean&gt;
+    &lt;bias_stddev&gt;0.0000008&lt;/bias_stddev&gt;
+  &lt;/rate&gt;
+  &lt;accel&gt;
+    &lt;mean&gt;0.0&lt;/mean&gt;
+    &lt;stddev&gt;1.7e-2&lt;/stddev&gt;
+    &lt;bias_mean&gt;0.1&lt;/bias_mean&gt;
+    &lt;bias_stddev&gt;0.001&lt;/bias_stddev&gt;
+  &lt;/accel&gt;
+&lt;/noise&gt;
+</code></pre>
+
+<p>高い品質のIMU装置には、最適なノイズの値があります。<br/>
+尚、これらの手順は、以下の動画を参照してください。平均値や標準偏差などは、上記の設定のものを使用しています。</p>
+
+<div class="youtube-container">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/LZTzUgkLfwk" frameborder="0" allowfullscreen></iframe>
+</div>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[ツールとユーティリティ (ログフィルタリング 編) No.4.1]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/02/13/gazebo-log-filtering/"/>
+    <updated>2015-02-13T20:57:58+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/02/13/gazebo-log-filtering</id>
+    <content type="html"><![CDATA[<p><img src="/images/gazebo_logo.png" alt="gazebo_logo" /></p>
+
+<h5>検証日時</h5>
+
+<p>02/13/2015 (Fri)</p>
+
+<h5>概要</h5>
+
+<p>Gazeboのチュートリアル第四弾「Tools and utilities」。<br/>
+Gazeboには多くのツールとユーティリティがあります。<br/>
+このチュートリアルでは、利用可能なツールとその使い方を説明します。<br/>
+今回はその「Log Filtering」編です。<br/>
+公式サイトを適当に翻訳しただけですので、あしからず。</p>
+
+<h5>レベル</h5>
+
+<p><strong>BEGINNER</strong></p>
+
+<!-- more -->
+
+
+<h5>環境</h5>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> <strong>PC</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Prosessor</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>RAM</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>OS</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Kernel</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> 3.13.0-44-generic </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Gazebo</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Version 5.0.1 </td>
+</tr>
+</tbody>
+</table>
+
+
+<h5>参考</h5>
+
+<p><a href="http://gazebosim.org/tutorials?cat=tools_utilities">GAZEBO Tutorial-Tools and Utilities</a></p>
+
+<h2>はじめに</h2>
+
+<p>状態のログとは、Gazeboからの環境情報の記録です。状態とは、姿勢、速度、加速度、そしてすべてのモデルのすべてのリンクに適用された力のことを指します。Gazeboでは、時間経過と共に変化するモデルの状態情報だけを記録します。状態ログのファイルには、ヘッダ、初期環境記録、状態の時系列情報で構成されています。</p>
+
+<h2>Gazeboログコマンドのラインツール</h2>
+
+<p>Gazeboでは、<code>gz log</code>コマンドでアクセスするロギングユーティリティ（記録ユーティリティ）を提供しています。<br/>
+ヘルプ情報を以下のコマンドで確認してみましょう。</p>
+
+<pre><code class="bash">gz help log
+</code></pre>
+
+<p>もしくは、</p>
+
+<pre><code class="bash">gz log -h
+</code></pre>
+
+<h2>使い方の例</h2>
+
+<h3>ステップ 1:状態ログファイルを作る</h3>
+
+<p>古いログファイルを消去することから初めましょう。</p>
+
+<pre><code class="bash">rm -rf ~/.gazebo/log/*
+</code></pre>
+
+<p>今回は、ログファイルを生成するのに、PR2ワールドを使用します。<br/>
+Gazeboサーバを<code>-r</code>コマンドラインオプションをつけて実行しましょう。</p>
+
+<pre><code class="bash">gzserver -r worlds/pr2.world
+</code></pre>
+
+<p>数秒後に、サーバを<code>Ctrl-c</code>で停止しましょう。<br/>
+新しいタイムスタンプのあるディレクトリが<code>~/.gazebo/log/</code>の中に、一つのサブディレクトリと<code>state.log</code>ファイルがあるはずです。例えば以下のような感じです。</p>
+
+<pre><code class="bash">~/.gazebo/log/2015-02-13T21:18:11.849250/gzserverstate.log
+</code></pre>
+
+<p>Gazeboでこれをリプレイすることにより、このログファイルを確認することができます。</p>
+
+<pre><code class="bash">gazebo -p ~/.gazebo/log/*/gzserver/state.lgo
+</code></pre>
+
+<h3>ステップ 2:ログファイルをフィルタリングする</h3>
+
+<p><code>gz log</code>コマンドラインツールでは、ログファイルを通じたステッピングとログファイル表示のコンテンツのエコーのためのメカニズムを提供しています。表示エコーの特徴は、モデルやリンクの姿勢などの情報を定義するようなログファイルを生成するフィルタと結合したものとなります。<br/>
+記録した状態ログファイルをスクリーンにエコーしてみましょう。</p>
+
+<pre><code class="bash">gz log -e -f ~/.gazebo/log/*/gzserver/state.log
+</code></pre>
+
+<p>すると、スクロールできるほどたくさんの情報を確認することができるでしょう。<br/>
+では、ログファイルにあるすべての速度、加速度、力の情報を消してみましょう。つまり、姿勢の情報だけを残します。</p>
+
+<pre><code class="bash">gz log -e -f ~/.gazebo/log/*/gzserver/state.log --filter *.pose/*.pose
+</code></pre>
+
+<p><code>--filter</code>オプションは、ログファイルの情報を間引くには、柔軟で便利なコマンドライン引数です。<br/>
+<code>Hz</code>フィルタを使えば、シミュレーション時間についてもフィルタリングをオコナウことができます。例えば、30 [Hz]で状態情報を出力したいとすると、以下のようにコマンド入力を行います。:</p>
+
+<pre><code class="bash">gz log -e -f ~/.gazebo/log/*/gzserver/state.log -z 30
+</code></pre>
+
+<p>これらのフィルタはプレイバックのためのファイルに結合することができます。このことは<code>state.log</code>ファイルの大きさに依存することもあります。</p>
+
+<pre><code class="bash">gz log -e -f ~/.gazebo/log/*/gzserver/state.log -z 30 --filter *.pose/*.pose &gt; /tmp/filtered_state.log
+</code></pre>
+
+<p>このログファイルは、以下のようにしてGazeboでリプレイすることができます。</p>
+
+<pre><code class="bash">gazebo -p /tmp/filtered_state.log
+</code></pre>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[環境をつくろう ! (建築エディタ 編) No.3.5]]></title>
@@ -513,611 +1389,6 @@
 </code>
 以下のキャプチャは、<code>population.world</code>を実行した様子です。
 <img src="/images/2015-02-05-gazebo-population-of-models/gazebo_population.png" alt="gazebo_population" /></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[環境をつくろう ! (Digital Elevation Models 編) No.3.3]]></title>
-    <link href="http://cir-kit.github.io/blog/2015/02/03/gazebo-digital-elevation-models/"/>
-    <updated>2015-02-03T19:58:17+09:00</updated>
-    <id>http://cir-kit.github.io/blog/2015/02/03/gazebo-digital-elevation-models</id>
-    <content type="html"><![CDATA[<p><img src="/images/gazebo_logo.png" alt="gazebo_logo" /></p>
-
-<h5>検証日時</h5>
-
-<p>02/03/2015 (Tue)</p>
-
-<h5>概要</h5>
-
-<p>Gazeboのチュートリアル第三弾「Build a World」。
-このチュートリアルでは、シミュレーション中の環境をどのように構築するかについて説明します。<br/>
-今回はその「Digital Elevation Models」編です。<br/>
-公式サイトを適当に翻訳しただけですので、あしからず。</p>
-
-<h5>レベル</h5>
-
-<p><strong>ADVANCED</strong></p>
-
-<!-- more -->
-
-
-<h5>環境</h5>
-
-<table>
-<thead>
-<tr>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center;"> <strong>PC</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Prosessor</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>RAM</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>OS</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Kernel</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> 3.13.0-44-generic </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Gazebo</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Version 5.0.1 </td>
-</tr>
-</tbody>
-</table>
-
-
-<h5>参考</h5>
-
-<p><a href="http://gazebosim.org/tutorials?cat=build_world">GAZEBO Tutorial-Build a World</a></p>
-
-<h2>はじめに</h2>
-
-<p><strong>Digital Elevation Model (DEM)</strong>は3Dの植物や建物のような物体を含まないような地形です。DEMはLIDARやradar、カメラなどによるセンサフュージョンによって生成されます。グラウンドポジションの地形の標高は、定期的に水平間隔でサンプリングされています。<a href="http://en.wikipedia.org/wiki/Digital_elevation_model">Wikipedia</a>でDEMのより詳しい情報があります。<br/>
-DEMという言葉は一般的な名称であり、至って普通のフォーマットです。実際、DEMは代表的なグリッド立体図（水平捜線）や、ベクトルベースの基板地図変換である<strong>vector-based triangular irregular network (TIN)</strong>なのです。現在Gazeboは<a href="http://www.gdal.org/">GDAL</a>ライブラリでサポートされているraster(水平捜線)データのみをサポートしています。<br/>
-GazeboをDEMをサポートする主な動機付けは、リアルな地形をシミュレートできるようにしたいというものです。ロボットを現実の世界のと同じ地形でシミュレーションし、その動向をテストし、救助用または農業用への応用を図ることは興味深いものとなるでしょう。</p>
-
-<h2>GazeboにDEMサポートを適用する</h2>
-
-<p>DEMファイルをサポートするには、GDALライブラリをインストールする必要があります。</p>
-
-<h5>Ubuntu Trusty/Utopic の場合:</h5>
-
-<pre><code class="bash">  sudo apt-get install gdal-bin libgdal-dev libgdal1h python-gdal
-</code></pre>
-
-<h5>Ubuntu Precise の場合:</h5>
-
-<pre><code class="bash">  sudo apt-get install gdal-bin libgdal1-1.7.0 libgdal1-dev python-gdal
-</code></pre>
-
-<h2>DEMファイルとSDFフォーマットでの定義</h2>
-
-<p>立体データを提供する団体はいくつかあります。例えば、80年代の<a href="http://extract.cr.usgs.gov/public/NED/mtsthelens_before.zip">噴火前</a>か<a href="http://extract.cr.usgs.gov/public/NED/mtsthelens_after.zip">噴火後</a>のセント・ヘレンズ山のDEMフォーマットファイルをダウンロードしましょう。ダウンロードしたら、Unzipで解凍し、<code>mtsthelens.dem</code>という名前をつけましょう。
-<code>bash
-  cd ~/Downloads
-  wget http://extract.cr.usgs.gov/public/NED/mtsthelens_before.zip
-  unzip ~/Downloads/mtsthelens_before.zip -d /tmp
-  mv /tmp/30.1.1.1282760.dem /tmp/mtsthelens.dem
-</code>
-通常、DEMファイルにはたくさんの取り決めがあるので、Gazeboでは扱えません。なので、DEMの取り決めに合わせる良いアイデアがあります。i日のコマンドで地形を129x129に縮小し、Gazeboの<code>media/dem/</code>ディレクトリにそれをコピーします。
-<code>bash
-  mkdir -p /tmp/media/dem/
-  gdalwarp -ts 129 129 /tmp/mtsthelens.dem /tmp/media/dem/mtsthelens_129.dem
-</code>
-GazeboでDEMファイルを読み込むのは高低地図を読み込む方法と同じです。Gazeboは読み込みファイルがプレーンファイルかDEMファイルであった場合、自動でファイルを検出します。<code>volcano.world</code>ファイルを作成し、以下の内容をコピペしてください。できたら<code>/tmp</code>のように、どこにでも好きなところに保存してください。。
-<code>xml
-&lt;?xml version="1.0" ?&gt;
-&lt;sdf version="1.4"&gt;
-  &lt;world name="default"&gt;
-    &lt;!-- A global light source --&gt;
-    &lt;include&gt;
-      &lt;uri&gt;model://sun&lt;/uri&gt;
-    &lt;/include&gt;
-    &lt;model name="heightmap"&gt;
-      &lt;static&gt;true&lt;/static&gt;
-      &lt;link name="link"&gt;
-        &lt;collision name="collision"&gt;
-          &lt;geometry&gt;
-            &lt;heightmap&gt;
-              &lt;uri&gt;file://media/dem/mtsthelens_129.dem&lt;/uri&gt;
-              &lt;size&gt;150 150 50&lt;/size&gt;
-              &lt;pos&gt;0 0 0&lt;/pos&gt;
-            &lt;/heightmap&gt;
-          &lt;/geometry&gt;
-        &lt;/collision&gt;
-        &lt;visual name="visual_abcedf"&gt;
-          &lt;geometry&gt;
-            &lt;heightmap&gt;
-              &lt;texture&gt;
-                &lt;diffuse&gt;file://media/materials/textures/dirt_diffusespecular.png&lt;/diffuse&gt;
-                &lt;normal&gt;file://media/materials/textures/flat_normal.png&lt;/normal&gt;
-                &lt;size&gt;1&lt;/size&gt;
-              &lt;/texture&gt;
-              &lt;texture&gt;
-                &lt;diffuse&gt;file://media/materials/textures/grass_diffusespecular.png&lt;/diffuse&gt;
-                &lt;normal&gt;file://media/materials/textures/flat_normal.png&lt;/normal&gt;
-                &lt;size&gt;1&lt;/size&gt;
-              &lt;/texture&gt;
-              &lt;texture&gt;
-                &lt;diffuse&gt;file://media/materials/textures/fungus_diffusespecular.png&lt;/diffuse&gt;
-                &lt;normal&gt;file://media/materials/textures/flat_normal.png&lt;/normal&gt;
-                &lt;size&gt;1&lt;/size&gt;
-              &lt;/texture&gt;
-              &lt;blend&gt;
-                &lt;min_height&gt;2&lt;/min_height&gt;
-                &lt;fade_dist&gt;5&lt;/fade_dist&gt;
-              &lt;/blend&gt;
-              &lt;blend&gt;
-                &lt;min_height&gt;4&lt;/min_height&gt;
-                &lt;fade_dist&gt;5&lt;/fade_dist&gt;
-              &lt;/blend&gt;
-              &lt;uri&gt;file://media/dem/mtsthelens_129.dem&lt;/uri&gt;
-              &lt;size&gt;150 150 50&lt;/size&gt;
-              &lt;pos&gt;0 0 0&lt;/pos&gt;
-            &lt;/heightmap&gt;
-          &lt;/geometry&gt;
-        &lt;/visual&gt;
-      &lt;/link&gt;
-    &lt;/model&gt;
-  &lt;/world&gt;
-&lt;/sdf&gt;
-</code>
-コードの上部にある<code>&lt;heightmap&gt;&lt;size&gt;</code>要素は、(<code>&lt;size&gt;</code>要素がないときは)Gazeboが原寸でDEMファイルを読み込むかどうかを決定し、(<code>&lt;size&gt;</code>要素があるときは)リサイズします。今回は、DEMファイルをリサイズします。<code>&lt;size&gt;</code>要素はGazeboにシミュレーションで使用し、リサイズする大きさをメートル単位で定義します。もし、正しいアスペクト比を維持したいなら横幅、高さ、海抜（<code>&lt;size&gt;</code>の三番目です）を詳細に計算して定義してください。今回の例では、DEMファイルは150 x 150 [m]で最も高いところで、海抜50 [m] となるようにリサイズしています。<br/>
-GazeboをDEMファイルを含む<code>world</code>と共に立ち上げ、以下のような火山の立体図が表示されることを確認してください。以下のコマンドの例では、ファイルを<code>/tmp</code>ディレクトリに置いています。
-<code>bash
-　# インストールパスにあるgazeboのsetup.shにsourceコマンドを実行することを確認してください。
-　source /usr/share/gazebo/setup.sh
-　GAZEBO_RESOURCE_PATH="$GAZEBO_RESOURCE_PATH:/tmp" gazebo /tmp/volcano.world
-</code>
-<img src="/images/2015-02-04-gazebo-digital-elevation-model/gazebo_sthelens.png" alt="gazebo_sthelens" /></p>
-
-<h2>興味のある地域のDEMファイルを手に入れるにはどうしたらよいですか?</h2>
-
-<h3>GLCF(Global Land Cover Facillity)について</h3>
-
-<p>続いて、興味のある特定の地域のDEMファイルを手に入れる方法を説明します。<br/>
-<a href="http://glcf.umd.edu/">Global Land Cover Facility</a>では地球の高解像度なデジタル地形データを提供し、維持しています。<a href="http://glcfapp.glcf.umd.edu:8080/esdi/index.jsp">Search and Preview tool</a>へ行ってみましょう。すると、イメージしたシミュレータを見つけることができるでしょう。すべての地形パッチはあなたがこのツールを使う前から知っているであろう個々の<a href="http://www.shinko-keirin.co.jp/keirinkan/tea/sho/jissen/rika/201303_4/index.html">pathとrow</a>を持っています。私達は、QGISを使い興味のあるpath/rowを発見するのです。以下のキャプチャはその検索画面です。
-<img src="/images/2015-02-04-gazebo-digital-elevation-model/glcf_search_tool.png" alt="glcf_search_tool" /></p>
-
-<h3>QIGSについて</h3>
-
-<p><a href="http://www.qgis.org/">QIGS</a>とはクロスプラットフォームのオープンソース地理情報システムプログラムです。以下のように、このプログラムでは閲覧、編集、調査で使用することができます。<a href="http://www.qgis.org/en/site/forusers/download.html">QGISのサイトの指示</a>にしたがってQGISをダウンロードしてください。</p>
-
-<!-- ![qgis](/images/2015-02-04-gazebo-digital-elevation-model/qgis.png) -->
-
-
-<h5>QIGSのダウンロード</h5>
-
-<p><a href="http://www.qgis.org/en/site/forusers/download.html">QGISのダウンロード</a>を参考にしてQGISをダウンロードします。<br/>
-以下のように、aptを使ってQGISをインストールします。
-<code>bash
-  sudo apt-get update
-  sudo apt-get install qgis python-qgis
-</code></p>
-
-<h5>QGISの使い方</h5>
-
-<ol>
-<li><p>QGISを開いたら、以下のように、画面左にある<strong>WMS/WMTSレイヤの追加</strong>というアイコンをクリックしましょう。
-<img src="/images/2015-02-04-gazebo-digital-elevation-model/qgis-add-wms-wmts.png" alt="qgis-add-wms-wmts" /></p></li>
-<li><p>すると以下のようなウィンドウが出るので、以下のように、バーをクリックし、<strong>Lizardtch server</strong>を選択し、<strong>接続</strong>ボタンを押してください。
-<img src="/images/2015-02-04-gazebo-digital-elevation-model/qgis-lizardtech-server.png" alt="qgis-lizardtech-server" /></p></li>
-<li><p>すると、以下の一枚目のように、レイヤを選択できるようになるので、タイトルが<strong>MODIS</strong>であるレイヤを選んで、一番下の<strong>追加</strong>を押してください。終わったら、このウィンドウィンドウを閉じてください。<br/>
-うまく行くと、二枚目の写真のように、世界地図がレイヤに表示されるはずです。
-<img src="/images/2015-02-04-gazebo-digital-elevation-model/qgis-add-modis.png" alt="qgis-add-modis" />
-<img src="/images/2015-02-04-gazebo-digital-elevation-model/qgis-modis-layer.png" alt="qgis-modis-layer" /></p></li>
-<li><p>続いてのステップは他のレイヤーを利用可能なパッチと共に追加します。<a href="http://landsat.usgs.gov/documents/wrs2_descending.zip">このshapeファイル</a>をダウンロードし、どこでも良いのでフォルダに解凍してください。私は、<code>~/Downloads/</code>に保存し、そこで展開しました。</p></li>
-<li><p>QGISに戻り、以下の一枚目のように、<strong>ベクタレイヤの追加</strong>というアイコンを押してください。すると、<strong>開く前に、現在のプロジェクトを保存しますか？</strong>と聞かれるポップアプが表示されるので、<strong>保存する</strong>を選んでください。その後、先ほど解凍したフォルダの中の<code>wrs2descending.shp</code>ファイルを選択してください。うまく開けると、2枚目の様なレイヤが表示されるはずです。
-<img src="/images/2015-02-04-gazebo-digital-elevation-model/qgis-add-vector-layer.png" alt="qgis-add-vector-layer" />
-<img src="/images/2015-02-04-gazebo-digital-elevation-model/qgis-wrs2-descending-layer.png" alt="qgis-wrs2-descending-layer" /></p></li>
-</ol>
-
-
-<p>ここまでで、メインウィンドウに２つのレイヤが開いていることを確認できるはずです。２つのレイヤーを同時に確認できるようにするため、<code>wrs2desceding</code>レイヤの透明度を変更しましょう。<br/>
-ウィンドウ左側のレイヤ一覧より、<code>wrsdescending</code>レイヤをダブルクリックすると、以下の一枚目のようなウィンドウが出るので、透明度を85%程度に修正しましょう。成功すれば、二枚目のようなレイヤになっているはずです。
-<img src="/images/2015-02-04-gazebo-digital-elevation-model/qgis-wrs2-descending-%20transparency.png" alt="qgis-wrs2-descending- transparency" />
-<img src="/images/2015-02-04-gazebo-digital-elevation-model/qgis-modis-wrs2-descending.png" alt="qgis-modis-wrs2-descending" /></p>
-
-<h3>QGISとGLCFを使って地形データを取得するまでの手順</h3>
-
-<h5>QGISの操作</h5>
-
-<ol>
-<li><p>脇ほどまでのレイヤを使って、スクロールと左ボタンを使用し、興味のある地域まで移動してください。<br/>
-今回は、富士山まで移動してみました。
-<img src="/images/2015-02-04-gazebo-digital-elevation-model/qgis-mtfuji.png" alt="qgis-mtfuji" /></p></li>
-<li><p>以下のように、上部のバーにある、<strong>地物情報表示</strong>というアイコンをクリックしてください。<br/>
-その状態で、興味のある地域をクリックすると、以下のように、そのエリア一体の地形パッチがハイライトされます。
-<img src="/images/2015-02-04-gazebo-digital-elevation-model/qgis-identify-features.png" alt="qgis-identify-features" /></p></li>
-<li><p>以下のキャプチャの例では、富士山近辺の地域のDEMのためのpathとrowを確認することができます。
-<img src="/images/2015-02-04-gazebo-digital-elevation-model/qgis-identify-features-detail.png" alt="qgis-identify-features-detail" />
-ちなみに、公式チュートリアルでは、以下のキャプチャのように、スペイン、カナリア諸島の、<a href="http://ja.wikipedia.org/wiki/%E3%83%A9%E3%82%B9%E3%83%BB%E3%83%91%E3%83%AB%E3%83%9E%E3%82%B9%E3%83%BB%E3%83%87%E3%83%BB%E3%82%B0%E3%83%A9%E3%83%B3%E3%83%BB%E3%82%AB%E3%83%8A%E3%83%AA%E3%82%A2">ラスパルマス</a>のDEMのpathとrowを確認しています。
-<img src="/images/2015-02-04-gazebo-digital-elevation-model/qgis_las_palmas.png" alt="qgis_las_palmas" /></p></li>
-</ol>
-
-
-<h5>GLCFの操作</h5>
-
-<ol>
-<li><p><a href="http://glcfapp.glcf.umd.edu:8080/esdi/index.jsp">GLCF検索ツール</a>に戻り、調べたpath/rowの値を<strong>Start Path</strong>と<strong>Start Row</strong>とラベリングされているカラムに入力しましょう。</p></li>
-<li><p>入力したら、<strong>Submit Quenry</strong>をクリックしてください。</p></li>
-<li><p><strong>Preview and Download</strong>を押すと結果を表示できます。以下の結果は、富士山近傍のもので、path = 108、row = 35とした時の結果です。
-<img src="/images/2015-02-04-gazebo-digital-elevation-model/glcf-mtfuji.png" alt="glcf-mtfuji" /></p></li>
-<li><p>地形ファイルを選び、<strong>Download</strong>を押してください。<br/>
-今回は、計測年度が一番新しい、2011年のもの、ID:294-863を選びました。（上図参照）</p></li>
-<li><p>最後に、拡張子が<code>.TIF.gz</code>のファイルを選び、好きなディレクトリに保存し、展開してください。<br/>
-尚、<code>.gz</code>が付いているデータは複数ありますが、<code>README.GTF</code>によると、<code>*_B62.TIF.gz</code>となっているものが程よい解像度で、良いみたいです。また、<code>README.GTF</code>によると、<code>*.TIF.*</code>は<code>GeoTiff</code>フォーマットになっているそうなので、これを選びましょう。尚、<code>*</code>はワイルドカードです。<br/>
-<a href="http://glcf.umd.edu/">GLCF(Global Land Cover Facility)</a>ファイルは、DEMが利用できるフォーマットとして、最も標準的なな<a href="http://ja.wikipedia.org/wiki/GeoTIFF">GeoTiffフォーマット</a>になっています。</p></li>
-</ol>
-
-
-<h2>GazeboでDEMデータを使用するための準備</h2>
-
-<p>DEMデータは通常、高精細に作られています。Gazeboで使用する前に、<code>gdalwarp</code>を使って地形の解像度を扱いやすいサイズにします。
-<code>bash
-  gdalwarp -ts &lt;width&gt; &lt;height&gt; &lt;srcDEM&gt; &lt;targetDEM&gt;
-</code>
-DEMデータは、しばしば、<code>holes</code>や<code>void</code>エリアを含んでいます。そういったエリアはDEMが生成された時に作成できなかったデータがあるエリアと一致します。<code>hole</code>というデータの場合、<code>hole</code>には、DEMで使用された、データタイプの最大値もしくは最小値が割り当てられています。<br/>
-上記のような<code>hols</code>が埋められたDEMのデータセットである、<code>finished</code>バージョンをダウンロードするよう、常に心がけてください。もし、あなたのDEMの地形データが<code>hols</code>(<code>NODATA</code>値としても知られている)を含んでいる場合、<code>gdal_fillnodata.py</code>のような、<code>gdal</code>のツールを使って手動で修復してみてください。</p>
-
-<h2>Gazeboで様々なDEMを使う</h2>
-
-<p>Gazeboは、直接様々なDEMをサポートしていないにも関わらず、GDALにはDEMを一つにするマージのための有益なツールセットがあります。DEMのセットをダウンロードする最初のステップはマージすることです。パッチは他のパッチと重なることがあるということを覚えておいてください。GDALはそれらの重なりをシームレスにマージできるのです。今あなたがいるディレクトリにマージする準備ができた状態で<code>Geofiff</code>ファイルがあるとすると、次のコマンドで、それをマージできます。
-<code>bash
-  gdal_merge.py *.tif -o dem_merged.tif
-</code>
-すると、<code>dem_merged.tif</code>ファイルを<code>world</code>ファイルの中で使用できますし、Gazeboはすべてのパッチがマージされた状態で、地形を読み込むでしょう。以下のスクリーンショットは、公式サイトのもので、カナリア諸島一帯を囲む４つのパッチをマージした結果だそうです。
-<img src="/images/2015-02-04-gazebo-digital-elevation-model/gazebo_dem_merged.png" alt="gazebo_dem_merged" /></p>
-
-<h2>最後に</h2>
-
-<p>自分で取得した地図をとりあえず表示することは出来ましたが、縮尺とかがおかしいままなので、解決したら、また投稿します。とりあえず今は、先に進みたいです。(02/04/2015 21:51)</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[環境をつくろう ! (環境を修正する 編) No.3.2]]></title>
-    <link href="http://cir-kit.github.io/blog/2015/02/03/gazebo-modifying-a-world/"/>
-    <updated>2015-02-03T18:59:45+09:00</updated>
-    <id>http://cir-kit.github.io/blog/2015/02/03/gazebo-modifying-a-world</id>
-    <content type="html"><![CDATA[<p><img src="/images/gazebo_logo.png" alt="gazebo_logo" /></p>
-
-<h5>検証日時</h5>
-
-<p>02/03/2015 (Tue)</p>
-
-<h5>概要</h5>
-
-<p>Gazeboのチュートリアル第三弾「Build a World」。
-このチュートリアルでは、シミュレーション中の環境をどのように構築するかについて説明します。<br/>
-今回はその「Modifying a World」編です。<br/>
-公式サイトを適当に翻訳しただけですので、あしからず。</p>
-
-<h5>レベル</h5>
-
-<p><strong>BEGINNER</strong></p>
-
-<!-- more -->
-
-
-<h5>環境</h5>
-
-<table>
-<thead>
-<tr>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center;"> <strong>PC</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Prosessor</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>RAM</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>OS</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Kernel</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> 3.13.0-44-generic </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Gazebo</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Version 5.0.1 </td>
-</tr>
-</tbody>
-</table>
-
-
-<h5>参考</h5>
-
-<p><a href="http://gazebosim.org/tutorials?cat=build_world">GAZEBO Tutorial-Build a World</a></p>
-
-<h2>はじめに</h2>
-
-<p>このチュートリアルでは、どのようにして物理プロパティや場面プロパティを含むグローバルプロパティを修正するか説明します。<br/>
-Gazeboを起動してください。:
-<code>bash
-  gazebo
-</code></p>
-
-<h2>場面プロパティ</h2>
-
-<p><strong>World</strong>タブの中で、<strong>scene</strong>を選んでください。すると、以下のような場面プロパティのリストが表示されたはずです。続いてプロパティの詳細を表示するために、三角形のボタンをクリックしてプロパティを展開してください。</p>
-
-<!-- ![tutorialSceneTab](/images/2015-02-03-gazebo-modifying-a-world/tutorialSceneTab.png) -->
-
-
-<!-- ![tutorialSceneTabExpanded](/images/2015-02-03-gazebo-modifying-a-world/tutorialSceneTabExpanded.png)   -->
-
-
-<p>これらのプロパティでは照明についての詳細を変更することができます。<br/>
-<strong>メモ : </strong>skyが選択されている場合、背景色は変更できません。</p>
-
-<h2>物理プロパティ</h2>
-
-<p><strong>World</strong>タブの中で、<strong>physics</strong>を選択してください。すると、以下のように物理プロパティのリストが表示されたはずです。</p>
-
-<ul>
-<li><p>チェックボックスはプラグインやセンサが起動している間、物理エンジンを起動するかどうかを選択できます。</p></li>
-<li><p><strong>rial time update rate parameter</strong>は物理エンジンのアプデートの時間を[Hz]で指定します。もし、この値を0にしたら、可能な限り速い速度でアップデートを行います。<strong>rial time update rate</strong>と<strong>step size</strong>はリアルタイム要素を代表する要素であり、シミュレーション時間をリアルタイムにするかどうかを決定します。</p></li>
-<li><p><strong>max step size</strong>は一秒間にどれだけの間物理シミュレータのアップデートステップを維持するかを定義します。</p></li>
-</ul>
-
-
-<p><strong>grabity</strong>ブロックでは:</p>
-
-<ul>
-<li>x,y,zのパラメータで全体の重力をベクトルで設定します。単位は[$m/s<sup>2</sup>$]です。</li>
-</ul>
-
-
-<p><strong>solver</strong>ブロックでは:</p>
-
-<ul>
-<li><p>慣性パラメータによりLCP solver（ODEやbulletで使用されています）で使用するための慣性データを設定します。</p></li>
-<li><p>SORパラメータは<a href="http://en.wikipedia.org/wiki/Successive_over-relaxation">連続する加速緩和</a>を記述します。この、加速緩和とは慣性要素を収束させるために使用します。</p></li>
-</ul>
-
-
-<p><strong>constraints</strong>ブロックには制約を解除するパラメータがいくつか含まれています。</p>
-
-<ul>
-<li>CFMやERPパラメータは<a href="http://ode-wiki.org/wiki/index.php?title=Manual:_Concepts#Constraint_Force_Mixing_.28CFM.29">Constant Force Mixing</a>や<a href="http://ode-wiki.org/wiki/index.php?title=Manual:_Concepts#Joint_error_and_the_Error_Reduction_Parameter_.28ERP.29">Error Reduction</a>のパラメータにを記述し、ODEやbulletで使用されます。CFMやERｐパラメータは<a href="http://ode-wiki.org/wiki/index.php?title=Manual:_Concepts#How_To_Use_ERP_and_CFM">linear stiffness や damping coefficients</a>に関連付けることができます。<strong>max velocity</strong>や<strong>surface layer</strong>パラメータは<strong>split inpulse method</strong>の解決に使用されます。どのようなcontactにおいても、<strong>surface layer</strong>やバウンドしないような<strong>max velocity</strong>より遅い速度による深さより深い。(????)<strong>私もよくわからない</strong>ので、ちょっと勘弁してください。すみませんorz&hellip;<br/>
-パラメータについての詳しい説明は、<a href="http://osrf-distributions.s3.amazonaws.com/sdformat/api/dev.html#physics12">sdf physics documentation</a>をご覧ください。</li>
-</ul>
-
-
-<!-- ![tutorialPhysicsTab](/images/2015-02-03-gazebo-modifying-a-world/tutorialPhysicsTab.png) -->
-
-
-<h4>Next >> <a href="">GazeboでのDEMｓの使い方</a></h4>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[環境をつくろう ! (新規の環境を作る 編) No.3.1]]></title>
-    <link href="http://cir-kit.github.io/blog/2015/02/03/gazebo-building-a-new-world/"/>
-    <updated>2015-02-03T17:42:21+09:00</updated>
-    <id>http://cir-kit.github.io/blog/2015/02/03/gazebo-building-a-new-world</id>
-    <content type="html"><![CDATA[<p><img src="/images/gazebo_logo.png" alt="gazebo_logo" /></p>
-
-<h5>検証日時</h5>
-
-<p>02/03/2015 (Tue)</p>
-
-<h5>概要</h5>
-
-<p>Gazeboのチュートリアル第三弾「Build a World」。
-このチュートリアルでは、シミュレーション中の環境をどのように構築するかについて説明します。<br/>
-今回はその「Building a New World」編です。<br/>
-公式サイトを適当に翻訳しただけですので、あしからず。</p>
-
-<h5>レベル</h5>
-
-<p><strong>BEGINNER</strong></p>
-
-<!-- more -->
-
-
-<h5>環境</h5>
-
-<table>
-<thead>
-<tr>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center;"> <strong>PC</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Prosessor</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>RAM</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>OS</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Kernel</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> 3.13.0-44-generic </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Gazebo</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Version 5.0.1 </td>
-</tr>
-</tbody>
-</table>
-
-
-<h5>参考</h5>
-
-<p><a href="http://gazebosim.org/tutorials?cat=build_world">GAZEBO Tutorial-Build a World</a></p>
-
-<h2>はじめに</h2>
-
-<p>このチュートリアルでは、動的もしくは静的な物体を生成する過程について説明します。</p>
-
-<h2>用語説明</h2>
-
-<ul>
-<li><p><strong>World : </strong>ロボットや物体（例えばビルやテーブル、照明など）さらに、空や照明のパラメータ、物理的特性を記述するのに使用します。</p></li>
-<li><p><strong>Static : </strong>staticマークがついた物体（SDFファイルで<code>&lt;static&gt;true&lt;/static&gt;</code>と記述されているもの）であり、衝突要素のみを持つ様な物体です。すべての動いていない物体は<code>static</code>と記述する必要があります。また、そのように記述することで、パフォーマンスが向上します。</p></li>
-<li><p><strong>Dynamic : </strong>dynamicマークがついた物体（SDFファイルには<code>&lt;static&gt;</code>要素がないか、<code>false</code>が設定されています）で、慣性要素と衝突要素を含みます。</p></li>
-</ul>
-
-
-<h2>セットアップ</h2>
-
-<ol>
-<li><p>Gazeboがインストールされていることを確認してください。インストールしていない場合には、<a href="http://cir-kit.github.io/blog/2015/01/31/gazebo-install/">Gazeboのインストール</a>をご覧ください。</p></li>
-<li><p>チュートリアル用の作業ディレクトリを作成しましょう。:
-<code>bash
- mkdir ~/build_world_tutorial
- cd ~/build_world_tutorial
-</code></p></li>
-<li><p>Gazeboを起動し、以下のように<code>gland plane</code>が起動していることを確かめましょう。
-<code>bash
- gazebo
-</code>
-<img src="/images/2015-02-03-gazebo-building-a-new-world/empty_world.png" alt="empty_world" /></p></li>
-</ol>
-
-
-<h2>物体を追加する</h2>
-
-<p>Gazeboには、物体を追加する方法が２つあります。</p>
-
-<ol>
-<li><p>１つ目は、簡単な形状の設置です。これは、以下のようにレンダリングウィンドウの上部にあります。
-<img src="/images/2015-02-03-gazebo-building-a-new-world/empty_world_simple_shapes_highlighted.png" alt="empty_world_simple_shapes_highlighted" /></p></li>
-<li><p>２つ目は、モデルデータベースにあります。以下のように画面左上部にある<strong>Insert</strong>タブをクリックすることで、追加する物体の一覧が表示でき、追加する物体を選択することができます。
-<img src="/images/2015-02-03-gazebo-building-a-new-world/empty_world_insert_highlighted.png" alt="empty_world_insert_highlighted" /></p></li>
-</ol>
-
-
-<h2>簡単な図形を追加する</h2>
-
-<p>箱、球、円柱をアイコンをレンダリングウィンドウ上部のアイコンをクリックすることで追加できます。それぞれの形状の大きさは以下のようになっています。</p>
-
-<ul>
-<li><p>箱 : 1x1x1 [m]</p></li>
-<li><p>球 : 直径 1 [m]</p></li>
-<li><p>円柱 : 直径 1 [m]、高さ 1 [m]</p></li>
-</ul>
-
-
-<p>箱のアイコンを選択し、マウスをレンダリングウィンドウに動かしてください。すると、マウスと共に動く箱を確認できるはずです。気に入った場所に箱を設置するには、左クリックを押してください。<br/>
-球と円柱でも同じことを繰り返してください。すると以下のような感じになるはずです。
-<img src="/images/2015-02-03-gazebo-building-a-new-world/simple_shapes.png" alt="simple_shapes" /></p>
-
-<h2>モデルデータベースからモデルを追加する</h2>
-
-<p>Gazeboのモデルデータベースはロボットや机、建物に至るまでのありとあらゆる種類の保管場所です。</p>
-
-<ol>
-<li><p>モデルデータベースに接続するために、画面左上端にある<strong>Insert</strong>タブを選択してください。<br/>
-モデルのリストは現在の場所に従ったセクションに分けられています。それぞれのセクションはURIもしくはパスによって読み込まれています。リモートサーバーに置かれている物体を選択するとモデルを<code>~/.gazebo/models</code>にダウンロードします。</p></li>
-<li><p><code>world</code>にいろいろなモデルを追加してみましょう。モデルをダウンロードするときは、容量の大きい物もありますので、注意してください。</p></li>
-<li><p>以下のような感じでモデルを追加することができたと思います。モデルは、あなたが選んだものが表示差rているはずです。ですので、以下のキャプチャは、あくまでも一例です。:
-<img src="/images/2015-02-03-gazebo-building-a-new-world/added_models_to_empty_world.png" alt="added_models_to_empty_world" /></p></li>
-</ol>
-
-
-<h2>モデルのポジション</h2>
-
-<p>それぞれのモデルのポジションは変換ツールもしくは回転ツールを使うことで変更できます。<br/>
-以下のように、アイコンが用意されています。
-<img src="/images/2015-02-03-gazebo-building-a-new-world/empty_rts.png" alt="empty_rts" /></p>
-
-<h3>変換</h3>
-
-<p>変換ツールでは、物体をx,y,z軸それぞれに移動することができます。動かしたいモデルをクリックで選択しこのツールを使ってみましょう。３軸マーカーがモデル上に現れたと思います。このマーカーを使ってモデルをx,y,z軸方向に動かすのです。<br/>
-モデルをクリックし、ドラッグするだけで、物体をx-y平面では移動させることができます。x,y,zのキーを押しながらドラッグすることで、どの軸に沿って動かすのかを決定することができます。<br/>
-いろいろな方法で、モデルを動かしてみましょう。</p>
-
-<h3>回転</h3>
-
-<p>回転ツールではx,y,z軸周りにモデルを回転することができます。動かしたいモデルをクリックで選択しこのツールを使ってみましょう。３つの輪でできたマーカがモデル上に現れたと思います。このマーカーを使ってモデルをx,y,z軸周りに回転することができるのです。<br/>
-いろいろな方向にモデルを回転させてみましょう。</p>
-
-<h3>大きさ</h3>
-
-<p>大きさツールではモデルの大きさをx,y,z軸に沿って変更することができます。現在は、このツールは簡単な形状（つまり、箱、球、円柱）にのみ適用できます。簡単なモデルを選択し、このツールを使ってみましょう。すると、三軸のマーカーが出現したはずです。これを使ってx,y,z軸方向に物体の大きさを変更することができます。<br/>
-いろいろな大きさにしてみましょう。</p>
-
-<h2>モデルを削除する</h2>
-
-<p>モデルを選択し、Deleteキーを押せばモデルを削除できます。また、モデルの上で右クリックし、<strong>Delete</strong>を選択してもモデルを削除できます。<br/>
-いくつかのモデルを削除してみましょう。</p>
-
-<h2>Worldを保存する</h2>
-
-<p>気に入った<code>world</code>データが出来上がったら、<strong>File</strong>メニューより保存することができます。<br/>
-<strong>File</strong>メニューを選び<strong>Save as</strong>を選択しましょう。<br/>
-ポップアップが現れ、新しいファイルネームを問われます。<code>my_world.sdf</code>などのフィル名を入力し、OKをクリックしましょう。</p>
-
-<h2>Worldを読み込む</h2>
-
-<p>コマンドラインで以下のように入力すれば、保存した<code>world</code>データを読み込むことができます。<br/>
-以下の例は、<code>my_worlf.sdf</code>を読み込んでいます。
-<code>bash
-gazebo my_world.sdf
-</code>
-ファイル名は現在の作業ディレクトリ直下にしてください。そうしない場合には、絶対パスもしくは、作業ディレクトリからの相対パスを入力してください。</p>
-
-<h3>Next >> <a href="http://cir-kit.github.io/blog/2015/02/03/gazebo-modifying-a-world/">環境を修正する</a></h3>
 ]]></content>
   </entry>
   

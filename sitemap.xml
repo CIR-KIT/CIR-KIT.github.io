@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://cir-kit.github.io/blog/2015/02/14/gazebo-camera-distortion/</loc>
+    <lastmod>2015-02-14T04:06:22+09:00</lastmod>
+  </url>
+  <url>
+    <loc>http://cir-kit.github.io/blog/2015/02/13/gazebo-sensor-noise-model/</loc>
+    <lastmod>2015-02-13T21:50:50+09:00</lastmod>
+  </url>
+  <url>
+    <loc>http://cir-kit.github.io/blog/2015/02/13/gazebo-log-filtering/</loc>
+    <lastmod>2015-02-13T20:57:58+09:00</lastmod>
+  </url>
+  <url>
     <loc>http://cir-kit.github.io/blog/2015/02/06/gazebo-building-editor/</loc>
     <lastmod>2015-02-06T02:14:35+09:00</lastmod>
   </url>
@@ -78,10 +90,10 @@
   </url>
   <url>
     <loc>http://cir-kit.github.io/</loc>
-    <lastmod>2015-02-14T10:38:14+09:00</lastmod>
+    <lastmod>2015-02-14T11:14:25+09:00</lastmod>
   </url>
   <url>
     <loc>http://cir-kit.github.io/blog/archives/</loc>
-    <lastmod>2015-02-14T10:38:14+09:00</lastmod>
+    <lastmod>2015-02-14T11:14:25+09:00</lastmod>
   </url>
 </urlset>

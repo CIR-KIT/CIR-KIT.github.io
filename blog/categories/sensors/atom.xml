@@ -1,0 +1,742 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Sensors | 九州工業大学 CIR-KIT Blog]]></title>
+  <link href="http://cir-kit.github.io/blog/categories/sensors/atom.xml" rel="self"/>
+  <link href="http://cir-kit.github.io/"/>
+  <updated>2015-02-14T11:14:25+09:00</updated>
+  <id>http://cir-kit.github.io/</id>
+  <author>
+    <name><![CDATA[]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[センサについて（カメラの歪み 編）No.5.2]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/02/14/gazebo-camera-distortion/"/>
+    <updated>2015-02-14T04:06:22+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/02/14/gazebo-camera-distortion</id>
+    <content type="html"><![CDATA[<p><img src="/images/gazebo_logo.png" alt="gazebo_logo" /></p>
+
+<h5>検証日時</h5>
+
+<p>02/14/2015 (Sat)</p>
+
+<h5>概要</h5>
+
+<p>Gazeboのチュートリアル第五弾「Sensors」。<br/>
+シミュレーションのセンサは環境を分析し、センサになるべくよく似たデータストリームを生成します。<br/>
+チュートリアルでは、センサの使い方と修正方法について説明します。
+今回はその「Camera Distortion」編です。<br/>
+公式サイトを適当に翻訳しただけですので、あしからず。</p>
+
+<h5>レベル</h5>
+
+<p><strong>BEGINNER</strong></p>
+
+<!-- more -->
+
+
+<h5>環境</h5>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> <strong>PC</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Prosessor</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>RAM</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>OS</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Kernel</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> 3.13.0-44-generic </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Gazebo</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Version 5.0.1 </td>
+</tr>
+</tbody>
+</table>
+
+
+<h5>参考</h5>
+
+<p><a href="http://gazebosim.org/tutorials?cat=sensors">GAZEBO Tutorial-Sensors</a></p>
+
+<h2>はじめに</h2>
+
+<p>カメラのレンズはたいてい光学の角度ゆがみがあり、これにより、イメージ（像）が歪む。例として、タスクを実行したり、物体を発見するのに、より広い範囲の環境視野を確保する目的でロボティクスの分野で広く使用されている、魚眼カメラが挙げられる。<br/>
+MatlabやOpenCVのようなカメラキャリブレーションツールを使うと、カメラ固有のパラメータに付随した、歪み係数をなしにすることができる。そのような歪み系数とともに、Gazeboの中に歪んだカメラセンサを生成することができる。</p>
+
+<h3>現在の実装</h3>
+
+<p>Gazeboでは、現在、<a href="http://en.wikipedia.org/wiki/Distortion_(optics">Brown&rsquo;s distortion model</a>#Software_correction)に基づいたカメラのシミュレーションをサポートしています。このモデルでは、カメラのキャリブレーションツールから取得できる歪み系数を<code>k1</code>、<code>k2</code>、<code>k3</code>、<code>p1</code>、<code>p2</code>としている。<code>k</code>という係数は歪みモデルの放射状の構成であり、<code>p</code>という係数はタンジェントの構成を示す。　　
+現在の実装には以下のようないくつかの制限がある。</p>
+
+<ol>
+<li><p>樽状の歪みだけがサポートされており、たいていは、<code>k1</code>の値が負である。</p></li>
+<li><p>歪みは、カメラのイメージテクスチャに適用されています。これは、イメージデータを生成し、ねじっているだけのものを使っていることを意味する。このことは、最終的なイメージ（特に角では）が現実の樽状の歪みを持ったカメラレンズよりも、狭い視野になるという警告を持つことになる。この現象を償う一つの解決策はGazeboの中で、カメラセンサの視野を増加させるという方法である。</p></li>
+</ol>
+
+
+<h2>カメラを歪みとともに生成する</h2>
+
+<p>歪みのあるカメラモデルを追加するには:</p>
+
+<ol>
+<li>モデルのディレクトリを作る</li>
+</ol>
+
+
+<pre><code class="bash">    mkdir -p ~/.gazebo/models/distorted_camera
+</code></pre>
+
+<ol>
+<li><code>model.config</code>ファイルを生成する</li>
+</ol>
+
+
+<pre><code class="bash">    gedit ~/.gazebo/models/distorted_camera/model.config
+</code></pre>
+
+<ol>
+<li><code>model.config</code>に以下の内容をコピペする</li>
+</ol>
+
+
+<pre><code class="xml">    &lt;?xml version="1.0"?&gt;
+    &lt;model&gt;
+      &lt;name&gt;Distorted Camera&lt;/name&gt;
+      &lt;version&gt;1.0&lt;/version&gt;
+      &lt;sdf version='1.5'&gt;model.sdf&lt;/sdf&gt;
+
+      &lt;author&gt;
+       &lt;name&gt;My Name&lt;/name&gt;
+       &lt;email&gt;me@my.email&lt;/email&gt;
+      &lt;/author&gt;
+
+      &lt;description&gt;
+        My distorted camera.
+      &lt;/description&gt;
+    &lt;/model&gt;
+</code></pre>
+
+<ol>
+<li><code>~/.gazebo/models/distorted_camera/model.sdf</code>ファイルを生成する</li>
+</ol>
+
+
+<pre><code class="bash">    gedit ~/.gazebo/models/distorted_camera/model.sdf
+</code></pre>
+
+<ol>
+<li><code>model.sdf</code>に以下の内容をコピペする。以下のモデルはスタンダードなカメラモデルに歪みを付加したものです。:</li>
+</ol>
+
+
+<pre><code class="xml">&lt;?xml version="1.0" ?&gt;
+&lt;sdf version="1.5"&gt;
+  &lt;model name="distorted_camera"&gt;
+    &lt;link name="link"&gt;
+      &lt;pose&gt;0.05 0.05 0.05 0 0 0&lt;/pose&gt;
+      &lt;inertial&gt;
+        &lt;mass&gt;0.1&lt;/mass&gt;
+      &lt;/inertial&gt;
+      &lt;collision name="collision"&gt;
+        &lt;geometry&gt;
+          &lt;box&gt;
+            &lt;size&gt;0.1 0.1 0.1&lt;/size&gt;
+          &lt;/box&gt;
+        &lt;/geometry&gt;
+      &lt;/collision&gt;
+      &lt;visual name="visual"&gt;
+        &lt;geometry&gt;
+          &lt;box&gt;
+            &lt;size&gt;0.1 0.1 0.1&lt;/size&gt;
+          &lt;/box&gt;
+        &lt;/geometry&gt;
+      &lt;/visual&gt;
+      &lt;sensor name="camera" type="camera"&gt;
+        &lt;camera&gt;
+          &lt;horizontal_fov&gt;1.047&lt;/horizontal_fov&gt;
+          &lt;image&gt;
+            &lt;width&gt;320&lt;/width&gt;
+            &lt;height&gt;240&lt;/height&gt;
+          &lt;/image&gt;
+          &lt;clip&gt;
+            &lt;near&gt;0.1&lt;/near&gt;
+            &lt;far&gt;100&lt;/far&gt;
+          &lt;/clip&gt;
+          &lt;distortion&gt;
+            &lt;k1&gt;-0.25&lt;/k1&gt;
+            &lt;k2&gt;0.12&lt;/k2&gt;
+            &lt;k3&gt;0.0&lt;/k3&gt;
+            &lt;p1&gt;-0.00028&lt;/p1&gt;
+            &lt;p2&gt;-0.00005&lt;/p2&gt;
+            &lt;center&gt;0.5 0.5&lt;/center&gt;
+          &lt;/distortion&gt;
+        &lt;/camera&gt;
+        &lt;always_on&gt;1&lt;/always_on&gt;
+        &lt;update_rate&gt;30&lt;/update_rate&gt;
+        &lt;visualize&gt;true&lt;/visualize&gt;
+      &lt;/sensor&gt;
+    &lt;/link&gt;
+  &lt;/model&gt;
+&lt;/sdf&gt;
+</code></pre>
+
+<ol>
+<li>Gazeboを起動する</li>
+</ol>
+
+
+<pre><code class="bash">gazebo
+</code></pre>
+
+<ol>
+<li><p>歪みを付加したカメラモデルを挿入する : 画面左側の枠の中で、<strong>Insert</strong>タブを選び、<strong>Distorted Camera</strong>をクリックする。その後、シミュレータにそれを設置する。</p></li>
+<li><p>歪みを付加したカメラモデルを観測する : <strong>Topis Selector</strong>を表示するために、<strong>Window</strong>-><strong>Topic Visualazation</strong>をクリックする(もしくは、<code>Ctrl-T</code>を押す)。</p></li>
+<li><p><code>/gazebo/default/hokuyo/link/camera/image</code>のような名前のトピックを探し、クリックしたら、<strong>Okay</strong>をクリックしてください。すると、カメライメージが表示されたウィンドウが見えるはずです。</p></li>
+</ol>
+
+
+<p>手順は、以下の動画を参照ください。また、動画でご覧いただくように、カメラのイメージは湯がんでおり、箱のエッジが曲がって見えます。歪みを調整するには、<code>model.sdf</code>ファイルにある、<code>k1</code>,<code>k2</code>,<code>k3</code>,<code>p1</code>,<code>p2</code>の歪み係数を変更するだけでよいです。</p>
+
+<div class="youtube-container">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/lZ41gqMjbV4" frameborder="0" allowfullscreen></iframe>
+</div>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[センサについて (センサノイズモデル 編) No.5.1]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/02/13/gazebo-sensor-noise-model/"/>
+    <updated>2015-02-13T21:50:50+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/02/13/gazebo-sensor-noise-model</id>
+    <content type="html"><![CDATA[<p><img src="/images/gazebo_logo.png" alt="gazebo_logo" /></p>
+
+<h5>検証日時</h5>
+
+<p>02/14/2015 (Sat)</p>
+
+<h5>概要</h5>
+
+<p>Gazeboのチュートリアル第五弾「Sensors」。<br/>
+シミュレーションのセンサは環境を分析し、センサになるべくよく似たデータストリームを生成します。<br/>
+チュートリアルでは、センサの使い方と修正方法について説明します。
+今回はその「Sensor Noise Model」編です。<br/>
+公式サイトを適当に翻訳しただけですので、あしからず。</p>
+
+<h5>レベル</h5>
+
+<p><strong>BEGINNER</strong></p>
+
+<!-- more -->
+
+
+<h5>環境</h5>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> <strong>PC</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Prosessor</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>RAM</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>OS</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Kernel</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> 3.13.0-44-generic </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Gazebo</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Version 5.0.1 </td>
+</tr>
+</tbody>
+</table>
+
+
+<h5>参考</h5>
+
+<p><a href="http://gazebosim.org/tutorials?cat=sensors">GAZEBO Tutorial-Sensors</a></p>
+
+<h2>はじめに</h2>
+
+<p>Gazeboでは、たくさんの一般的なセンサを提供しています。現実世界では、センサにはノイズが存在し、実環境を完全に観測することは出来ません。デフォルトでは、Gazeboのセンサは環境を完全に観測します(IMUは含みません;続きを参照ください)。認識プログラムを試してみる様な、よりリアルな環境を提供するには、Gazeboのセンサが生成したデータにあえてノイズを付け加える必要があります。<br/>
+この記事を書いている時点で、Gazeboは以下のタイプのセンサにノイズを付加することができます。</p>
+
+<blockquote><ul>
+<li>Ray (e.g., lasers)</li>
+<li>Camera</li>
+<li>IMU</li>
+</ul>
+</blockquote>
+
+<h2>Ray(Laser)ノイズ</h2>
+
+<p>rayセンサでは、それぞれのビームの距離値にガウシアンノイズを付加します。ノイズの値として付加されるガウシアン分布の平均値と標準偏差を設定することができます。ノイズの値はそれぞれのビームに独立して付加されます。ノイズを付加した後、距離はセンサの最小距離と最大距離の間で偽の値（ノイズが付加された値）になります。<br/>
+rayノイズモデルをテストするには:</p>
+
+<ol>
+<li>モデルのディレクトリを作る</li>
+</ol>
+
+
+<pre><code class="bash">  mkdir -p ~/.gazebo/models/noisy_laser
+</code></pre>
+
+<ol>
+<li><code>config</code>ファイルを生成する</li>
+</ol>
+
+
+<pre><code class="bash">  gedit ~/.gazebo/models/noisy_laser/model.config
+</code></pre>
+
+<ol>
+<li><code>model.config</code>ファイルに以下をコピペする</li>
+</ol>
+
+
+<pre><code class="xml">    &lt;?xml version="1.0"?&gt;
+    &lt;model&gt;
+      &lt;name&gt;Noisy laser&lt;/name&gt;
+      &lt;version&gt;1.0&lt;/version&gt;
+      &lt;sdf version='1.4'&gt;model.sdf&lt;/sdf&gt;
+
+      &lt;author&gt;
+       &lt;name&gt;My Name&lt;/name&gt;
+       &lt;email&gt;me@my.email&lt;/email&gt;
+      &lt;/author&gt;
+
+      &lt;description&gt;
+        My noisy laser.
+      &lt;/description&gt;
+    &lt;/model&gt;
+</code></pre>
+
+<ol>
+<li><code>~/.gazebo/models/noisy_laser/model.sdf</code>ファイルを生成する</li>
+</ol>
+
+
+<pre><code class="bash">    gedit ~/.gazebo/models/noisy_laser/model.sdf
+</code></pre>
+
+<ol>
+<li>以下を<code>model.sdf</code>ファイルにコピペする。以下のモデルはスタンダードな<code>Hokuyo</code>モデルにノイズを付加したものです。:</li>
+</ol>
+
+
+<pre><code class="xml">&lt;?xml version="1.0" ?&gt;
+&lt;sdf version="1.4"&gt;
+  &lt;model name="hokuyo"&gt;
+    &lt;link name="link"&gt;
+      &lt;gravity&gt;false&lt;/gravity&gt;
+      &lt;inertial&gt;
+        &lt;mass&gt;0.1&lt;/mass&gt;
+      &lt;/inertial&gt;
+      &lt;visual name="visual"&gt;
+        &lt;geometry&gt;
+          &lt;mesh&gt;
+            &lt;uri&gt;model://hokuyo/meshes/hokuyo.dae&lt;/uri&gt;
+          &lt;/mesh&gt;
+        &lt;/geometry&gt;
+      &lt;/visual&gt;
+      &lt;sensor name="laser" type="ray"&gt;
+        &lt;pose&gt;0.01 0 0.03 0 -0 0&lt;/pose&gt;
+        &lt;ray&gt;
+          &lt;scan&gt;
+            &lt;horizontal&gt;
+              &lt;samples&gt;640&lt;/samples&gt;
+              &lt;resolution&gt;1&lt;/resolution&gt;
+              &lt;min_angle&gt;-2.26889&lt;/min_angle&gt;
+              &lt;max_angle&gt;2.268899&lt;/max_angle&gt;
+            &lt;/horizontal&gt;
+          &lt;/scan&gt;
+          &lt;range&gt;
+            &lt;min&gt;0.08&lt;/min&gt;
+            &lt;max&gt;10&lt;/max&gt;
+            &lt;resolution&gt;0.01&lt;/resolution&gt;
+          &lt;/range&gt;
+          &lt;noise&gt;
+            &lt;type&gt;gaussian&lt;/type&gt;
+            &lt;mean&gt;0.0&lt;/mean&gt;
+            &lt;stddev&gt;0.01&lt;/stddev&gt;
+          &lt;/noise&gt;
+        &lt;/ray&gt;
+        &lt;plugin name="laser" filename="libRayPlugin.so" /&gt;
+        &lt;always_on&gt;1&lt;/always_on&gt;
+        &lt;update_rate&gt;30&lt;/update_rate&gt;
+        &lt;visualize&gt;true&lt;/visualize&gt;
+      &lt;/sensor&gt;
+    &lt;/link&gt;
+  &lt;/model&gt;
+&lt;/sdf&gt;
+</code></pre>
+
+<ol>
+<li>Gazeboを起動する:</li>
+</ol>
+
+
+<pre><code class="bash">gazebo
+</code></pre>
+
+<ol>
+<li><p>ノイズを付加したレーザーセンサを挿入する : 画面左側の枠の中で、<strong>Insert</strong>タブを選び、<strong>Noisy laser</strong>をクリックする。その後、シミュレータにそれを設置する。</p></li>
+<li><p>ノイズを付加したレーザーセンサを観測する : <strong>Topis Selector</strong>を表示するために、<strong>Window</strong>-><strong>Topic Visualazation</strong>をクリックする(もしくは、<code>Ctrl-T</code>を押す)。</p></li>
+<li><p><code>/gazebo/default/hokuyo/link/laser/scan</code>のような名前のトピックを探し、クリックしたら、<strong>Okay</strong>をクリックしてください。すると、レーザーデータが表示されたウィンドウが見えるはずです。</p></li>
+</ol>
+
+
+<p>スキャンデータにノイズが付加されているのを確認できます。ノイズを調節するには、平均値と標準偏差を<code>model.sdf</code>にある以下のブロックでで変更するだけでよいです。なお、それらの要素はすべてメートル単位系です。:</p>
+
+<pre><code class="xml">&lt;noise&gt;
+  &lt;type&gt;gaussian&lt;/type&gt;
+  &lt;mean&gt;0.0&lt;/mean&gt;
+  &lt;stddev&gt;0.01&lt;/stddev&gt;
+&lt;/noise&gt;
+</code></pre>
+
+<p><code>Hokuyo</code>レーザーにはピッタリの値があります。<br/>
+尚、これらの手順は、以下の動画を参照してください。動画では、ノイズを見やすくするために、平均値を0、標準偏差を0.1としてあります。</p>
+
+<div class="youtube-container">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/_y-m1fQxZjA" frameborder="0" allowfullscreen></iframe>
+</div>
+
+
+<h2>カメラノイズ</h2>
+
+<p>カメラのノイズでは、<a href="http://en.wikipedia.org/wiki/Image_noise#Amplifier_noise_.28Gaussian_noise.29">output amplifier noise</a>を付加します。これは、各ピクセルに独立したガウシアンサンプルノイズを付加するものです。各ピクセルにでサンプリングされる値に、ガウシアン分布の平均値と標準偏差を設定することができます。ノイズの値は各ピクセルで独立しており、ノイズの値は各ピクセルの各色チャンネルにも独立して付加されます。ノイズを付加した後、色チャンネルの値は0.0から1.0の間で偽の値を取ります。;このfloat型のポイントの色の値はイメージの中では、unsigned int型として扱われます。普通は、0から255の間の値です。(8 [ビット/チャンネル] を使用します)<br/>
+このノイズモデルは<a href="">GLSL</a>の中で、シェーダーやGPUを起動するときの必要要件として実行されます。<br/>
+カメラノイズモデルをテストするには:</p>
+
+<ol>
+<li>モデルディレクトリをつくります:</li>
+</ol>
+
+
+<pre><code class="bash">    mkdir -p ~/.gazebo/models/noisy_camera
+</code></pre>
+
+<ol>
+<li><code>model.config</code>ファイルを生成する</li>
+</ol>
+
+
+<pre><code class="bash">    gedit ~/.gazebo/models/noisy_camera/model.config
+</code></pre>
+
+<ol>
+<li><code>model.config</code>に以下の内容をコピペする</li>
+</ol>
+
+
+<pre><code class="xml">    &lt;?xml version="1.0"?&gt;
+    &lt;model&gt;
+      &lt;name&gt;Noisy camera&lt;/name&gt;
+      &lt;version&gt;1.0&lt;/version&gt;
+      &lt;sdf version='1.4'&gt;model.sdf&lt;/sdf&gt;
+
+      &lt;author&gt;
+       &lt;name&gt;My Name&lt;/name&gt;
+       &lt;email&gt;me@my.email&lt;/email&gt;
+      &lt;/author&gt;
+
+      &lt;description&gt;
+        My noisy camera.
+      &lt;/description&gt;
+    &lt;/model&gt;
+</code></pre>
+
+<ol>
+<li><code>~/.gazebo/models/noisy_camera/model.sdf</code>ファイルを生成する</li>
+</ol>
+
+
+<pre><code class="bash">    gedit ~/.gazebo/models/noisy_camera/model.sdf
+</code></pre>
+
+<ol>
+<li>以下の内容を<code>model.sdf</code>にコピペする。これは、基本的なカメラモデルにノイズを付加したモデルです。:</li>
+</ol>
+
+
+<pre><code class="xml">    &lt;?xml version="1.0" ?&gt;
+    &lt;sdf version="1.4"&gt;
+      &lt;model name="camera"&gt;
+        &lt;link name="link"&gt;
+          &lt;gravity&gt;false&lt;/gravity&gt;
+          &lt;pose&gt;0.05 0.05 0.05 0 0 0&lt;/pose&gt;
+          &lt;inertial&gt;
+            &lt;mass&gt;0.1&lt;/mass&gt;
+          &lt;/inertial&gt;
+          &lt;visual name="visual"&gt;
+            &lt;geometry&gt;
+              &lt;box&gt;
+                &lt;size&gt;0.1 0.1 0.1&lt;/size&gt;
+              &lt;/box&gt;
+            &lt;/geometry&gt;
+          &lt;/visual&gt;
+          &lt;sensor name="camera" type="camera"&gt;
+            &lt;camera&gt;
+              &lt;horizontal_fov&gt;1.047&lt;/horizontal_fov&gt;
+              &lt;image&gt;
+                &lt;width&gt;1024&lt;/width&gt;
+                &lt;height&gt;1024&lt;/height&gt;
+              &lt;/image&gt;
+              &lt;clip&gt;
+                &lt;near&gt;0.1&lt;/near&gt;
+                &lt;far&gt;100&lt;/far&gt;
+              &lt;/clip&gt;
+              &lt;noise&gt;
+                &lt;type&gt;gaussian&lt;/type&gt;
+                &lt;mean&gt;0.0&lt;/mean&gt;
+                &lt;stddev&gt;0.07&lt;/stddev&gt;
+              &lt;/noise&gt;
+            &lt;/camera&gt;
+            &lt;always_on&gt;1&lt;/always_on&gt;
+            &lt;update_rate&gt;30&lt;/update_rate&gt;
+            &lt;visualize&gt;true&lt;/visualize&gt;
+          &lt;/sensor&gt;
+        &lt;/link&gt;
+      &lt;/model&gt;
+    &lt;/sdf&gt;
+</code></pre>
+
+<ol>
+<li>Gazeboを起動する:</li>
+</ol>
+
+
+<pre><code class="bash">    gazebo
+</code></pre>
+
+<ol>
+<li><p>ノイズが付加されたカメラを挿入する : 画面左側の枠の中で、<strong>Insert</strong>タブを選び、<strong>Noisy camera</strong>をクリックする。その後、シミュレータにそれを設置する。</p></li>
+<li><p>ノイズを付加したカメラを観測する : <strong>Topis Selector</strong>を表示するために、<strong>Window</strong>-><strong>Topic Visualazation</strong>をクリックする(もしくは、<code>Ctrl-T</code>を押す)。</p></li>
+<li><p><code>/gazebo/default/camera/link/camera/image</code>のような名前のトピックを探し、クリックしたら、<strong>Okay</strong>をクリックしてください。すると、カメラのイメージが表示されたウィンドウが見えるはずです。</p></li>
+</ol>
+
+
+<p>よく見ると、イメージにノイズが付加されているのが見えると思います。ノイズを調整するには、<code>model.sdf</code>ファイルの中にある以下のようなセクションで、平均値と標準偏差を調節してやるだけで良いです。これらには単位系はありません。;各色チャンネルに0.0以上、1.0以下の値でノイズを付加します。<br/>
+以下のレイは、<code>&lt;stddev&gt;</code>の値をとても大きくしています。この値を減らしてみてください。:</p>
+
+<pre><code class="xml">&lt;noise&gt;
+  &lt;type&gt;gaussian&lt;/type&gt;
+  &lt;mean&gt;0.0&lt;/mean&gt;
+  &lt;stddev&gt;0.007&lt;/stddev&gt;
+&lt;/noise&gt;
+</code></pre>
+
+<p>デジタルカメラには、最適なノイズの値があります。<br/>
+尚、これらの手順は、以下の動画を参照してください。動画では、ノイズを見やすくするために、平均値を0、標準偏差を0.07としたものと、平均値を0、標準偏差を0.007としたものを表示しています。</p>
+
+<div class="youtube-container">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/Vp-0OPoECws" frameborder="0" allowfullscreen></iframe>
+</div>
+
+
+<h2>IMUノイズ</h2>
+
+<p>IMUセンサでは、角度速度と並進加速度に対する2種類の外乱(ノイズとバイアス)を考えます。角速度と並進加速度は分かれているものとして、このモデルでは、速度ノイズ、速度バイアス、加速度ノイズ、加速度バイアスの4つのパラメータを導出します。世界座標系（将来的には変化する）の中で、完全な値として表現されるようなIMUの元データから応用するノイズはありません。<br/>
+ノイズは付加的であり、ガウシアン分布からサンプリングされます。ノイズの値をサンプリングしてくる、ガウシアン分布（速度や、角速度の一つ一つに対するもの）の平均値と標準偏差を設定することができます。ノイズの値は、互いのサンプリング要素(X,Y,Z)では独立しており、それらの要素に付加されます。<br/>
+バイアスもまた付加的でありますが、これは、シミュレーションがスタートした時の一度だけしかサンプリングされません。バイアスの値をサンプリングしてくる、ガウシアン分布（速度や、角速度の一つ一つに対するもの）の平均値と標準偏差を設定することができます。バイアスは設定されたパラメータに沿ってサンプリングされます;提供される平均値はバイアスの大きさを定義し、各方向にバイアスがかかっており、バイアスは修正された値で、各要素(X,Y,Z)に付加されていると仮定されます。<br/>
+<strong>Note : </strong>シミュレートされているシステムと物理エンジンの構成に依存しているので、シミュレーションされたIMUのデータはすでにいくぶんかノイズがのっていることがあります。なぜなら、システムはすべての収斂の方法を解決しているわけではないからです。なので、アプリケーションに依存するという点では、ノイズを付加する必要はないかもしれません。<br/>
+IMUノイズモデルをテストするには:</p>
+
+<ol>
+<li>モデルのディレクトリを作る:</li>
+</ol>
+
+
+<pre><code class="bash">    mkdir -p ~/.gazebo/models/noisy_imu
+</code></pre>
+
+<ol>
+<li><code>model.config</code>ファイルを生成する</li>
+</ol>
+
+
+<pre><code class="bash">    gedit ~/.gazebo/models/noisy_imu/model.config
+</code></pre>
+
+<ol>
+<li><code>model.config</code>に以下の内容をコピペする</li>
+</ol>
+
+
+<pre><code class="xml">    &lt;?xml version="1.0"?&gt;
+    &lt;model&gt;
+      &lt;name&gt;Noisy IMU&lt;/name&gt;
+      &lt;version&gt;1.0&lt;/version&gt;
+      &lt;sdf version='1.4'&gt;model.sdf&lt;/sdf&gt;
+
+      &lt;author&gt;
+       &lt;name&gt;My Name&lt;/name&gt;
+       &lt;email&gt;me@my.email&lt;/email&gt;
+      &lt;/author&gt;
+
+      &lt;description&gt;
+        My noisy IMU.
+      &lt;/description&gt;
+    &lt;/model&gt;
+</code></pre>
+
+<ol>
+<li><code>~/.gazebo/models/noisy_imu/model.sdf</code>ファイルを生成する</li>
+</ol>
+
+
+<pre><code class="xml">    gedit ~/.gazebo/models/noisy_imu/model.sdf
+</code></pre>
+
+<ol>
+<li><code>model.sdf</code>に以下の内容をコピペする:</li>
+</ol>
+
+
+<pre><code class="xml">    &lt;?xml version="1.0" ?&gt;
+    &lt;sdf version="1.4"&gt;
+      &lt;model name="imu"&gt;
+        &lt;link name="link"&gt;
+          &lt;inertial&gt;
+            &lt;mass&gt;0.1&lt;/mass&gt;
+          &lt;/inertial&gt;
+          &lt;visual name="visual"&gt;
+            &lt;geometry&gt;
+              &lt;box&gt;
+                &lt;size&gt;0.1 0.1 0.1&lt;/size&gt;
+              &lt;/box&gt;
+            &lt;/geometry&gt;
+          &lt;/visual&gt;
+          &lt;collision name="collision"&gt;
+            &lt;geometry&gt;
+              &lt;box&gt;
+                &lt;size&gt;0.1 0.1 0.1&lt;/size&gt;
+              &lt;/box&gt;
+            &lt;/geometry&gt;
+          &lt;/collision&gt;
+          &lt;sensor name="imu" type="imu"&gt;
+            &lt;imu&gt;
+              &lt;noise&gt;
+                &lt;type&gt;gaussian&lt;/type&gt;
+                &lt;rate&gt;
+                  &lt;mean&gt;0.0&lt;/mean&gt;
+                  &lt;stddev&gt;2e-4&lt;/stddev&gt;
+                  &lt;bias_mean&gt;0.0000075&lt;/bias_mean&gt;
+                  &lt;bias_stddev&gt;0.0000008&lt;/bias_stddev&gt;
+                &lt;/rate&gt;
+                &lt;accel&gt;
+                  &lt;mean&gt;0.0&lt;/mean&gt;
+                  &lt;stddev&gt;1.7e-2&lt;/stddev&gt;
+                  &lt;bias_mean&gt;0.1&lt;/bias_mean&gt;
+                  &lt;bias_stddev&gt;0.001&lt;/bias_stddev&gt;
+                &lt;/accel&gt;
+              &lt;/noise&gt;
+            &lt;/imu&gt;
+            &lt;always_on&gt;1&lt;/always_on&gt;
+            &lt;update_rate&gt;1000&lt;/update_rate&gt;
+          &lt;/sensor&gt;Laser
+        &lt;/link&gt;
+      &lt;/model&gt;
+    &lt;/sdf&gt;
+</code></pre>
+
+<ol>
+<li>Gazeboを起動する:</li>
+</ol>
+
+
+<pre><code class="bash">    gazebo
+</code></pre>
+
+<ol>
+<li><p>ノイズを付加したIMUを挿入する : 画面左側の枠の中で、<strong>Insert</strong>タブを選び、<strong>Noisy IMU</strong>をクリックする。その後、シミュレータにそれを設置する。</p></li>
+<li><p>ノイズを付加したIMUを観測する : <strong>Topis Selector</strong>を表示するために、<strong>Window</strong>-><strong>Topic Visualazation</strong>をクリックする(もしくは、<code>Ctrl-T</code>を押す)。</p></li>
+<li><p><code>/gazebo/default/camera/link/imu/imu</code>のような名前のトピックを探し、クリックしたら、<strong>Okay</strong>をクリックしてください。すると、IMUデータのテキストビューウィンドウが見えるはずです。</p></li>
+</ol>
+
+
+<p>ノイズをIMUのような高レートのセンサに適用するのは難しくなりがちです。特に複雑なシステムにおいてはそれはなおさらです。ノイズでゼロではない大きな値の平均値をとる　かつ/もしくは バイアスパラメータをとるのが友好的であるとわかるでしょう。<br/>
+ノイズを調整するには、<code>model.sdf</code>ファイルの中にある以下のようなセクションで、平均値と標準偏差を調節してやるだけで良いです。角速度のノイズとバイアスの単位系は[rad/s]で加速度のノイズとバイアスの単位系は[m/s<sup>2</sup>]です。</p>
+
+<pre><code class="xml">&lt;noise&gt;
+  &lt;type&gt;gaussian&lt;/type&gt;
+  &lt;rate&gt;
+    &lt;mean&gt;0.0&lt;/mean&gt;
+    &lt;stddev&gt;2e-4&lt;/stddev&gt;
+    &lt;bias_mean&gt;0.0000075&lt;/bias_mean&gt;
+    &lt;bias_stddev&gt;0.0000008&lt;/bias_stddev&gt;
+  &lt;/rate&gt;
+  &lt;accel&gt;
+    &lt;mean&gt;0.0&lt;/mean&gt;
+    &lt;stddev&gt;1.7e-2&lt;/stddev&gt;
+    &lt;bias_mean&gt;0.1&lt;/bias_mean&gt;
+    &lt;bias_stddev&gt;0.001&lt;/bias_stddev&gt;
+  &lt;/accel&gt;
+&lt;/noise&gt;
+</code></pre>
+
+<p>高い品質のIMU装置には、最適なノイズの値があります。<br/>
+尚、これらの手順は、以下の動画を参照してください。平均値や標準偏差などは、上記の設定のものを使用しています。</p>
+
+<div class="youtube-container">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/LZTzUgkLfwk" frameborder="0" allowfullscreen></iframe>
+</div>
+
+]]></content>
+  </entry>
+  
+</feed>
