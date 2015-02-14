@@ -4,7 +4,7 @@
   <title><![CDATA[九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-02-14T14:50:43+09:00</updated>
+  <updated>2015-02-14T14:42:43+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -12,6 +12,194 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[GazeboをROSに繋ぐ (ROSの概要 編) No.6.1]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/02/14/gazebo-ros-overview/"/>
+    <updated>2015-02-14T11:25:06+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/02/14/gazebo-ros-overview</id>
+    <content type="html"><![CDATA[<p><img src="http://cir-kit.github.io/images/gazebo_logo.png" alt="gazebo_logo" /></p>
+
+<h5>検証日時</h5>
+
+<p>02/14/2015 (Sat)</p>
+
+<h5>概要</h5>
+
+<p>Gazeboのチュートリアル第六弾「Connect to ROS」。<br/>
+ROSはロボットの制御フレームワークです。このチュートリアルでは、GazeboとROSのインターフェースについて説明します。<br/>
+今回はその「ROS Overview」編です。<br/>
+公式サイトを適当に翻訳しただけですので、あしからず。</p>
+
+<h5>レベル</h5>
+
+<p><strong>INTERMEDIATE</strong></p>
+
+<!-- more -->
+
+
+<h5>環境</h5>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> <strong>PC</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Prosessor</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>RAM</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>OS</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Kernel</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> 3.13.0-44-generic </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Gazebo</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Version 5.0.1 </td>
+</tr>
+</tbody>
+</table>
+
+
+<h5>参考</h5>
+
+<p><a href="http://gazebosim.org/tutorials?cat=connect_ros">GAZEBO Tutorial-Connect to ROS</a></p>
+
+<h2>チュートリアル : ROSの統合概要</h2>
+
+<p>Gazebo1.9と<a href="http://www.ros.org/wiki/hydro/">ROS Hydro</a>では、GazeboはROSの直接的な依存関係はなく、Ubuntuのスタンドアローンなパッケージとしてインストールされていました。歴史的に、GazeboをROSと共に使うには、Legacyの<code>simulator_gazebo</code>スタックと共にビルドされた、特別なバージョンのGazeboが必要でした。<br/>
+ROSとスタンドアローンなGazeboを統合するときに、スタンドアローンなGazeboに関するラッパーである、新しい<code>gazebo_ros_pkds</code>という名前のROSパッケージが作られました。このパッケージでは、ROSのメッセージやサービス、そして動的参照を使ってGazeboの中でロボットをシミュレートするために、必要なインターフェースを供給しています。<code>simulatiorgazebo</code>と<code>gazeboros_pkgs</code>の間の主な違いは現在以下のようになっている。:</p>
+
+<blockquote><ul>
+<li>それ単体ではROSとの接続機能を持たないGazeboの最新スタンドアローンな依存関係をサポートしている</li>
+<li><a href="http://www.ros.org/wiki/catkin">catkin</a>でビルドできる</li>
+<li>可能な限り、URDFと<a href="http://gazebosim.org/sdf.html">SDF</a>を同じものとみなす</li>
+<li>Gazeboでのソースコードの重複を減らす</li>
+<li><code>ros_control</code>を使ったコントロールのためのボックス以外のサポートの改善</li>
+<li>DARPAロボティクスチャレンジによるリアルタイムコントローラ統合の効率的な改善</li>
+<li>現在のROSとGazeboから古いコードを削除する</li>
+</ul>
+</blockquote>
+
+<p>新しいインターフェースの概要は下図のようになっているそうです。尚、下図は公式サイトのものです。:
+<img src="http://cir-kit.github.io/images/2015-02-14-gazebo-ros-overview/775px-Gazebo_ros_api.png" alt="775px-Gazebo_ros_api" /></p>
+
+<h3><code>simulator_gazebo</code>からアップグレードする</h3>
+
+<p>以下のガイドラインは、あなたのGazeboの依存パッケージを、ROSパッケージの中で使用するために、<code>simulator_gazebo</code>からアップグレードするのに役立つでしょう。:</p>
+
+<h4>Catkin</h4>
+
+<p>Gazeboと古い<code>simulatorgazebo</code>スタックによるインターフェースのための現在のパッケージは<a href="http://www.ros.org/wiki/rosbuild">rosbuild</a>のビルドシステムで使われているものに似ています。ROS Hydroの中の<code>gazeboros_pkgs</code>とともに移行するためには、まず最初にパッケージを<strong>&ldquo;catkinize&rdquo;</strong>する必要があります。<a href="http://www.ros.org/wiki/catkin/Tutorials">Catkin Tutorials</a>をご覧ください。</p>
+
+<h4>Launch Files</h4>
+
+<p>Gazeboを起動するためには、以前作成した<code>roslaunch</code>ファイルにいくつかの変更を行う必要があります。それらのパッケージをアップデートする最も良い方法は、Gazeboのチュートリアルにある<a href="http://gazebosim.org/tutorials?tut=ros_roslaunch&amp;cat=connect_ros">roslaunchファイルを使ってモデルをスポーンさせる</a>を読むことです。nutshellでは:</p>
+
+<blockquote><ul>
+<li><code>roslaunch</code>ファイルの中では、<code>pkg="gazebo"</code>は<code>pkg="gazebo_ros"</code>とリネームする必要があります。</li>
+<li><code>gazebo_worlds</code>パッケージは消去されました。ほとんどの<code>world</code>ファイルはめったに使われず、SDFやXMLフォーマットの中の変更と共に定義されることもありません。つまり、<code>empty.world</code>を含むすべての<code>world</code>ファイルはGazeboのプロジェクト自身の中で、センタライズ（初期化）されます。</li>
+<li>Gazeboの<code>launch</code>ファイルを使う最も良い方法は、<code>gazebo_ros</code>パッケージにある、<code>empty world</code>の<code>launch</code>ファイルをただ単にinherentもしくはincludeすることです。</li>
+</ul>
+</blockquote>
+
+<h4>CMakeLists.txt</h4>
+
+<p>GazeboはもはやROSパッケージではないが、システム依存はあるので、<code>Cmake</code>ファイルを再構成する必要があります。以下に示すのは、<code>CMakeLists.txt</code>の一例です。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='cmake'><span class='line'><span class="nb">cmake_minimum_required</span><span class="p">(</span><span class="s">VERSION</span> <span class="s">2.8.3</span><span class="p">)</span>
+</span><span class='line'><span class="nb">project</span><span class="p">(</span><span class="s">YOURROBOT_gazebo_plugins</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">find_package</span><span class="p">(</span><span class="s">catkin</span> <span class="s">REQUIRED</span> <span class="s">COMPONENTS</span>
+</span><span class='line'>  <span class="s">gazebo_ros</span>
+</span><span class='line'><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># Depend on system install of Gazebo</span>
+</span><span class='line'><span class="nb">find_package</span><span class="p">(</span><span class="s">gazebo</span> <span class="s">REQUIRED</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">include_directories</span><span class="p">(</span><span class="s">include</span> <span class="o">${</span><span class="nv">catkin_INCLUDE_DIRS</span><span class="o">}</span> <span class="o">${</span><span class="nv">GAZEBO_INCLUDE_DIRS</span><span class="o">}</span> <span class="o">${</span><span class="nv">SDFormat_INCLUDE_DIRS</span><span class="o">}</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># Build whatever you need here</span>
+</span><span class='line'><span class="nb">add_library</span><span class="p">(</span><span class="s">...</span><span class="p">)</span> <span class="c"># TODO</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">catkin_package</span><span class="p">(</span>
+</span><span class='line'>    <span class="s">DEPENDS</span>
+</span><span class='line'>      <span class="s">gazebo_ros</span>
+</span><span class='line'>    <span class="s">CATKIN_DEPENDS</span>
+</span><span class='line'>    <span class="s">INCLUDE_DIRS</span>
+</span><span class='line'>    <span class="s">LIBRARIES</span>
+</span><span class='line'><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>package.xml</h4>
+
+<p>これは<code>rosbuild</code>における<code>manifest.xml</code>を置き換えたものです。</p>
+
+<p>This is the replacement for the rosbuild &ldquo;manifest.xml&rdquo;: - Add dependency on the new gazebo_ros package: ~~~ gazebo_ros gazebo_ros ~~~ ### Running Gazebo The names of the ROS nodes to launch Gazebo have changes slightly to coincide with the Gazebo executable names: - rosrun gazebo_ros gazebo now launch both the Gazebo server and GUI. - rosrun gazebo_ros gui has been renamed to rosrun gazebo_ros gzclient - rosrun gazebo_ros gzserver has been added Available nodes to run:</p>
+
+<p>rosrun gazebo_ros gazebo
+rosrun gazebo_ros gzserver
+rosrun gazebo_ros gzclient
+rosrun gazebo_ros spawn_model
+rosrun gazebo_ros perf
+rosrun gazebo_ros debug</p>
+
+<p>These nodes are better documented in the tutorial Using roslaunch files to spawn models in Gazebo.
+More</p>
+
+<p>Add your upgrade issues here, please
+Tutorials</p>
+
+<p>Tutorials from ros.org have been almost entirely removed and re-written from scratch on this website to reflect the many changes that have occured over the course of Gazebo&rsquo;s history. We&rsquo;ve done our best to thoroughly document how to get your URDF-based robot running smoothly in Gazebo. If you have any question please see answers.ros.org.</p>
+
+<p>Continue to Installing gazebo_ros Packages.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[センサについて（カメラの歪み 編）No.5.2]]></title>
@@ -1340,10 +1528,10 @@ Gazeboサーバを<code>-r</code>コマンドラインオプションをつけ�
 <li><p>先ほど手に入れたイメージを選んでください。選んだら、<strong>Next</strong>を押してください。
 <img src="http://cir-kit.github.io/images/2015-02-06-gazebo-building-editor/building_editor-next.png" alt="building_editor-next" /></p></li>
 <li><p>トレースする壁が、正しい大きさで出力できているか確かめるために、メートルピクセル比[px/m]を設定しなければなりません。比を知っているなら、ダイアログに直接入力して、クリックすればOKです。今回の例では、比がわかっていないとします。しかし、トレースイメージ中の実世界での二点間の距離がわかっているとすると、（例えば。一番長い壁が7.5 [m]であるとか）比を計算することで、使用できるようになります。:</p></li>
-<li><p>壁の一端をクリックしてください。すると、以下のように、オリジナルのラインが現れます。</p></li>
-<li><p>壁の一端をクリックしてください。すると、ラインが定義されます。</p></li>
-<li><p>個々で、ダイアログに距離を単位[m]で入力してください(今回は7.5 [m]です)。すると、ピクセルメートル比は先ほど指定したラインに沿って自動で計算されます。</p></li>
-<li><p>完了したら、OKをクリックしてください。
+<li><p> 壁の一端をクリックしてください。すると、以下のように、オリジナルのラインが現れます。</p></li>
+<li><p> 壁の一端をクリックしてください。すると、ラインが定義されます。</p></li>
+<li><p> 個々で、ダイアログに距離を単位[m]で入力してください(今回は7.5 [m]です)。すると、ピクセルメートル比は先ほど指定したラインに沿って自動で計算されます。</p></li>
+<li><p> 完了したら、OKをクリックしてください。
 <img src="http://cir-kit.github.io/images/2015-02-06-gazebo-building-editor/import_step_2.png" alt="import_step_2" /></p></li>
 <li><p>うまく行けば、2DViewの部分に、イメージが表示されます。<br/>
 <strong>コツ : </strong>レベルあ上がれば、それぞれのフロアを同じプロセスでインポートすることができます。</p></li>
@@ -6118,183 +6306,6 @@ Gazeboはシミュレーションに使用するモデルについて記述し�
 <h3>プラグイン</h3>
 
 <p>Phisics、センサ、Renderingライブラリはプラグインをサポートしています。それらのプラグインでは、ユーザーはコミュニケーションシステムを使用することなく、それぞれのライブラリにアクセスすることができます。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[GAZEBOを使ってみよう ! (Gazebo コンポーネント 編) No.1.2]]></title>
-    <link href="http://cir-kit.github.io/blog/2015/01/31/gazebo-components/"/>
-    <updated>2015-01-31T18:01:34+09:00</updated>
-    <id>http://cir-kit.github.io/blog/2015/01/31/gazebo-components</id>
-    <content type="html"><![CDATA[<p><img src="http://cir-kit.github.io/images/gazebo_logo.png" alt="gazebo*logo" /></p>
-
-<h5>検証日時</h5>
-
-<p>01/31/2015 (Sat)</p>
-
-<h5>概要</h5>
-
-<p>Gazeboのチュートリアル第一弾「Get Started」。その「Gazebo Components」編です。<br/>
-公式サイトを適当に翻訳しただけですので、あしからず。</p>
-
-<h5>レベル</h5>
-
-<p><strong>BEGINNER</strong></p>
-
-<!-- more -->
-
-
-<h5>環境</h5>
-
-<table>
-<thead>
-<tr>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center;"> <strong>PC</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Prosessor</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>RAM</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>OS</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Kernel</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> 3.13.0-44-generic </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Gazebo</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Version 5.0.1 </td>
-</tr>
-</tbody>
-</table>
-
-
-<h5>参考</h5>
-
-<p><a href="http://gazebosim.org/tutorials?cat=get_started">GAZEBO Tutorial-GetStarted</a></p>
-
-<hr />
-
-<p>このページではGazeboシミュレーションを実行するときに一緒に実行されるそれぞれのアイテムについて説明します。</p>
-
-<h2>worldファイル</h2>
-
-<p>worldディスクリプションファイルにはロボット、ライト、センサ、静的物体などのシミュレーションのすべての要素が含まれています。このふぁいるは<a href="http://sdformat.org/spec">SDF (Simulation Description Format)</a>フォーマットを使用しており、<code>.world</code>という拡張子がついています。<br/>
-Gazeboサーバー(<code>gzserver</code>)はこのファイルを読み込み、シミュレーションの環境を構築します。<br/>
-Gazeboでは宅sなんのworldデータの例が提供されています。それらのworldデータは<code>&lt;install_path&gt;/share/gazebo-&lt;version&gt;/worlds</code>に配置してあります。</p>
-
-<h2>modelファイル</h2>
-
-<p>modelファイルもworldファイルと同じように<a href="http://sdformat.org/spec">SDF</a>フォーマットを使用していますが、唯一ひとつだけ<code>&lt;model&gt; ... &lt;/model&gt;</code>を含んでいなければなりません。これらのファイルの目的はモデルの再利用を用意にし、worldファイルを簡単化するというものです。一度modelファイルが生成されると、以下のようなSDF文法にしたがったコードを記入することでworldファイルにincludeすることが可能です。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;include&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;uri&gt;</span>model://model_file_name<span class="nt">&lt;/uri&gt;</span>
-</span><span class='line'><span class="nt">&lt;/include&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>多くのmodelは一行のmodelデータベース（バージョン情報、Gazeboによって提供されるいくつかのモデル例）によって提供されます。Gazeboをインターネット接続が有効な環境で使用しているとすると、たくさんのモデルを<a href="http://bitbucket.org/osrf/gazebo_models">データベース</a>から挿入することが可能ですし、実行中に必要なコンテンツをダウンロードすることも可能です。</p>
-
-<h3>環境変数</h3>
-
-<p>ファイルを配置するために、また、クライアントとサーバーの間の通信をセットアップするために、Gazeboにはたくさんの<a href="http://gazebosim.org/user_guide/started__components__env.html">環境変数</a>があります。<br/>
-Gazebo 1.9.0より、ほとんどの場合に使用するデフォルト変数は編纂されています。つまり、多くの変数は設定する必要がないということです。これらのデフォルト変数は以下のシェルスクリプトの中にも含まれています。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">source</span> &lt;install_path&gt;/share/gazebo/setup.sh
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>例えば、もし、モジュールを検索するためのパスを拡張するなどして、Gazeboの挙動を修正したいなら、まず最初に<code>source</code>コマンドで上記のェルスクリプトを実行したあと、設定されている変数を修正するということです。</p>
-
-<h3>Gazeboサーバー</h3>
-
-<p>このサーバーはGazeboの実体です。コマンドラインから与えられるworldディスクリプションファイルを解読し、物理エンジンやセンサエンジンを使ってシミュレータを実行します。<br/>
-このサーバーは以下のコマンドを使うことで実行できます。サーバーにはグラフィックが含まれていない、つまり、GUIが存在しないということに留意してください。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gzserver &lt;world_filename&gt;
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>ここで、<code>&lt;world_filename&gt;</code>は：</p>
-
-<ol>
-<li><p>カレントディレクトリ（現在のディレクトリ）との相対パス</p></li>
-<li><p>絶対パス</p></li>
-<li><p>GAZEBO_RESOURCE_PATHに記されるパスとの相対パス</p></li>
-</ol>
-
-
-<p>のいずれかである必要があります。<br/>
-Gazeboによって提供されるworldデータは<code>/share/gazebo-*/worlds</code>にあります。<br/>
-例えば、Gazeboによって提供される<code>empty.world</code>を使用する場合、以下のコマンドを使います。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gzserver worlds/empty.world
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>グラフィカルクライアント</h2>
-
-<p>グラフィカルクライアントは実行中の<code>gzserver</code>と接続し、要素を表示します。実行中のシミュレーションを修正することができるツールでもあります。<br/>
-グラフィカルクライアントは以下のコマンドで実行されます。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gzclient
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>サーバー + グラフィカルクライアントを一度に</h3>
-
-<p>コマンド<code>gazebo</code>はサーバーとクライアントを一度に利用可能にするコマンドです。<code>gzserver worlds/empty.world</code>と<code>gzclient</code>をそれぞれ実行する代わりに、以下のように実行することができます</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo worlds/empty.world
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>プラグイン</h2>
-
-<p>プラグインではGazeboにシンプルでかつ便利なインターフェース接続メカニズムを提供しています。プラグインはコマンドラインでの記述とworld/modelファイル（<a href="http://sdformat.org/spec">SDF</a>フォーマットを参照）での記述のどちらも読み込むことができます。コマンドラインに記述されたものが最初に読み込まれ、world/modelファイルに記述されたプラグインを次に読み込みます。ほとんどのプラグインがサーバーによって読み込まれますが、プラグインはグラフィカルクライアントでもまた、GUIのカスタムを用意にするために読み込まれます。<br/>
-コマンドラインからプラグインを読み込む例:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gzserver -s
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>グラフィカルクライアントでも同じように：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gzclient -g
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>プラグインについてもっと情報が必要なら<a href="http://gazebosim.org/tutorials/?tut=plugins_hello_world">プラグインのオーバービュー</a>を参照してください。</p>
 ]]></content>
   </entry>
   
