@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Ubuntu | 九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/blog/categories/ubuntu/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-02-14T15:50:38+09:00</updated>
+  <updated>2015-02-14T22:07:48+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -14,7 +14,229 @@
 
   
   <entry>
-    <title type="html"><![CDATA[GazeboをROSに繋ぐ (どのGazebo/ROSのバージョンの組み合わせを使うか 編)]]></title>
+    <title type="html"><![CDATA[GazeboをROSに繋ぐ (Gazebo_ros_pkgsをインストールする 編) No.6.3]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/02/14/gazebo-installing-gazebo-ros-pkgs/"/>
+    <updated>2015-02-14T21:33:12+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/02/14/gazebo-installing-gazebo-ros-pkgs</id>
+    <content type="html"><![CDATA[<p><img src="http://cir-kit.github.io/images/gazebo_logo.png" alt="gazebo_logo" /></p>
+
+
+
+
+<h5>検証日時</h5>
+
+
+
+
+<p>02/14/2015 (Sat)</p>
+
+
+
+
+<h5>概要</h5>
+
+
+
+
+<p>Gazeboのチュートリアル第六弾「Connect to ROS」。<br/>
+ROSはロボットの制御フレームワークです。このチュートリアルでは、GazeboとROSのインターフェースについて説明します。<br/>
+今回はその「Installing gazebo_ros_pkgs」編です。<br/>
+公式サイトを適当に翻訳しただけですので、あしからず。</p>
+
+
+
+
+<h5>レベル</h5>
+
+
+
+
+<p><strong>INTERMEDIATE</strong></p>
+
+
+
+
+<!-- more -->
+
+
+
+
+<h5>環境</h5>
+
+
+
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> <strong>PC</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Prosessor</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>RAM</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>OS</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Kernel</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> 3.13.0-44-generic </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Gazebo</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Version 5.0.1 </td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+<h5>参考</h5>
+
+
+
+
+<p><a href="http://gazebosim.org/tutorials?cat=connect_ros">GAZEBO Tutorial-Connect to ROS</a></p>
+
+
+
+
+<h2>はじめに</h2>
+
+
+
+
+<p>GazeboのインターフェースのためのROSパッケージのセットは、<code>gazebo_ros_pkgs</code>という名前の新しいメタパッケージで構成されています。続きを読む前に、前提情報として、<a href="http://cir-kit.github.io/blog/2015/02/14/gazebo-ros-overview/">ROSの統合についての概要</a>をご覧ください。<br/>
+これらの説明は、<a href="http://www.ros.org/wiki/hydro">ROS Hydro</a>と<a href="http://www.ros.org/wiki/indigo">Ros Indigo</a>と完全に統合されたGazeboのバージョンを使用するためのものです。チュートリアルを始める前に、<a href="http://cir-kit.github.io/blog/2015/02/14/gazebo-which-combination-of-ros-and-gazebo-versions-to-use/">どのGazebo/ROSのバージョンの組み合わせを使うか</a>をまず読むことをおすすめします。必要に応じて、それに応えるインストール方法が必要となります。</p>
+
+
+
+
+<h2>必須条件</h2>
+
+
+
+
+<p>ROSのコンセプトについて<a href="http://www.ros.org/wiki/ROS/Tutorials">ROSチュートリアル</a>を通じて理解しておく必要があります。</p>
+
+
+
+
+<h3>ROSをインストールする</h3>
+
+
+
+
+<p>ROSの統合チュートリアルのために、(<code>ros-hydro-desktop-full</code>もしくは<code>ros-indigo-desktop-full</code>)インストールをおすすめします。それにより、必要なパッケージを手に入れることができます。<br/>
+詳しくは、<a href="http://www.ros.org/wiki/ROS/Installation">ROSのインストール</a>ページをご覧ください。もちろん、ROSのインストールページの説明に従い、ROSの<code>setup.sh</code>を<code>source</code>コマンドで実行しておいてください。</p>
+
+
+
+
+<h3>Gazeboをインストールする</h3>
+
+
+
+
+<p>ソースコードまたは、プレビルドされたUbuntuのdebianパッケージのどちらを使っても、Gazeboをインストールできます。<br/>
+<a href="http://cir-kit.github.io/blog/2015/01/31/gazebo-install/">Gazeboのインストール</a>をご覧ください。ソースコードからインストールする場合には、<code>gazebo_X.Y</code>ブランチ(X.Yはあなたの必要とするバージョンを指します)をすることを忘れないでください。</p>
+
+
+
+
+<h4>スタンドアローンなGazeboの動作チェックをする</h4>
+
+
+
+
+<p><code>gazebo_ros_pkgs</code>のインストールを行う前に、以下のコマンドをターミナルで入力して、スタンドアローンなGazeboの動作チェックを行うことを忘れないでください。:</p>
+
+
+
+
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>  gazebo
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+
+
+
+<p>空のシミュレーションと、GUIが開くのが確認できるでしょう。また、画面左側の<strong>Insert</strong>タブをクリックし、モデルを選んで(クリックすると、モデルをシミュレーションのどこに置くか決定できます)、シミュレーションに足してください。</p>
+
+
+
+
+<h4>Gazeboのバージョンが正しいことを確認する</h4>
+
+
+
+
+<p>Gazeboがどこにインストールされているか探し、それが正しい位置にあるか確かめるために、以下のコマンドを実行してください。:</p>
+
+
+
+
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>  which gzserver
+</span><span class='line'>  which gzclient
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+
+
+
+<p>もし、デフォルトの位置で、ソースコードからインストールしたのなら、結果は以下のようになるはずです。:</p>
+
+
+
+
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>  /usr/local/bin/gzserver
+</span><span class='line'>  /usr/local/bin/gzclient
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+
+
+
+<p>もし、debianパッケージを使用してインストールしたなら、結果は以下のようになるはずです。:</p>
+
+
+
+
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>  /usr/bin/gzserver
+</span><span class='line'>  /usr/bin/gzclient
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[GazeboをROSに繋ぐ (どのGazebo/ROSのバージョンの組み合わせを使うか 編) No.6.2]]></title>
     <link href="http://cir-kit.github.io/blog/2015/02/14/gazebo-which-combination-of-ros-and-gazebo-versions-to-use/"/>
     <updated>2015-02-14T15:29:45+09:00</updated>
     <id>http://cir-kit.github.io/blog/2015/02/14/gazebo-which-combination-of-ros-and-gazebo-versions-to-use</id>
@@ -152,42 +374,221 @@ Gazebo ABIの安定化ポリシーは、同じメジャーナンバーを持つ�
 
 
 
-<p>Installing Gazebo
-Gazebo Ubuntu packages</p>
+<h3>Gazeboをインストールする</h3>
 
 
 
 
-<p>The easiest way of installing Gazebo is to use packages. There are two main repositories which host Gazebo packages: one is packages.ros.org and the other is osrfoundation.packages.org. At the time of writing:</p>
+<h4>GazeboのUbuntuパッケージ</h4>
 
 
 
 
-<pre><code>packages.ros.org
-    Hydro: hosts gazebo version 1.x package.
-    Indigo: host gazebo version 2.x package.
-packages.osrfoundation.org
-    gazebo 1.x series (package name gazebo)
-    gazebo 2.x series (package name gazebo-current or gazebo2 in saucy/trusty)
-    gazebo 3.x series (package name gazebo3)
-    gazebo 4.x series (package name gazebo4)
-</code></pre>
+<p>Gazeboをインストールする簡単な方法は、パッケージを使うことです。Gazeboパッケージがホストしているレポジトリは主に2つあります。:一つは<code>package.ros.org</code>で、もうひとつは、<code>osrfoundation.packages.org</code>です。この投稿を行った時点では、ホストの状況は以下のようになっています。</p>
 
 
 
 
-<p>This means that including the osrfoundation repository is not strictly needed to get the Gazebo Ubuntu package. It can be installed from the ros repository.
-Gazebo built from source</p>
+<blockquote><ul>
+<li>packages.ros.org
+
+<ul>
+<li>Hydro: hosts gazebo version 1.x package.</li>
+<li>Indigo: host gazebo version 2.x package.</li>
+</ul>
+</li>
+<li>packages.osrfoundation.org
+
+<ul>
+<li>gazebo 1.x series (package name gazebo)</li>
+<li>gazebo 2.x series (package name gazebo-current or gazebo2 in saucy/trusty)</li>
+<li>gazebo 3.x series (package name gazebo3)</li>
+<li>gazebo 4.x series (package name gazebo4)</li>
+</ul>
+</li>
+</ul>
+</blockquote>
 
 
 
 
-<p>If you have compiled a gazebo version from source, note that depending on the repository branch used (gazebo_3.0,gazebo_4.0,&hellip;) your gazebo will be binary compatible with the gazebo_ros_pkgs (and all other ROS packages compiled on top of gazebo) only if the major version matches your local branch repository and the gazebo version used in your ROS distro. For example, if you are compiling from gazebo branch gazebo_2.0, you can use the gazebo_ros_pkgs present in Indigo (which uses gazebo2 series).</p>
+<p>このことは、<code>osrfoundation</code>レポジトリは必ずしもUbuntuのGazeboパッケージから取得する必要がないということを意味します。ROSのレポジトリからインストールすることができます。</p>
 
 
 
 
-<p>Note that if you are using default branch, you are probably not binary compatible with any of the packages released, so you will need a catkin workspace for getting a valid gazebo_ros_pkgs.</p>
+<h4>Gazeboをソースからビルドする</h4>
+
+
+
+
+<p>ソースコードからGazeboのバージョンをコンパイルしたのなら、あなたのGazeboで使用しているレポジトリのブランチにおける依存関係(gazebo_3.0, gazebo_4.0,&hellip;etc)は、メジャー場＾ジョンがローカルブランチのレポジトリとROSのディストリビューションで使用しているGazeboのバージョンが一致するときにかぎり、<code>gazebo_ros_pkgs</code>(それとGazeboでコンパイル済みのすべてのROSパッケージも)と共にバイナリコンパイルされます。例えば、もしあなたが、<code>gazebo_2.0</code>のGazeboブランチよりコンパイルをしているのなら、Indigo(Indigoはgazebo2シリーズを使用している)にある<code>gazebo_ros_pkgs</code>を使用することができます。<br/>
+もしあなたが、デフォルトのブランチを使用しているなら、大抵のリリースされたパッケージと共にバイナリコンパイルを行うことはできません。なので、<code>gazebo_ros_pkgs</code>を有効にするために、<code>catkin</code>ワークスペースが必要となります。</p>
+
+
+
+
+<h3>ROSディストリビューションのためにGazeboのデフォルトバージョンを使う</h3>
+
+
+
+
+<p>特定のROSディストリビューションを使用する必要があり、out-of-the-boxのパッケージに関連するGazeboやROSを使用したい人にとって、このセクションは重要です。</p>
+
+
+
+
+<h4>Indigo</h4>
+
+
+
+
+<p>ROS IndigoはGazeboの2.xのバージョンをホストしています。完全に統合されたROSのシステムのためには、Gazeboの2.xバージョンを使用することをおすすめします。適用方法は、ROSレポジトリを使用するということだけで、(自動でgazebo2がインストールされます)<code>osrfoundation</code>レポジトリは必要ありません。</p>
+
+
+
+
+<h4>Hydro</h4>
+
+
+
+
+<p>ROS HydroはGazeboの1.9.xのバージョンをホストしています。完全に統合されたROSシステムのためには、Gazeboの1.9.xバージョンを使用することをおすすめします。適用する方法は、ROSレポジトリを使用するということだけで、(自動でgazeboがインストールされます)<code>osrfoundation</code>レポジトリは必要ありません。</p>
+
+
+
+
+<h3>特定のバージョンのGazeboをROSと使用する</h3>
+
+
+
+
+<p><strong>!警告! : このオプションを使うと、ROSのdebレポジトリによるGazeboに関連したいかなるROS Ubuntuパッケージも使用できなくなるかもしれません。<code>gazebo_ros_pkgs</code>と同等のものは、debianパッケージによりインストールすることは可能ですが、その他のすべてのソフトウェア（<code>turtlebot_gazebo</code>など）はソースコードからビルドしなければなりませんが、<code>catkin</code>ワークスペースのおかげで、これを行うのはとても簡単です。</strong><br/>
+本当に必要であれば、特定のバージョンのGazeboとROSを使用する方法はたくさんあります:</p>
+
+
+
+
+<h4>Gazebo 4.x シリーズ</h4>
+
+
+
+
+<p>OSRFレポジトリは、gazebo4パッケージの最新をビルドする、<code>-gazebo4-</code>バージョンのROS/IndigoとROS/HydroのGazeboラッパーを提供しています。(`gazebo4_ros_pkgs)これらを使用する手順は以下のとおりです。</p>
+
+
+
+
+<ul>
+<li><code>osrfoundation</code>レポジトリをソースリストに追加する</li>
+<li><code>gazebo4</code>パッケージをインストールするのに使う、<code>ros-distro-gazebo4-ros-pkgs</code>を<code>osrfoundation</code>レポジトリより追加する。</li>
+<li>ソースコードから、残りのソフトウェアをコンパイルするために、<code>catkin</code>ワークスペースを使う</li>
+</ul>
+
+
+
+
+<h4>Gazebo 3.x シリーズ</h4>
+
+
+
+
+<p>OSRFレポジトリは、gazebo3パッケージの最新をビルドする、<code>-gazebo3-</code>バージョンのROS/HydroとROS/GroovyのGazeboラッパーを提供しています。(<code>gazebo3_ros_pkgs</code>)これらを使用する手順は以下のとおりです。</p>
+
+
+
+
+<ul>
+<li><code>osrfoundation</code>レポジトリをソースリストに追加する</li>
+<li><code>gazebo3</code>パッケージをインストールするのに使う、<code>ros-distro-gazebo3-ros-pkgs</code>を<code>osrfoundation</code>レポジトリより追加する。</li>
+<li>ソースコードから、残りのソフトウェアをコンパイルするために、<code>catkin</code>ワークスペースを使う</li>
+</ul>
+
+
+
+
+<h4>Gazebo 2.x シリーズ</h4>
+
+
+
+
+<p>OSRFレポジトリは、gazebo-currentパッケージの最新をビルドする、<code>-current-</code>バージョンのROS/HydroとROS/GroovyのGazeboラッパーを提供しています。(<code>gazebo_ros_pkgs-current</code>)これらを使用する手順は以下のとおりです。</p>
+
+
+
+
+<ul>
+<li><code>osrfoundation</code>レポジトリをソースリストに追加する</li>
+<li><code>gazebo-current</code>パッケージをインストールするのに使う、<code>ros-distro-gazebo-ros-pkgs-current</code>を<code>osrfoundation</code>レポジトリより追加する。</li>
+<li>ソースコードから、残りのソフトウェアをコンパイルするために、<code>catkin</code>ワークスペースを使う</li>
+</ul>
+
+
+
+
+<h2>FAQ</h2>
+
+
+
+
+<h4>私はDARPAのロボティクスチャレンジ参加者です。どのバージョンを使うのが良いですか?</h4>
+
+
+
+
+<p><code>drcsim-3.2</code>は<code>gazebo3</code>でビルドされています。<code>drcsim-4.0</code>からスタートすると、<code>gazebo4</code>を使うことになります。</p>
+
+
+
+
+<h4>私はまだROSを使ったことがありません。どのバージョンを使うのが良いですか?</h4>
+
+
+
+
+<p>ROSのサポートが必要ないなら、<a href="http://gazebosim.org/tutorials/?cat=installation"><code>osrfoundation</code>のレポジトリを利用してインストール</a>できる、最新リリースのバージョンをおすすめします。</p>
+
+
+
+
+<h4><code>bullet/simbody/dart</code>物理エンジンを使いたいのですが、どのバージョンが良いですか?</h4>
+
+
+
+
+<p><code>gazebo4</code>から始めるなら、<code>bullet</code>と<code>simbody</code>がUbuntuパッケージでサポートされています。なので、ROSと一緒に、<code>gazebo4</code>を使用するには、上記の説明に従ってください。<code>Dart</code>はソースコードからのインストールも必要とします（<code>gazebo3</code>からはじめるなら）。なので、<code>gazebo3</code>かそれ以外のバージョンを使用することができます。ROSと共に使用するために、このページの上部の説明に従ってください。</p>
+
+
+
+
+<h4>ROS-JではどのバージョンのGazeboが動きますか?</h4>
+
+
+
+
+<p>まだ決まってません。しかし、<a href="http://gazebosim.org/#status">予定では</a>おそらく<code>gazebo5</code>でしょう。</p>
+
+
+
+
+<h4>gazebo4とROS Indigoを使う必要があります。どうしたらよいですか?</h4>
+
+
+
+
+<p><strong>!警告! : このオプションを使うと、ROSのdebレポジトリから供給されるGazebo関連のROS Indigoパッケージが使えなくなるかもしれません。ソースコードからビルドする必要がありますが、<code>catkin</code>ワークスペースのおかげで、これを行うのはとても簡単です。</strong><br/>
+Gazebo4.xのバージョンにだけある機能を使用する必要があるなら、<code>gazebo4</code>とROS Indigoをインストールするという方法があります。<a href="http://gazebosim.org/tutorials?tut=ros_wrapper_versions&amp;cat=connect_ros#Gazebo%204.x%20series">このページ</a>にある<code>gazebo4</code>パッケージを使ったROSの使い方についての説明に従ってください。</p>
+
+
+
+
+<h4>gazebo3とROS Indigoを使う必要があります。どうしたらよいですか?</h4>
+
+
+
+
+<p><strong>!警告! : このオプションを使うと、ROSのdebレポジトリから供給されるGazebo関連のROS Indigoパッケージが使えなくなるかもしれません。ソースコードからビルドする必要がありますが、<code>catkin</code>ワークスペースのおかげで、これを行うのはとても簡単です。</strong><br/>
+Gazebo3.xのバージョンにだけある機能を使用する必要があるなら、<code>gazebo3</code>とROS Indigoをインストールするという方法があります。<a href="http://gazebosim.org/tutorials?tut=ros_wrapper_versions&amp;cat=connect_ros#Gazebo%203.x%20series">このページ</a>にある<code>gazebo3</code>パッケージを使ったROSの使い方についての説明に従ってください。</p>
 
 ]]></content>
   </entry>
@@ -1789,285 +2190,6 @@ IMUノイズモデルをテストするには:</p>
 <div class="youtube-container">
 <iframe width="560" height="315" src="https://www.youtube.com/embed/LZTzUgkLfwk" frameborder="0" allowfullscreen></iframe>
 </div>
-
-
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[ツールとユーティリティ (ログフィルタリング 編) No.4.1]]></title>
-    <link href="http://cir-kit.github.io/blog/2015/02/13/gazebo-log-filtering/"/>
-    <updated>2015-02-13T20:57:58+09:00</updated>
-    <id>http://cir-kit.github.io/blog/2015/02/13/gazebo-log-filtering</id>
-    <content type="html"><![CDATA[<p><img src="http://cir-kit.github.io/images/gazebo_logo.png" alt="gazebo_logo" /></p>
-
-
-
-
-<h5>検証日時</h5>
-
-
-
-
-<p>02/13/2015 (Fri)</p>
-
-
-
-
-<h5>概要</h5>
-
-
-
-
-<p>Gazeboのチュートリアル第四弾「Tools and utilities」。<br/>
-Gazeboには多くのツールとユーティリティがあります。<br/>
-このチュートリアルでは、利用可能なツールとその使い方を説明します。<br/>
-今回はその「Log Filtering」編です。<br/>
-公式サイトを適当に翻訳しただけですので、あしからず。</p>
-
-
-
-
-<h5>レベル</h5>
-
-
-
-
-<p><strong>BEGINNER</strong></p>
-
-
-
-
-<!-- more -->
-
-
-
-
-<h5>環境</h5>
-
-
-
-
-<table>
-<thead>
-<tr>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center;"> <strong>PC</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Prosessor</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>RAM</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>OS</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Kernel</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> 3.13.0-44-generic </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Gazebo</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Version 5.0.1 </td>
-</tr>
-</tbody>
-</table>
-
-
-
-
-<h5>参考</h5>
-
-
-
-
-<p><a href="http://gazebosim.org/tutorials?cat=tools_utilities">GAZEBO Tutorial-Tools and Utilities</a></p>
-
-
-
-
-<h2>はじめに</h2>
-
-
-
-
-<p>状態のログとは、Gazeboからの環境情報の記録です。状態とは、姿勢、速度、加速度、そしてすべてのモデルのすべてのリンクに適用された力のことを指します。Gazeboでは、時間経過と共に変化するモデルの状態情報だけを記録します。状態ログのファイルには、ヘッダ、初期環境記録、状態の時系列情報で構成されています。</p>
-
-
-
-
-<h2>Gazeboログコマンドのラインツール</h2>
-
-
-
-
-<p>Gazeboでは、<code>gz log</code>コマンドでアクセスするロギングユーティリティ（記録ユーティリティ）を提供しています。<br/>
-ヘルプ情報を以下のコマンドで確認してみましょう。</p>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gz <span class="nb">help </span>log
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-
-<p>もしくは、</p>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gz log -h
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-
-<h2>使い方の例</h2>
-
-
-
-
-<h3>ステップ 1:状態ログファイルを作る</h3>
-
-
-
-
-<p>古いログファイルを消去することから初めましょう。</p>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>rm -rf ~/.gazebo/log/*
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-
-<p>今回は、ログファイルを生成するのに、PR2ワールドを使用します。<br/>
-Gazeboサーバを<code>-r</code>コマンドラインオプションをつけて実行しましょう。</p>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gzserver -r worlds/pr2.world
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-
-<p>数秒後に、サーバを<code>Ctrl-c</code>で停止しましょう。<br/>
-新しいタイムスタンプのあるディレクトリが<code>~/.gazebo/log/</code>の中に、一つのサブディレクトリと<code>state.log</code>ファイルがあるはずです。例えば以下のような感じです。</p>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>~/.gazebo/log/2015-02-13T21:18:11.849250/gzserverstate.log
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-
-<p>Gazeboでこれをリプレイすることにより、このログファイルを確認することができます。</p>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo -p ~/.gazebo/log/*/gzserver/state.lgo
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-
-<h3>ステップ 2:ログファイルをフィルタリングする</h3>
-
-
-
-
-<p><code>gz log</code>コマンドラインツールでは、ログファイルを通じたステッピングとログファイル表示のコンテンツのエコーのためのメカニズムを提供しています。表示エコーの特徴は、モデルやリンクの姿勢などの情報を定義するようなログファイルを生成するフィルタと結合したものとなります。<br/>
-記録した状態ログファイルをスクリーンにエコーしてみましょう。</p>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gz log -e -f ~/.gazebo/log/*/gzserver/state.log
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-
-<p>すると、スクロールできるほどたくさんの情報を確認することができるでしょう。<br/>
-では、ログファイルにあるすべての速度、加速度、力の情報を消してみましょう。つまり、姿勢の情報だけを残します。</p>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gz log -e -f ~/.gazebo/log/*/gzserver/state.log --filter *.pose/*.pose
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-
-<p><code>--filter</code>オプションは、ログファイルの情報を間引くには、柔軟で便利なコマンドライン引数です。<br/>
-<code>Hz</code>フィルタを使えば、シミュレーション時間についてもフィルタリングをオコナウことができます。例えば、30 [Hz]で状態情報を出力したいとすると、以下のようにコマンド入力を行います。:</p>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gz log -e -f ~/.gazebo/log/*/gzserver/state.log -z 30
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-
-<p>これらのフィルタはプレイバックのためのファイルに結合することができます。このことは<code>state.log</code>ファイルの大きさに依存することもあります。</p>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gz log -e -f ~/.gazebo/log/*/gzserver/state.log -z <span class="m">30</span> --filter *.pose/*.pose &gt; /tmp/filtered_state.log
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-
-
-<p>このログファイルは、以下のようにしてGazeboでリプレイすることができます。</p>
-
-
-
-
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo -p /tmp/filtered_state.log
-</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 
 
