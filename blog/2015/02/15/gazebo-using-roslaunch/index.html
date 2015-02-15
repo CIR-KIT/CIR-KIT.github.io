@@ -1,0 +1,934 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>GazeboをROSに繋ぐ (Roslaunchを使う 編) No.6.4 - 九州工業大学 CIR-KIT Blog</title>
+  <meta name="author" content="">
+
+  
+  <meta name="description" content="検証日時 02/14/2015 (Sat) 概要 Gazeboのチュートリアル第六弾「Connect to ROS」。
+ROSはロボットの制御フレームワークです。このチュートリアルでは、GazeboとROSのインターフェースについて説明します。
+今回はその「Using roalaunch」編です &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://cir-kit.github.io/blog/2015/02/15/gazebo-using-roslaunch/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="九州工業大学 CIR-KIT Blog" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-59178596-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">九州工業大学 CIR-KIT Blog</a></h1>
+  
+    <h2>九工大自律移動ロボット製作プロジェクトCIR-KITの技術系ブログ</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="cir-kit.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">GazeboをROSに繋ぐ (Roslaunchを使う 編) No.6.4</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-02-15T02:23:33+09:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>15</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>2:23 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><img src="/images/gazebo_logo.png" alt="gazebo_logo" /></p>
+
+<h5>検証日時</h5>
+
+<p>02/14/2015 (Sat)</p>
+
+<h5>概要</h5>
+
+<p>Gazeboのチュートリアル第六弾「Connect to ROS」。
+ROSはロボットの制御フレームワークです。このチュートリアルでは、GazeboとROSのインターフェースについて説明します。
+今回はその「Using roalaunch」編です。
+公式サイトを適当に翻訳しただけですので、あしからず。</p>
+
+<h5>レベル</h5>
+
+<p><strong>INTERMEDIATE</strong></p>
+
+<!-- more -->
+
+
+<h5>環境</h5>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> <strong>PC</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Prosessor</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>RAM</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>OS</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Kernel</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> 3.13.0-44-generic </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Gazebo</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Version 5.0.1 </td>
+</tr>
+</tbody>
+</table>
+
+
+<h5>参考</h5>
+
+<p><a href="http://gazebosim.org/tutorials?cat=connect_ros">GAZEBO Tutorial-Connect to ROS</a></p>
+
+<h2>チュートリアル : Gazebbo、worldファイル、URDFモデルを起動するためのroslaunchを使う</h2>
+
+<p>Gazeboを起動したり、worldモデルを開いたり、シミュレーション環境にロボットモデルをスポーンさせる方法はたくさんあります。このチュートリアルでは、<code>rosrun</code>と<code>roslaunch</code>を使ったROSを用いてのそれらの方法を説明します。ROSパッケージの中のURDFを保存し、様々なROSワークスペースのリソースパスを保存する方法を含みます。</p>
+
+<h3>worldモデルを開くためにroslaunchを使う</h3>
+
+<p><a href="http://www.ros.org/wiki/roslaunch">roslaunch</a>ツールはROSのノードを起動し、ROSの中でロボットを起動する基本的な方法です。Gazeboの空のworlを起動することは、これまでのチュートリアルで行ってきた<code>rosrun</code>コマンドを使うのと同じです。以下のように、単純に実行してみましょう。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>roslaunch gazebo_ros empty_world.launch
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>roslaunch引数</h4>
+
+<p>Gazeboの挙動を変更するためのlaunchファイルには、以下の引数を追加することができます。:</p>
+
+<h5>pused</h5>
+
+<blockquote><p>Gazeboを一時停止した状態で起動する(default false)</p></blockquote>
+
+<h5>usesimtime</h5>
+
+<blockquote><p>ROSの<code>/clock</code>トピックを通じて配信される、Gazebo-publishedのシミュレーションタイムを取得するために、ROSノードに時間を問い合わせます。(default true)</p></blockquote>
+
+<h5>gio</h5>
+
+<blockquote><p>Gazeboのユーザーインターフェースウィンドウをlaunchします。(default true)</p></blockquote>
+
+<h5>headless</h5>
+
+<blockquote><p>(Ogre)コンポーネントを記録することで、シミュレータが呼び出しているすべての関数を表示します。<code>gui:=true</code>と一緒では起動しません。(default false)</p></blockquote>
+
+<h5>debug</h5>
+
+<blockquote><p>gdbを使用したデバッグモードで<code>gzserver</code>(Gazeboのサーバー)を起動します。(default false)</p></blockquote>
+
+<h3>roslaunchコマンドの例</h3>
+
+<p>通常、引数のデフォルト値はすべて必要であり、以下のように記述します。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>roslaunch gazebo_ros empty_world.launch paused:<span class="o">=</span><span class="nb">true </span>use_sim_time:<span class="o">=</span><span class="nb">false </span>gui:<span class="o">=</span><span class="nb">true </span>throttled:<span class="o">=</span><span class="nb">false </span>headless:<span class="o">=</span><span class="nb">false </span>debug:<span class="o">=</span><span class="nb">true</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>他のデモworldをlaunchする</h3>
+
+<p><code>gazebo_ros</code>パッケージには、他のデモworldがすでに含まれています。以下がその内容です。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>roslaunch gazebo_ros willowgarage_world.launch
+</span><span class='line'>roslaunch gazebo_ros mud_world.launch
+</span><span class='line'>roslaunch gazebo_ros shapes_world.launch
+</span><span class='line'>roslaunch gazebo_ros rubble_world.launch
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>mudworld.launch</code>は、シンプルなジョイントメカニズムをlaunchするものであることを知っておいていください。<code>mudworld.launch</code>は以下の内容のlaunchファイルです。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;launch&gt;</span>
+</span><span class='line'>  <span class="c">&lt;!-- We resume the logic in empty_world.launch, changing only the name of the world to be launched --&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;include</span> <span class="na">file=</span><span class="s">&quot;$(find gazebo_ros)/launch/empty_world.launch&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;arg</span> <span class="na">name=</span><span class="s">&quot;world_name&quot;</span> <span class="na">value=</span><span class="s">&quot;worlds/mud.world&quot;</span><span class="nt">/&gt;</span> <span class="c">&lt;!-- Note: the world_name is with respect to GAZEBO_RESOURCE_PATH environmental variable --&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;arg</span> <span class="na">name=</span><span class="s">&quot;paused&quot;</span> <span class="na">value=</span><span class="s">&quot;false&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;arg</span> <span class="na">name=</span><span class="s">&quot;use_sim_time&quot;</span> <span class="na">value=</span><span class="s">&quot;true&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;arg</span> <span class="na">name=</span><span class="s">&quot;gui&quot;</span> <span class="na">value=</span><span class="s">&quot;true&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;arg</span> <span class="na">name=</span><span class="s">&quot;headless&quot;</span> <span class="na">value=</span><span class="s">&quot;false&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;arg</span> <span class="na">name=</span><span class="s">&quot;debug&quot;</span> <span class="na">value=</span><span class="s">&quot;false&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/include&gt;</span>
+</span><span class='line'><span class="nt">&lt;/launch&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>このlaunchファイルでは、<code>emptyworld.launch</code>から機能するのに必要不可欠なほとんどすべてを継承しています。<code>mud.World</code>ファイルとともに<code>emptyworld.launch</code>ファイルを用いる代わりに、私達が変更しなければならないパラメータは<code>worldname</code>パラメータだけです。他の引数はデフォルト値を設定しているだけです。</p>
+
+<h3>Worldファイル</h3>
+
+<p><code>mud_world.launch</code>ファイルをよく調べると、<code>mud.world</code>ファイルの構成に注目するでしょう。<code>mud.world</code>の最初のいくつかの構成要素は以下のようになっています。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>  <span class="nt">&lt;sdf</span> <span class="na">version=</span><span class="s">&quot;1.4&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;world</span> <span class="na">name=</span><span class="s">&quot;default&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;include&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;uri&gt;</span>model://sun<span class="nt">&lt;/uri&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/include&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;include&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;uri&gt;</span>model://ground_plane<span class="nt">&lt;/uri&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/include&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;include&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;uri&gt;</span>model://double_pendulum_with_base<span class="nt">&lt;/uri&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;name&gt;</span>pendulum_thick_mud<span class="nt">&lt;/name&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;pose&gt;</span>-2.0 0 0 0 0 0<span class="nt">&lt;/pose&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/include&gt;</span>
+</span><span class='line'>      ...
+</span><span class='line'>    <span class="nt">&lt;/world&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/sdf&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>あなたのコンピュータ上で、フルバージョンのworldファイルを以下のセクションで確認してください。</h4>
+
+<p>このworldファイルでは、３つのモデルが参照されていることをわずかに確認できます。３つのモデルはローカルのGazeboモデルデータベースの中にあります。もし見つからなければ、Gazeboのオンラインデータベースより自動的にダウンロードしてきます。
+worldファイルについて詳しく知りたければ、<a href="http://cir-kit.github.io/blog/categories/build-a-world/">環境をつくろう !</a>のチュートリアルをご覧ください。</p>
+
+<h4>worldファイルをコンピュータ上で検索する</h4>
+
+<p>worldファイルは、Gazeboのリソースパス上にある、<code>/worlds</code>ディレクトリの中にあります。このパスはGazeboをどのようにインストールし、どのタイプのシステムを使っているかということに依存します。Gazeboリソースの位置を探すには、以下のコマンドを使用してください。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>env <span class="p">|</span> grep GAZEBO_RESOURCE_PATH
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>典型的なパスだと、<code>/usr/local/share/gazebo-1.9</code>となるでしょう。<code>/worlds</code>に検索したパスを追加すると、<code>mud.world</code>ファイルを含む、Gazeboが使うディレクトリに直接接続できます。</p>
+
+<h2>独自のGazebo ROSパッケージを作る</h2>
+
+<p>Gazeboにロボットをスポーンさせる方法について続ける前に、最新版を使うために、ROSをGazeboと使う際の基本的なファイル構造（ヒエラルキー）についてまずは学びましょう。
+ここまでの段階で、あなたの<code>catkin</code>ワークスペースは<code>catkin_ws</code>という名前であると仮定します。もちろん、ワークスペースの名前は好きなものをつけてもらって構いません。例えば、あなたの<code>catkin</code>ワークスペースが以下のような位置にあるとします。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>/home/user/catkin_ws/src
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>/MYROBOT_description</code>という名前のパッケージの中に、あなたのロボットモデルにつながるすべてのものと、その記述についてがROSの基本的なパラメータとして存在し、Gazeoboとともに使用されるworldファイルとlaunchファイルは<code>/MyROBOT_gazebo</code>という名前のROSパッケージの中に存在します。ただし、<code>MYROBOT</code>の部分はあなたのロボット名です。これらの２つのパッケージにより、ファイル構造は以下のようになります。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>../catkin_ws/src
+</span><span class='line'>    /MYROBOT_description
+</span><span class='line'>        package.xml
+</span><span class='line'>        CMakeLists.txt
+</span><span class='line'>        /urdf
+</span><span class='line'>            MYROBOT.urdf
+</span><span class='line'>        /meshes
+</span><span class='line'>            mesh1.dae
+</span><span class='line'>            mesh2.dae
+</span><span class='line'>            ...
+</span><span class='line'>        /materials
+</span><span class='line'>        /cad
+</span><span class='line'>    /MYROBOT_gazebo
+</span><span class='line'>        /launch
+</span><span class='line'>            MYROBOT.launch
+</span><span class='line'>        /worlds
+</span><span class='line'>            MYROBOT.world
+</span><span class='line'>        /models
+</span><span class='line'>            world_object1.dae
+</span><span class='line'>            world_object2.stl
+</span><span class='line'>            world_object3.urdf
+</span><span class='line'>        /materials
+</span><span class='line'>        /plugins
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>catkin_create_pkg</code>コマンドは、新しいパッケージを作成する際に使用します。しかし、もし必要なら、<code>rosbuilt</code>を使っても簡単にそれを行うことができます。ほとんどすべてのフォルダとファイルは自明でなければなりません。
+次のセクションでは、カスタムのworldファイルを使うためのセッティングについて説明してゆきます。</p>
+
+<h3>カスタムのworldファイルを作る</h3>
+
+<p>あなたのパッケージやロボットに特化したあなた独自のROSパッケージの中にカスタムの<code>.world</code>を作成することができます。この短いチュートリアルでは、ground、sun、gas stationのある空のシミュレーション環境を作成します。以下は推奨規約です。<code>MYROBOT</code>の部分はあなたのロボットの名前にするか、ロボットがなければ、<code>test</code>の様な名前に置き換えるということを忘れないでください。尚、以下のチュートリアルでは、<code>catkin</code>ワークスペースが<code>~/catkin_ws/</code>(ホームディレクトリ直下に<code>catkin_ws</code>という名前である)となっていると仮定します。</p>
+
+<ul>
+<li><code>MYROBOT_gazebo</code>という名前のROSパッケージを作る</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>mkdir -p ~/catkin_ws/src
+</span><span class='line'><span class="nb">cd</span> ~/catkin_ws/src
+</span><span class='line'>catkin_create_pkg MYROBOT_gazebo
+</span><span class='line'><span class="nb">cd</span> ~/catkin_ws
+</span><span class='line'>catkin_make
+</span><span class='line'><span class="nb">source </span>devel/setup.sh
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>そのパッケージの中で、launchフォルダを作る</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>roscd MYROBOT_gazebo
+</span><span class='line'>mkdir launch
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>そのlaunchフォルダの中に、<code>MYROBOT.launch</code>ファイルを作る。(デフォルトの引数はありません)</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gedit MYROBOT.launch
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>尚、<code>MYROBOT.launch</code>は以下の内容のにする。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;launch&gt;</span>
+</span><span class='line'>  <span class="c">&lt;!-- We resume the logic in empty_world.launch, changing only the name of the world to be launched --&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;include</span> <span class="na">file=</span><span class="s">&quot;$(find gazebo_ros)/launch/empty_world.launch&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;arg</span> <span class="na">name=</span><span class="s">&quot;world_name&quot;</span> <span class="na">value=</span><span class="s">&quot;$(find MYROBOT_gazebo)/worlds/MYROBOT.world&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>    <span class="c">&lt;!-- more default parameters can be changed here --&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/include&gt;</span>
+</span><span class='line'><span class="nt">&lt;/launch&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>同じパッケージの中に、<code>worlds</code>フォルダを作り、その中に、<code>MYROBOT.world</code>ファイルを作る。:</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>roscd MYROBOT_gazebo
+</span><span class='line'>mkdir worlds
+</span><span class='line'>gedit MYROBOT.world
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>尚、<code>MYROBOT.world</code>は以下の内容にする。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; ?&gt;</span>
+</span><span class='line'><span class="nt">&lt;sdf</span> <span class="na">version=</span><span class="s">&quot;1.4&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;world</span> <span class="na">name=</span><span class="s">&quot;default&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;include&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;uri&gt;</span>model://ground_plane<span class="nt">&lt;/uri&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/include&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;include&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;uri&gt;</span>model://sun<span class="nt">&lt;/uri&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/include&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;include&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;uri&gt;</span>model://gas_station<span class="nt">&lt;/uri&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;name&gt;</span>gas_station<span class="nt">&lt;/name&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;pose&gt;</span>-2.0 7.0 0 0 0 0<span class="nt">&lt;/pose&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/include&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/world&gt;</span>
+</span><span class='line'><span class="nt">&lt;/sdf&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>ここまで完了した後、以下のコマンドを使えば、Gazeboの中にカスタムのworld(ガソリンスタンド付き)をlaunchすることができるはずです。:</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">source</span> ~/catkin_ws/devel/setup.bash
+</span><span class='line'>roslaunch MYROBOT_gazebo MYROBOT.launch
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>うまく行けば、以下のようになります。(マウスを使ってズームアウトしてください)
+<img src="/images/2015-02-15-gazebo-using-roslaunch/gasstation.png" alt="gasstation" /></p>
+
+<h6>うまく行かない場合</h6>
+
+<ul>
+<li><p>launchファイルまたは、worldファイルに間違いが無いか確認してください。
+よくある間違いは、<code>MYROBOT</code>の部分の間違いです。</p></li>
+<li><p>ディレクトリ名が正しいか確認してください
+私は、<code>worlds</code>としなければならないところを<code>world</code>にしてしまい、つまづいてましたorz</p></li>
+<li><p>gzserverがきちんと終了していることを確認してください
+これが最も厄介なものですが、前回のチュートリアルで<code>roslaunch gazebo_ros gazebo</code>や<code>rosrun gazebo_ros gazebo</code>により、Gazeboの起動確認をしていた場合、
+<code>Cntrl-C</code>で終了しても、<code>gzserver</code>のプロセスが終了していないことがあります。
+この場合は、<code>システムモニタ</code>を開き、起動中のプロセス一覧から<code>gzserver</code>を探し、終了させてください。
+ちなみに、<code>gzserver</code>ってなんぞ？という方は、<a href="http://cir-kit.github.io/blog/2015/01/31/gazebo-components/">Gazeboのコンポーネント</a>でその概要を簡単に説明しているので、そちらをご覧ください。</p></li>
+<li><p>gzclientは立ち上がるが、真っ暗なままですorz
+今回のチュートリアルでは、Gazeboのオンラインデータベースにある<code>gass station</code>モデルを使用しますが、これを一度もgzclientで表示したことがない場合、自動でダウンロードを行うことになります。
+ただ、このダウンロードは結構な時間がかかります。結構な時間とは、1分〜3分です。なので、気長に待ってみましょう。
+そんなの待ってらんないぜ!という方は、gazeboを普通に立ち上げ、<strong>Insert</strong>タブの一番下にある、オンラインのモデル一覧から<code>gass station</code>を選択して、一度良いので使ってみるか、
+<a href="https://bitbucket.org/osrf/gazebo_models/src">ここ</a>から直接<code>gass station</code>を探し、<code>~/.gazebo/model/</code>にダウンロードすると良いです。</p></li>
+</ul>
+
+
+<h2>Gazeboの中でworldファイルを編集する</h2>
+
+<p>あなたのロボットのworldファイルに、モデルを追加することができますし、ウィンドウの左上にある<strong>File</strong>-><strong>Save As</strong>をクリックすることで、編集したworldファイルをROSパッケージに出力することができます。</p>
+
+<h3>URDFのロボットをスポーンさせるのにroslaunchを使う</h3>
+
+<p>roslaunchを使って、URDFベースのロボットをGazeboにスポーンさせる方法は２つあります。</p>
+
+<h4>ROS Servise Call Spawn Method</h4>
+
+<blockquote><p>１つ目の方法では、あなたのロボットのROSパッケージをレポジトリのチェックアウトとコンピュータの間でより運用しやすくするようにします。ROSパッケージパスに関連するあなたのロボットの位置を維持することが許されているだけでなく、小規模の(python)スクリプトを使ってROSサービスコールを作ることが必要です。</p></blockquote>
+
+<h4>Model Database Method</h4>
+
+<blockquote><p>２つ目の方法では、あなたのロボットを<code>.world</code>ファイルの中にインクルードすることが許されています。これは、単純で便利に見えるかもしれませんが、あなたのロボットを環境変数を設定し、Gazeboのモデルデータベースに追加する必要があります。</p></blockquote>
+
+<p>これら２つの方法をやってみます。私達が推奨する方法は、<strong>ROS Service Call Spawn Method</strong>です。</p>
+
+<h4>&ldquo;ROS Service Call&rdquo; Robot Spawn Method</h4>
+
+<p>この方法では、GazeboにカスタムのURDFを追加するために、<code>gazebo_ros</code>のROSノード(rostopicの名前空間では単純に<code>gazebo</code>という名前がついています)にサービスコールリクエストを行うため、<code>spawn_model</code>と呼ばれる小規模のpythonスクリプトを使います。<code>spawn_model</code>スクリプトは<code>gazebo_ros</code>パッケージにあります。以下の方法で、このスクリプトを使用することができます。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rosrun gazebo_ros spawn_model -file <span class="sb">`</span>rospack find MYROBOT_description<span class="sb">`</span>/urdf/MYROBOT.urdf -urdf -x <span class="m">0</span> -y <span class="m">0</span> -z <span class="m">1</span> -model MYROBOT
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>名前空間、<code>trimesh</code>プロパティ、ジョイントポジション、そしてRPY初期値を含む、<code>spawn_model</code>のすべての発展的な引数を見るためには、以下のコマンドを実行してください。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rosrun gazebo_ros spawn_model -h
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h5>Baxterを使ったURDFの例</h5>
+
+<p>もし、まだ例などで、URDFモデルをテストしたことがないなら、Rethink Roboticsの<a href="https://github.com/RethinkRobotics/baxter_common">baxter_commonレポジトリ</a>から<code>baxter_description</code>パッケージをダウンロードできます。以下のようにして、このパッケージを<code>catkin</code>ワークスペースに設置してください。尚、これまでと同様、<code>catkin</code>ワークスペースの配置は<code>~/catkin_ws</code>となっているとします。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd</span> ~/catkin_ws/src
+</span><span class='line'>git clone https://github.com/RethinkRobotics/baxter_common.git
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上記コマンドを実行すると、<code>baxter.urdf</code>という名前のURDFファイルが<code>baxter_description/urdf/</code>にできるはずです。できたら以下のコマンドが実行できます。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rosrun gazebo_ros spawn_model -file <span class="sb">`</span>rospack find baxter_description<span class="sb">`</span>/urdf/baxter.urdf -urdf -z <span class="m">1</span> -model baxter
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>下図のように、ガソリンスタンドにbaxterのURDFモデルを出現させるには、先ほどまでに作成した、<code>MYROBOT.launch</code>をlaunchし、上記のコマンドを実行する必要があります。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>roslaunch MYROBOT_gazebo MYROBOT.launch
+</span><span class='line'>rosrun gazebo_ros spawn_model -file <span class="sb">`</span>rospack find baxter_description<span class="sb">`</span>/urdf/baxter.urdf -urdf -z <span class="m">1</span> -model baxter
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="/images/2015-02-15-gazebo-using-roslaunch/baxter_on_the_gass_station.png" alt="baxter on gass station" /></p>
+
+<p>ROSのlaunchファイルに直接これを統合するには、<code>MYROBOT_gazebo/launch/MYROBOT.launch</code>を再び開き、以下のな教を<code>&lt;/launch&gt;</code>タグの前に追加してください。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>&lt;!-- Spawn a robot into Gazebo --&gt;
+</span><span class='line'>&lt;node <span class="nv">name</span><span class="o">=</span><span class="s2">&quot;spawn_urdf&quot;</span> <span class="nv">pkg</span><span class="o">=</span><span class="s2">&quot;gazebo_ros&quot;</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;spawn_model&quot;</span> <span class="nv">args</span><span class="o">=</span><span class="s2">&quot;-file $(find baxter_description)/urdf/baxter.urdf -urdf -z 1 -model baxter&quot;</span> /&gt;
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>このファイルをlaunchすると、先ほど<code>rosrun</code>を使って実行したものと同じ結果が得られるはずです。</p>
+
+<h5>PR2を使ったXACROの例</h5>
+
+<p>もし、あなたのURDFがXMLフォーマットではないが、<a href="http://ros.org/wiki/xacro">XACROフォーマット</a>であったとしても、launchファイルを変更することで、同じようなものが作れます。以下のパッケージをインストールすることにより、PR2の例を実行することができます。</p>
+
+<p><strong>ROS Groovy:</strong> - Note : このdebianパッケージとして公開されている<a href="https://github.com/PR2/pr2_common/pull/222">pullリクエスト</a>だけでは、GroovyのPRは壊れています</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo apt-get install ros-groovy-pr2-common
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><strong>ROS Hydro:</strong></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo apt-get install ros-hydro-pr2-common
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><strong>ROS Indigo:</strong></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo apt-get install ros-indigo-pr2-common
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>インストールが終わったら、以下の内容を<code>MYROBOT.launch</code>に追加しましょう。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>  <span class="c">&lt;!-- Convert an xacro and put on parameter server --&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;param</span> <span class="na">name=</span><span class="s">&quot;robot_description&quot;</span> <span class="na">command=</span><span class="s">&quot;$(find xacro)/xacro.py $(find pr2_description)/robots/pr2.urdf.xacro&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="c">&lt;!-- Spawn a robot into Gazebo --&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;node</span> <span class="na">name=</span><span class="s">&quot;spawn_urdf&quot;</span> <span class="na">pkg=</span><span class="s">&quot;gazebo_ros&quot;</span> <span class="na">type=</span><span class="s">&quot;spawn_model&quot;</span> <span class="na">args=</span><span class="s">&quot;-param robot_description -urdf -model pr2&quot;</span> <span class="nt">/&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>このlaunchファイルをlaunchすると、以下のように、PR2がガソリンスタンドにいるのが確認できると思います。
+<strong>Note : この記事を書いている時点では、PR2のURDFの挙動をGazeboのAPIに変更する必要があると言ったようなエラーや渓谷がコンソールの出力に大量に出力されます。(公式サイトより)</strong>
+<img src="/images/2015-02-15-gazebo-using-roslaunch/pr2_on_the_gass_station.png" alt="pr2 on the gass station" /></p>
+
+<h4>&ldquo;Model Database&#8221;Robot Spawn Method</h4>
+
+<p>Gazeboにロボットをスポーンさせる２つ目の方法は、あなたのロボットを<code>.world</code>ファイルの中にインクルードすることが許されています。これは、単純で便利に見えるかもしれませんが、あなたのロボットを環境変数を設定し、Gazeboのモデルデータベースに追加する必要があります。この環境変数が必要となるのは、GazeboのROS依存関係による分割が原因です。URDFパッケージパスは直接<code>.world</code>ファイルの中に記述することはできません。というのもGazeboはROSパッケージの構造理念とは異なるからです。
+この方法を実行するには、一つのロボットだけで構成される新しいモデルデータベースを作らなければなりません。これはGazeboにあなたのURDFを読み込ませるためには単純な方法であるとは言えません。しかしこれは、あなたのコンピュータにあなたのURDFロボットのコピーを２つ作り、維持する必要が内容にするための方法なのです。もし、以下の説明が難しく、混乱してしまうようなら、<a href="http://cir-kit.github.io/blog/2015/01/31/gazebo-model-structure-and-requirements/">モデルの構成と必要条件</a>のチュートリアルへ戻り、なぜそのようなステップが必要なのかをしっかりと学んでください。
+あなたのROSワークスペースのファイル小僧は以下ようになっていると仮定します。唯一違う点は、<code>model.config</code>ファイルが<code>MYROBOT_description</code>パッケージに追加されている点です。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>../catkin_ws/src
+</span><span class='line'>    /MYROBOT_description
+</span><span class='line'>        package.xml
+</span><span class='line'>        CMakeLists.txt
+</span><span class='line'>        model.config
+</span><span class='line'>        /urdf
+</span><span class='line'>            MYROBOT.urdf
+</span><span class='line'>        /meshes
+</span><span class='line'>            mesh1.dae
+</span><span class='line'>            mesh2.dae
+</span><span class='line'>            ...
+</span><span class='line'>        /materials
+</span><span class='line'>        /plugins
+</span><span class='line'>        /cad
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>このファイル構造は、以下のフォルダ/￥とファイルに従った方法で、Gazeboのモデルデータベースを使うために最適化されています。</p>
+
+<ul>
+<li>/home/USER/catkin_workspace/src : これはGazeboのモデルデータベースのロケーションとして扱われます</li>
+<li>/MYROBOT_description : このディレクトリはGazeboのモデルフォルダと仕手のみ扱われます</li>
+<li>model.config : これは、Gazeboがこのモデルをデータベースで探すために必要とするコンフィギュレーションファイルです</li>
+<li>MYROBOT.urdf : これはあなたのロボットの構成ファイルです。また<code>Rviz</code>や<code>MOveIt!</code>..etcでも使用されます。</li>
+<li>/meshes : worldファイルとともに、レギュラーのURDFとして、<code>.stl</code>や<code>.dae</code>ファイルを個々に置きます。</li>
+</ul>
+
+
+<h5>model.config</h5>
+
+<p>すべてのモデルには、モデルについてのメタデータを含む、モデルのルートディレクトリに<code>model.config</code>ファイルがあります。まずは、この<code>model.config</code>ファイルをコピーし、ファイルネームとともに<code>model.urdf</code>と置き換えてください。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>  <span class="cp">&lt;?xml version=&quot;1.0&quot;?&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;model&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;name&gt;</span>MYROBOT<span class="nt">&lt;/name&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;version&gt;</span>1.0<span class="nt">&lt;/version&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;sdf&gt;</span>urdf/MYROBOT.urdf<span class="nt">&lt;/sdf&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;author&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;name&gt;</span>My name<span class="nt">&lt;/name&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;email&gt;</span>name@email.address<span class="nt">&lt;/email&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/author&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;description&gt;</span>
+</span><span class='line'>      A description of the model
+</span><span class='line'>    <span class="nt">&lt;/description&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/model&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>SDFファイルとは異なり、URDFでこのファイルを利用する際には、バージョンのタグは必要ありません。より詳しい情報は、Gazeboのモデルデータベースドキュメントをご覧ください。</p>
+
+<h5>環境変数</h5>
+
+<p>最後に、Gazeboにモデルデータベースはどこを探せばよいか知らせる、<code>.bashrc</code>ファイルに環境変数を追加する必要があります。好きなエディタで<code>~/.bashrc</code>を編集してください。<code>GAZEBO_MODEL_PATH</code>が定義されているか確かめてください。もし、すでに定義されていれば、セミコロンを使って新しいexportパスを追加してください。<code>catkin</code>ワークスペースが<code>~/catkin_ws/</code>であるとすると、exportする<code>GAZEBO_MODEL_PATH</code>は以下のようになっているはずです。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>  <span class="nb">export </span><span class="nv">GAZEBO_MODEL_PATH</span><span class="o">=</span>/home/user/catkin_ws/src/
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h5>Gazeboで確認する - 手動</h5>
+
+<p>もし、Gazeboのモデルデータベースがlaunchする際にすでに適切に定義されているとして、テストしてみましょう。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>  gazebo
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>起動できたら、画面左にある<strong>Insert</strong>タブをクリックしてください。すると、あなたのシステムで利用可能なオンラインデータベースを含む、異なるモデルのデータベースを代表するドロップダウンリストを確認できるでしょう。あなたのロボットと一致するデータベースを探し、ロボットの名前の上で右クリックし、サブメニューを開いたら、ロボットを設置するためにGazeboの中のロケーションを選んでください。</p>
+
+<h5>Gazeboで確認する - モデルデータベースとroslaunch</h5>
+
+<p>モデルデータベースの発展的なメソッドでは、ROSパッケージパスを使うことなく、ロボットを直接worldファイルに加えることができます。worldファイルをつくるというというセクションで作ったものと同じセットアップを使いまが、以下のようにworldファイルを変更します。</p>
+
+<ul>
+<li>以前のように、<code>MYROBOT_description/launch</code>フォルダの時とと同じように、<code>MYROBOT.world</code>ファイルを以下の内容にしてください。</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; ?&gt;</span>
+</span><span class='line'><span class="nt">&lt;sdf</span> <span class="na">version=</span><span class="s">&quot;1.4&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;world</span> <span class="na">name=</span><span class="s">&quot;default&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;include&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;uri&gt;</span>model://ground_plane<span class="nt">&lt;/uri&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/include&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;include&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;uri&gt;</span>model://sun<span class="nt">&lt;/uri&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/include&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;include&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;uri&gt;</span>model://gas_station<span class="nt">&lt;/uri&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;name&gt;</span>gas_station<span class="nt">&lt;/name&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;pose&gt;</span>-2.0 7.0 0 0 0 0<span class="nt">&lt;/pose&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/include&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;include&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;uri&gt;</span>model://MYROBOT<span class="nt">&lt;/uri&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/include&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/world&gt;</span>
+</span><span class='line'><span class="nt">&lt;/sdf&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>以下のコマンドで、カスタムのworldをガソリンスタンドとロボットとともにGazeboでlaunchできるようになっているはずです。:</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>  roslaunch MYROBOT_gazebo MYROBOT.launch
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>この方法の欠点は、あなたの<code>MYROBOT_description</code>パッケージと<code>MYROBOT_gazebo</code>パッケージが簡単運用できないということです。</p>
+
+<ul>
+<li>これらのROSパッケージを利用する前に、最初に新規のシステムには、<code>GAZEBO_MODEL_PATH</code>を設定しなければならないのです。</li>
+</ul>
+
+
+<h4>次のステップ</h4>
+
+<p>ここまでで、Gazeboやworldファイル、そしてURDFモデルを起動するroslaunchの作り方を学びました。チュートリアルを通して、<a href="">GazeboでURDFを使う</a>ことで、あなた独自のGazebo-ready URDFモデルを作成する準備が出来ました。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">RyodoTanaka</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2015-02-15T02:23:33+09:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>15</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>2:23 am</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/gazebo/'>gazebo</a>, <a class='category' href='/blog/categories/ros/'>ros</a>, <a class='category' href='/blog/categories/ubuntu/'>ubuntu</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://cir-kit.github.io/blog/2015/02/15/gazebo-using-roslaunch/" data-via="" data-counturl="http://cir-kit.github.io/blog/2015/02/15/gazebo-using-roslaunch/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2015/02/14/gazebo-installing-gazebo-ros-pkgs/" title="Previous Post: GazeboをROSに繋ぐ (gazebo_ros_pkgsをインストールする 編) No.6.3">&laquo; GazeboをROSに繋ぐ (gazebo_ros_pkgsをインストールする 編) No.6.3</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/02/15/gazebo-using-roslaunch/">GazeboをROSに繋ぐ (Roslaunchを使う 編) No.6.4</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/02/14/gazebo-installing-gazebo-ros-pkgs/">GazeboをROSに繋ぐ (Gazebo_ros_pkgsをインストールする 編) No.6.3</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/02/14/gazebo-which-combination-of-ros-and-gazebo-versions-to-use/">GazeboをROSに繋ぐ (どのGazebo/ROSのバージョンの組み合わせを使うか 編) No.6.2</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/02/14/gazebo-ros-overview/">GazeboをROSに繋ぐ (ROSの概要 編) No.6.1</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/02/14/gazebo-camera-distortion/">センサについて（カメラの歪み 編）No.5.2</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 -  -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

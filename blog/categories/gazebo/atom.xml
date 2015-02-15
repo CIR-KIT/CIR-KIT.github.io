@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Gazebo | 九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/blog/categories/gazebo/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-02-15T13:37:40+09:00</updated>
+  <updated>2015-02-16T02:35:00+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -12,6 +12,545 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[GazeboをROSに繋ぐ (Roslaunchを使う 編) No.6.4]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/02/15/gazebo-using-roslaunch/"/>
+    <updated>2015-02-15T02:23:33+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/02/15/gazebo-using-roslaunch</id>
+    <content type="html"><![CDATA[<p><img src="/images/gazebo_logo.png" alt="gazebo_logo" /></p>
+
+<h5>検証日時</h5>
+
+<p>02/14/2015 (Sat)</p>
+
+<h5>概要</h5>
+
+<p>Gazeboのチュートリアル第六弾「Connect to ROS」。
+ROSはロボットの制御フレームワークです。このチュートリアルでは、GazeboとROSのインターフェースについて説明します。
+今回はその「Using roalaunch」編です。
+公式サイトを適当に翻訳しただけですので、あしからず。</p>
+
+<h5>レベル</h5>
+
+<p><strong>INTERMEDIATE</strong></p>
+
+<!-- more -->
+
+
+<h5>環境</h5>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> <strong>PC</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Prosessor</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>RAM</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>OS</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Kernel</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> 3.13.0-44-generic </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Gazebo</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Version 5.0.1 </td>
+</tr>
+</tbody>
+</table>
+
+
+<h5>参考</h5>
+
+<p><a href="http://gazebosim.org/tutorials?cat=connect_ros">GAZEBO Tutorial-Connect to ROS</a></p>
+
+<h2>チュートリアル : Gazebbo、worldファイル、URDFモデルを起動するためのroslaunchを使う</h2>
+
+<p>Gazeboを起動したり、worldモデルを開いたり、シミュレーション環境にロボットモデルをスポーンさせる方法はたくさんあります。このチュートリアルでは、<code>rosrun</code>と<code>roslaunch</code>を使ったROSを用いてのそれらの方法を説明します。ROSパッケージの中のURDFを保存し、様々なROSワークスペースのリソースパスを保存する方法を含みます。</p>
+
+<h3>worldモデルを開くためにroslaunchを使う</h3>
+
+<p><a href="http://www.ros.org/wiki/roslaunch">roslaunch</a>ツールはROSのノードを起動し、ROSの中でロボットを起動する基本的な方法です。Gazeboの空のworlを起動することは、これまでのチュートリアルで行ってきた<code>rosrun</code>コマンドを使うのと同じです。以下のように、単純に実行してみましょう。</p>
+
+<pre><code class="bash">roslaunch gazebo_ros empty_world.launch
+</code></pre>
+
+<h4>roslaunch引数</h4>
+
+<p>Gazeboの挙動を変更するためのlaunchファイルには、以下の引数を追加することができます。:</p>
+
+<h5>pused</h5>
+
+<blockquote><p>Gazeboを一時停止した状態で起動する(default false)</p></blockquote>
+
+<h5>usesimtime</h5>
+
+<blockquote><p>ROSの<code>/clock</code>トピックを通じて配信される、Gazebo-publishedのシミュレーションタイムを取得するために、ROSノードに時間を問い合わせます。(default true)</p></blockquote>
+
+<h5>gio</h5>
+
+<blockquote><p>Gazeboのユーザーインターフェースウィンドウをlaunchします。(default true)</p></blockquote>
+
+<h5>headless</h5>
+
+<blockquote><p>(Ogre)コンポーネントを記録することで、シミュレータが呼び出しているすべての関数を表示します。<code>gui:=true</code>と一緒では起動しません。(default false)</p></blockquote>
+
+<h5>debug</h5>
+
+<blockquote><p>gdbを使用したデバッグモードで<code>gzserver</code>(Gazeboのサーバー)を起動します。(default false)</p></blockquote>
+
+<h3>roslaunchコマンドの例</h3>
+
+<p>通常、引数のデフォルト値はすべて必要であり、以下のように記述します。:</p>
+
+<pre><code class="bash">roslaunch gazebo_ros empty_world.launch paused:=true use_sim_time:=false gui:=true throttled:=false headless:=false debug:=true
+</code></pre>
+
+<h3>他のデモworldをlaunchする</h3>
+
+<p><code>gazebo_ros</code>パッケージには、他のデモworldがすでに含まれています。以下がその内容です。:</p>
+
+<pre><code>roslaunch gazebo_ros willowgarage_world.launch
+roslaunch gazebo_ros mud_world.launch
+roslaunch gazebo_ros shapes_world.launch
+roslaunch gazebo_ros rubble_world.launch
+</code></pre>
+
+<p><code>mudworld.launch</code>は、シンプルなジョイントメカニズムをlaunchするものであることを知っておいていください。<code>mudworld.launch</code>は以下の内容のlaunchファイルです。</p>
+
+<pre><code class="xml">&lt;launch&gt;
+  &lt;!-- We resume the logic in empty_world.launch, changing only the name of the world to be launched --&gt;
+  &lt;include file="$(find gazebo_ros)/launch/empty_world.launch"&gt;
+    &lt;arg name="world_name" value="worlds/mud.world"/&gt; &lt;!-- Note: the world_name is with respect to GAZEBO_RESOURCE_PATH environmental variable --&gt;
+    &lt;arg name="paused" value="false"/&gt;
+    &lt;arg name="use_sim_time" value="true"/&gt;
+    &lt;arg name="gui" value="true"/&gt;
+    &lt;arg name="headless" value="false"/&gt;
+    &lt;arg name="debug" value="false"/&gt;
+  &lt;/include&gt;
+&lt;/launch&gt;
+</code></pre>
+
+<p>このlaunchファイルでは、<code>emptyworld.launch</code>から機能するのに必要不可欠なほとんどすべてを継承しています。<code>mud.World</code>ファイルとともに<code>emptyworld.launch</code>ファイルを用いる代わりに、私達が変更しなければならないパラメータは<code>worldname</code>パラメータだけです。他の引数はデフォルト値を設定しているだけです。</p>
+
+<h3>Worldファイル</h3>
+
+<p><code>mud_world.launch</code>ファイルをよく調べると、<code>mud.world</code>ファイルの構成に注目するでしょう。<code>mud.world</code>の最初のいくつかの構成要素は以下のようになっています。:</p>
+
+<pre><code class="xml">  &lt;sdf version="1.4"&gt;
+    &lt;world name="default"&gt;
+      &lt;include&gt;
+        &lt;uri&gt;model://sun&lt;/uri&gt;
+      &lt;/include&gt;
+      &lt;include&gt;
+        &lt;uri&gt;model://ground_plane&lt;/uri&gt;
+      &lt;/include&gt;
+      &lt;include&gt;
+        &lt;uri&gt;model://double_pendulum_with_base&lt;/uri&gt;
+        &lt;name&gt;pendulum_thick_mud&lt;/name&gt;
+        &lt;pose&gt;-2.0 0 0 0 0 0&lt;/pose&gt;
+      &lt;/include&gt;
+      ...
+    &lt;/world&gt;
+  &lt;/sdf&gt;
+</code></pre>
+
+<h4>あなたのコンピュータ上で、フルバージョンのworldファイルを以下のセクションで確認してください。</h4>
+
+<p>このworldファイルでは、３つのモデルが参照されていることをわずかに確認できます。３つのモデルはローカルのGazeboモデルデータベースの中にあります。もし見つからなければ、Gazeboのオンラインデータベースより自動的にダウンロードしてきます。
+worldファイルについて詳しく知りたければ、<a href="http://cir-kit.github.io/blog/categories/build-a-world/">環境をつくろう !</a>のチュートリアルをご覧ください。</p>
+
+<h4>worldファイルをコンピュータ上で検索する</h4>
+
+<p>worldファイルは、Gazeboのリソースパス上にある、<code>/worlds</code>ディレクトリの中にあります。このパスはGazeboをどのようにインストールし、どのタイプのシステムを使っているかということに依存します。Gazeboリソースの位置を探すには、以下のコマンドを使用してください。:</p>
+
+<pre><code class="bash">env | grep GAZEBO_RESOURCE_PATH
+</code></pre>
+
+<p>典型的なパスだと、<code>/usr/local/share/gazebo-1.9</code>となるでしょう。<code>/worlds</code>に検索したパスを追加すると、<code>mud.world</code>ファイルを含む、Gazeboが使うディレクトリに直接接続できます。</p>
+
+<h2>独自のGazebo ROSパッケージを作る</h2>
+
+<p>Gazeboにロボットをスポーンさせる方法について続ける前に、最新版を使うために、ROSをGazeboと使う際の基本的なファイル構造（ヒエラルキー）についてまずは学びましょう。
+ここまでの段階で、あなたの<code>catkin</code>ワークスペースは<code>catkin_ws</code>という名前であると仮定します。もちろん、ワークスペースの名前は好きなものをつけてもらって構いません。例えば、あなたの<code>catkin</code>ワークスペースが以下のような位置にあるとします。:</p>
+
+<pre><code>/home/user/catkin_ws/src
+</code></pre>
+
+<p><code>/MYROBOT_description</code>という名前のパッケージの中に、あなたのロボットモデルにつながるすべてのものと、その記述についてがROSの基本的なパラメータとして存在し、Gazeoboとともに使用されるworldファイルとlaunchファイルは<code>/MyROBOT_gazebo</code>という名前のROSパッケージの中に存在します。ただし、<code>MYROBOT</code>の部分はあなたのロボット名です。これらの２つのパッケージにより、ファイル構造は以下のようになります。:</p>
+
+<pre><code>../catkin_ws/src
+    /MYROBOT_description
+        package.xml
+        CMakeLists.txt
+        /urdf
+            MYROBOT.urdf
+        /meshes
+            mesh1.dae
+            mesh2.dae
+            ...
+        /materials
+        /cad
+    /MYROBOT_gazebo
+        /launch
+            MYROBOT.launch
+        /worlds
+            MYROBOT.world
+        /models
+            world_object1.dae
+            world_object2.stl
+            world_object3.urdf
+        /materials
+        /plugins
+</code></pre>
+
+<p><code>catkin_create_pkg</code>コマンドは、新しいパッケージを作成する際に使用します。しかし、もし必要なら、<code>rosbuilt</code>を使っても簡単にそれを行うことができます。ほとんどすべてのフォルダとファイルは自明でなければなりません。
+次のセクションでは、カスタムのworldファイルを使うためのセッティングについて説明してゆきます。</p>
+
+<h3>カスタムのworldファイルを作る</h3>
+
+<p>あなたのパッケージやロボットに特化したあなた独自のROSパッケージの中にカスタムの<code>.world</code>を作成することができます。この短いチュートリアルでは、ground、sun、gas stationのある空のシミュレーション環境を作成します。以下は推奨規約です。<code>MYROBOT</code>の部分はあなたのロボットの名前にするか、ロボットがなければ、<code>test</code>の様な名前に置き換えるということを忘れないでください。尚、以下のチュートリアルでは、<code>catkin</code>ワークスペースが<code>~/catkin_ws/</code>(ホームディレクトリ直下に<code>catkin_ws</code>という名前である)となっていると仮定します。</p>
+
+<ul>
+<li><code>MYROBOT_gazebo</code>という名前のROSパッケージを作る</li>
+</ul>
+
+
+<pre><code class="bash">mkdir -p ~/catkin_ws/src
+cd ~/catkin_ws/src
+catkin_create_pkg MYROBOT_gazebo
+cd ~/catkin_ws
+catkin_make
+source devel/setup.sh
+</code></pre>
+
+<ul>
+<li>そのパッケージの中で、launchフォルダを作る</li>
+</ul>
+
+
+<pre><code class="bash">roscd MYROBOT_gazebo
+mkdir launch
+</code></pre>
+
+<ul>
+<li>そのlaunchフォルダの中に、<code>MYROBOT.launch</code>ファイルを作る。(デフォルトの引数はありません)</li>
+</ul>
+
+
+<pre><code class="bash">gedit MYROBOT.launch
+</code></pre>
+
+<p>尚、<code>MYROBOT.launch</code>は以下の内容のにする。</p>
+
+<pre><code class="xml">&lt;launch&gt;
+  &lt;!-- We resume the logic in empty_world.launch, changing only the name of the world to be launched --&gt;
+  &lt;include file="$(find gazebo_ros)/launch/empty_world.launch"&gt;
+    &lt;arg name="world_name" value="$(find MYROBOT_gazebo)/worlds/MYROBOT.world"/&gt;
+    &lt;!-- more default parameters can be changed here --&gt;
+  &lt;/include&gt;
+&lt;/launch&gt;
+</code></pre>
+
+<ul>
+<li>同じパッケージの中に、<code>worlds</code>フォルダを作り、その中に、<code>MYROBOT.world</code>ファイルを作る。:</li>
+</ul>
+
+
+<pre><code class="bash">roscd MYROBOT_gazebo
+mkdir worlds
+gedit MYROBOT.world
+</code></pre>
+
+<p>尚、<code>MYROBOT.world</code>は以下の内容にする。</p>
+
+<pre><code class="xml">&lt;?xml version="1.0" ?&gt;
+&lt;sdf version="1.4"&gt;
+  &lt;world name="default"&gt;
+    &lt;include&gt;
+      &lt;uri&gt;model://ground_plane&lt;/uri&gt;
+    &lt;/include&gt;
+    &lt;include&gt;
+      &lt;uri&gt;model://sun&lt;/uri&gt;
+    &lt;/include&gt;
+    &lt;include&gt;
+      &lt;uri&gt;model://gas_station&lt;/uri&gt;
+      &lt;name&gt;gas_station&lt;/name&gt;
+      &lt;pose&gt;-2.0 7.0 0 0 0 0&lt;/pose&gt;
+    &lt;/include&gt;
+  &lt;/world&gt;
+&lt;/sdf&gt;
+</code></pre>
+
+<ul>
+<li>ここまで完了した後、以下のコマンドを使えば、Gazeboの中にカスタムのworld(ガソリンスタンド付き)をlaunchすることができるはずです。:</li>
+</ul>
+
+
+<pre><code class="bash">source ~/catkin_ws/devel/setup.bash
+roslaunch MYROBOT_gazebo MYROBOT.launch
+</code></pre>
+
+<p>うまく行けば、以下のようになります。(マウスを使ってズームアウトしてください)
+<img src="/images/2015-02-15-gazebo-using-roslaunch/gasstation.png" alt="gasstation" /></p>
+
+<h6>うまく行かない場合</h6>
+
+<ul>
+<li><p>launchファイルまたは、worldファイルに間違いが無いか確認してください。
+よくある間違いは、<code>MYROBOT</code>の部分の間違いです。</p></li>
+<li><p>ディレクトリ名が正しいか確認してください
+私は、<code>worlds</code>としなければならないところを<code>world</code>にしてしまい、つまづいてましたorz</p></li>
+<li><p>gzserverがきちんと終了していることを確認してください
+これが最も厄介なものですが、前回のチュートリアルで<code>roslaunch gazebo_ros gazebo</code>や<code>rosrun gazebo_ros gazebo</code>により、Gazeboの起動確認をしていた場合、
+<code>Cntrl-C</code>で終了しても、<code>gzserver</code>のプロセスが終了していないことがあります。
+この場合は、<code>システムモニタ</code>を開き、起動中のプロセス一覧から<code>gzserver</code>を探し、終了させてください。
+ちなみに、<code>gzserver</code>ってなんぞ？という方は、<a href="http://cir-kit.github.io/blog/2015/01/31/gazebo-components/">Gazeboのコンポーネント</a>でその概要を簡単に説明しているので、そちらをご覧ください。</p></li>
+<li><p>gzclientは立ち上がるが、真っ暗なままですorz
+今回のチュートリアルでは、Gazeboのオンラインデータベースにある<code>gass station</code>モデルを使用しますが、これを一度もgzclientで表示したことがない場合、自動でダウンロードを行うことになります。
+ただ、このダウンロードは結構な時間がかかります。結構な時間とは、1分〜3分です。なので、気長に待ってみましょう。
+そんなの待ってらんないぜ!という方は、gazeboを普通に立ち上げ、<strong>Insert</strong>タブの一番下にある、オンラインのモデル一覧から<code>gass station</code>を選択して、一度良いので使ってみるか、
+<a href="https://bitbucket.org/osrf/gazebo_models/src">ここ</a>から直接<code>gass station</code>を探し、<code>~/.gazebo/model/</code>にダウンロードすると良いです。</p></li>
+</ul>
+
+
+<h2>Gazeboの中でworldファイルを編集する</h2>
+
+<p>あなたのロボットのworldファイルに、モデルを追加することができますし、ウィンドウの左上にある<strong>File</strong>-><strong>Save As</strong>をクリックすることで、編集したworldファイルをROSパッケージに出力することができます。</p>
+
+<h3>URDFのロボットをスポーンさせるのにroslaunchを使う</h3>
+
+<p>roslaunchを使って、URDFベースのロボットをGazeboにスポーンさせる方法は２つあります。</p>
+
+<h4>ROS Servise Call Spawn Method</h4>
+
+<blockquote><p>１つ目の方法では、あなたのロボットのROSパッケージをレポジトリのチェックアウトとコンピュータの間でより運用しやすくするようにします。ROSパッケージパスに関連するあなたのロボットの位置を維持することが許されているだけでなく、小規模の(python)スクリプトを使ってROSサービスコールを作ることが必要です。</p></blockquote>
+
+<h4>Model Database Method</h4>
+
+<blockquote><p>２つ目の方法では、あなたのロボットを<code>.world</code>ファイルの中にインクルードすることが許されています。これは、単純で便利に見えるかもしれませんが、あなたのロボットを環境変数を設定し、Gazeboのモデルデータベースに追加する必要があります。</p></blockquote>
+
+<p>これら２つの方法をやってみます。私達が推奨する方法は、<strong>ROS Service Call Spawn Method</strong>です。</p>
+
+<h4>&ldquo;ROS Service Call&rdquo; Robot Spawn Method</h4>
+
+<p>この方法では、GazeboにカスタムのURDFを追加するために、<code>gazebo_ros</code>のROSノード(rostopicの名前空間では単純に<code>gazebo</code>という名前がついています)にサービスコールリクエストを行うため、<code>spawn_model</code>と呼ばれる小規模のpythonスクリプトを使います。<code>spawn_model</code>スクリプトは<code>gazebo_ros</code>パッケージにあります。以下の方法で、このスクリプトを使用することができます。</p>
+
+<pre><code class="bash">rosrun gazebo_ros spawn_model -file `rospack find MYROBOT_description`/urdf/MYROBOT.urdf -urdf -x 0 -y 0 -z 1 -model MYROBOT
+</code></pre>
+
+<p>名前空間、<code>trimesh</code>プロパティ、ジョイントポジション、そしてRPY初期値を含む、<code>spawn_model</code>のすべての発展的な引数を見るためには、以下のコマンドを実行してください。:</p>
+
+<pre><code class="bash">rosrun gazebo_ros spawn_model -h
+</code></pre>
+
+<h5>Baxterを使ったURDFの例</h5>
+
+<p>もし、まだ例などで、URDFモデルをテストしたことがないなら、Rethink Roboticsの<a href="https://github.com/RethinkRobotics/baxter_common">baxter_commonレポジトリ</a>から<code>baxter_description</code>パッケージをダウンロードできます。以下のようにして、このパッケージを<code>catkin</code>ワークスペースに設置してください。尚、これまでと同様、<code>catkin</code>ワークスペースの配置は<code>~/catkin_ws</code>となっているとします。</p>
+
+<pre><code class="bash">cd ~/catkin_ws/src
+git clone https://github.com/RethinkRobotics/baxter_common.git
+</code></pre>
+
+<p>上記コマンドを実行すると、<code>baxter.urdf</code>という名前のURDFファイルが<code>baxter_description/urdf/</code>にできるはずです。できたら以下のコマンドが実行できます。</p>
+
+<pre><code class="bash">rosrun gazebo_ros spawn_model -file `rospack find baxter_description`/urdf/baxter.urdf -urdf -z 1 -model baxter
+</code></pre>
+
+<p>下図のように、ガソリンスタンドにbaxterのURDFモデルを出現させるには、先ほどまでに作成した、<code>MYROBOT.launch</code>をlaunchし、上記のコマンドを実行する必要があります。</p>
+
+<pre><code class="bash">roslaunch MYROBOT_gazebo MYROBOT.launch
+rosrun gazebo_ros spawn_model -file `rospack find baxter_description`/urdf/baxter.urdf -urdf -z 1 -model baxter
+</code></pre>
+
+<p><img src="/images/2015-02-15-gazebo-using-roslaunch/baxter_on_the_gass_station.png" alt="baxter on gass station" /></p>
+
+<p>ROSのlaunchファイルに直接これを統合するには、<code>MYROBOT_gazebo/launch/MYROBOT.launch</code>を再び開き、以下のな教を<code>&lt;/launch&gt;</code>タグの前に追加してください。</p>
+
+<p>&#8220;`</p>
+
+<!-- Spawn a robot into Gazebo -->
+
+
+<p><node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-file $(find baxter_description)/urdf/baxter.urdf -urdf -z 1 -model baxter" />
+&#8220;`</p>
+
+<p>このファイルをlaunchすると、先ほど<code>rosrun</code>を使って実行したものと同じ結果が得られるはずです。</p>
+
+<h5>PR2を使ったXACROの例</h5>
+
+<p>もし、あなたのURDFがXMLフォーマットではないが、<a href="http://ros.org/wiki/xacro">XACROフォーマット</a>であったとしても、launchファイルを変更することで、同じようなものが作れます。以下のパッケージをインストールすることにより、PR2の例を実行することができます。</p>
+
+<p><strong>ROS Groovy:</strong> - Note : このdebianパッケージとして公開されている<a href="https://github.com/PR2/pr2_common/pull/222">pullリクエスト</a>だけでは、GroovyのPRは壊れています</p>
+
+<pre><code class="bash">sudo apt-get install ros-groovy-pr2-common
+</code></pre>
+
+<p><strong>ROS Hydro:</strong></p>
+
+<pre><code class="bash">sudo apt-get install ros-hydro-pr2-common
+</code></pre>
+
+<p><strong>ROS Indigo:</strong></p>
+
+<pre><code class="bash">sudo apt-get install ros-indigo-pr2-common
+</code></pre>
+
+<p>インストールが終わったら、以下の内容を<code>MYROBOT.launch</code>に追加しましょう。:</p>
+
+<pre><code class="xml">  &lt;!-- Convert an xacro and put on parameter server --&gt;
+  &lt;param name="robot_description" command="$(find xacro)/xacro.py $(find pr2_description)/robots/pr2.urdf.xacro" /&gt;
+  &lt;!-- Spawn a robot into Gazebo --&gt;
+  &lt;node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -model pr2" /&gt;
+</code></pre>
+
+<p>このlaunchファイルをlaunchすると、以下のように、PR2がガソリンスタンドにいるのが確認できると思います。
+<strong>Note : この記事を書いている時点では、PR2のURDFの挙動をGazeboのAPIに変更する必要があると言ったようなエラーや渓谷がコンソールの出力に大量に出力されます。(公式サイトより)</strong>
+<img src="/images/2015-02-15-gazebo-using-roslaunch/pr2_on_the_gass_station.png" alt="pr2 on the gass station" /></p>
+
+<h4>&ldquo;Model Database&#8221;Robot Spawn Method</h4>
+
+<p>Gazeboにロボットをスポーンさせる２つ目の方法は、あなたのロボットを<code>.world</code>ファイルの中にインクルードすることが許されています。これは、単純で便利に見えるかもしれませんが、あなたのロボットを環境変数を設定し、Gazeboのモデルデータベースに追加する必要があります。この環境変数が必要となるのは、GazeboのROS依存関係による分割が原因です。URDFパッケージパスは直接<code>.world</code>ファイルの中に記述することはできません。というのもGazeboはROSパッケージの構造理念とは異なるからです。
+この方法を実行するには、一つのロボットだけで構成される新しいモデルデータベースを作らなければなりません。これはGazeboにあなたのURDFを読み込ませるためには単純な方法であるとは言えません。しかしこれは、あなたのコンピュータにあなたのURDFロボットのコピーを２つ作り、維持する必要が内容にするための方法なのです。もし、以下の説明が難しく、混乱してしまうようなら、<a href="http://cir-kit.github.io/blog/2015/01/31/gazebo-model-structure-and-requirements/">モデルの構成と必要条件</a>のチュートリアルへ戻り、なぜそのようなステップが必要なのかをしっかりと学んでください。
+あなたのROSワークスペースのファイル小僧は以下ようになっていると仮定します。唯一違う点は、<code>model.config</code>ファイルが<code>MYROBOT_description</code>パッケージに追加されている点です。:</p>
+
+<pre><code>../catkin_ws/src
+    /MYROBOT_description
+        package.xml
+        CMakeLists.txt
+        model.config
+        /urdf
+            MYROBOT.urdf
+        /meshes
+            mesh1.dae
+            mesh2.dae
+            ...
+        /materials
+        /plugins
+        /cad
+</code></pre>
+
+<p>このファイル構造は、以下のフォルダ/￥とファイルに従った方法で、Gazeboのモデルデータベースを使うために最適化されています。</p>
+
+<ul>
+<li>/home/USER/catkin_workspace/src : これはGazeboのモデルデータベースのロケーションとして扱われます</li>
+<li>/MYROBOT_description : このディレクトリはGazeboのモデルフォルダと仕手のみ扱われます</li>
+<li>model.config : これは、Gazeboがこのモデルをデータベースで探すために必要とするコンフィギュレーションファイルです</li>
+<li>MYROBOT.urdf : これはあなたのロボットの構成ファイルです。また<code>Rviz</code>や<code>MOveIt!</code>..etcでも使用されます。</li>
+<li>/meshes : worldファイルとともに、レギュラーのURDFとして、<code>.stl</code>や<code>.dae</code>ファイルを個々に置きます。</li>
+</ul>
+
+
+<h5>model.config</h5>
+
+<p>すべてのモデルには、モデルについてのメタデータを含む、モデルのルートディレクトリに<code>model.config</code>ファイルがあります。まずは、この<code>model.config</code>ファイルをコピーし、ファイルネームとともに<code>model.urdf</code>と置き換えてください。:</p>
+
+<pre><code class="xml">  &lt;?xml version="1.0"?&gt;
+  &lt;model&gt;
+    &lt;name&gt;MYROBOT&lt;/name&gt;
+    &lt;version&gt;1.0&lt;/version&gt;
+    &lt;sdf&gt;urdf/MYROBOT.urdf&lt;/sdf&gt;
+    &lt;author&gt;
+      &lt;name&gt;My name&lt;/name&gt;
+      &lt;email&gt;name@email.address&lt;/email&gt;
+    &lt;/author&gt;
+    &lt;description&gt;
+      A description of the model
+    &lt;/description&gt;
+  &lt;/model&gt;
+</code></pre>
+
+<p>SDFファイルとは異なり、URDFでこのファイルを利用する際には、バージョンのタグは必要ありません。より詳しい情報は、Gazeboのモデルデータベースドキュメントをご覧ください。</p>
+
+<h5>環境変数</h5>
+
+<p>最後に、Gazeboにモデルデータベースはどこを探せばよいか知らせる、<code>.bashrc</code>ファイルに環境変数を追加する必要があります。好きなエディタで<code>~/.bashrc</code>を編集してください。<code>GAZEBO_MODEL_PATH</code>が定義されているか確かめてください。もし、すでに定義されていれば、セミコロンを使って新しいexportパスを追加してください。<code>catkin</code>ワークスペースが<code>~/catkin_ws/</code>であるとすると、exportする<code>GAZEBO_MODEL_PATH</code>は以下のようになっているはずです。:</p>
+
+<pre><code class="bash">  export GAZEBO_MODEL_PATH=/home/user/catkin_ws/src/
+</code></pre>
+
+<h5>Gazeboで確認する - 手動</h5>
+
+<p>もし、Gazeboのモデルデータベースがlaunchする際にすでに適切に定義されているとして、テストしてみましょう。:</p>
+
+<pre><code class="bash">  gazebo
+</code></pre>
+
+<p>起動できたら、画面左にある<strong>Insert</strong>タブをクリックしてください。すると、あなたのシステムで利用可能なオンラインデータベースを含む、異なるモデルのデータベースを代表するドロップダウンリストを確認できるでしょう。あなたのロボットと一致するデータベースを探し、ロボットの名前の上で右クリックし、サブメニューを開いたら、ロボットを設置するためにGazeboの中のロケーションを選んでください。</p>
+
+<h5>Gazeboで確認する - モデルデータベースとroslaunch</h5>
+
+<p>モデルデータベースの発展的なメソッドでは、ROSパッケージパスを使うことなく、ロボットを直接worldファイルに加えることができます。worldファイルをつくるというというセクションで作ったものと同じセットアップを使いまが、以下のようにworldファイルを変更します。</p>
+
+<ul>
+<li>以前のように、<code>MYROBOT_description/launch</code>フォルダの時とと同じように、<code>MYROBOT.world</code>ファイルを以下の内容にしてください。</li>
+</ul>
+
+
+<pre><code class="xml">&lt;?xml version="1.0" ?&gt;
+&lt;sdf version="1.4"&gt;
+  &lt;world name="default"&gt;
+    &lt;include&gt;
+      &lt;uri&gt;model://ground_plane&lt;/uri&gt;
+    &lt;/include&gt;
+    &lt;include&gt;
+      &lt;uri&gt;model://sun&lt;/uri&gt;
+    &lt;/include&gt;
+    &lt;include&gt;
+      &lt;uri&gt;model://gas_station&lt;/uri&gt;
+      &lt;name&gt;gas_station&lt;/name&gt;
+      &lt;pose&gt;-2.0 7.0 0 0 0 0&lt;/pose&gt;
+    &lt;/include&gt;
+    &lt;include&gt;
+      &lt;uri&gt;model://MYROBOT&lt;/uri&gt;
+    &lt;/include&gt;
+  &lt;/world&gt;
+&lt;/sdf&gt;
+</code></pre>
+
+<ul>
+<li>以下のコマンドで、カスタムのworldをガソリンスタンドとロボットとともにGazeboでlaunchできるようになっているはずです。:</li>
+</ul>
+
+
+<pre><code class="bash">  roslaunch MYROBOT_gazebo MYROBOT.launch
+</code></pre>
+
+<p>この方法の欠点は、あなたの<code>MYROBOT_description</code>パッケージと<code>MYROBOT_gazebo</code>パッケージが簡単運用できないということです。</p>
+
+<ul>
+<li>これらのROSパッケージを利用する前に、最初に新規のシステムには、<code>GAZEBO_MODEL_PATH</code>を設定しなければならないのです。</li>
+</ul>
+
+
+<h4>次のステップ</h4>
+
+<p>ここまでで、Gazeboやworldファイル、そしてURDFモデルを起動するroslaunchの作り方を学びました。チュートリアルを通して、<a href="">GazeboでURDFを使う</a>ことで、あなた独自のGazebo-ready URDFモデルを作成する準備が出来ました。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[GazeboをROSに繋ぐ (Gazebo_ros_pkgsをインストールする 編) No.6.3]]></title>
@@ -959,511 +1498,6 @@ MatlabやOpenCVのようなカメラキャリブレーションツールを使�
 
 <div class="youtube-container">
 <iframe width="560" height="315" src="https://www.youtube.com/embed/lZ41gqMjbV4" frameborder="0" allowfullscreen></iframe>
-</div>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[センサについて (センサノイズモデル 編) No.5.1]]></title>
-    <link href="http://cir-kit.github.io/blog/2015/02/13/gazebo-sensor-noise-model/"/>
-    <updated>2015-02-13T21:50:50+09:00</updated>
-    <id>http://cir-kit.github.io/blog/2015/02/13/gazebo-sensor-noise-model</id>
-    <content type="html"><![CDATA[<p><img src="/images/gazebo_logo.png" alt="gazebo_logo" /></p>
-
-<h5>検証日時</h5>
-
-<p>02/14/2015 (Sat)</p>
-
-<h5>概要</h5>
-
-<p>Gazeboのチュートリアル第五弾「Sensors」。<br/>
-シミュレーションのセンサは環境を分析し、センサになるべくよく似たデータストリームを生成します。<br/>
-チュートリアルでは、センサの使い方と修正方法について説明します。
-今回はその「Sensor Noise Model」編です。<br/>
-公式サイトを適当に翻訳しただけですので、あしからず。</p>
-
-<h5>レベル</h5>
-
-<p><strong>BEGINNER</strong></p>
-
-<!-- more -->
-
-
-<h5>環境</h5>
-
-<table>
-<thead>
-<tr>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center;"> <strong>PC</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Prosessor</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>RAM</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>OS</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Kernel</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> 3.13.0-44-generic </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Gazebo</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Version 5.0.1 </td>
-</tr>
-</tbody>
-</table>
-
-
-<h5>参考</h5>
-
-<p><a href="http://gazebosim.org/tutorials?cat=sensors">GAZEBO Tutorial-Sensors</a></p>
-
-<h2>はじめに</h2>
-
-<p>Gazeboでは、たくさんの一般的なセンサを提供しています。現実世界では、センサにはノイズが存在し、実環境を完全に観測することは出来ません。デフォルトでは、Gazeboのセンサは環境を完全に観測します(IMUは含みません;続きを参照ください)。認識プログラムを試してみる様な、よりリアルな環境を提供するには、Gazeboのセンサが生成したデータにあえてノイズを付け加える必要があります。<br/>
-この記事を書いている時点で、Gazeboは以下のタイプのセンサにノイズを付加することができます。</p>
-
-<blockquote><ul>
-<li>Ray (e.g., lasers)</li>
-<li>Camera</li>
-<li>IMU</li>
-</ul>
-</blockquote>
-
-<h2>Ray(Laser)ノイズ</h2>
-
-<p>rayセンサでは、それぞれのビームの距離値にガウシアンノイズを付加します。ノイズの値として付加されるガウシアン分布の平均値と標準偏差を設定することができます。ノイズの値はそれぞれのビームに独立して付加されます。ノイズを付加した後、距離はセンサの最小距離と最大距離の間で偽の値（ノイズが付加された値）になります。<br/>
-rayノイズモデルをテストするには:</p>
-
-<ol>
-<li>モデルのディレクトリを作る</li>
-</ol>
-
-
-<pre><code class="bash">  mkdir -p ~/.gazebo/models/noisy_laser
-</code></pre>
-
-<ol>
-<li><code>config</code>ファイルを生成する</li>
-</ol>
-
-
-<pre><code class="bash">  gedit ~/.gazebo/models/noisy_laser/model.config
-</code></pre>
-
-<ol>
-<li><code>model.config</code>ファイルに以下をコピペする</li>
-</ol>
-
-
-<pre><code class="xml">    &lt;?xml version="1.0"?&gt;
-    &lt;model&gt;
-      &lt;name&gt;Noisy laser&lt;/name&gt;
-      &lt;version&gt;1.0&lt;/version&gt;
-      &lt;sdf version='1.4'&gt;model.sdf&lt;/sdf&gt;
-
-      &lt;author&gt;
-       &lt;name&gt;My Name&lt;/name&gt;
-       &lt;email&gt;me@my.email&lt;/email&gt;
-      &lt;/author&gt;
-
-      &lt;description&gt;
-        My noisy laser.
-      &lt;/description&gt;
-    &lt;/model&gt;
-</code></pre>
-
-<ol>
-<li><code>~/.gazebo/models/noisy_laser/model.sdf</code>ファイルを生成する</li>
-</ol>
-
-
-<pre><code class="bash">    gedit ~/.gazebo/models/noisy_laser/model.sdf
-</code></pre>
-
-<ol>
-<li>以下を<code>model.sdf</code>ファイルにコピペする。以下のモデルはスタンダードな<code>Hokuyo</code>モデルにノイズを付加したものです。:</li>
-</ol>
-
-
-<pre><code class="xml">&lt;?xml version="1.0" ?&gt;
-&lt;sdf version="1.4"&gt;
-  &lt;model name="hokuyo"&gt;
-    &lt;link name="link"&gt;
-      &lt;gravity&gt;false&lt;/gravity&gt;
-      &lt;inertial&gt;
-        &lt;mass&gt;0.1&lt;/mass&gt;
-      &lt;/inertial&gt;
-      &lt;visual name="visual"&gt;
-        &lt;geometry&gt;
-          &lt;mesh&gt;
-            &lt;uri&gt;model://hokuyo/meshes/hokuyo.dae&lt;/uri&gt;
-          &lt;/mesh&gt;
-        &lt;/geometry&gt;
-      &lt;/visual&gt;
-      &lt;sensor name="laser" type="ray"&gt;
-        &lt;pose&gt;0.01 0 0.03 0 -0 0&lt;/pose&gt;
-        &lt;ray&gt;
-          &lt;scan&gt;
-            &lt;horizontal&gt;
-              &lt;samples&gt;640&lt;/samples&gt;
-              &lt;resolution&gt;1&lt;/resolution&gt;
-              &lt;min_angle&gt;-2.26889&lt;/min_angle&gt;
-              &lt;max_angle&gt;2.268899&lt;/max_angle&gt;
-            &lt;/horizontal&gt;
-          &lt;/scan&gt;
-          &lt;range&gt;
-            &lt;min&gt;0.08&lt;/min&gt;
-            &lt;max&gt;10&lt;/max&gt;
-            &lt;resolution&gt;0.01&lt;/resolution&gt;
-          &lt;/range&gt;
-          &lt;noise&gt;
-            &lt;type&gt;gaussian&lt;/type&gt;
-            &lt;mean&gt;0.0&lt;/mean&gt;
-            &lt;stddev&gt;0.01&lt;/stddev&gt;
-          &lt;/noise&gt;
-        &lt;/ray&gt;
-        &lt;plugin name="laser" filename="libRayPlugin.so" /&gt;
-        &lt;always_on&gt;1&lt;/always_on&gt;
-        &lt;update_rate&gt;30&lt;/update_rate&gt;
-        &lt;visualize&gt;true&lt;/visualize&gt;
-      &lt;/sensor&gt;
-    &lt;/link&gt;
-  &lt;/model&gt;
-&lt;/sdf&gt;
-</code></pre>
-
-<ol>
-<li>Gazeboを起動する:</li>
-</ol>
-
-
-<pre><code class="bash">gazebo
-</code></pre>
-
-<ol>
-<li><p>ノイズを付加したレーザーセンサを挿入する : 画面左側の枠の中で、<strong>Insert</strong>タブを選び、<strong>Noisy laser</strong>をクリックする。その後、シミュレータにそれを設置する。</p></li>
-<li><p>ノイズを付加したレーザーセンサを観測する : <strong>Topis Selector</strong>を表示するために、<strong>Window</strong>-><strong>Topic Visualazation</strong>をクリックする(もしくは、<code>Ctrl-T</code>を押す)。</p></li>
-<li><p><code>/gazebo/default/hokuyo/link/laser/scan</code>のような名前のトピックを探し、クリックしたら、<strong>Okay</strong>をクリックしてください。すると、レーザーデータが表示されたウィンドウが見えるはずです。</p></li>
-</ol>
-
-
-<p>スキャンデータにノイズが付加されているのを確認できます。ノイズを調節するには、平均値と標準偏差を<code>model.sdf</code>にある以下のブロックでで変更するだけでよいです。なお、それらの要素はすべてメートル単位系です。:</p>
-
-<pre><code class="xml">&lt;noise&gt;
-  &lt;type&gt;gaussian&lt;/type&gt;
-  &lt;mean&gt;0.0&lt;/mean&gt;
-  &lt;stddev&gt;0.01&lt;/stddev&gt;
-&lt;/noise&gt;
-</code></pre>
-
-<p><code>Hokuyo</code>レーザーにはピッタリの値があります。<br/>
-尚、これらの手順は、以下の動画を参照してください。動画では、ノイズを見やすくするために、平均値を0、標準偏差を0.1としてあります。</p>
-
-<div class="youtube-container">
-<iframe width="560" height="315" src="https://www.youtube.com/embed/_y-m1fQxZjA" frameborder="0" allowfullscreen></iframe>
-</div>
-
-
-<h2>カメラノイズ</h2>
-
-<p>カメラのノイズでは、<a href="http://en.wikipedia.org/wiki/Image_noise#Amplifier_noise_.28Gaussian_noise.29">output amplifier noise</a>を付加します。これは、各ピクセルに独立したガウシアンサンプルノイズを付加するものです。各ピクセルにでサンプリングされる値に、ガウシアン分布の平均値と標準偏差を設定することができます。ノイズの値は各ピクセルで独立しており、ノイズの値は各ピクセルの各色チャンネルにも独立して付加されます。ノイズを付加した後、色チャンネルの値は0.0から1.0の間で偽の値を取ります。;このfloat型のポイントの色の値はイメージの中では、unsigned int型として扱われます。普通は、0から255の間の値です。(8 [ビット/チャンネル] を使用します)<br/>
-このノイズモデルは<a href="">GLSL</a>の中で、シェーダーやGPUを起動するときの必要要件として実行されます。<br/>
-カメラノイズモデルをテストするには:</p>
-
-<ol>
-<li>モデルディレクトリをつくります:</li>
-</ol>
-
-
-<pre><code class="bash">    mkdir -p ~/.gazebo/models/noisy_camera
-</code></pre>
-
-<ol>
-<li><code>model.config</code>ファイルを生成する</li>
-</ol>
-
-
-<pre><code class="bash">    gedit ~/.gazebo/models/noisy_camera/model.config
-</code></pre>
-
-<ol>
-<li><code>model.config</code>に以下の内容をコピペする</li>
-</ol>
-
-
-<pre><code class="xml">    &lt;?xml version="1.0"?&gt;
-    &lt;model&gt;
-      &lt;name&gt;Noisy camera&lt;/name&gt;
-      &lt;version&gt;1.0&lt;/version&gt;
-      &lt;sdf version='1.4'&gt;model.sdf&lt;/sdf&gt;
-
-      &lt;author&gt;
-       &lt;name&gt;My Name&lt;/name&gt;
-       &lt;email&gt;me@my.email&lt;/email&gt;
-      &lt;/author&gt;
-
-      &lt;description&gt;
-        My noisy camera.
-      &lt;/description&gt;
-    &lt;/model&gt;
-</code></pre>
-
-<ol>
-<li><code>~/.gazebo/models/noisy_camera/model.sdf</code>ファイルを生成する</li>
-</ol>
-
-
-<pre><code class="bash">    gedit ~/.gazebo/models/noisy_camera/model.sdf
-</code></pre>
-
-<ol>
-<li>以下の内容を<code>model.sdf</code>にコピペする。これは、基本的なカメラモデルにノイズを付加したモデルです。:</li>
-</ol>
-
-
-<pre><code class="xml">    &lt;?xml version="1.0" ?&gt;
-    &lt;sdf version="1.4"&gt;
-      &lt;model name="camera"&gt;
-        &lt;link name="link"&gt;
-          &lt;gravity&gt;false&lt;/gravity&gt;
-          &lt;pose&gt;0.05 0.05 0.05 0 0 0&lt;/pose&gt;
-          &lt;inertial&gt;
-            &lt;mass&gt;0.1&lt;/mass&gt;
-          &lt;/inertial&gt;
-          &lt;visual name="visual"&gt;
-            &lt;geometry&gt;
-              &lt;box&gt;
-                &lt;size&gt;0.1 0.1 0.1&lt;/size&gt;
-              &lt;/box&gt;
-            &lt;/geometry&gt;
-          &lt;/visual&gt;
-          &lt;sensor name="camera" type="camera"&gt;
-            &lt;camera&gt;
-              &lt;horizontal_fov&gt;1.047&lt;/horizontal_fov&gt;
-              &lt;image&gt;
-                &lt;width&gt;1024&lt;/width&gt;
-                &lt;height&gt;1024&lt;/height&gt;
-              &lt;/image&gt;
-              &lt;clip&gt;
-                &lt;near&gt;0.1&lt;/near&gt;
-                &lt;far&gt;100&lt;/far&gt;
-              &lt;/clip&gt;
-              &lt;noise&gt;
-                &lt;type&gt;gaussian&lt;/type&gt;
-                &lt;mean&gt;0.0&lt;/mean&gt;
-                &lt;stddev&gt;0.07&lt;/stddev&gt;
-              &lt;/noise&gt;
-            &lt;/camera&gt;
-            &lt;always_on&gt;1&lt;/always_on&gt;
-            &lt;update_rate&gt;30&lt;/update_rate&gt;
-            &lt;visualize&gt;true&lt;/visualize&gt;
-          &lt;/sensor&gt;
-        &lt;/link&gt;
-      &lt;/model&gt;
-    &lt;/sdf&gt;
-</code></pre>
-
-<ol>
-<li>Gazeboを起動する:</li>
-</ol>
-
-
-<pre><code class="bash">    gazebo
-</code></pre>
-
-<ol>
-<li><p>ノイズが付加されたカメラを挿入する : 画面左側の枠の中で、<strong>Insert</strong>タブを選び、<strong>Noisy camera</strong>をクリックする。その後、シミュレータにそれを設置する。</p></li>
-<li><p>ノイズを付加したカメラを観測する : <strong>Topis Selector</strong>を表示するために、<strong>Window</strong>-><strong>Topic Visualazation</strong>をクリックする(もしくは、<code>Ctrl-T</code>を押す)。</p></li>
-<li><p><code>/gazebo/default/camera/link/camera/image</code>のような名前のトピックを探し、クリックしたら、<strong>Okay</strong>をクリックしてください。すると、カメラのイメージが表示されたウィンドウが見えるはずです。</p></li>
-</ol>
-
-
-<p>よく見ると、イメージにノイズが付加されているのが見えると思います。ノイズを調整するには、<code>model.sdf</code>ファイルの中にある以下のようなセクションで、平均値と標準偏差を調節してやるだけで良いです。これらには単位系はありません。;各色チャンネルに0.0以上、1.0以下の値でノイズを付加します。<br/>
-以下のレイは、<code>&lt;stddev&gt;</code>の値をとても大きくしています。この値を減らしてみてください。:</p>
-
-<pre><code class="xml">&lt;noise&gt;
-  &lt;type&gt;gaussian&lt;/type&gt;
-  &lt;mean&gt;0.0&lt;/mean&gt;
-  &lt;stddev&gt;0.007&lt;/stddev&gt;
-&lt;/noise&gt;
-</code></pre>
-
-<p>デジタルカメラには、最適なノイズの値があります。<br/>
-尚、これらの手順は、以下の動画を参照してください。動画では、ノイズを見やすくするために、平均値を0、標準偏差を0.07としたものと、平均値を0、標準偏差を0.007としたものを表示しています。</p>
-
-<div class="youtube-container">
-<iframe width="560" height="315" src="https://www.youtube.com/embed/Vp-0OPoECws" frameborder="0" allowfullscreen></iframe>
-</div>
-
-
-<h2>IMUノイズ</h2>
-
-<p>IMUセンサでは、角度速度と並進加速度に対する2種類の外乱(ノイズとバイアス)を考えます。角速度と並進加速度は分かれているものとして、このモデルでは、速度ノイズ、速度バイアス、加速度ノイズ、加速度バイアスの4つのパラメータを導出します。世界座標系（将来的には変化する）の中で、完全な値として表現されるようなIMUの元データから応用するノイズはありません。<br/>
-ノイズは付加的であり、ガウシアン分布からサンプリングされます。ノイズの値をサンプリングしてくる、ガウシアン分布（速度や、角速度の一つ一つに対するもの）の平均値と標準偏差を設定することができます。ノイズの値は、互いのサンプリング要素(X,Y,Z)では独立しており、それらの要素に付加されます。<br/>
-バイアスもまた付加的でありますが、これは、シミュレーションがスタートした時の一度だけしかサンプリングされません。バイアスの値をサンプリングしてくる、ガウシアン分布（速度や、角速度の一つ一つに対するもの）の平均値と標準偏差を設定することができます。バイアスは設定されたパラメータに沿ってサンプリングされます;提供される平均値はバイアスの大きさを定義し、各方向にバイアスがかかっており、バイアスは修正された値で、各要素(X,Y,Z)に付加されていると仮定されます。<br/>
-<strong>Note : </strong>シミュレートされているシステムと物理エンジンの構成に依存しているので、シミュレーションされたIMUのデータはすでにいくぶんかノイズがのっていることがあります。なぜなら、システムはすべての収斂の方法を解決しているわけではないからです。なので、アプリケーションに依存するという点では、ノイズを付加する必要はないかもしれません。<br/>
-IMUノイズモデルをテストするには:</p>
-
-<ol>
-<li>モデルのディレクトリを作る:</li>
-</ol>
-
-
-<pre><code class="bash">    mkdir -p ~/.gazebo/models/noisy_imu
-</code></pre>
-
-<ol>
-<li><code>model.config</code>ファイルを生成する</li>
-</ol>
-
-
-<pre><code class="bash">    gedit ~/.gazebo/models/noisy_imu/model.config
-</code></pre>
-
-<ol>
-<li><code>model.config</code>に以下の内容をコピペする</li>
-</ol>
-
-
-<pre><code class="xml">    &lt;?xml version="1.0"?&gt;
-    &lt;model&gt;
-      &lt;name&gt;Noisy IMU&lt;/name&gt;
-      &lt;version&gt;1.0&lt;/version&gt;
-      &lt;sdf version='1.4'&gt;model.sdf&lt;/sdf&gt;
-
-      &lt;author&gt;
-       &lt;name&gt;My Name&lt;/name&gt;
-       &lt;email&gt;me@my.email&lt;/email&gt;
-      &lt;/author&gt;
-
-      &lt;description&gt;
-        My noisy IMU.
-      &lt;/description&gt;
-    &lt;/model&gt;
-</code></pre>
-
-<ol>
-<li><code>~/.gazebo/models/noisy_imu/model.sdf</code>ファイルを生成する</li>
-</ol>
-
-
-<pre><code class="xml">    gedit ~/.gazebo/models/noisy_imu/model.sdf
-</code></pre>
-
-<ol>
-<li><code>model.sdf</code>に以下の内容をコピペする:</li>
-</ol>
-
-
-<pre><code class="xml">    &lt;?xml version="1.0" ?&gt;
-    &lt;sdf version="1.4"&gt;
-      &lt;model name="imu"&gt;
-        &lt;link name="link"&gt;
-          &lt;inertial&gt;
-            &lt;mass&gt;0.1&lt;/mass&gt;
-          &lt;/inertial&gt;
-          &lt;visual name="visual"&gt;
-            &lt;geometry&gt;
-              &lt;box&gt;
-                &lt;size&gt;0.1 0.1 0.1&lt;/size&gt;
-              &lt;/box&gt;
-            &lt;/geometry&gt;
-          &lt;/visual&gt;
-          &lt;collision name="collision"&gt;
-            &lt;geometry&gt;
-              &lt;box&gt;
-                &lt;size&gt;0.1 0.1 0.1&lt;/size&gt;
-              &lt;/box&gt;
-            &lt;/geometry&gt;
-          &lt;/collision&gt;
-          &lt;sensor name="imu" type="imu"&gt;
-            &lt;imu&gt;
-              &lt;noise&gt;
-                &lt;type&gt;gaussian&lt;/type&gt;
-                &lt;rate&gt;
-                  &lt;mean&gt;0.0&lt;/mean&gt;
-                  &lt;stddev&gt;2e-4&lt;/stddev&gt;
-                  &lt;bias_mean&gt;0.0000075&lt;/bias_mean&gt;
-                  &lt;bias_stddev&gt;0.0000008&lt;/bias_stddev&gt;
-                &lt;/rate&gt;
-                &lt;accel&gt;
-                  &lt;mean&gt;0.0&lt;/mean&gt;
-                  &lt;stddev&gt;1.7e-2&lt;/stddev&gt;
-                  &lt;bias_mean&gt;0.1&lt;/bias_mean&gt;
-                  &lt;bias_stddev&gt;0.001&lt;/bias_stddev&gt;
-                &lt;/accel&gt;
-              &lt;/noise&gt;
-            &lt;/imu&gt;
-            &lt;always_on&gt;1&lt;/always_on&gt;
-            &lt;update_rate&gt;1000&lt;/update_rate&gt;
-          &lt;/sensor&gt;Laser
-        &lt;/link&gt;
-      &lt;/model&gt;
-    &lt;/sdf&gt;
-</code></pre>
-
-<ol>
-<li>Gazeboを起動する:</li>
-</ol>
-
-
-<pre><code class="bash">    gazebo
-</code></pre>
-
-<ol>
-<li><p>ノイズを付加したIMUを挿入する : 画面左側の枠の中で、<strong>Insert</strong>タブを選び、<strong>Noisy IMU</strong>をクリックする。その後、シミュレータにそれを設置する。</p></li>
-<li><p>ノイズを付加したIMUを観測する : <strong>Topis Selector</strong>を表示するために、<strong>Window</strong>-><strong>Topic Visualazation</strong>をクリックする(もしくは、<code>Ctrl-T</code>を押す)。</p></li>
-<li><p><code>/gazebo/default/camera/link/imu/imu</code>のような名前のトピックを探し、クリックしたら、<strong>Okay</strong>をクリックしてください。すると、IMUデータのテキストビューウィンドウが見えるはずです。</p></li>
-</ol>
-
-
-<p>ノイズをIMUのような高レートのセンサに適用するのは難しくなりがちです。特に複雑なシステムにおいてはそれはなおさらです。ノイズでゼロではない大きな値の平均値をとる　かつ/もしくは バイアスパラメータをとるのが友好的であるとわかるでしょう。<br/>
-ノイズを調整するには、<code>model.sdf</code>ファイルの中にある以下のようなセクションで、平均値と標準偏差を調節してやるだけで良いです。角速度のノイズとバイアスの単位系は[rad/s]で加速度のノイズとバイアスの単位系は[m/s<sup>2</sup>]です。</p>
-
-<pre><code class="xml">&lt;noise&gt;
-  &lt;type&gt;gaussian&lt;/type&gt;
-  &lt;rate&gt;
-    &lt;mean&gt;0.0&lt;/mean&gt;
-    &lt;stddev&gt;2e-4&lt;/stddev&gt;
-    &lt;bias_mean&gt;0.0000075&lt;/bias_mean&gt;
-    &lt;bias_stddev&gt;0.0000008&lt;/bias_stddev&gt;
-  &lt;/rate&gt;
-  &lt;accel&gt;
-    &lt;mean&gt;0.0&lt;/mean&gt;
-    &lt;stddev&gt;1.7e-2&lt;/stddev&gt;
-    &lt;bias_mean&gt;0.1&lt;/bias_mean&gt;
-    &lt;bias_stddev&gt;0.001&lt;/bias_stddev&gt;
-  &lt;/accel&gt;
-&lt;/noise&gt;
-</code></pre>
-
-<p>高い品質のIMU装置には、最適なノイズの値があります。<br/>
-尚、これらの手順は、以下の動画を参照してください。平均値や標準偏差などは、上記の設定のものを使用しています。</p>
-
-<div class="youtube-container">
-<iframe width="560" height="315" src="https://www.youtube.com/embed/LZTzUgkLfwk" frameborder="0" allowfullscreen></iframe>
 </div>
 
 ]]></content>
