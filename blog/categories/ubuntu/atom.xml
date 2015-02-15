@@ -1,0 +1,1472 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Ubuntu | 九州工業大学 CIR-KIT Blog]]></title>
+  <link href="http://cir-kit.github.io/blog/categories/ubuntu/atom.xml" rel="self"/>
+  <link href="http://cir-kit.github.io/"/>
+  <updated>2015-02-15T13:37:40+09:00</updated>
+  <id>http://cir-kit.github.io/</id>
+  <author>
+    <name><![CDATA[]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[GazeboをROSに繋ぐ (Gazebo_ros_pkgsをインストールする 編) No.6.3]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/02/14/gazebo-installing-gazebo-ros-pkgs/"/>
+    <updated>2015-02-14T21:33:12+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/02/14/gazebo-installing-gazebo-ros-pkgs</id>
+    <content type="html"><![CDATA[<p><img src="/images/gazebo_logo.png" alt="gazebo_logo" /></p>
+
+<h5>検証日時</h5>
+
+<p>02/14/2015 (Sat)</p>
+
+<h5>概要</h5>
+
+<p>Gazeboのチュートリアル第六弾「Connect to ROS」。<br/>
+ROSはロボットの制御フレームワークです。このチュートリアルでは、GazeboとROSのインターフェースについて説明します。<br/>
+今回はその「Installing gazebo_ros_pkgs」編です。<br/>
+公式サイトを適当に翻訳しただけですので、あしからず。</p>
+
+<h5>レベル</h5>
+
+<p><strong>INTERMEDIATE</strong></p>
+
+<!-- more -->
+
+
+<h5>環境</h5>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> <strong>PC</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Prosessor</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>RAM</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>OS</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Kernel</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> 3.13.0-44-generic </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Gazebo</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Version 5.0.1 </td>
+</tr>
+</tbody>
+</table>
+
+
+<h5>参考</h5>
+
+<p><a href="http://gazebosim.org/tutorials?cat=connect_ros">GAZEBO Tutorial-Connect to ROS</a></p>
+
+<h2>はじめに</h2>
+
+<p>GazeboのインターフェースのためのROSパッケージのセットは、<code>gazebo_ros_pkgs</code>という名前の新しいメタパッケージで構成されています。続きを読む前に、前提情報として、<a href="http://cir-kit.github.io/blog/2015/02/14/gazebo-ros-overview/">ROSの統合についての概要</a>をご覧ください。<br/>
+これらの説明は、<a href="http://www.ros.org/wiki/hydro">ROS Hydro</a>と<a href="http://www.ros.org/wiki/indigo">Ros Indigo</a>と完全に統合されたGazeboのバージョンを使用するためのものです。チュートリアルを始める前に、<a href="http://cir-kit.github.io/blog/2015/02/14/gazebo-which-combination-of-ros-and-gazebo-versions-to-use/">どのGazebo/ROSのバージョンの組み合わせを使うか</a>をまず読むことをおすすめします。必要に応じて、それに応えるインストール方法が必要となります。</p>
+
+<h2>必須条件</h2>
+
+<p>ROSのコンセプトについて<a href="http://www.ros.org/wiki/ROS/Tutorials">ROSチュートリアル</a>を通じて理解しておく必要があります。</p>
+
+<h3>ROSをインストールする</h3>
+
+<p>ROSの統合チュートリアルのために、(<code>ros-hydro-desktop-full</code>もしくは<code>ros-indigo-desktop-full</code>)インストールをおすすめします。それにより、必要なパッケージを手に入れることができます。<br/>
+詳しくは、<a href="http://www.ros.org/wiki/ROS/Installation">ROSのインストール</a>ページをご覧ください。もちろん、ROSのインストールページの説明に従い、ROSの<code>setup.sh</code>を<code>source</code>コマンドで実行しておいてください。</p>
+
+<h3>Gazeboをインストールする</h3>
+
+<p>ソースコードまたは、プレビルドされたUbuntuのdebianパッケージのどちらを使っても、Gazeboをインストールできます。<br/>
+<a href="http://cir-kit.github.io/blog/2015/01/31/gazebo-install/">Gazeboのインストール</a>をご覧ください。ソースコードからインストールする場合には、<code>gazebo_X.Y</code>ブランチ(X.Yはあなたの必要とするバージョンを指します)をすることを忘れないでください。</p>
+
+<h4>スタンドアローンなGazeboの動作チェックをする</h4>
+
+<p><code>gazebo_ros_pkgs</code>のインストールを行う前に、以下のコマンドをターミナルで入力して、スタンドアローンなGazeboの動作チェックを行うことを忘れないでください。:</p>
+
+<pre><code class="bash">  gazebo
+</code></pre>
+
+<p>空のシミュレーションと、GUIが開くのが確認できるでしょう。また、画面左側の<strong>Insert</strong>タブをクリックし、モデルを選んで(クリックすると、モデルをシミュレーションのどこに置くか決定できます)、シミュレーションに足してください。</p>
+
+<h4>Gazeboのバージョンが正しいことを確認する</h4>
+
+<p>Gazeboがどこにインストールされているか探し、それが正しい位置にあるか確かめるために、以下のコマンドを実行してください。:</p>
+
+<pre><code class="bash">  which gzserver
+  which gzclient
+</code></pre>
+
+<p>もし、デフォルトの位置で、ソースコードからインストールしたのなら、結果は以下のようになるはずです。:</p>
+
+<pre><code class="bash">  /usr/local/bin/gzserver
+  /usr/local/bin/gzclient
+</code></pre>
+
+<p>もし、debianパッケージを使用してインストールしたなら、結果は以下のようになるはずです。:</p>
+
+<pre><code class="bash">  /usr/bin/gzserver
+  /usr/bin/gzclient
+</code></pre>
+
+<h2>gazebo_ros_pkgsのインストール</h2>
+
+<p>好きな方法を選んでください。早くて簡単な方法はパッケージからインストールすることです。しかし、ソースコードからインストールすることで、デバックとバグパッチの適用をより簡単にできます。(oω&lt;)</p>
+
+<h3>A. プレビルドDebianパッケージをインストールする</h3>
+
+<p><code>gazebo_ros_pkgs</code>パッケージは以下のそれぞれのバージョンで利用可能です。:</p>
+
+<ul>
+<li><a href="http://ros.org/wiki/hydro">ROS Hydro</a>:</li>
+</ul>
+
+
+<pre><code class="bash">sudo apt-get install ros-hydro-gazebo-ros-pkgs ros-hydro-gazebo-ros-control
+</code></pre>
+
+<ul>
+<li><a href="http://ros.org/wiki/indigo">ROS Indigo</a>:</li>
+</ul>
+
+
+<pre><code class="bash">sudo apt-get install ros-indigo-gazebo-ros-pkgs ros-indigo-gazebo-ros-control
+</code></pre>
+
+<p>もしこのインストール方法がうまく行ったら、このページの下の<strong>ROSの統合環境を使ってGazeboをテストする</strong>に進んでください。</p>
+
+<h3>B. ソースコードからインストールする(Ubuntu)</h3>
+
+<p>もしあなたが、ROSの最新バージョン(Groovy以上)を使用しているなら、ソースコードから<code>gazebo_ros_pkgs</code>をインストールする必要があります。ソースコードからインストールすることは、新しいプラグインを開発したり、パッチを適用したりするときに便利です。</p>
+
+<h4>Catkinワークスペースをセットアップする</h4>
+
+<p>これらのイントロダクションでは<a href="http://www.ros.org/wiki/catkin">catkinビルドシステム</a>を使うことが必要です。<br/>
+もし、まだcatkinワークスペースのセットアップをしていないなら、以下のコマンドを試してみてください。</p>
+
+<pre><code class="bash">mkdir -p ~/catkin_ws/src
+cd ~/catkin_ws/src
+catkin_init_workspace
+cd ~/catkin_ws
+catkin_make
+</code></pre>
+
+<p>次に、あなたの<code>.bash</code>ファイルにセットアップスクリプトを追加してください。:</p>
+
+<pre><code class="bash">echo "source ~/catkin_ws/devel/setup.bash" &gt;&gt; ~/.bashrc
+</code></pre>
+
+<p>もっと詳しい情報は、<a href="http://www.ros.org/wiki/catkin/Tutorials/create_a_workspace">Catkinワークスペースを作る</a>というチュートリアルをご覧ください。</p>
+
+<h4>GitHubレポジトリをCloneする</h4>
+
+<p><code>git</code>があなたのUbuntuマシンにインストールされていることを確認してください。:</p>
+
+<pre><code class="bash">sudo apt-get install git
+</code></pre>
+
+<h5>ROS Indigo</h5>
+
+<p>Indigoはgazebo2.xシリーズを使用しておりイます。以下のインストールから始めましょう。:</p>
+
+<pre><code class="bash">sudo apt-get install -y gazebo2
+</code></pre>
+
+<p><a href="https://github.com/ros-simulation/gazebo_ros_pkgs"><code>gazebo_ros_pkgs</code>のGitHubレポジトリ</a>からソースコードをダウンロードしましょう。</p>
+
+<pre><code class="bash">cd ~/catkin_ws/src
+git clone https://github.com/ros-simulation/gazebo_ros_pkgs.git -b indigo-devel
+</code></pre>
+
+<p><code>rosdep</code>コマンドを使って、足りない依存条件を確認しましょう。</p>
+
+<pre><code class="bash">rosdep update
+rosdep check --from-paths . --ignore-src --rosdistro indigo
+</code></pre>
+
+<p><code>rosdep</code>のdebianインストールを使って、自動的に、不足している依存条件をインストールすることができます。:</p>
+
+<pre><code class="bash">rosdep install --from-paths . --ignore-src --rosdistro indigo -y
+</code></pre>
+
+<p>完了したら、<strong>gazebo_ros_pkgsをビルドする</strong>というセクションに移動しましょう。</p>
+
+<h5>ROS Hydro</h5>
+
+<p>Hydroはgazebo1.xシリーズを使用しておりイます。以下のインストールから始めましょう。:</p>
+
+<pre><code class="bash">sudo apt-get install -y gazebo
+</code></pre>
+
+<p><a href="https://github.com/ros-simulation/gazebo_ros_pkgs"><code>gazebo_ros_pkgs</code>のGitHubレポジトリ</a>からソースコードをダウンロードしましょう。</p>
+
+<pre><code class="bash">cd ~/catkin_ws/src
+git clone https://github.com/ros-simulation/gazebo_ros_pkgs.git -b hydro-devel
+</code></pre>
+
+<p><code>rosdep</code>コマンドを使って、足りない依存条件を確認しましょう。</p>
+
+<pre><code class="bash">rosdep update
+rosdep check --from-paths . --ignore-src --rosdistro hydro
+</code></pre>
+
+<p><code>rosdep</code>のdebianインストールを使って、自動的に、不足している依存条件をインストールすることができます。:</p>
+
+<pre><code class="bash">rosdep install --from-paths . --ignore-src --rosdistro hydro -y
+</code></pre>
+
+<p>完了したら、<strong>gazebo_ros_pkgsをビルドする</strong>というセクションに移動しましょう。</p>
+
+<h2>ROSの統合環境を使ってGazeboをテストする</h2>
+
+<p>ROSのセットアップファイルを<code>source</code>コマンドで有効にすることを忘れないでください。Hydroの場合は、以下のコマンドでそれを有効にできます。:</p>
+
+<pre><code class="bash">source /opt/ros/hydro/setup.bash
+</code></pre>
+
+<p><code>~/.bashrc</code>に以上のようなコマンドは追加しているでしょう。<br/>
+GazeboとROSの環境については、おそらく、セットアップし、ビルドしていることと仮定すると、<code>roscore</code>を起動した後に、<code>rosrun</code>コマンドだけでGazeboを起草できるはずです。:<br/>
+もしまだ、<code>.bashrc</code>に以下のコマンドを追加していないなら、catkinの<code>setup.bash</code>を<code>source</code>コマンドで実行してください。</p>
+
+<pre><code class="bash">source ~/catkin_ws/devel/setup.bash
+</code></pre>
+
+<p>その後、以下のコマンドを実行してください。</p>
+
+<pre><code class="bash">roscore &amp;
+rosrun gazebo_ros gazebo
+</code></pre>
+
+<p>すると、ウィンドウの中に何も無いようなGazeboのGUIが立ち上がるでしょう。<br/>
+ROSの接続が本当に完了しているか確かめるために、利用可能なROSのトピックを見てみましょう。:</p>
+
+<pre><code class="bash">rostopic list
+</code></pre>
+
+<p>すると、トピックの一覧の中に、以下のようなトピックが確認できるはずです。:</p>
+
+<pre><code>/gazebo/link_states
+/gazebo/model_states
+/gazebo/parameter_descriptions
+/gazebo/parameter_updates
+/gazebo/set_link_state
+/gazebo/set_model_state
+</code></pre>
+
+<p>Gazeboのサービスの存在も確認することができます。:</p>
+
+<pre><code class="bash">rosservice list
+</code></pre>
+
+<p>すると、サービスの一覧の中に、以下のようなサービスが確認できるはずです。:</p>
+
+<pre><code class="bash">/gazebo/apply_body_wrench
+/gazebo/apply_joint_effort
+/gazebo/clear_body_wrenches
+/gazebo/clear_joint_forces
+/gazebo/delete_model
+/gazebo/get_joint_properties
+/gazebo/get_link_properties
+/gazebo/get_link_state
+/gazebo/get_loggers
+/gazebo/get_model_properties
+/gazebo/get_model_state
+/gazebo/get_physics_properties
+/gazebo/get_world_properties
+/gazebo/pause_physics
+/gazebo/reset_simulation
+/gazebo/reset_world
+/gazebo/set_joint_properties
+/gazebo/set_link_properties
+/gazebo/set_link_state
+/gazebo/set_logger_level
+/gazebo/set_model_configuration
+/gazebo/set_model_state
+/gazebo/set_parameters
+/gazebo/set_physics_properties
+/gazebo/spawn_gazebo_model
+/gazebo/spawn_sdf_model
+/gazebo/spawn_urdf_model
+/gazebo/unpause_physics
+/rosout/get_loggers
+/rosout/set_logger_level
+</code></pre>
+
+<h2>Gazeboを起動するためのROSの他の方法</h2>
+
+<p>Gazeboを起動するROSのコマンドはたくさんあります。:</p>
+
+<ul>
+<li>サーバーとクライアントを同時にlaunchする</li>
+</ul>
+
+
+<pre><code class="bash">    rosrun gazebo_ros gazebo
+</code></pre>
+
+<ul>
+<li>Gazeboサーバーだけをlaunchする</li>
+</ul>
+
+
+<pre><code class="bash">    rosrun gazebo_ros gzserver
+</code></pre>
+
+<ul>
+<li>Gazeboのクライアントだけをlaunchする</li>
+</ul>
+
+
+<pre><code class="bash">    rosrun gazebo_ros gzclient
+</code></pre>
+
+<ul>
+<li>GDBを使った、Gazeboサーバーだけをデバッグモードでlaunchする</li>
+</ul>
+
+
+<pre><code class="bash">    rosrun gazebo_ros debug
+</code></pre>
+
+<ul>
+<li>さらに、roslaunchを使ってGazeboを起動することもできます</li>
+</ul>
+
+
+<pre><code class="bash">    roslaunch gazebo_ros empty_world.launch
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[GazeboをROSに繋ぐ (どのGazebo/ROSのバージョンの組み合わせを使うか 編) No.6.2]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/02/14/gazebo-which-combination-of-ros-and-gazebo-versions-to-use/"/>
+    <updated>2015-02-14T15:29:45+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/02/14/gazebo-which-combination-of-ros-and-gazebo-versions-to-use</id>
+    <content type="html"><![CDATA[<p><img src="/images/gazebo_logo.png" alt="gazebo_logo" /></p>
+
+<h5>検証日時</h5>
+
+<p>02/14/2015 (Sat)</p>
+
+<h5>概要</h5>
+
+<p>Gazeboのチュートリアル第六弾「Connect to ROS」。<br/>
+ROSはロボットの制御フレームワークです。このチュートリアルでは、GazeboとROSのインターフェースについて説明します。<br/>
+今回はその「Which combination of ROS/Gazebo Versions to use」編です。<br/>
+公式サイトを適当に翻訳しただけですので、あしからず。</p>
+
+<h5>レベル</h5>
+
+<p><strong>INTERMEDIATE</strong></p>
+
+<!-- more -->
+
+
+<h5>環境</h5>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> <strong>PC</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Prosessor</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>RAM</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>OS</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Kernel</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> 3.13.0-44-generic </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Gazebo</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Version 5.0.1 </td>
+</tr>
+</tbody>
+</table>
+
+
+<h5>参考</h5>
+
+<p><a href="http://gazebosim.org/tutorials?cat=connect_ros">GAZEBO Tutorial-Connect to ROS</a></p>
+
+<h2>はじめに</h2>
+
+<p>このドキュメントでは、ROSとGazeboをそれぞれ異なるバージョンの組み合わせで使うためのオプションについて説明します。Gazebo ROSラッパーをインストールする前に、読んでおくことをおすすめします。</p>
+
+<h2>簡単な判断のための短いバージョン</h2>
+
+<p>もし、ROSの特定のバージョンを使用しており、Gazeboの特定のバージョンを使用する理由がないなら、<a href="http://cir-kit.github.io/blog/2015/02/14/gazebo-installing-gazebo-ros-pkgs/">gazebo_ros_pkgsをインストールする</a>というチュートリアルへ進むこともできます。</p>
+
+<h2>GazeboのバージョンとROSの統合</h2>
+
+<p>ROS Hydroまでは、GazeboはROSパッケージの代替とみなされていました。これは、Gazeboのメジャーバージョンの一つ（例えば、ROS Indigo用のgazebo2）はROSリリースサイクルの始まりであり、すべてのROSディストリビューションの間で保たれていたということを意味します。Gazeboの開発はROSから独立しています。なので、Gazeboの新しい各バージョンはROSディストリビューションで使用される前にリリースする必要があります。<br/>
+Gazebo ABIの安定化ポリシーは、同じメジャーナンバーを持つすべてのバージョン(<code>gazebo_2.0.0</code>,<code>gazebo_2.1.0</code>,<code>gazebo_2.0.1</code>,&hellip;etc)はバイナリー互換であり、それ故に同じROSディストリビューションを使用するなら、相互に使用することができるといったような、<a href="http://semver.org/">sematic versioning pholosophy</a>に準拠しているということを覚えておいてください。</p>
+
+<h3>Gazeboをインストールする</h3>
+
+<h4>GazeboのUbuntuパッケージ</h4>
+
+<p>Gazeboをインストールする簡単な方法は、パッケージを使うことです。Gazeboパッケージがホストしているレポジトリは主に2つあります。:一つは<code>package.ros.org</code>で、もうひとつは、<code>osrfoundation.packages.org</code>です。この投稿を行った時点では、ホストの状況は以下のようになっています。</p>
+
+<blockquote><ul>
+<li>packages.ros.org
+
+<ul>
+<li>Hydro: hosts gazebo version 1.x package.</li>
+<li>Indigo: host gazebo version 2.x package.</li>
+</ul>
+</li>
+<li>packages.osrfoundation.org
+
+<ul>
+<li>gazebo 1.x series (package name gazebo)</li>
+<li>gazebo 2.x series (package name gazebo-current or gazebo2 in saucy/trusty)</li>
+<li>gazebo 3.x series (package name gazebo3)</li>
+<li>gazebo 4.x series (package name gazebo4)</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+
+<p>このことは、<code>osrfoundation</code>レポジトリは必ずしもUbuntuのGazeboパッケージから取得する必要がないということを意味します。ROSのレポジトリからインストールすることができます。</p>
+
+<h4>Gazeboをソースからビルドする</h4>
+
+<p>ソースコードからGazeboのバージョンをコンパイルしたのなら、あなたのGazeboで使用しているレポジトリのブランチにおける依存関係(gazebo_3.0, gazebo_4.0,&hellip;etc)は、メジャー場＾ジョンがローカルブランチのレポジトリとROSのディストリビューションで使用しているGazeboのバージョンが一致するときにかぎり、<code>gazebo_ros_pkgs</code>(それとGazeboでコンパイル済みのすべてのROSパッケージも)と共にバイナリコンパイルされます。例えば、もしあなたが、<code>gazebo_2.0</code>のGazeboブランチよりコンパイルをしているのなら、Indigo(Indigoはgazebo2シリーズを使用している)にある<code>gazebo_ros_pkgs</code>を使用することができます。<br/>
+もしあなたが、デフォルトのブランチを使用しているなら、大抵のリリースされたパッケージと共にバイナリコンパイルを行うことはできません。なので、<code>gazebo_ros_pkgs</code>を有効にするために、<code>catkin</code>ワークスペースが必要となります。</p>
+
+<h3>ROSディストリビューションのためにGazeboのデフォルトバージョンを使う</h3>
+
+<p>特定のROSディストリビューションを使用する必要があり、out-of-the-boxのパッケージに関連するGazeboやROSを使用したい人にとって、このセクションは重要です。</p>
+
+<h4>Indigo</h4>
+
+<p>ROS IndigoはGazeboの2.xのバージョンをホストしています。完全に統合されたROSのシステムのためには、Gazeboの2.xバージョンを使用することをおすすめします。適用方法は、ROSレポジトリを使用するということだけで、(自動でgazebo2がインストールされます)<code>osrfoundation</code>レポジトリは必要ありません。</p>
+
+<h4>Hydro</h4>
+
+<p>ROS HydroはGazeboの1.9.xのバージョンをホストしています。完全に統合されたROSシステムのためには、Gazeboの1.9.xバージョンを使用することをおすすめします。適用する方法は、ROSレポジトリを使用するということだけで、(自動でgazeboがインストールされます)<code>osrfoundation</code>レポジトリは必要ありません。</p>
+
+<h3>特定のバージョンのGazeboをROSと使用する</h3>
+
+<p><strong>!警告! : このオプションを使うと、ROSのdebレポジトリによるGazeboに関連したいかなるROS Ubuntuパッケージも使用できなくなるかもしれません。<code>gazebo_ros_pkgs</code>と同等のものは、debianパッケージによりインストールすることは可能ですが、その他のすべてのソフトウェア（<code>turtlebot_gazebo</code>など）はソースコードからビルドしなければなりませんが、<code>catkin</code>ワークスペースのおかげで、これを行うのはとても簡単です。</strong><br/>
+本当に必要であれば、特定のバージョンのGazeboとROSを使用する方法はたくさんあります:</p>
+
+<h4>Gazebo 4.x シリーズ</h4>
+
+<p>OSRFレポジトリは、gazebo4パッケージの最新をビルドする、<code>-gazebo4-</code>バージョンのROS/IndigoとROS/HydroのGazeboラッパーを提供しています。(`gazebo4_ros_pkgs)これらを使用する手順は以下のとおりです。</p>
+
+<ul>
+<li><code>osrfoundation</code>レポジトリをソースリストに追加する</li>
+<li><code>gazebo4</code>パッケージをインストールするのに使う、<code>ros-distro-gazebo4-ros-pkgs</code>を<code>osrfoundation</code>レポジトリより追加する。</li>
+<li>ソースコードから、残りのソフトウェアをコンパイルするために、<code>catkin</code>ワークスペースを使う</li>
+</ul>
+
+
+<h4>Gazebo 3.x シリーズ</h4>
+
+<p>OSRFレポジトリは、gazebo3パッケージの最新をビルドする、<code>-gazebo3-</code>バージョンのROS/HydroとROS/GroovyのGazeboラッパーを提供しています。(<code>gazebo3_ros_pkgs</code>)これらを使用する手順は以下のとおりです。</p>
+
+<ul>
+<li><code>osrfoundation</code>レポジトリをソースリストに追加する</li>
+<li><code>gazebo3</code>パッケージをインストールするのに使う、<code>ros-distro-gazebo3-ros-pkgs</code>を<code>osrfoundation</code>レポジトリより追加する。</li>
+<li>ソースコードから、残りのソフトウェアをコンパイルするために、<code>catkin</code>ワークスペースを使う</li>
+</ul>
+
+
+<h4>Gazebo 2.x シリーズ</h4>
+
+<p>OSRFレポジトリは、gazebo-currentパッケージの最新をビルドする、<code>-current-</code>バージョンのROS/HydroとROS/GroovyのGazeboラッパーを提供しています。(<code>gazebo_ros_pkgs-current</code>)これらを使用する手順は以下のとおりです。</p>
+
+<ul>
+<li><code>osrfoundation</code>レポジトリをソースリストに追加する</li>
+<li><code>gazebo-current</code>パッケージをインストールするのに使う、<code>ros-distro-gazebo-ros-pkgs-current</code>を<code>osrfoundation</code>レポジトリより追加する。</li>
+<li>ソースコードから、残りのソフトウェアをコンパイルするために、<code>catkin</code>ワークスペースを使う</li>
+</ul>
+
+
+<h2>FAQ</h2>
+
+<h4>私はDARPAのロボティクスチャレンジ参加者です。どのバージョンを使うのが良いですか?</h4>
+
+<p><code>drcsim-3.2</code>は<code>gazebo3</code>でビルドされています。<code>drcsim-4.0</code>からスタートすると、<code>gazebo4</code>を使うことになります。</p>
+
+<h4>私はまだROSを使ったことがありません。どのバージョンを使うのが良いですか?</h4>
+
+<p>ROSのサポートが必要ないなら、<a href="http://gazebosim.org/tutorials/?cat=installation"><code>osrfoundation</code>のレポジトリを利用してインストール</a>できる、最新リリースのバージョンをおすすめします。</p>
+
+<h4><code>bullet/simbody/dart</code>物理エンジンを使いたいのですが、どのバージョンが良いですか?</h4>
+
+<p><code>gazebo4</code>から始めるなら、<code>bullet</code>と<code>simbody</code>がUbuntuパッケージでサポートされています。なので、ROSと一緒に、<code>gazebo4</code>を使用するには、上記の説明に従ってください。<code>Dart</code>はソースコードからのインストールも必要とします（<code>gazebo3</code>からはじめるなら）。なので、<code>gazebo3</code>かそれ以外のバージョンを使用することができます。ROSと共に使用するために、このページの上部の説明に従ってください。</p>
+
+<h4>ROS-JではどのバージョンのGazeboが動きますか?</h4>
+
+<p>まだ決まってません。しかし、<a href="http://gazebosim.org/#status">予定では</a>おそらく<code>gazebo5</code>でしょう。</p>
+
+<h4>gazebo4とROS Indigoを使う必要があります。どうしたらよいですか?</h4>
+
+<p><strong>!警告! : このオプションを使うと、ROSのdebレポジトリから供給されるGazebo関連のROS Indigoパッケージが使えなくなるかもしれません。ソースコードからビルドする必要がありますが、<code>catkin</code>ワークスペースのおかげで、これを行うのはとても簡単です。</strong><br/>
+Gazebo4.xのバージョンにだけある機能を使用する必要があるなら、<code>gazebo4</code>とROS Indigoをインストールするという方法があります。<strong>このページ内</strong>にある<code>gazebo4</code>パッケージを使ったROSの使い方についての説明に従ってください。</p>
+
+<h4>gazebo3とROS Indigoを使う必要があります。どうしたらよいですか?</h4>
+
+<p><strong>!警告! : このオプションを使うと、ROSのdebレポジトリから供給されるGazebo関連のROS Indigoパッケージが使えなくなるかもしれません。ソースコードからビルドする必要がありますが、<code>catkin</code>ワークスペースのおかげで、これを行うのはとても簡単です。</strong><br/>
+Gazebo3.xのバージョンにだけある機能を使用する必要があるなら、<code>gazebo3</code>とROS Indigoをインストールするという方法があります。<strong>このページ内</strong>にある<code>gazebo3</code>パッケージを使ったROSの使い方についての説明に従ってください。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[GazeboをROSに繋ぐ (ROSの概要 編) No.6.1]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/02/14/gazebo-ros-overview/"/>
+    <updated>2015-02-14T11:25:06+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/02/14/gazebo-ros-overview</id>
+    <content type="html"><![CDATA[<p><img src="/images/gazebo_logo.png" alt="gazebo_logo" /></p>
+
+<h5>検証日時</h5>
+
+<p>02/14/2015 (Sat)</p>
+
+<h5>概要</h5>
+
+<p>Gazeboのチュートリアル第六弾「Connect to ROS」。<br/>
+ROSはロボットの制御フレームワークです。このチュートリアルでは、GazeboとROSのインターフェースについて説明します。<br/>
+今回はその「ROS Overview」編です。<br/>
+公式サイトを適当に翻訳しただけですので、あしからず。</p>
+
+<h5>レベル</h5>
+
+<p><strong>INTERMEDIATE</strong></p>
+
+<!-- more -->
+
+
+<h5>環境</h5>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> <strong>PC</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Prosessor</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>RAM</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>OS</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Kernel</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> 3.13.0-44-generic </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Gazebo</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Version 5.0.1 </td>
+</tr>
+</tbody>
+</table>
+
+
+<h5>参考</h5>
+
+<p><a href="http://gazebosim.org/tutorials?cat=connect_ros">GAZEBO Tutorial-Connect to ROS</a></p>
+
+<h2>チュートリアル : ROSの統合概要</h2>
+
+<p>Gazebo1.9と<a href="http://www.ros.org/wiki/hydro/">ROS Hydro</a>では、GazeboはROSの直接的な依存関係はなく、Ubuntuのスタンドアローンなパッケージとしてインストールされていました。歴史的に、GazeboをROSと共に使うには、Legacyの<code>simulator_gazebo</code>スタックと共にビルドされた、特別なバージョンのGazeboが必要でした。<br/>
+ROSとスタンドアローンなGazeboを統合するときに、スタンドアローンなGazeboに関するラッパーである、新しい<code>gazebo_ros_pkds</code>という名前のROSパッケージが作られました。このパッケージでは、ROSのメッセージやサービス、そして動的参照を使ってGazeboの中でロボットをシミュレートするために、必要なインターフェースを供給しています。<code>simulatiorgazebo</code>と<code>gazeboros_pkgs</code>の間の主な違いは現在以下のようになっている。:</p>
+
+<blockquote><ul>
+<li>それ単体ではROSとの接続機能を持たないGazeboの最新スタンドアローンな依存関係をサポートしている</li>
+<li><a href="http://www.ros.org/wiki/catkin">catkin</a>でビルドできる</li>
+<li>可能な限り、URDFと<a href="http://gazebosim.org/sdf.html">SDF</a>を同じものとみなす</li>
+<li>Gazeboでのソースコードの重複を減らす</li>
+<li><code>ros_control</code>を使ったコントロールのためのボックス以外のサポートの改善</li>
+<li>DARPAロボティクスチャレンジによるリアルタイムコントローラ統合の効率的な改善</li>
+<li>現在のROSとGazeboから古いコードを削除する</li>
+</ul>
+</blockquote>
+
+<p>新しいインターフェースの概要は下図のようになっているそうです。尚、下図は公式サイトのものです。:
+<img src="/images/2015-02-14-gazebo-ros-overview/775px-Gazebo_ros_api.png" alt="775px-Gazebo_ros_api" /></p>
+
+<h3><code>simulator_gazebo</code>からアップグレードする</h3>
+
+<p>以下のガイドラインは、あなたのGazeboの依存パッケージを、ROSパッケージの中で使用するために、<code>simulator_gazebo</code>からアップグレードするのに役立つでしょう。:</p>
+
+<h4>Catkin</h4>
+
+<p>Gazeboと古い<code>simulatorgazebo</code>スタックによるインターフェースのための現在のパッケージは<a href="http://www.ros.org/wiki/rosbuild">rosbuild</a>のビルドシステムで使われているものに似ています。ROS Hydroの中の<code>gazeboros_pkgs</code>とともに移行するためには、まず最初にパッケージを<strong>&ldquo;catkinize&rdquo;</strong>する必要があります。<a href="http://www.ros.org/wiki/catkin/Tutorials">Catkin Tutorials</a>をご覧ください。</p>
+
+<h4>Launch Files</h4>
+
+<p>Gazeboを起動するためには、以前作成した<code>roslaunch</code>ファイルにいくつかの変更を行う必要があります。それらのパッケージをアップデートする最も良い方法は、Gazeboのチュートリアルにある<a href="http://gazebosim.org/tutorials?tut=ros_roslaunch&amp;cat=connect_ros">Gazeboでroslaunchファイルを使ってモデルをスポーンさせる</a>を読むことです。nutshellでは:</p>
+
+<blockquote><ul>
+<li><code>roslaunch</code>ファイルの中では、<code>pkg="gazebo"</code>は<code>pkg="gazebo_ros"</code>とリネームする必要があります。</li>
+<li><code>gazebo_worlds</code>パッケージは消去されました。ほとんどの<code>world</code>ファイルはめったに使われず、SDFやXMLフォーマットの中の変更と共に定義されることもありません。つまり、<code>empty.world</code>を含むすべての<code>world</code>ファイルはGazeboのプロジェクト自身の中で、センタライズ（初期化）されます。</li>
+<li>Gazeboの<code>launch</code>ファイルを使う最も良い方法は、<code>gazebo_ros</code>パッケージにある、<code>empty world</code>の<code>launch</code>ファイルをただ単にinherentもしくはincludeすることです。</li>
+</ul>
+</blockquote>
+
+<h4>CMakeLists.txt</h4>
+
+<p>GazeboはもはやROSパッケージではないが、システム依存はあるので、<code>Cmake</code>ファイルを再構成する必要があります。以下に示すのは、<code>CMakeLists.txt</code>の一例です。:</p>
+
+<pre><code class="cmake">cmake_minimum_required(VERSION 2.8.3)
+project(YOURROBOT_gazebo_plugins)
+
+find_package(catkin REQUIRED COMPONENTS
+  gazebo_ros
+)
+
+# Depend on system install of Gazebo
+find_package(gazebo REQUIRED)
+
+include_directories(include ${catkin_INCLUDE_DIRS} ${GAZEBO_INCLUDE_DIRS} ${SDFormat_INCLUDE_DIRS})
+
+# Build whatever you need here
+add_library(...) # TODO
+
+catkin_package(
+    DEPENDS
+      gazebo_ros
+    CATKIN_DEPENDS
+    INCLUDE_DIRS
+    LIBRARIES
+)
+</code></pre>
+
+<h4>package.xml</h4>
+
+<p>これは<code>rosbuild</code>における<code>manifest.xml</code>を置き換えたものです : 新規の<code>gazebo_ros</code>パッケージに依存関係を追加します。</p>
+
+<h3>Gazeboを起動する</h3>
+
+<p>Gazeboを<code>launch</code>するためのROSノードの名前はGazeboで実行可能な名前に少しだけ変更されます :</p>
+
+<blockquote><ul>
+<li>rosrun gazebo_ros Gazebo
+GazeboサーバーとGUIを両方起動します。</li>
+<li>rosrun gazebo_ros gui
+<code>rosrun gazebo_ros gzclient</code>に置き換えられています</li>
+<li>rosrun gazebo_ros gzserver
+以下のノードを起動することができるようになります
+
+<blockquote><pre><code class="bash">rosrun gazebo_ros gazebo
+rosrun gazebo_ros gzserver
+rosrun gazebo_ros gzclient
+rosrun gazebo_ros spawn_model
+rosrun gazebo_ros perf
+rosrun gazebo_ros debug
+</code></pre>
+
+<p>これらのノードについては、<a href="">Gazeboでroslaunchファイルを使ってモデルをスポーンさせる</a>というチュートリアルに詳しく述べてあります。</p></blockquote></li>
+</ul>
+</blockquote>
+
+<h3>More</h3>
+
+<p>ここにissueをアップグレードしてください。</p>
+
+<h2>チュートリアル</h2>
+
+<p>Gazeboの履歴に起因する多くの変更を反映するために、<code>ros.org</code>のチュートリアルは完全に消去され、このウェブサイトの<code>scratch</code>に再投稿されています。Gazeboの中で、URDFベースのロボットをスムーズに動かすためのやり方について、私達は、徹底的なドキュメントを作ることにより、最善を尽くしています。もし、疑問があるなら、<a href="http://answers.ros.org/">answers.ros.org</a>をご覧ください。<br/>
+<a href="http://cir-kit.github.io/blog/2015/02/14/gazebo-installing-gazebo-ros-pkgs/">gazebo_rosパッケージをインストールする</a>に続きます。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[センサについて（カメラの歪み 編）No.5.2]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/02/14/gazebo-camera-distortion/"/>
+    <updated>2015-02-14T04:06:22+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/02/14/gazebo-camera-distortion</id>
+    <content type="html"><![CDATA[<p><img src="/images/gazebo_logo.png" alt="gazebo_logo" /></p>
+
+<h5>検証日時</h5>
+
+<p>02/14/2015 (Sat)</p>
+
+<h5>概要</h5>
+
+<p>Gazeboのチュートリアル第五弾「Sensors」。<br/>
+シミュレーションのセンサは環境を分析し、センサになるべくよく似たデータストリームを生成します。<br/>
+チュートリアルでは、センサの使い方と修正方法について説明します。
+今回はその「Camera Distortion」編です。<br/>
+公式サイトを適当に翻訳しただけですので、あしからず。</p>
+
+<h5>レベル</h5>
+
+<p><strong>BEGINNER</strong></p>
+
+<!-- more -->
+
+
+<h5>環境</h5>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> <strong>PC</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Prosessor</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>RAM</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>OS</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Kernel</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> 3.13.0-44-generic </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Gazebo</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Version 5.0.1 </td>
+</tr>
+</tbody>
+</table>
+
+
+<h5>参考</h5>
+
+<p><a href="http://gazebosim.org/tutorials?cat=sensors">GAZEBO Tutorial-Sensors</a></p>
+
+<h2>はじめに</h2>
+
+<p>カメラのレンズはたいてい光学の角度ゆがみがあり、これにより、イメージ（像）が歪む。例として、タスクを実行したり、物体を発見するのに、より広い範囲の環境視野を確保する目的でロボティクスの分野で広く使用されている、魚眼カメラが挙げられる。<br/>
+MatlabやOpenCVのようなカメラキャリブレーションツールを使うと、カメラ固有のパラメータに付随した、歪み係数をなしにすることができる。そのような歪み系数とともに、Gazeboの中に歪んだカメラセンサを生成することができる。</p>
+
+<h3>現在の実装</h3>
+
+<p>Gazeboでは、現在、<a href="http://en.wikipedia.org/wiki/Distortion_(optics">Brown&rsquo;s distortion model</a>#Software_correction)に基づいたカメラのシミュレーションをサポートしています。このモデルでは、カメラのキャリブレーションツールから取得できる歪み系数を<code>k1</code>、<code>k2</code>、<code>k3</code>、<code>p1</code>、<code>p2</code>としている。<code>k</code>という係数は歪みモデルの放射状の構成であり、<code>p</code>という係数はタンジェントの構成を示す。　　
+現在の実装には以下のようないくつかの制限がある。</p>
+
+<ol>
+<li><p>樽状の歪みだけがサポートされており、たいていは、<code>k1</code>の値が負である。</p></li>
+<li><p>歪みは、カメラのイメージテクスチャに適用されています。これは、イメージデータを生成し、ねじっているだけのものを使っていることを意味する。このことは、最終的なイメージ（特に角では）が現実の樽状の歪みを持ったカメラレンズよりも、狭い視野になるという警告を持つことになる。この現象を償う一つの解決策はGazeboの中で、カメラセンサの視野を増加させるという方法である。</p></li>
+</ol>
+
+
+<h2>カメラを歪みとともに生成する</h2>
+
+<p>歪みのあるカメラモデルを追加するには:</p>
+
+<ol>
+<li>モデルのディレクトリを作る</li>
+</ol>
+
+
+<pre><code class="bash">    mkdir -p ~/.gazebo/models/distorted_camera
+</code></pre>
+
+<ol>
+<li><code>model.config</code>ファイルを生成する</li>
+</ol>
+
+
+<pre><code class="bash">    gedit ~/.gazebo/models/distorted_camera/model.config
+</code></pre>
+
+<ol>
+<li><code>model.config</code>に以下の内容をコピペする</li>
+</ol>
+
+
+<pre><code class="xml">    &lt;?xml version="1.0"?&gt;
+    &lt;model&gt;
+      &lt;name&gt;Distorted Camera&lt;/name&gt;
+      &lt;version&gt;1.0&lt;/version&gt;
+      &lt;sdf version='1.5'&gt;model.sdf&lt;/sdf&gt;
+
+      &lt;author&gt;
+       &lt;name&gt;My Name&lt;/name&gt;
+       &lt;email&gt;me@my.email&lt;/email&gt;
+      &lt;/author&gt;
+
+      &lt;description&gt;
+        My distorted camera.
+      &lt;/description&gt;
+    &lt;/model&gt;
+</code></pre>
+
+<ol>
+<li><code>~/.gazebo/models/distorted_camera/model.sdf</code>ファイルを生成する</li>
+</ol>
+
+
+<pre><code class="bash">    gedit ~/.gazebo/models/distorted_camera/model.sdf
+</code></pre>
+
+<ol>
+<li><code>model.sdf</code>に以下の内容をコピペする。以下のモデルはスタンダードなカメラモデルに歪みを付加したものです。:</li>
+</ol>
+
+
+<pre><code class="xml">&lt;?xml version="1.0" ?&gt;
+&lt;sdf version="1.5"&gt;
+  &lt;model name="distorted_camera"&gt;
+    &lt;link name="link"&gt;
+      &lt;pose&gt;0.05 0.05 0.05 0 0 0&lt;/pose&gt;
+      &lt;inertial&gt;
+        &lt;mass&gt;0.1&lt;/mass&gt;
+      &lt;/inertial&gt;
+      &lt;collision name="collision"&gt;
+        &lt;geometry&gt;
+          &lt;box&gt;
+            &lt;size&gt;0.1 0.1 0.1&lt;/size&gt;
+          &lt;/box&gt;
+        &lt;/geometry&gt;
+      &lt;/collision&gt;
+      &lt;visual name="visual"&gt;
+        &lt;geometry&gt;
+          &lt;box&gt;
+            &lt;size&gt;0.1 0.1 0.1&lt;/size&gt;
+          &lt;/box&gt;
+        &lt;/geometry&gt;
+      &lt;/visual&gt;
+      &lt;sensor name="camera" type="camera"&gt;
+        &lt;camera&gt;
+          &lt;horizontal_fov&gt;1.047&lt;/horizontal_fov&gt;
+          &lt;image&gt;
+            &lt;width&gt;320&lt;/width&gt;
+            &lt;height&gt;240&lt;/height&gt;
+          &lt;/image&gt;
+          &lt;clip&gt;
+            &lt;near&gt;0.1&lt;/near&gt;
+            &lt;far&gt;100&lt;/far&gt;
+          &lt;/clip&gt;
+          &lt;distortion&gt;
+            &lt;k1&gt;-0.25&lt;/k1&gt;
+            &lt;k2&gt;0.12&lt;/k2&gt;
+            &lt;k3&gt;0.0&lt;/k3&gt;
+            &lt;p1&gt;-0.00028&lt;/p1&gt;
+            &lt;p2&gt;-0.00005&lt;/p2&gt;
+            &lt;center&gt;0.5 0.5&lt;/center&gt;
+          &lt;/distortion&gt;
+        &lt;/camera&gt;
+        &lt;always_on&gt;1&lt;/always_on&gt;
+        &lt;update_rate&gt;30&lt;/update_rate&gt;
+        &lt;visualize&gt;true&lt;/visualize&gt;
+      &lt;/sensor&gt;
+    &lt;/link&gt;
+  &lt;/model&gt;
+&lt;/sdf&gt;
+</code></pre>
+
+<ol>
+<li>Gazeboを起動する</li>
+</ol>
+
+
+<pre><code class="bash">gazebo
+</code></pre>
+
+<ol>
+<li><p>歪みを付加したカメラモデルを挿入する : 画面左側の枠の中で、<strong>Insert</strong>タブを選び、<strong>Distorted Camera</strong>をクリックする。その後、シミュレータにそれを設置する。</p></li>
+<li><p>歪みを付加したカメラモデルを観測する : <strong>Topis Selector</strong>を表示するために、<strong>Window</strong>-><strong>Topic Visualazation</strong>をクリックする(もしくは、<code>Ctrl-T</code>を押す)。</p></li>
+<li><p><code>/gazebo/default/hokuyo/link/camera/image</code>のような名前のトピックを探し、クリックしたら、<strong>Okay</strong>をクリックしてください。すると、カメライメージが表示されたウィンドウが見えるはずです。</p></li>
+</ol>
+
+
+<p>手順は、以下の動画を参照ください。また、動画でご覧いただくように、カメラのイメージは湯がんでおり、箱のエッジが曲がって見えます。歪みを調整するには、<code>model.sdf</code>ファイルにある、<code>k1</code>,<code>k2</code>,<code>k3</code>,<code>p1</code>,<code>p2</code>の歪み係数を変更するだけでよいです。</p>
+
+<div class="youtube-container">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/lZ41gqMjbV4" frameborder="0" allowfullscreen></iframe>
+</div>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[センサについて (センサノイズモデル 編) No.5.1]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/02/13/gazebo-sensor-noise-model/"/>
+    <updated>2015-02-13T21:50:50+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/02/13/gazebo-sensor-noise-model</id>
+    <content type="html"><![CDATA[<p><img src="/images/gazebo_logo.png" alt="gazebo_logo" /></p>
+
+<h5>検証日時</h5>
+
+<p>02/14/2015 (Sat)</p>
+
+<h5>概要</h5>
+
+<p>Gazeboのチュートリアル第五弾「Sensors」。<br/>
+シミュレーションのセンサは環境を分析し、センサになるべくよく似たデータストリームを生成します。<br/>
+チュートリアルでは、センサの使い方と修正方法について説明します。
+今回はその「Sensor Noise Model」編です。<br/>
+公式サイトを適当に翻訳しただけですので、あしからず。</p>
+
+<h5>レベル</h5>
+
+<p><strong>BEGINNER</strong></p>
+
+<!-- more -->
+
+
+<h5>環境</h5>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> <strong>PC</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Prosessor</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>RAM</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>OS</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Kernel</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> 3.13.0-44-generic </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Gazebo</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Version 5.0.1 </td>
+</tr>
+</tbody>
+</table>
+
+
+<h5>参考</h5>
+
+<p><a href="http://gazebosim.org/tutorials?cat=sensors">GAZEBO Tutorial-Sensors</a></p>
+
+<h2>はじめに</h2>
+
+<p>Gazeboでは、たくさんの一般的なセンサを提供しています。現実世界では、センサにはノイズが存在し、実環境を完全に観測することは出来ません。デフォルトでは、Gazeboのセンサは環境を完全に観測します(IMUは含みません;続きを参照ください)。認識プログラムを試してみる様な、よりリアルな環境を提供するには、Gazeboのセンサが生成したデータにあえてノイズを付け加える必要があります。<br/>
+この記事を書いている時点で、Gazeboは以下のタイプのセンサにノイズを付加することができます。</p>
+
+<blockquote><ul>
+<li>Ray (e.g., lasers)</li>
+<li>Camera</li>
+<li>IMU</li>
+</ul>
+</blockquote>
+
+<h2>Ray(Laser)ノイズ</h2>
+
+<p>rayセンサでは、それぞれのビームの距離値にガウシアンノイズを付加します。ノイズの値として付加されるガウシアン分布の平均値と標準偏差を設定することができます。ノイズの値はそれぞれのビームに独立して付加されます。ノイズを付加した後、距離はセンサの最小距離と最大距離の間で偽の値（ノイズが付加された値）になります。<br/>
+rayノイズモデルをテストするには:</p>
+
+<ol>
+<li>モデルのディレクトリを作る</li>
+</ol>
+
+
+<pre><code class="bash">  mkdir -p ~/.gazebo/models/noisy_laser
+</code></pre>
+
+<ol>
+<li><code>config</code>ファイルを生成する</li>
+</ol>
+
+
+<pre><code class="bash">  gedit ~/.gazebo/models/noisy_laser/model.config
+</code></pre>
+
+<ol>
+<li><code>model.config</code>ファイルに以下をコピペする</li>
+</ol>
+
+
+<pre><code class="xml">    &lt;?xml version="1.0"?&gt;
+    &lt;model&gt;
+      &lt;name&gt;Noisy laser&lt;/name&gt;
+      &lt;version&gt;1.0&lt;/version&gt;
+      &lt;sdf version='1.4'&gt;model.sdf&lt;/sdf&gt;
+
+      &lt;author&gt;
+       &lt;name&gt;My Name&lt;/name&gt;
+       &lt;email&gt;me@my.email&lt;/email&gt;
+      &lt;/author&gt;
+
+      &lt;description&gt;
+        My noisy laser.
+      &lt;/description&gt;
+    &lt;/model&gt;
+</code></pre>
+
+<ol>
+<li><code>~/.gazebo/models/noisy_laser/model.sdf</code>ファイルを生成する</li>
+</ol>
+
+
+<pre><code class="bash">    gedit ~/.gazebo/models/noisy_laser/model.sdf
+</code></pre>
+
+<ol>
+<li>以下を<code>model.sdf</code>ファイルにコピペする。以下のモデルはスタンダードな<code>Hokuyo</code>モデルにノイズを付加したものです。:</li>
+</ol>
+
+
+<pre><code class="xml">&lt;?xml version="1.0" ?&gt;
+&lt;sdf version="1.4"&gt;
+  &lt;model name="hokuyo"&gt;
+    &lt;link name="link"&gt;
+      &lt;gravity&gt;false&lt;/gravity&gt;
+      &lt;inertial&gt;
+        &lt;mass&gt;0.1&lt;/mass&gt;
+      &lt;/inertial&gt;
+      &lt;visual name="visual"&gt;
+        &lt;geometry&gt;
+          &lt;mesh&gt;
+            &lt;uri&gt;model://hokuyo/meshes/hokuyo.dae&lt;/uri&gt;
+          &lt;/mesh&gt;
+        &lt;/geometry&gt;
+      &lt;/visual&gt;
+      &lt;sensor name="laser" type="ray"&gt;
+        &lt;pose&gt;0.01 0 0.03 0 -0 0&lt;/pose&gt;
+        &lt;ray&gt;
+          &lt;scan&gt;
+            &lt;horizontal&gt;
+              &lt;samples&gt;640&lt;/samples&gt;
+              &lt;resolution&gt;1&lt;/resolution&gt;
+              &lt;min_angle&gt;-2.26889&lt;/min_angle&gt;
+              &lt;max_angle&gt;2.268899&lt;/max_angle&gt;
+            &lt;/horizontal&gt;
+          &lt;/scan&gt;
+          &lt;range&gt;
+            &lt;min&gt;0.08&lt;/min&gt;
+            &lt;max&gt;10&lt;/max&gt;
+            &lt;resolution&gt;0.01&lt;/resolution&gt;
+          &lt;/range&gt;
+          &lt;noise&gt;
+            &lt;type&gt;gaussian&lt;/type&gt;
+            &lt;mean&gt;0.0&lt;/mean&gt;
+            &lt;stddev&gt;0.01&lt;/stddev&gt;
+          &lt;/noise&gt;
+        &lt;/ray&gt;
+        &lt;plugin name="laser" filename="libRayPlugin.so" /&gt;
+        &lt;always_on&gt;1&lt;/always_on&gt;
+        &lt;update_rate&gt;30&lt;/update_rate&gt;
+        &lt;visualize&gt;true&lt;/visualize&gt;
+      &lt;/sensor&gt;
+    &lt;/link&gt;
+  &lt;/model&gt;
+&lt;/sdf&gt;
+</code></pre>
+
+<ol>
+<li>Gazeboを起動する:</li>
+</ol>
+
+
+<pre><code class="bash">gazebo
+</code></pre>
+
+<ol>
+<li><p>ノイズを付加したレーザーセンサを挿入する : 画面左側の枠の中で、<strong>Insert</strong>タブを選び、<strong>Noisy laser</strong>をクリックする。その後、シミュレータにそれを設置する。</p></li>
+<li><p>ノイズを付加したレーザーセンサを観測する : <strong>Topis Selector</strong>を表示するために、<strong>Window</strong>-><strong>Topic Visualazation</strong>をクリックする(もしくは、<code>Ctrl-T</code>を押す)。</p></li>
+<li><p><code>/gazebo/default/hokuyo/link/laser/scan</code>のような名前のトピックを探し、クリックしたら、<strong>Okay</strong>をクリックしてください。すると、レーザーデータが表示されたウィンドウが見えるはずです。</p></li>
+</ol>
+
+
+<p>スキャンデータにノイズが付加されているのを確認できます。ノイズを調節するには、平均値と標準偏差を<code>model.sdf</code>にある以下のブロックでで変更するだけでよいです。なお、それらの要素はすべてメートル単位系です。:</p>
+
+<pre><code class="xml">&lt;noise&gt;
+  &lt;type&gt;gaussian&lt;/type&gt;
+  &lt;mean&gt;0.0&lt;/mean&gt;
+  &lt;stddev&gt;0.01&lt;/stddev&gt;
+&lt;/noise&gt;
+</code></pre>
+
+<p><code>Hokuyo</code>レーザーにはピッタリの値があります。<br/>
+尚、これらの手順は、以下の動画を参照してください。動画では、ノイズを見やすくするために、平均値を0、標準偏差を0.1としてあります。</p>
+
+<div class="youtube-container">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/_y-m1fQxZjA" frameborder="0" allowfullscreen></iframe>
+</div>
+
+
+<h2>カメラノイズ</h2>
+
+<p>カメラのノイズでは、<a href="http://en.wikipedia.org/wiki/Image_noise#Amplifier_noise_.28Gaussian_noise.29">output amplifier noise</a>を付加します。これは、各ピクセルに独立したガウシアンサンプルノイズを付加するものです。各ピクセルにでサンプリングされる値に、ガウシアン分布の平均値と標準偏差を設定することができます。ノイズの値は各ピクセルで独立しており、ノイズの値は各ピクセルの各色チャンネルにも独立して付加されます。ノイズを付加した後、色チャンネルの値は0.0から1.0の間で偽の値を取ります。;このfloat型のポイントの色の値はイメージの中では、unsigned int型として扱われます。普通は、0から255の間の値です。(8 [ビット/チャンネル] を使用します)<br/>
+このノイズモデルは<a href="">GLSL</a>の中で、シェーダーやGPUを起動するときの必要要件として実行されます。<br/>
+カメラノイズモデルをテストするには:</p>
+
+<ol>
+<li>モデルディレクトリをつくります:</li>
+</ol>
+
+
+<pre><code class="bash">    mkdir -p ~/.gazebo/models/noisy_camera
+</code></pre>
+
+<ol>
+<li><code>model.config</code>ファイルを生成する</li>
+</ol>
+
+
+<pre><code class="bash">    gedit ~/.gazebo/models/noisy_camera/model.config
+</code></pre>
+
+<ol>
+<li><code>model.config</code>に以下の内容をコピペする</li>
+</ol>
+
+
+<pre><code class="xml">    &lt;?xml version="1.0"?&gt;
+    &lt;model&gt;
+      &lt;name&gt;Noisy camera&lt;/name&gt;
+      &lt;version&gt;1.0&lt;/version&gt;
+      &lt;sdf version='1.4'&gt;model.sdf&lt;/sdf&gt;
+
+      &lt;author&gt;
+       &lt;name&gt;My Name&lt;/name&gt;
+       &lt;email&gt;me@my.email&lt;/email&gt;
+      &lt;/author&gt;
+
+      &lt;description&gt;
+        My noisy camera.
+      &lt;/description&gt;
+    &lt;/model&gt;
+</code></pre>
+
+<ol>
+<li><code>~/.gazebo/models/noisy_camera/model.sdf</code>ファイルを生成する</li>
+</ol>
+
+
+<pre><code class="bash">    gedit ~/.gazebo/models/noisy_camera/model.sdf
+</code></pre>
+
+<ol>
+<li>以下の内容を<code>model.sdf</code>にコピペする。これは、基本的なカメラモデルにノイズを付加したモデルです。:</li>
+</ol>
+
+
+<pre><code class="xml">    &lt;?xml version="1.0" ?&gt;
+    &lt;sdf version="1.4"&gt;
+      &lt;model name="camera"&gt;
+        &lt;link name="link"&gt;
+          &lt;gravity&gt;false&lt;/gravity&gt;
+          &lt;pose&gt;0.05 0.05 0.05 0 0 0&lt;/pose&gt;
+          &lt;inertial&gt;
+            &lt;mass&gt;0.1&lt;/mass&gt;
+          &lt;/inertial&gt;
+          &lt;visual name="visual"&gt;
+            &lt;geometry&gt;
+              &lt;box&gt;
+                &lt;size&gt;0.1 0.1 0.1&lt;/size&gt;
+              &lt;/box&gt;
+            &lt;/geometry&gt;
+          &lt;/visual&gt;
+          &lt;sensor name="camera" type="camera"&gt;
+            &lt;camera&gt;
+              &lt;horizontal_fov&gt;1.047&lt;/horizontal_fov&gt;
+              &lt;image&gt;
+                &lt;width&gt;1024&lt;/width&gt;
+                &lt;height&gt;1024&lt;/height&gt;
+              &lt;/image&gt;
+              &lt;clip&gt;
+                &lt;near&gt;0.1&lt;/near&gt;
+                &lt;far&gt;100&lt;/far&gt;
+              &lt;/clip&gt;
+              &lt;noise&gt;
+                &lt;type&gt;gaussian&lt;/type&gt;
+                &lt;mean&gt;0.0&lt;/mean&gt;
+                &lt;stddev&gt;0.07&lt;/stddev&gt;
+              &lt;/noise&gt;
+            &lt;/camera&gt;
+            &lt;always_on&gt;1&lt;/always_on&gt;
+            &lt;update_rate&gt;30&lt;/update_rate&gt;
+            &lt;visualize&gt;true&lt;/visualize&gt;
+          &lt;/sensor&gt;
+        &lt;/link&gt;
+      &lt;/model&gt;
+    &lt;/sdf&gt;
+</code></pre>
+
+<ol>
+<li>Gazeboを起動する:</li>
+</ol>
+
+
+<pre><code class="bash">    gazebo
+</code></pre>
+
+<ol>
+<li><p>ノイズが付加されたカメラを挿入する : 画面左側の枠の中で、<strong>Insert</strong>タブを選び、<strong>Noisy camera</strong>をクリックする。その後、シミュレータにそれを設置する。</p></li>
+<li><p>ノイズを付加したカメラを観測する : <strong>Topis Selector</strong>を表示するために、<strong>Window</strong>-><strong>Topic Visualazation</strong>をクリックする(もしくは、<code>Ctrl-T</code>を押す)。</p></li>
+<li><p><code>/gazebo/default/camera/link/camera/image</code>のような名前のトピックを探し、クリックしたら、<strong>Okay</strong>をクリックしてください。すると、カメラのイメージが表示されたウィンドウが見えるはずです。</p></li>
+</ol>
+
+
+<p>よく見ると、イメージにノイズが付加されているのが見えると思います。ノイズを調整するには、<code>model.sdf</code>ファイルの中にある以下のようなセクションで、平均値と標準偏差を調節してやるだけで良いです。これらには単位系はありません。;各色チャンネルに0.0以上、1.0以下の値でノイズを付加します。<br/>
+以下のレイは、<code>&lt;stddev&gt;</code>の値をとても大きくしています。この値を減らしてみてください。:</p>
+
+<pre><code class="xml">&lt;noise&gt;
+  &lt;type&gt;gaussian&lt;/type&gt;
+  &lt;mean&gt;0.0&lt;/mean&gt;
+  &lt;stddev&gt;0.007&lt;/stddev&gt;
+&lt;/noise&gt;
+</code></pre>
+
+<p>デジタルカメラには、最適なノイズの値があります。<br/>
+尚、これらの手順は、以下の動画を参照してください。動画では、ノイズを見やすくするために、平均値を0、標準偏差を0.07としたものと、平均値を0、標準偏差を0.007としたものを表示しています。</p>
+
+<div class="youtube-container">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/Vp-0OPoECws" frameborder="0" allowfullscreen></iframe>
+</div>
+
+
+<h2>IMUノイズ</h2>
+
+<p>IMUセンサでは、角度速度と並進加速度に対する2種類の外乱(ノイズとバイアス)を考えます。角速度と並進加速度は分かれているものとして、このモデルでは、速度ノイズ、速度バイアス、加速度ノイズ、加速度バイアスの4つのパラメータを導出します。世界座標系（将来的には変化する）の中で、完全な値として表現されるようなIMUの元データから応用するノイズはありません。<br/>
+ノイズは付加的であり、ガウシアン分布からサンプリングされます。ノイズの値をサンプリングしてくる、ガウシアン分布（速度や、角速度の一つ一つに対するもの）の平均値と標準偏差を設定することができます。ノイズの値は、互いのサンプリング要素(X,Y,Z)では独立しており、それらの要素に付加されます。<br/>
+バイアスもまた付加的でありますが、これは、シミュレーションがスタートした時の一度だけしかサンプリングされません。バイアスの値をサンプリングしてくる、ガウシアン分布（速度や、角速度の一つ一つに対するもの）の平均値と標準偏差を設定することができます。バイアスは設定されたパラメータに沿ってサンプリングされます;提供される平均値はバイアスの大きさを定義し、各方向にバイアスがかかっており、バイアスは修正された値で、各要素(X,Y,Z)に付加されていると仮定されます。<br/>
+<strong>Note : </strong>シミュレートされているシステムと物理エンジンの構成に依存しているので、シミュレーションされたIMUのデータはすでにいくぶんかノイズがのっていることがあります。なぜなら、システムはすべての収斂の方法を解決しているわけではないからです。なので、アプリケーションに依存するという点では、ノイズを付加する必要はないかもしれません。<br/>
+IMUノイズモデルをテストするには:</p>
+
+<ol>
+<li>モデルのディレクトリを作る:</li>
+</ol>
+
+
+<pre><code class="bash">    mkdir -p ~/.gazebo/models/noisy_imu
+</code></pre>
+
+<ol>
+<li><code>model.config</code>ファイルを生成する</li>
+</ol>
+
+
+<pre><code class="bash">    gedit ~/.gazebo/models/noisy_imu/model.config
+</code></pre>
+
+<ol>
+<li><code>model.config</code>に以下の内容をコピペする</li>
+</ol>
+
+
+<pre><code class="xml">    &lt;?xml version="1.0"?&gt;
+    &lt;model&gt;
+      &lt;name&gt;Noisy IMU&lt;/name&gt;
+      &lt;version&gt;1.0&lt;/version&gt;
+      &lt;sdf version='1.4'&gt;model.sdf&lt;/sdf&gt;
+
+      &lt;author&gt;
+       &lt;name&gt;My Name&lt;/name&gt;
+       &lt;email&gt;me@my.email&lt;/email&gt;
+      &lt;/author&gt;
+
+      &lt;description&gt;
+        My noisy IMU.
+      &lt;/description&gt;
+    &lt;/model&gt;
+</code></pre>
+
+<ol>
+<li><code>~/.gazebo/models/noisy_imu/model.sdf</code>ファイルを生成する</li>
+</ol>
+
+
+<pre><code class="xml">    gedit ~/.gazebo/models/noisy_imu/model.sdf
+</code></pre>
+
+<ol>
+<li><code>model.sdf</code>に以下の内容をコピペする:</li>
+</ol>
+
+
+<pre><code class="xml">    &lt;?xml version="1.0" ?&gt;
+    &lt;sdf version="1.4"&gt;
+      &lt;model name="imu"&gt;
+        &lt;link name="link"&gt;
+          &lt;inertial&gt;
+            &lt;mass&gt;0.1&lt;/mass&gt;
+          &lt;/inertial&gt;
+          &lt;visual name="visual"&gt;
+            &lt;geometry&gt;
+              &lt;box&gt;
+                &lt;size&gt;0.1 0.1 0.1&lt;/size&gt;
+              &lt;/box&gt;
+            &lt;/geometry&gt;
+          &lt;/visual&gt;
+          &lt;collision name="collision"&gt;
+            &lt;geometry&gt;
+              &lt;box&gt;
+                &lt;size&gt;0.1 0.1 0.1&lt;/size&gt;
+              &lt;/box&gt;
+            &lt;/geometry&gt;
+          &lt;/collision&gt;
+          &lt;sensor name="imu" type="imu"&gt;
+            &lt;imu&gt;
+              &lt;noise&gt;
+                &lt;type&gt;gaussian&lt;/type&gt;
+                &lt;rate&gt;
+                  &lt;mean&gt;0.0&lt;/mean&gt;
+                  &lt;stddev&gt;2e-4&lt;/stddev&gt;
+                  &lt;bias_mean&gt;0.0000075&lt;/bias_mean&gt;
+                  &lt;bias_stddev&gt;0.0000008&lt;/bias_stddev&gt;
+                &lt;/rate&gt;
+                &lt;accel&gt;
+                  &lt;mean&gt;0.0&lt;/mean&gt;
+                  &lt;stddev&gt;1.7e-2&lt;/stddev&gt;
+                  &lt;bias_mean&gt;0.1&lt;/bias_mean&gt;
+                  &lt;bias_stddev&gt;0.001&lt;/bias_stddev&gt;
+                &lt;/accel&gt;
+              &lt;/noise&gt;
+            &lt;/imu&gt;
+            &lt;always_on&gt;1&lt;/always_on&gt;
+            &lt;update_rate&gt;1000&lt;/update_rate&gt;
+          &lt;/sensor&gt;Laser
+        &lt;/link&gt;
+      &lt;/model&gt;
+    &lt;/sdf&gt;
+</code></pre>
+
+<ol>
+<li>Gazeboを起動する:</li>
+</ol>
+
+
+<pre><code class="bash">    gazebo
+</code></pre>
+
+<ol>
+<li><p>ノイズを付加したIMUを挿入する : 画面左側の枠の中で、<strong>Insert</strong>タブを選び、<strong>Noisy IMU</strong>をクリックする。その後、シミュレータにそれを設置する。</p></li>
+<li><p>ノイズを付加したIMUを観測する : <strong>Topis Selector</strong>を表示するために、<strong>Window</strong>-><strong>Topic Visualazation</strong>をクリックする(もしくは、<code>Ctrl-T</code>を押す)。</p></li>
+<li><p><code>/gazebo/default/camera/link/imu/imu</code>のような名前のトピックを探し、クリックしたら、<strong>Okay</strong>をクリックしてください。すると、IMUデータのテキストビューウィンドウが見えるはずです。</p></li>
+</ol>
+
+
+<p>ノイズをIMUのような高レートのセンサに適用するのは難しくなりがちです。特に複雑なシステムにおいてはそれはなおさらです。ノイズでゼロではない大きな値の平均値をとる　かつ/もしくは バイアスパラメータをとるのが友好的であるとわかるでしょう。<br/>
+ノイズを調整するには、<code>model.sdf</code>ファイルの中にある以下のようなセクションで、平均値と標準偏差を調節してやるだけで良いです。角速度のノイズとバイアスの単位系は[rad/s]で加速度のノイズとバイアスの単位系は[m/s<sup>2</sup>]です。</p>
+
+<pre><code class="xml">&lt;noise&gt;
+  &lt;type&gt;gaussian&lt;/type&gt;
+  &lt;rate&gt;
+    &lt;mean&gt;0.0&lt;/mean&gt;
+    &lt;stddev&gt;2e-4&lt;/stddev&gt;
+    &lt;bias_mean&gt;0.0000075&lt;/bias_mean&gt;
+    &lt;bias_stddev&gt;0.0000008&lt;/bias_stddev&gt;
+  &lt;/rate&gt;
+  &lt;accel&gt;
+    &lt;mean&gt;0.0&lt;/mean&gt;
+    &lt;stddev&gt;1.7e-2&lt;/stddev&gt;
+    &lt;bias_mean&gt;0.1&lt;/bias_mean&gt;
+    &lt;bias_stddev&gt;0.001&lt;/bias_stddev&gt;
+  &lt;/accel&gt;
+&lt;/noise&gt;
+</code></pre>
+
+<p>高い品質のIMU装置には、最適なノイズの値があります。<br/>
+尚、これらの手順は、以下の動画を参照してください。平均値や標準偏差などは、上記の設定のものを使用しています。</p>
+
+<div class="youtube-container">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/LZTzUgkLfwk" frameborder="0" allowfullscreen></iframe>
+</div>
+
+]]></content>
+  </entry>
+  
+</feed>

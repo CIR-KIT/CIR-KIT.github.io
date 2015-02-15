@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Tools and Utilities | 九州工業大学 CIR-KIT Blog]]></title>
+  <link href="http://cir-kit.github.io/blog/categories/tools-and-utilities/atom.xml" rel="self"/>
+  <link href="http://cir-kit.github.io/"/>
+  <updated>2015-02-15T13:37:40+09:00</updated>
+  <id>http://cir-kit.github.io/</id>
+  <author>
+    <name><![CDATA[]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[ツールとユーティリティ (ログフィルタリング 編) No.4.1]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/02/13/gazebo-log-filtering/"/>
+    <updated>2015-02-13T20:57:58+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/02/13/gazebo-log-filtering</id>
+    <content type="html"><![CDATA[<p><img src="/images/gazebo_logo.png" alt="gazebo_logo" /></p>
+
+<h5>検証日時</h5>
+
+<p>02/13/2015 (Fri)</p>
+
+<h5>概要</h5>
+
+<p>Gazeboのチュートリアル第四弾「Tools and utilities」。<br/>
+Gazeboには多くのツールとユーティリティがあります。<br/>
+このチュートリアルでは、利用可能なツールとその使い方を説明します。<br/>
+今回はその「Log Filtering」編です。<br/>
+公式サイトを適当に翻訳しただけですので、あしからず。</p>
+
+<h5>レベル</h5>
+
+<p><strong>BEGINNER</strong></p>
+
+<!-- more -->
+
+
+<h5>環境</h5>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> <strong>PC</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Prosessor</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>RAM</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>OS</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Kernel</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> 3.13.0-44-generic </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Gazebo</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Version 5.0.1 </td>
+</tr>
+</tbody>
+</table>
+
+
+<h5>参考</h5>
+
+<p><a href="http://gazebosim.org/tutorials?cat=tools_utilities">GAZEBO Tutorial-Tools and Utilities</a></p>
+
+<h2>はじめに</h2>
+
+<p>状態のログとは、Gazeboからの環境情報の記録です。状態とは、姿勢、速度、加速度、そしてすべてのモデルのすべてのリンクに適用された力のことを指します。Gazeboでは、時間経過と共に変化するモデルの状態情報だけを記録します。状態ログのファイルには、ヘッダ、初期環境記録、状態の時系列情報で構成されています。</p>
+
+<h2>Gazeboログコマンドのラインツール</h2>
+
+<p>Gazeboでは、<code>gz log</code>コマンドでアクセスするロギングユーティリティ（記録ユーティリティ）を提供しています。<br/>
+ヘルプ情報を以下のコマンドで確認してみましょう。</p>
+
+<pre><code class="bash">gz help log
+</code></pre>
+
+<p>もしくは、</p>
+
+<pre><code class="bash">gz log -h
+</code></pre>
+
+<h2>使い方の例</h2>
+
+<h3>ステップ 1:状態ログファイルを作る</h3>
+
+<p>古いログファイルを消去することから初めましょう。</p>
+
+<pre><code class="bash">rm -rf ~/.gazebo/log/*
+</code></pre>
+
+<p>今回は、ログファイルを生成するのに、PR2ワールドを使用します。<br/>
+Gazeboサーバを<code>-r</code>コマンドラインオプションをつけて実行しましょう。</p>
+
+<pre><code class="bash">gzserver -r worlds/pr2.world
+</code></pre>
+
+<p>数秒後に、サーバを<code>Ctrl-c</code>で停止しましょう。<br/>
+新しいタイムスタンプのあるディレクトリが<code>~/.gazebo/log/</code>の中に、一つのサブディレクトリと<code>state.log</code>ファイルがあるはずです。例えば以下のような感じです。</p>
+
+<pre><code class="bash">~/.gazebo/log/2015-02-13T21:18:11.849250/gzserverstate.log
+</code></pre>
+
+<p>Gazeboでこれをリプレイすることにより、このログファイルを確認することができます。</p>
+
+<pre><code class="bash">gazebo -p ~/.gazebo/log/*/gzserver/state.lgo
+</code></pre>
+
+<h3>ステップ 2:ログファイルをフィルタリングする</h3>
+
+<p><code>gz log</code>コマンドラインツールでは、ログファイルを通じたステッピングとログファイル表示のコンテンツのエコーのためのメカニズムを提供しています。表示エコーの特徴は、モデルやリンクの姿勢などの情報を定義するようなログファイルを生成するフィルタと結合したものとなります。<br/>
+記録した状態ログファイルをスクリーンにエコーしてみましょう。</p>
+
+<pre><code class="bash">gz log -e -f ~/.gazebo/log/*/gzserver/state.log
+</code></pre>
+
+<p>すると、スクロールできるほどたくさんの情報を確認することができるでしょう。<br/>
+では、ログファイルにあるすべての速度、加速度、力の情報を消してみましょう。つまり、姿勢の情報だけを残します。</p>
+
+<pre><code class="bash">gz log -e -f ~/.gazebo/log/*/gzserver/state.log --filter *.pose/*.pose
+</code></pre>
+
+<p><code>--filter</code>オプションは、ログファイルの情報を間引くには、柔軟で便利なコマンドライン引数です。<br/>
+<code>Hz</code>フィルタを使えば、シミュレーション時間についてもフィルタリングをオコナウことができます。例えば、30 [Hz]で状態情報を出力したいとすると、以下のようにコマンド入力を行います。:</p>
+
+<pre><code class="bash">gz log -e -f ~/.gazebo/log/*/gzserver/state.log -z 30
+</code></pre>
+
+<p>これらのフィルタはプレイバックのためのファイルに結合することができます。このことは<code>state.log</code>ファイルの大きさに依存することもあります。</p>
+
+<pre><code class="bash">gz log -e -f ~/.gazebo/log/*/gzserver/state.log -z 30 --filter *.pose/*.pose &gt; /tmp/filtered_state.log
+</code></pre>
+
+<p>このログファイルは、以下のようにしてGazeboでリプレイすることができます。</p>
+
+<pre><code class="bash">gazebo -p /tmp/filtered_state.log
+</code></pre>
+]]></content>
+  </entry>
+  
+</feed>
