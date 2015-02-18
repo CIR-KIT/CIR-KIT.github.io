@@ -4,7 +4,7 @@
   <title><![CDATA[九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-02-19T01:55:44+09:00</updated>
+  <updated>2015-02-19T03:11:37+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -229,17 +229,12 @@ Gazeboであなたのロボットが動くように変換するあいだ、Rviz�
 <table>
 <thead>
 <tr>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
+<th style="text-align:center;"> 名前 </th>
+<th style="text-align:center;"> タイプ </th>
+<th style="text-align:center;"> 説明 </th>
 </tr>
 </thead>
 <tbody>
-<tr>
-<td style="text-align:center;"> 名前 </td>
-<td style="text-align:center;"> タイプ </td>
-<td style="text-align:center;"> 説明 </td>
-</tr>
 <tr>
 <td style="text-align:center;">static </td>
 <td style="text-align:center;">   bool   </td>
@@ -424,76 +419,71 @@ Gazeboでデフォルトで使用可能な物質は<code>gazebo/media/materials/
 <table>
 <thead>
 <tr>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
+<th style="text-align:center;">名前     </th>
+<th style="text-align:center;">タイプ    </th>
+<th style="text-align:center;">説明 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:center;">Name   </td>
-<td style="text-align:center;">Type    </td>
-<td style="text-align:center;">Description </td>
-</tr>
-<tr>
 <td style="text-align:center;">material   </td>
 <td style="text-align:center;">value  </td>
-<td style="text-align:center;">Material of visual element</td>
+<td style="text-align:center;">外観要素の物質</td>
 </tr>
 <tr>
 <td style="text-align:center;">gravity    </td>
 <td style="text-align:center;">bool   </td>
-<td style="text-align:center;">Use gravity</td>
+<td style="text-align:center;">重力を使う</td>
 </tr>
 <tr>
 <td style="text-align:center;">dampingFactor  </td>
 <td style="text-align:center;">double     </td>
-<td style="text-align:center;">Exponential velocity decay of the link velocity  takes the value and multiplies the previous link velocity by (1-dampingFactor).</td>
+<td style="text-align:center;">リンク速度の指数関数的減衰。- (一つの減衰係数)により決定される一つ前のリンク速度と現在の速度を掛けあわせます。</td>
 </tr>
 <tr>
 <td style="text-align:center;">maxVel     </td>
 <td style="text-align:center;">double     </td>
-<td style="text-align:center;">maximum contact correction velocity truncation term.</td>
+<td style="text-align:center;">最大値コンタクト補正速度の最大値トラクション</td>
 </tr>
 <tr>
 <td style="text-align:center;">minDepth   </td>
 <td style="text-align:center;">double     </td>
-<td style="text-align:center;">minimum allowable depth before contact correction impulse is applied</td>
+<td style="text-align:center;">コンタクト補正インパルスが発生する前の深さの最小値</td>
 </tr>
 <tr>
 <td style="text-align:center;">mu1&amp;mu2    </td>
 <td style="text-align:center;">double     </td>
-<td style="text-align:center;">Friction coefficients μ for the principle contact directions along the contact surface as defined by the <a href="http://www.ros.org/wiki/opende">ODE</a></td>
+<td style="text-align:center;"><a href="http://www.ros.org/wiki/opende">ODE</a>で定義される接地面に沿った接地摩擦係数 μ</td>
 </tr>
 <tr>
 <td style="text-align:center;">fdir1  </td>
 <td style="text-align:center;">string     </td>
-<td style="text-align:center;">3-tuple specifying direction of mu1 in the collision local reference frame.</td>
+<td style="text-align:center;">3組のローカルの衝突検証座標mu1の定義される方向</td>
 </tr>
 <tr>
 <td style="text-align:center;">kp     </td>
 <td style="text-align:center;">double     </td>
-<td style="text-align:center;">Contact stiffness k_p for rigid body contacts as defined by <a href="http://opende.sourceforge.net/">ODE</a> (ODE uses cfm)</td>
+<td style="text-align:center;"><a href="http://opende.sourceforge.net/">ODE</a>で定義される、剛体面の接触剛性 k_p (ODEではcfmを使用)</td>
 </tr>
 <tr>
 <td style="text-align:center;">kd     </td>
 <td style="text-align:center;">double     </td>
-<td style="text-align:center;">Contact damping k_d for rigid body contacts as defined by <a href="http://opende.sourceforge.net/">ODE</a> (ODE uses erp)</td>
+<td style="text-align:center;"><a href="http://opende.sourceforge.net/">ODE</a>で定義される、剛体面の摩擦減衰 k_d (ODEではerpを使用)</td>
 </tr>
 <tr>
 <td style="text-align:center;">selfCollide    </td>
 <td style="text-align:center;">bool   </td>
-<td style="text-align:center;">If true, the link can collide with other links in the model.</td>
+<td style="text-align:center;">もし、<code>true</code>なら、リンクは他のリンクやモデルと衝突します</td>
 </tr>
 <tr>
 <td style="text-align:center;">maxContacts    </td>
 <td style="text-align:center;">int    </td>
-<td style="text-align:center;">Maximum number of contacts allowed between two entities. This value overrides the max_contacts element defined in physics.</td>
+<td style="text-align:center;">２つの物体間での面の最大値。この値は、物理シミュレートで定義される<code>max_contacts</code>要素をオーバーライドします</td>
 </tr>
 <tr>
 <td style="text-align:center;">laserRetro     </td>
 <td style="text-align:center;">double     </td>
-<td style="text-align:center;">intensity value returned by laser sensor.</td>
+<td style="text-align:center;">レーザーセンサのレーザー強度</td>
 </tr>
 </tbody>
 </table>
@@ -560,51 +550,46 @@ Gazeboでデフォルトで使用可能な物質は<code>gazebo/media/materials/
 <table>
 <thead>
 <tr>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
+<th style="text-align:center;">名前</th>
+<th style="text-align:center;">タイプ   </th>
+<th style="text-align:center;">説明</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:center;">Name   </td>
-<td style="text-align:center;">Type   </td>
-<td style="text-align:center;">Description</td>
-</tr>
-<tr>
 <td style="text-align:center;">kp     </td>
 <td style="text-align:center;">double     </td>
-<td style="text-align:center;">Contact stiffness k_p for rigid body contacts as defined by ODE (ODE uses cfm) </td>
+<td style="text-align:center;"><a href="http://opende.sourceforge.net/">ODE</a>で定義される、剛体面の接触剛性 k_p (ODEではcfmを使用)</td>
 </tr>
 <tr>
 <td style="text-align:center;">kd     </td>
 <td style="text-align:center;">double     </td>
-<td style="text-align:center;">Contact damping k_d for rigid body contacts as defined by ODE (ODE uses erp)</td>
+<td style="text-align:center;">|<a href="http://opende.sourceforge.net/">ODE</a>で定義される、剛体面の摩擦減衰 k_d (ODEではerpを使用)</td>
 </tr>
 <tr>
 <td style="text-align:center;">stopCfm    </td>
 <td style="text-align:center;">double     </td>
-<td style="text-align:center;">Constraint force mixing used when not at a stop</td>
+<td style="text-align:center;">停止していない時に混合で使用される一定の力</td>
 </tr>
 <tr>
 <td style="text-align:center;">stopErp    </td>
 <td style="text-align:center;">double     </td>
-<td style="text-align:center;">Error reduction parameter used by the joint stop</td>
+<td style="text-align:center;">ジョイントの停止に使用されるエラーパラメータ</td>
 </tr>
 <tr>
 <td style="text-align:center;">provideFeedback    </td>
 <td style="text-align:center;">bool   </td>
-<td style="text-align:center;">Allows joints to publish their wrench data (force-torque) via a Gazebo plugin</td>
+<td style="text-align:center;">Gazeboのプラグインへ常にねじりデータ(トルク)をpublishしている</td>
 </tr>
 <tr>
 <td style="text-align:center;">cfmDamping     </td>
 <td style="text-align:center;">bool   </td>
-<td style="text-align:center;">If cfm damping is set to true, ODE will use CFM to simulate damping, allows for infinite damping, and one additional constraint row (previously used for joint limit) is always active. This is a more stable numerical method for damping than the default damping tag.</td>
+<td style="text-align:center;">もし、<code>cgm dumping</code>が<code>true</code>なら、減衰のシミュレートにODEはCFMを使用し、無限の減衰を容認する。また、追加の強制要素(前もってジョイントの制限に使用されている) が常に有効になります。デフォルトの<code>damping</code>タグよりもたくさんのスッキリとした数字で表された減衰の方法です。</td>
 </tr>
 <tr>
 <td style="text-align:center;">fudgeFactor    </td>
 <td style="text-align:center;">double     </td>
-<td style="text-align:center;">Scale the excess for in a joint motor at joint limits. Should be between zero and one.</td>
+<td style="text-align:center;">ジョイントの制限にあるジョイントモータの行き過ぎ量を計測します。また、0から1の値を取るはずです</td>
 </tr>
 </tbody>
 </table>
