@@ -4,7 +4,7 @@
   <title><![CDATA[九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-02-19T17:28:37+09:00</updated>
+  <updated>2015-02-19T17:42:37+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -14,21 +14,21 @@
 
   
   <entry>
-    <title type="html"><![CDATA[GazeboをROSに繋ぐ (ROSにおけるGazeboのプラグイン 編) No.6.6]]></title>
-    <link href="http://cir-kit.github.io/blog/2015/02/19/gazebo-gazebo-plugins-in-ros/"/>
-    <updated>2015-02-19T03:23:21+09:00</updated>
-    <id>http://cir-kit.github.io/blog/2015/02/19/gazebo-gazebo-plugins-in-ros</id>
+    <title type="html"><![CDATA[GazeboをROSに繋ぐ (GazeboにおけるURDF 編) No.6.5]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/02/17/gazebo-urdf-in-gazebo/"/>
+    <updated>2015-02-17T17:03:28+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/02/17/gazebo-urdf-in-gazebo</id>
     <content type="html"><![CDATA[<p><img src="http://cir-kit.github.io/images/gazebo_logo.png" alt="gazebo_logo" /></p>
 
 <h5>検証日時</h5>
 
-<p>02/19/2015 (Thu)</p>
+<p>02/17/2015 (Tue)</p>
 
 <h5>概要</h5>
 
 <p>Gazeboのチュートリアル第六弾「Connect to ROS」。
 ROSはロボットの制御フレームワークです。このチュートリアルでは、GazeboとROSのインターフェースについて説明します。
-今回はその「Gazebo Plugins in ROS」編です。
+今回はその「URDF in Gazebo」編です。
 公式サイトを適当に翻訳しただけですので、あしからず。</p>
 
 <h5>レベル</h5>
@@ -87,36 +87,562 @@ ROSはロボットの制御フレームワークです。このチュートリ�
 
 <p><a href="http://gazebosim.org/tutorials?cat=connect_ros">GAZEBO Tutorial-Connect to ROS</a></p>
 
-<h2>チュートリアル : ROSとともにGazeboのプラグインを使う</h2>
+<h2>チュートリアル : GazeboでURDFを使う</h2>
 
-<p>Gazeboのプラグインはあなたのrおボットモデルにより良い機能性を提供し、ROSのセンサ出力やモータ入力のためのメッセージやサービスコールと繋ぐことができる。このチュートリアルでは、すでに存在するプラグインをセットアップするやり方と、ROSとともに動作する独自のプラグインを作る方法を説明します。</p>
+<p><a href="http://www.ros.org/wiki/urdf">Universal Robotic Description Format (URDF)</a>は、ロボットのすべての要素を記述するために、Gazeboでも使われている、XMLフォーマットを使用しています。URDFファイルをGazeboで使用し、Gazeboで適切に動作させるには、いくつかの追加シミュレーション定義のタグがにつようです。このチュートリアルでは、GazeboであなたのURDFベースのロボットを確実に動作させ、<code>sctatch</code>や二重定義フォーマットによる、分割SDFファイルを作るのを避けるために、必要な過程を説明します。プログラム内部では、Gazeboは自動で、URDFをSDFファイルに変換しています。</p>
+
+<h2>背景</h2>
+
+<p>URDFは使いやすく、ROSでも一般化されているフォーマットですが、多くの定義について欠陥があり、ロボティクスの発展的な内容を記述するには至っていません。URDFは、独立した、ひとつのロボットの、幾何学的要素と運動要素しか定義できません。また、URDFはロボットのいるシミュレータ上のロボットの姿勢を定義できません。さらに、ジョイントループ(平行なリンク機構)を定義できないだけでなく、摩擦などの要素を記述できないので、標準的なフォーマットではないのです。さらに加えて述べると、ロボットでない、証明や標高地図などを定義することはできません。<br/>
+実際に使うという面では、URDFの文法は処理するのに重く、完全なフォーマットを行わず、XMLフォーマットを使用しています。これにより、URDFはより柔軟になっています。また、後方互換性ももちません。<br/>
+こういった問題に対処し、URDFの欠陥を解決するために、Gazeboでは、<a href="http://gazebosim.org/sdf.html">Simulator Description Format (SDF</a>と呼ばれる新しいフォーマットが作られました。SDFは、worldレベル(シミュレーション環境を記述するレベル)からロボットレベル（ロボットを記述するレベル）に至るまで、全てにおいて、完全な記述です。
+SDFは規模を自由に決定でき、修正要素を追加するのも簡単です。SDFフォーマット自体は、古いバージョンから新しいバージョンへ変換するために、シンプルなアップグレードツールを簡単に使用できるような、XMLを使って記述しています。<br/>
+URDFをできるだけ完全なドキュメントとし、Gazeboでサポートしようとすることは、筆者の意図するところですが、読者にとっては、なぜ２つのフォーマットが存在し、それぞれに欠陥があるのか疑問に思うのは至極当然なことです。URDFをロボティクスにおkるニーズに完全に対応させることができれば、それは素晴らしいことです。</p>
+
+<h2>Gazeboへの実装の概要</h2>
+
+<p>URDFのロボットをGazeboで完全に動作させるにはたくさんのステップがあります。以下に示すのは、このチュートリアルの残りで述べる、詳細なステップの概要です。:</p>
+
+<h3>必須条件</h3>
+
+<ul>
+<li><code>&lt;link&gt;</code>要素にある、<code>&lt;internal&gt;</code>要素は完全にかつ詳細に定義され、構成されている必要があります。</li>
+</ul>
+
+
+<h3>任意条件</h3>
+
+<ul>
+<li><code>&lt;gazebo&gt;</code>要素をすべての<code>&lt;link&gt;</code>に追加する
+
+<ul>
+<li>Gazeboのフォーマットに外観色を変換する</li>
+<li>stlファイルをより良いテクスチャによってdaeファイルに変換する</li>
+<li>センサプラグインを追加する</li>
+</ul>
+</li>
+<li><code>&lt;gazebo&gt;</code>要素をすべての<code>&lt;link&gt;</code>に追加する
+
+<ul>
+<li>適切な同ダンパを定義する</li>
+<li>アクチュエータの制御プラグインを追加する</li>
+</ul>
+</li>
+<li><code>&lt;gazebo&gt;</code>要素をすべての<code>&lt;robot&gt;</code>要素に追加する</li>
+<li>もし、ロボットが正確に<code>world/base_link</code>へ接続されるべきなら、<code>&lt;link name="world"/&gt;</code>を追加する</li>
+</ul>
+
 
 <h2>前提条件</h2>
 
-<p><a href="https://cir-kit.github.io/blog/2015/02/17/gazebo-urdf-in-gazebo/">前回のURDFに関するチュートリアル</a>で述べた時のRRBotのセットアップを行っていることを確認してください。</p>
+<p>あなたのロボットをGazeboで起動させるために必要な最初のステップは、<a href="http://www.ros.org/wiki/urdf/Tutorials">ROS URDFチュートリアル</a>から、動作するURDFファイルを用意ことです。Gazeboであなたのロボットを動作させる前に、<a href="http://www.ros.org/wiki/rviz">Rviz</a>で表示して検証してください。このチュートリアルでは、<code>RRBot</code>というシンプルなデモ用ロボットを使います。このロボットを使っても自身のものを使ってもどちらでも構いません。</p>
 
-<h2>プラグインを追加する</h2>
+<h3>RRBotを手に入れる</h3>
 
-<p>プラグインをURDFのメイン要素の多くに追加することができます。 - プラグインが取り上げ、目的としていることに依存する<code>&lt;robot&gt;</code>、<code>&lt;link&gt;</code>、<code>&lt;joint&gt;</code>などである。プラグインをあなたのURDFの主な要素にプラグインを追加するには、<code>&lt;gazebo&gt;</code>要素にある<code>&lt;plugin&gt;</code>タグをラップする必要があります。</p>
+<p><code>RRBot</code>(Revolute-Revolute Manipulator Robot)は簡単な3つのリンク機構、2つのジョイントアームを持つロボットで、GazeboとURDFの様々な特徴を検証するのに使います。これは、基本的に<a href="http://en.wikipedia.org/wiki/Double_inverted_pendulum">２つの倒立振り子</a>であり、シミュレータでは、いくつかの面白い制御構想を検証します。<br/>
+<code>RRBot</code>を手に入れるには、もし、<code>catkin</code>ワークスペースがあるなら、その<code>src</code>フォルダに、GitHubのレポジトリより<code>clone</code>し、ワークスペースをリビルドしてください。</p>
 
-<h3><code>&lt;robot&gt;</code>要素にプラグインを追加する</h3>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd</span> ~/catkin_ws/src/
+</span><span class='line'>git clone https://github.com/ros-simulation/gazebo_ros_demos.git
+</span><span class='line'><span class="nb">cd</span> ..
+</span><span class='line'>catkin_make
+</span></code></pre></td></tr></table></div></figure>
 
-<p>以下に示すのは、URDFにある<code>&lt;robot&gt;</code>要素へのプラグインの例である。:</p>
+
+<p>もし、何を言っているのかよくわからなけれが、先に、<a href="http://gazebosim.org/tutorials?tut=ros_overview">ROS Overview Tutorials</a>を読んでください。</p>
+
+<h3>Rvizで見てみる</h3>
+
+<p>すべてうまく行っているか確かめるために、<code>RRBot</code>をRvizでlaunchしてください。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>roslaunch rrbot_description rrbot_rviz.launch
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>すると、以下のようになるはずです。
+<img src="http://cir-kit.github.io/images/2015-02-17-gazebo-urdf-in-gazebo/rrbot-rviz-1.png" alt="rrbot-rviz-1" />
+もし、こうならなければ、<code>killall roscore</code>コマンドで起動中のすべての<code>roscore</code>プロセスを終了し、再びRVizをlaunchしてください。<br/>
+また、２つのジョイントを動かすために、<code>Joint State Publisher</code>ウィンドウで<code>slider bars</code>を実行することもできるはずです。<br/>
+Gazeboであなたのロボットが動くように変換するあいだ、Rvizや他のROSアプリケーションを終了させないということが重要です。なので、たまにRVizのロボットがすべてきちんと動いているか確かめるのは良いことです。</p>
+
+<p><a href="http://cir-kit.github.io/blog/2015/02/14/gazebo-ros-overview/">ROSの概要</a>チュートリアルでは、Gazeboから直接<code>/jointstates</code>をpublishして、あなたのロボットの状態を表示するための、Rvizの使い方は飛ばしました。この例では、RVizのRRBotは、ダミーの<code>jointstate</code>パブリッシャーノード（スライドバー月のウィンドウ）からの<code>/jointstates</code>を取得(subscribe)しています。</p>
+
+<h3>urdfのRRBotを試してみる</h3>
+
+<p>このチュートリアルの残りでは、RRBotのURDFのいろいろな面を見てゆきます。早速ファイルを見てみましょう。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rosed rrbot_description rrbot.xacro
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>いくつかのリンクやジョイントの計算を簡単にするために、<a href="http://ros.org/wiki/xacro">Xacro</a>を使用していることに注意してください。また、２つの追加ファイルもインクルードしています。
+- rrbot.gazebo : ほとんどすべてのGazebo定義XML要素をタグに含むGazeboの定義ファイルです。
+- materials.xacro : 文字列のRGBA値のための簡単なRVizのカラーファイルであり、必須のものではありませんが、あったほうが良い定義です。</p>
+
+<h3>Gazeboで見てみる</h3>
+
+<p>GazeboでもRRBotをlaunchできるはずです。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>roslaunch rrbot_gazebo rrbot_world.launch
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>launchされたGazeboのウィンドウで、直立した状態のロボットを確認できるはずです。デフォルトには物理シミュレータに恣意的な障害物が無いにも関わらず、数値エラーが始まりと当時に起こり、２つの倒立振子が数秒後に落ちます。以下に示すのは、RRBotが動いている（倒立振子が落ちている）途中の様子です。:
+<img src="http://cir-kit.github.io/images/2015-02-17-gazebo-urdf-in-gazebo/rrbot-gazebo-1.png" alt="rrbot-gazebo-1" />
+最終的には、アームは完全に停止します。以下のチュートリアル間、URDFのロボットのシミュレーションについて学ぶのを手助けするために、URDFのいろんな面を引っ張ってテストしてみることをおすすめします。</p>
+
+<h2>URDFファイルのヘッダ</h2>
+
+<p>GazeboにはAPIの変更がたくさんあり、URDFフォーマットが必要とされてきており、その中でも、Gazeboの<code>xml-schema</code>という名前空間はすでに必要とされなくなりました。もし、あなたのURDFが以下のようであるなら、:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;gazebo&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;plugin</span> <span class="na">name=</span><span class="s">&quot;differential_drive_controller&quot;</span> <span class="na">filename=</span><span class="s">&quot;libdiffdrive_plugin.so&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>    ... plugin parameters ...
-</span><span class='line'>  <span class="nt">&lt;/plugin&gt;</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;robot</span> <span class="na">xmlns:sensor=</span><span class="s">&quot;http://playerstage.sourceforge.net/gazebo/xmlschema/#sensor&quot;</span>
+</span><span class='line'>       <span class="na">xmlns:controller=</span><span class="s">&quot;http://playerstage.sourceforge.net/gazebo/xmlschema/#controller&quot;</span>
+</span><span class='line'>       <span class="na">xmlns:interface=</span><span class="s">&quot;http://playerstage.sourceforge.net/gazebo/xmlschema/#interface&quot;</span>
+</span><span class='line'>       <span class="na">xmlns:xacro=</span><span class="s">&quot;http://playerstage.sourceforge.net/gazebo/xmlschema/#interface&quot;</span>
+</span><span class='line'>       <span class="na">name=</span><span class="s">&quot;pr2&quot;</span> <span class="nt">&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>これらは削除して構いません。もし以下のものを使っているなら、ロボットのエレメントタグに必要なものはロボットの名前とxacroの任意のxmlの名前空間です。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;robot</span> <span class="na">name=</span><span class="s">&quot;rrbot&quot;</span> <span class="na">xmlns:xacro=</span><span class="s">&quot;http://www.ros.org/wiki/xacro&quot;</span><span class="nt">&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>タグの<code>&lt;gazebo&gt;</code>要素</h3>
+
+<p>もし、<code>&lt;gazebo&gt;</code>要素が<code>reference==""</code>という記述無しで使用してあるなら、<code>&lt;gazebo&gt;</code>要素はすべてのロボットモデルのものと仮定されます。<code>&lt;gazebo&gt;</code>タグにある<code>&lt;robot&gt;</code>要素は以下の表のようになっています。</p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> 名前 </th>
+<th style="text-align:center;"> タイプ </th>
+<th style="text-align:center;"> 説明 </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">static </td>
+<td style="text-align:center;">   bool   </td>
+<td style="text-align:center;">    もし<code>true</code>にすると、モデルは動かなくなります。しかしながら、モデルは物理エンジンの中でシミュレーションされます。 </td>
+</tr>
+</tbody>
+</table>
+
+
+<p>先ほどの表には無くて、<code>&lt;gazebo&gt;</code>タグにある要素は、生成されるSDFファイルの<code>&lt;model&gt;</code>タグに直接挿入されます。<br/>
+これは、<a href="http://gazebosim.org/tutorials?tut=ros_gzplugins">ROS Motor and Sensor Plugins</a>チュートリアルについて議論するときに、特にプラグインにおいて有用です。</p>
+
+<h2>モデルをworldに正しく変換する</h2>
+
+<p>もしあなたのURDFモデルをworldフレーム(<code>the ground plane</code>)に永久に設置された状態にしたいのなら、モデルのベースとなるように変換された、<code>world</code>リンクとジョイントを作らなければなりません。RRBotでは以下のようにすれば、それが可能です。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>  <span class="c">&lt;!-- Used for fixing robot to Gazebo &#39;base_link&#39; --&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;link</span> <span class="na">name=</span><span class="s">&quot;world&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nt">&lt;joint</span> <span class="na">name=</span><span class="s">&quot;fixed&quot;</span> <span class="na">type=</span><span class="s">&quot;fixed&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;parent</span> <span class="na">link=</span><span class="s">&quot;world&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;child</span> <span class="na">link=</span><span class="s">&quot;link1&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/joint&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>しかし、もしあなたがモバイルベースなどの動くロボットを持っているなら、このリンクやジョイントは必要ありません。</p>
+
+<h2>Links</h2>
+
+<p>URDFの<code>link</code>要素に詳しくなりましょう。<br/>
+以下の例はRRBotの<code>link</code>です。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>  <span class="c">&lt;!-- Base Link --&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;link</span> <span class="na">name=</span><span class="s">&quot;link1&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;collision&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;origin</span> <span class="na">xyz=</span><span class="s">&quot;0 0 ${height1/2}&quot;</span> <span class="na">rpy=</span><span class="s">&quot;0 0 0&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;geometry&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;box</span> <span class="na">size=</span><span class="s">&quot;${width} ${width} ${height1}&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/geometry&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/collision&gt;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nt">&lt;visual&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;origin</span> <span class="na">xyz=</span><span class="s">&quot;0 0 ${height1/2}&quot;</span> <span class="na">rpy=</span><span class="s">&quot;0 0 0&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;geometry&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;box</span> <span class="na">size=</span><span class="s">&quot;${width} ${width} ${height1}&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/geometry&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;material</span> <span class="na">name=</span><span class="s">&quot;orange&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/visual&gt;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nt">&lt;inertial&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;origin</span> <span class="na">xyz=</span><span class="s">&quot;0 0 1&quot;</span> <span class="na">rpy=</span><span class="s">&quot;0 0 0&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;mass</span> <span class="na">value=</span><span class="s">&quot;1&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;inertia</span>
+</span><span class='line'>        <span class="na">ixx=</span><span class="s">&quot;1.0&quot;</span> <span class="na">ixy=</span><span class="s">&quot;0.0&quot;</span> <span class="na">ixz=</span><span class="s">&quot;0.0&quot;</span>
+</span><span class='line'>        <span class="na">iyy=</span><span class="s">&quot;1.0&quot;</span> <span class="na">iyz=</span><span class="s">&quot;0.0&quot;</span>
+</span><span class='line'>        <span class="na">izz=</span><span class="s">&quot;1.0&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/inertial&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/link&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>単位における注意</h3>
+
+<p><a href="http://www.ros.org/reps/rep-0103.html">ROS REP 103: Standard Units of measure and Coordinate Conventions</a>にあるように、Gazeboの単位はメートルとキログラムで定義されねばなりません。もし、重力のような定数を主導で変更するときには、Gazeboではできるだけヤード・ポンド法を使えるようにしています。しかし、デフォルトの重力は9.8[m/s<sup>2</sup>]です。質量を定義する際にはキログラム単位を使ってください。</p>
+
+<h3><code>&lt;collision&gt;</code>と<code>&lt;visual&gt;</code>要素</h3>
+
+<p>これらのタグの働きはGazeboでもRVizでも基本的に同じです。両方を定義することは重要ですが、いくつかのROSアプリケーションでは異なるので、Gazeboでは、もし定義されていなければ、あなたの<code>&lt;cisual&gt;</code>要素を<code>&lt;collision&gt;</code>要素と同じようには使いません。その代わり、Gazeboではあなたの<code>link</code>をレーザスキャナからも衝突要素としても&#8221;見えない&#8221;ものとして扱います。</p>
+
+<h4>collisionモデルの簡単化</h4>
+
+<p><code>collision</code>と<code>visual</code>要素のどちらにも同じように幾何要素やメッシュを使うことができます。しかし、PCの性能工場のために、衝突幾何要素の<code>model/meshes</code>は簡略化することを強くおすすめします。メッシュを簡単化するおすすめのツールは<a href="http://blender.jp/">Blender</a>です。BlenderにはMayaや3DX Maxなど、たくさんの<code>closed-source</code>があり、メッシュを簡単化することもできます。</p>
+
+<h4>物質 : 適切な色とテクスチャを使う</h4>
+
+<p>通常のURDFでは、以下のようなRRBotにもあるタグを使って色を定義することができます。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;material</span> <span class="na">name=</span><span class="s">&quot;orange&quot;</span><span class="nt">/&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>これは、<code>materials.xacro</code>などのファイルの中に、分割して<code>orange</code>という色と一緒に以下のように定義してあります。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>  <span class="nt">&lt;material</span> <span class="na">name=</span><span class="s">&quot;orange&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;color</span> <span class="na">rgba=</span><span class="s">&quot;${255/255} ${108/255} ${10/255} 1.0&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/material&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>しかし残念なことに、この定義方法では、<code>link</code>の色はGazeboでは反映されません。というのも、<code>link</code>に色をつけたり、テクスチャを貼ったりするのにOこの物質スクリプトが採用されているのです。その代わり、Gazeboの物質タグは、以下のように、それぞれのリンクに定義してやる必要があります。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>  <span class="nt">&lt;gazebo</span> <span class="na">reference=</span><span class="s">&quot;link1&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;material&gt;</span>Gazebo/Orange<span class="nt">&lt;/material&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/gazebo&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>簡単に言うと、選択したRRBotの例では、すべてのGazeboの定義タグを<code>`rrbot.gazebo</code>と呼ばれるセカンドファイルからインクルードしていました。<br/>
+なので、要素を探すことができたのです。<br/>
+Gazeboでデフォルトで使用可能な物質は<code>gazebo/media/materials/scripts/gazebo/scripts/gazebo.material</code>にあるGazeboのソースコードより見つけることができます。<br/>
+より進んだもしくは独自の物質のために、オリジナルのオレンジ色もしくはテクスチャを作ることができます。それについては、以下をご覧ください。
+- <a href="http://gazebosim.org/sdf/dev.html#material179">The SDF documentation</a>
+- <a href="http://www.ogre3d.org/tikiwiki/Materials">OGRE materials documentation</a></p>
+
+<h4>STLやColladaファイル</h4>
+
+<p>Rvizのように、Gazeboでも<a href="http://en.wikipedia.org/wiki/STL_(file_format">STL</a>)や<a href="http://en.wikipedia.org/wiki/Collada">Collada</a>ファイルを使用することができます。通常は、Collada(<code>.dae</code>)ファイルを使うことをおすすめします。なぜなら、このフォーマット形式は、色とテクスチャをサポートしているからです。STLファイルだと、個体の色の<code>link</code>しか作ることができません。</p>
+
+<h3><code>&lt;inertial&gt;</code>要素</h3>
+
+<p>Gazeboで物理エンジンを適切にうごかすためには、<a href="http://www.ros.org/wiki/urdf/XML/link">URDF element page</a>にある、<code>&lt;inertial&gt;</code>要素が必ず必要です。Gazeboで<code>link</code>が無視されないために、それらの質量は0より大きくなければなりません。更に、0の慣性モーメント(ixx, iyy, izz)は、どんな有限なトルクに対しても、無限大の加速度を出力することになります。<br/>
+それぞれの<code>link</code>に正しい値を決定するには、Gazeboで物理近似を行わなければなりません。これは、たくさんのロボットパーツの計測もしくは、そういった近似のための機能付きの<a href="http://www.solidworks.co.jp/">Solidworks</a>のようなCADソフトを使うことにより決定されます。初心者は、値を少しずつ変えることでも決定できます。<br/>
+以下は、RRBotの一つ目の<code>link</code>の慣性要素の例です。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;inertial&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;origin</span> <span class="na">xyz=</span><span class="s">&quot;0 0 ${height1/2}&quot;</span> <span class="na">rpy=</span><span class="s">&quot;0 0 0&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;mass</span> <span class="na">value=</span><span class="s">&quot;1&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;inertia</span>
+</span><span class='line'>    <span class="na">ixx=</span><span class="s">&quot;1.0&quot;</span> <span class="na">ixy=</span><span class="s">&quot;0.0&quot;</span> <span class="na">ixz=</span><span class="s">&quot;0.0&quot;</span>
+</span><span class='line'>    <span class="na">iyy=</span><span class="s">&quot;1.0&quot;</span> <span class="na">iyz=</span><span class="s">&quot;0.0&quot;</span>
+</span><span class='line'>    <span class="na">izz=</span><span class="s">&quot;1.0&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;/inertial&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>origin</code>タグはこの<code>link</code>の重心を表しています。RRBotの長方形のリンクの半分の長さのところを重心と決定することにより、質量を中心に持ってきます。Gazeboの<strong>View</strong>メニューをクリックし<strong>Wireframe</strong>と<strong>Center of Mass</strong>を選択すれば、GazeboであなたのURDFの重心を目視で確認することができます。<br/>
+このロボットの例では、ロボットは現実世界の写しではないので、質量も慣性行列も作り上げられた（実際は存在しない）ものになっています。</p>
+
+<h3>リンクにおける<code>&lt;gazebo&gt;</code>要素</h3>
+
+<p>それぞれの要素は以下のようになっています。:</p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;">名前     </th>
+<th style="text-align:center;">タイプ    </th>
+<th style="text-align:center;">説明 </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">material   </td>
+<td style="text-align:center;">value  </td>
+<td style="text-align:center;">外観要素の物質</td>
+</tr>
+<tr>
+<td style="text-align:center;">gravity    </td>
+<td style="text-align:center;">bool   </td>
+<td style="text-align:center;">重力を使う</td>
+</tr>
+<tr>
+<td style="text-align:center;">dampingFactor  </td>
+<td style="text-align:center;">double     </td>
+<td style="text-align:center;">リンク速度の指数関数的減衰。- (一つの減衰係数)により決定される一つ前のリンク速度と現在の速度を掛けあわせます。</td>
+</tr>
+<tr>
+<td style="text-align:center;">maxVel     </td>
+<td style="text-align:center;">double     </td>
+<td style="text-align:center;">最大値コンタクト補正速度の最大値トラクション</td>
+</tr>
+<tr>
+<td style="text-align:center;">minDepth   </td>
+<td style="text-align:center;">double     </td>
+<td style="text-align:center;">コンタクト補正インパルスが発生する前の深さの最小値</td>
+</tr>
+<tr>
+<td style="text-align:center;">mu1&amp;mu2    </td>
+<td style="text-align:center;">double     </td>
+<td style="text-align:center;"><a href="http://www.ros.org/wiki/opende">ODE</a>で定義される接地面に沿った接地摩擦係数 μ</td>
+</tr>
+<tr>
+<td style="text-align:center;">fdir1  </td>
+<td style="text-align:center;">string     </td>
+<td style="text-align:center;">3組のローカルの衝突検証座標mu1の定義される方向</td>
+</tr>
+<tr>
+<td style="text-align:center;">kp     </td>
+<td style="text-align:center;">double     </td>
+<td style="text-align:center;"><a href="http://opende.sourceforge.net/">ODE</a>で定義される、剛体面の接触剛性 k_p (ODEではcfmを使用)</td>
+</tr>
+<tr>
+<td style="text-align:center;">kd     </td>
+<td style="text-align:center;">double     </td>
+<td style="text-align:center;"><a href="http://opende.sourceforge.net/">ODE</a>で定義される、剛体面の摩擦減衰 k_d (ODEではerpを使用)</td>
+</tr>
+<tr>
+<td style="text-align:center;">selfCollide    </td>
+<td style="text-align:center;">bool   </td>
+<td style="text-align:center;">もし、<code>true</code>なら、リンクは他のリンクやモデルと衝突します</td>
+</tr>
+<tr>
+<td style="text-align:center;">maxContacts    </td>
+<td style="text-align:center;">int    </td>
+<td style="text-align:center;">２つの物体間での面の最大値。この値は、物理シミュレートで定義される<code>max_contacts</code>要素をオーバーライドします</td>
+</tr>
+<tr>
+<td style="text-align:center;">laserRetro     </td>
+<td style="text-align:center;">double     </td>
+<td style="text-align:center;">レーザーセンサのレーザー強度</td>
+</tr>
+</tbody>
+</table>
+
+
+<p><code>&lt;gazebo&gt;</code>要素は<code>&lt;robot&gt;</code>と似ており、上の表によって定義されていない任意の物体は、SDFファイルの<code>&lt;link&gt;</code>要素と一致するところに挿入されます。これは、<a href="http://gazebosim.org/tutorials?tut=ros_gzplugins">ROS Motor and Sensor Plugins</a>チュートリアルについて議論するときに、特にプラグインにおいて有用です。</p>
+
+<h3>RRBotの要素の例</h3>
+
+<p>RRBotでは、非固定で連結した2つの摩擦係数が定義されています。なのでもし、衝突が起こってもより正確な接触作用がシミュレートされます。以下はリンクの<code>&lt;gazebo&gt;</code>タグの一例です。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;gazebo</span> <span class="na">reference=</span><span class="s">&quot;link2&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;mu1&gt;</span>0.2<span class="nt">&lt;/mu1&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;mu2&gt;</span>0.2<span class="nt">&lt;/mu2&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;material&gt;</span>Gazebo/Black<span class="nt">&lt;/material&gt;</span>
 </span><span class='line'><span class="nt">&lt;/gazebo&gt;</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>上記の例のプラグインは<code>&lt;robot&gt;</code>要素に追加されている。なぜなら他の<code>&lt;gazebo&gt;</code>要素やプロパティをと同じように、もし<code>reference="x"</code>がないということは、<code>&lt;robot&gt;</code>全体を参照していると定義しているのである。<a href="http://gazebosim.org/sdf/">SDF</a>フォーマットでは、<code>&lt;model&gt;</code>を参照すると考えられる。</p>
+<h2>Joints</h2>
+
+<p><a href="http://www.ros.org/wiki/urdf/XML/joint">URDFジョイントドキュメント</a>を熟読しておいてください。しかし、URDFのジョイントのために記述される要素のうべ手がGazeboで利用可能なわけではありません。</p>
+
+<ul>
+<li><code>&lt;origin&gt;</code>、<code>&lt;parent&gt;</code>そして<code>&lt;child&gt;</code>が必要です。</li>
+<li><code>&lt;calibration&gt;</code>と<code>&lt;safety_controller&gt;</code>は無視されます。</li>
+<li><code>&lt;dynamics&gt;</code>タグでは、ダンパ(減衰)プロパティのみが使用されます。</li>
+<li><code>&lt;limit&gt;</code>タグ内のすべてのプロパティは任意です。</li>
+</ul>
+
+
+<h3>RRBotの例</h3>
+
+<p>以下は、RRBotで使用されているジョイントです。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;joint</span> <span class="na">name=</span><span class="s">&quot;joint2&quot;</span> <span class="na">type=</span><span class="s">&quot;continuous&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;parent</span> <span class="na">link=</span><span class="s">&quot;link2&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;child</span> <span class="na">link=</span><span class="s">&quot;link3&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;origin</span> <span class="na">xyz=</span><span class="s">&quot;0 ${width} ${height2 - axel_offset*2}&quot;</span> <span class="na">rpy=</span><span class="s">&quot;0 0 0&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;axis</span> <span class="na">xyz=</span><span class="s">&quot;0 1 0&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;dynamics</span> <span class="na">damping=</span><span class="s">&quot;0.7&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;/joint&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>0.7 [Nms/rad]の線形粘性係数についての運動要素に注目してください。減衰はただ単に，ジョイントを止めるような<strong>ゆっくりとした</strong>ジョイント速度に力を発生させるものの合計です（この場合は [トルク/角速度] です）。</p>
+
+<p>0.7 [Nms/rad]という値はいろいろないかに<strong>自然に</strong>振り子が触れるかを観察し、減衰させることによって決定されます。この値を増やしたり減らしたりしてこの要素がいかに物理エンジンに影響を当たるか検証することをおすすめします。</p>
+
+<h3>Jointにおける<code>&lt;gazebo&gt;</code>要素</h3>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;">名前</th>
+<th style="text-align:center;">タイプ   </th>
+<th style="text-align:center;">説明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">kp     </td>
+<td style="text-align:center;">double     </td>
+<td style="text-align:center;"><a href="http://opende.sourceforge.net/">ODE</a>で定義される、剛体面の接触剛性 k_p (ODEではcfmを使用)</td>
+</tr>
+<tr>
+<td style="text-align:center;">kd     </td>
+<td style="text-align:center;">double     </td>
+<td style="text-align:center;"><a href="http://opende.sourceforge.net/">ODE</a>で定義される、剛体面の摩擦減衰 k_d (ODEではerpを使用)</td>
+</tr>
+<tr>
+<td style="text-align:center;">stopCfm    </td>
+<td style="text-align:center;">double     </td>
+<td style="text-align:center;">停止していない時に混合で使用される一定の力</td>
+</tr>
+<tr>
+<td style="text-align:center;">stopErp    </td>
+<td style="text-align:center;">double     </td>
+<td style="text-align:center;">ジョイントの停止に使用されるエラーパラメータ</td>
+</tr>
+<tr>
+<td style="text-align:center;">provideFeedback    </td>
+<td style="text-align:center;">bool   </td>
+<td style="text-align:center;">Gazeboのプラグインへ常にねじりデータ(トルク)をpublishしている</td>
+</tr>
+<tr>
+<td style="text-align:center;">cfmDamping     </td>
+<td style="text-align:center;">bool   </td>
+<td style="text-align:center;">もし、<code>cgm dumping</code>が<code>true</code>なら、減衰のシミュレートにODEはCFMを使用し、無限の減衰を容認する。また、追加の強制要素(前もってジョイントの制限に使用されている) が常に有効になります。デフォルトの<code>damping</code>タグよりもたくさんのスッキリとした数字で表された減衰の方法です。</td>
+</tr>
+<tr>
+<td style="text-align:center;">fudgeFactor    </td>
+<td style="text-align:center;">double     </td>
+<td style="text-align:center;">ジョイントの制限にあるジョイントモータの行き過ぎ量を計測します。また、0から1の値を取るはずです</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>これもまた<code>&lt;robot&gt;</code>や<code>&lt;link&gt;</code>における<code>&lt;gazebo&gt;</code>要素と似ており、上の表によって定義されていない任意の物体は、SDFファイルの<code>&lt;joint&gt;</code>要素と一致するところに挿入されます。これは、<a href="http://gazebosim.org/tutorials?tut=ros_gzplugins">ROS Motor and Sensor Plugins</a>チュートリアルについて議論するときに、特にプラグインにおいて有用です。</p>
+
+<h2>Gazeboモデルの機能を修正する</h2>
+
+<p>Gazeboをインストールすると、あなたのURDFが正しくSDFに変換できるか確かめる簡単なツールも一緒にインストールされています。以下のコマンドを実行してください。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>  <span class="c"># gazebo2 and below</span>
+</span><span class='line'>  gzsdf print MODEL.urdf
+</span><span class='line'>  <span class="c"># gazebo3 and above</span>
+</span><span class='line'>  gz sdf -p MODEL.urdf
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>これにより、入力されたURDFから、SDFに変換するために必要な情報の欠陥に関する警告と共に、生成されたSDFを確認できます。
+<strong>Note : </strong>バージョン1.9のGazeboとそれ以上のバージョンではデバッグ情報の一部がログファイルに記録され、以下のようにして、それを確認することができます。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>  cat ~/.gazebo/gzsdf.log
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>URDFをGazeboで見る</h2>
+
+<p>GazeboでRRBotを見ること、このチュートリアルの最初の方ですでに完了しています。あなた独自のロボットでは、そのURDFが<code>/urdf</code>というサブフォルダにある、<code>MYROBOT_description</code>という名前のROSパッケージの中で有効であるとします。ROSを使ってGazeboの中にこのロケーションからURDFを開く方法は前のチュートリアル(<a href="https://cir-kit.github.io/blog/2015/02/15/gazebo-using-roslaunch/">モデルをスポーンさせるのにroslaunchファイルを使う</a>)で述べています。もしまだそのチュートリアルをやっていないなら、すぐにやってみてください。
+そのチュートリアルでは、あなたのオリジナルロボットのための、２つのROSパッケージ(<code>MYROBOTdescription</code>と<code>MYROBOTgazebo</code>)を制作するはずです。ロボットを確認し、Gazeboで試すには、以下のコマンドが実行できるはずです。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>roslaunch MYROBOT_gazebo MYROBOT.launch
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>これにより、GazeboサーバーとGUIクライアントの両方を、あなたのロボットを自動でスポーンさせるようlaunchしているはずです。</p>
+
+<h2>あなたのモデルを引っ張る</h2>
+
+<p>もしあなたのロボットモデルがGazeboで思い通りに動かなければ、あなたのURDFの調整が必要なので、Gazeboで正確にその物理特性を表現するべきだと言えます。Gazeboで利用可能であり、URDFにある<code>&lt;gazebo&gt;</code>タグでも利用可能な様々なプロパティについての情報は<a href="http://gazebosim.org/sdf.html">SDFのユーザーガイド</a>をご覧ください。</p>
+
+<h2>あなたのロボットを世界と共有する</h2>
+
+<p>もしあなたが他の人がGazeboで使いたいと思っているであろう独自のロボットを持っているなら、<a href="http://gazebosim.org/user_guide/started__models__database.html">Gazeboのモデルデータベース</a>にあなたのURDFを追加することをおすすめします。これは、インターネットからモデルをダウンロードする際にGazeboが接続するオンラインサーバーです。このよく変更のあるレポジトリは<a href="https://bitbucket.org/osrf/gazebo_models">Bitbucket</a>に設置されてます。あなたのロボットをデータベースに追加するには、どうやってpullリクエストを投稿すればよいかなど、<a href="http://gazebosim.org/user_guide/started__models__database.html">Gazeboのモデルデータベース</a>ドキュメントをご覧ください。</p>
+
+<h2>次のステップ</h2>
+
+<p>これでURDFを含むROSパッケージをGazeboと一緒に使用する方法を学びました。また、あなた独自のURDFをGazeboで動作するように変換する方法も学びました。あなたのURDFのロボットにぷrグインを追加する方法を学ぶ準備が出来ました。なので、あなたのロボットやシミュレートされる環境の他の面をコントロールできます。<a href="http://gazebosim.org/tutorials?tut=ros_gzplugins">ROS Motor and Sensor Plugins</a>をご覧ください。</p>
 ]]></content>
   </entry>
   
