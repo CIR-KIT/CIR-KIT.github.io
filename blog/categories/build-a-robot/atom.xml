@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Build a Robot | 九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/blog/categories/build-a-robot/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-02-19T22:00:46+09:00</updated>
+  <updated>2015-02-19T22:21:52+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -221,7 +221,7 @@ gzclient
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[ロボットを作ってみよう ! (簡単なグリッパーを作る 編) No.2.8]]></title>
+    <title type="html"><![CDATA[No.2-8:ロボットを作ってみよう ! (簡単なグリッパーを作る 編)]]></title>
     <link href="http://cir-kit.github.io/blog/2015/01/31/gazebo-make-a-simple-gripper/"/>
     <updated>2015-01-31T22:35:00+09:00</updated>
     <id>http://cir-kit.github.io/blog/2015/01/31/gazebo-make-a-simple-gripper</id>
@@ -656,7 +656,7 @@ gazebo ~/simple_gripper_tutorial/gripper.world
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[ロボットを作ってみよう ! (ロボットにセンサを取り付ける 編) No.2.7]]></title>
+    <title type="html"><![CDATA[No.2-7:ロボットを作ってみよう ! (ロボットにセンサを取り付ける 編)]]></title>
     <link href="http://cir-kit.github.io/blog/2015/01/31/gazebo-add-a-sensor-to-a-robot/"/>
     <updated>2015-01-31T22:12:43+09:00</updated>
     <id>http://cir-kit.github.io/blog/2015/01/31/gazebo-add-a-sensor-to-a-robot</id>
@@ -799,7 +799,7 @@ SDFについてのレファレンスは<a href="http://gazebosim.org/sdf/">こ�
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[ロボットを作ってみよう ! (メッシュをつける 編) No.2.6]]></title>
+    <title type="html"><![CDATA[No.2-6:ロボットを作ってみよう ! (メッシュをつける 編)]]></title>
     <link href="http://cir-kit.github.io/blog/2015/01/31/gazebo-attach-meshes/"/>
     <updated>2015-01-31T20:50:08+09:00</updated>
     <id>http://cir-kit.github.io/blog/2015/01/31/gazebo-attach-meshes</id>
@@ -987,7 +987,7 @@ SDFについてのレファレンスは<a href="http://gazebosim.org/sdf/">こ�
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[ロボットを作ってみよう ! (メッシュをインポートする 編) No.2.5]]></title>
+    <title type="html"><![CDATA[No.2-5:ロボットを作ってみよう ! (メッシュをインポートする 編)]]></title>
     <link href="http://cir-kit.github.io/blog/2015/01/31/gazebo-import-meshes/"/>
     <updated>2015-01-31T19:55:25+09:00</updated>
     <id>http://cir-kit.github.io/blog/2015/01/31/gazebo-import-meshes</id>
@@ -1022,6 +1022,26 @@ SDFについてのレファレンスは<a href="http://gazebosim.org/sdf/">こ�
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:center;"> <strong>PC</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Prosessor</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>RAM</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>OS</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Ubuntu 14| :&mdash;: | :&mdash;&mdash;&mdash;: | :&mdash;: </td>
+</tr>
 <tr>
 <td style="text-align:center;"> <strong>PC</strong> </td>
 <td style="text-align:center;"> <strong> : </strong> </td>
@@ -1087,6 +1107,49 @@ SDFについてのレファレンスは<a href="http://gazebosim.org/sdf/">こ�
 <h2>メッシュを試す</h2>
 
 <p>メッシュを試す最も簡単な方法は<a href="http://bitbucket.org/osrf/gazebo_tutorials/raw/default/import_mesh/files/my_mesh.world">my_mesh.world</a>のようなメッシュをロードする、簡単な<code>world</code>ファイルを作成することです。以下に示す<code>my_mesh.dae</code>の部分は自分の好きなメッシュファイルの名前に置き換えてください。
+&#8220;`xml
+&lt;?xml version=&ldquo;1.0&rdquo;?>
+<sdf version="1.4">
+  <world name="default">
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+    <include>
+.04 LTS 64bit |
+| <strong>Kernel</strong> | <strong> : </strong> | 3.13.0-44-generic |
+| <strong>Gazebo</strong> | <strong> : </strong> | Version 5.0.1 |</p>
+
+<h5>参考</h5>
+
+<p><a href="http://gazebosim.org/tutorials?cat=build_robot">GAZEBO Tutorial-Build a Robot</a></p>
+
+<h2>はじめに</h2>
+
+<p>このチュートリアルでは、Gazeboへの3Dメッシュのインポートの仕方を説明します。</p>
+
+<h2>メッシュを用意する</h2>
+
+<p>Gazeboでは、+Zが上(垂直)、+Xが前(スクリーンの奥に向かう方向)、+Yが左となるような右手系の座標系を使用します。</p>
+
+<h4>複雑さを減らす</h4>
+
+<p>多くのメッシュはとても複雑になります。大量の三角形で構成されるメッシュはその数を減らすか、効率を良くするために、複数のメッシュに分割する必要があります。メッシュを減らす、もしくはメッシュを分割するということについての情報をあなたの3Dメッシュエディタのドキュメントで確認してみてください。</p>
+
+<h4>メッシュを作る</h4>
+
+<p>最初のステップはメッシュを(0,0,0)に設置し、前方（他の部位でも良い）をX軸にそうように設置します。</p>
+
+<h4>メッシュを計測する</h4>
+
+<p>Gazeboではメートル法を使用しています。多くのメッシュ（特に3D warehouseで作成したもの）では英語圏の単位系（インチとか）を使用しています。お気に入りの3Dエディタをメートル法でのものとして作成してください。</p>
+
+<h2>メッシュをエクスポートする</h2>
+
+<p>メッシュを詳細に作成したなら、<strong>Collada</strong>ファイルとしてエクスポートしましょう。このフォーマットにはすべての3D情報と材質情報が入っています。</p>
+
+<h2>メッシュを試す</h2>
+
+<p>メッシュを試す最も簡単な方法は<a href="http://bitbucket.org/osrf/gazebo_tutorials/raw/default/import_mesh/files/my_mesh.world">my_mesh.world</a>のようなメッシュをロードする、簡単な<code>world</code>ファイルを作成することです。以下に示す<code>my_mesh.dae</code>の部分は自分の好きなメッシュファイルの名前に置き換えてください。
 <code>xml
 &lt;?xml version="1.0"?&gt;
 &lt;sdf version="1.4"&gt;
@@ -1118,7 +1181,7 @@ gazebo my_mesh.world
 
 <h2>メッシュをテストする</h2>
 
-<p><a href="https://web.archive.org/web/20120513213905/http://www.c3dl.org/wp-content/2.0Release/Resources/duck.dae">duck.dae</a>と<a href="https://web.archive.org/web/20120513213905/http://www.c3dl.org/wp-content/2.0Release/Resources/duck.png">duck.png</a>を利用することができます。先ほど作成した<code>world</code>ファイルと同じディレクトリに２つのファイルを置いてください。duckのメッシュはY軸を上として定義してあるので、sdfファイルに回転を設置します。なので、モデルは、画面の上をモデルの右として表示しています。：
+<p><a href="https://web.archive.org/web/20120513213905/http://www.c3dl.org/wp-content/2.0Release/Resources/duck.dae">duck.dae</a>と<a href="https://web.archive.org/web/20120513213905/http://www.c3dl.org/wp-content/2.0Release/Resources/duck.png">duck.png</a>を利用することができます。２つのリンク先を先ほど作成した<code>world</code>ファイルと同じディレクトリに保存することで利用できます。duckのメッシュはY軸を上として定義してあるので、sdfファイルに回転を設置します。なので、モデルは、画面の上をモデルの右として表示しています。：
 <code>xml
 &lt;visual name="visual"&gt;
   &lt;pose&gt;0 0 0 1.5708 0 0&lt;/pose&gt;
