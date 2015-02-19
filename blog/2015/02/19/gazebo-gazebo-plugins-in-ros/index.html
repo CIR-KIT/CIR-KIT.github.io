@@ -5,12 +5,13 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>GAZEBOを使ってみよう ! (キャプチャ スクリーンショット編) No.1.4 - 九州工業大学 CIR-KIT Blog</title>
+  <title>GazeboをROSに繋ぐ (ROSにおけるGazeboのプラグイン 編) No.6.6 - 九州工業大学 CIR-KIT Blog</title>
   <meta name="author" content="">
 
   
-  <meta name="description" content="検証日時 01/25/2015 (Sun) 概要 Gazeboのチュートリアル第一弾「Get Started」。その「Capture Screeenshots」編です。
-公式サイトを適当に翻訳しただけですので、あしからず。 レベル BEGINNER 環境 PC : Lenovo ThinkPad &hellip;">
+  <meta name="description" content="検証日時 02/19/2015 (Thu) 概要 Gazeboのチュートリアル第六弾「Connect to ROS」。
+ROSはロボットの制御フレームワークです。このチュートリアルでは、GazeboとROSのインターフェースについて説明します。
+今回はその「Gazebo Plugins in &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -19,7 +20,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://cir-kit.github.io/blog/2015/01/31/gazebo-capture-screenshot/">
+  <link rel="canonical" href="http://cir-kit.github.io/blog/2015/02/19/gazebo-gazebo-plugins-in-ros/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="九州工業大学 CIR-KIT Blog" type="application/atom+xml">
@@ -81,7 +82,7 @@
   
   <header>
     
-      <h1 class="entry-title">GAZEBOを使ってみよう ! (キャプチャ スクリーンショット編) No.1.4</h1>
+      <h1 class="entry-title">GazeboをROSに繋ぐ (ROSにおけるGazeboのプラグイン 編) No.6.6</h1>
     
     
       <p class="meta">
@@ -90,7 +91,7 @@
 
 
 
-<time class='entry-date' datetime='2015-01-31T18:39:31+09:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>31</span><span class='date-suffix'>st</span>, <span class='date-year'>2015</span></span> <span class='time'>6:39 pm</span></time>
+<time class='entry-date' datetime='2015-02-19T03:23:21+09:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>19</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>3:23 am</span></time>
         
       </p>
     
@@ -101,16 +102,18 @@
 
 <h5>検証日時</h5>
 
-<p>01/25/2015 (Sun)</p>
+<p>02/19/2015 (Thu)</p>
 
 <h5>概要</h5>
 
-<p>Gazeboのチュートリアル第一弾「Get Started」。その「Capture Screeenshots」編です。
+<p>Gazeboのチュートリアル第六弾「Connect to ROS」。
+ROSはロボットの制御フレームワークです。このチュートリアルでは、GazeboとROSのインターフェースについて説明します。
+今回はその「Gazebo Plugins in ROS」編です。
 公式サイトを適当に翻訳しただけですので、あしからず。</p>
 
 <h5>レベル</h5>
 
-<p><strong>BEGINNER</strong></p>
+<p><strong>INTERMEDIATE</strong></p>
 
 <!-- more -->
 
@@ -162,17 +165,38 @@
 
 <h5>参考</h5>
 
-<p><a href="http://gazebosim.org/tutorials?cat=get_started">GAZEBO Tutorial-GetStarted</a></p>
+<p><a href="http://gazebosim.org/tutorials?cat=connect_ros">GAZEBO Tutorial-Connect to ROS</a></p>
 
-<h2>スクリーンショットのキャプチャ</h2>
+<h2>チュートリアル : ROSとともにGazeboのプラグインを使う</h2>
 
-<p>スクリーンショット機能はgzclientのGUIに追加されています。<br/>
-スクリーンショットを撮るには描画ウィンドウのツールバーにあるカメラアイコンを見つけ、クリックしてください。（下図参照）
-<img src="/images/2015-01-31-gazebo-capture-screenshot/gazebo_screen_shots.png" alt="screen_shots" /></p>
+<p>Gazeboのプラグインはあなたのrおボットモデルにより良い機能性を提供し、ROSのセンサ出力やモータ入力のためのメッセージやサービスコールと繋ぐことができる。このチュートリアルでは、すでに存在するプラグインをセットアップするやり方と、ROSとともに動作する独自のプラグインを作る方法を説明します。</p>
 
-<h2>スクリーンショットの保存アイコン</h2>
+<h2>前提条件</h2>
 
-<p>キャプチャされたイメージはタイムスタンプを付加したファイル名で<code>~/.gazebo/pictures</code>に保存されます。</p>
+<p><a href="https://cir-kit.github.io/blog/2015/02/17/gazebo-urdf-in-gazebo/">前回のURDFに関するチュートリアル</a>で述べた時のRRBotのセットアップを行っていることを確認してください。</p>
+
+<h2>プラグインを追加する</h2>
+
+<p>プラグインをURDFのメイン要素の多くに追加することができます。 - プラグインが取り上げ、目的としていることに依存する<code>&lt;robot&gt;</code>、<code>&lt;link&gt;</code>、<code>&lt;joint&gt;</code>などである。プラグインをあなたのURDFの主な要素にプラグインを追加するには、<code>&lt;gazebo&gt;</code>要素にある<code>&lt;plugin&gt;</code>タグをラップする必要があります。</p>
+
+<h3><code>&lt;robot&gt;</code>要素にプラグインを追加する</h3>
+
+<p>以下に示すのは、URDFにある<code>&lt;robot&gt;</code>要素へのプラグインの例である。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;gazebo&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;plugin</span> <span class="na">name=</span><span class="s">&quot;differential_drive_controller&quot;</span> <span class="na">filename=</span><span class="s">&quot;libdiffdrive_plugin.so&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    ... plugin parameters ...
+</span><span class='line'>  <span class="nt">&lt;/plugin&gt;</span>
+</span><span class='line'><span class="nt">&lt;/gazebo&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上記の例のプラグインは<code>&lt;robot&gt;</code>要素に追加されている。なぜなら他の<code>&lt;gazebo&gt;</code>要素やプロパティをと同じように、もし<code>reference="x"</code>がないということは、<code>&lt;robot&gt;</code>全体を参照していると定義しているのである。<a href="http://gazebosim.org/sdf/">SDF</a>フォーマットでは、<code>&lt;model&gt;</code>を参照すると考えられる。</p>
 </div>
 
 
@@ -188,12 +212,12 @@
 
 
 
-<time class='entry-date' datetime='2015-01-31T18:39:31+09:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>31</span><span class='date-suffix'>st</span>, <span class='date-year'>2015</span></span> <span class='time'>6:39 pm</span></time>
+<time class='entry-date' datetime='2015-02-19T03:23:21+09:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>19</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>3:23 am</span></time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/gazebo/'>gazebo</a>, <a class='category' href='/blog/categories/getstarted/'>getstarted</a>, <a class='category' href='/blog/categories/ubuntu/'>ubuntu</a>
+    <a class='category' href='/blog/categories/gazebo/'>gazebo</a>, <a class='category' href='/blog/categories/ros/'>ros</a>, <a class='category' href='/blog/categories/ubuntu/'>ubuntu</a>
   
 </span>
 
@@ -202,7 +226,7 @@
     
       <div class="sharing">
   
-  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://cir-kit.github.io/blog/2015/01/31/gazebo-capture-screenshot/" data-via="" data-counturl="http://cir-kit.github.io/blog/2015/01/31/gazebo-capture-screenshot/" >Tweet</a>
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://cir-kit.github.io/blog/2015/02/19/gazebo-gazebo-plugins-in-ros/" data-via="" data-counturl="http://cir-kit.github.io/blog/2015/02/19/gazebo-gazebo-plugins-in-ros/" >Tweet</a>
   
   
   
@@ -211,10 +235,8 @@
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2015/01/31/gazebo-architecture/" title="Previous Post: GAZEBOを使ってみよう ! (Gazebo 構造編) No.1.3">&laquo; GAZEBOを使ってみよう ! (Gazebo 構造編) No.1.3</a>
+        <a class="basic-alignment left" href="/blog/2015/02/15/gazebo-using-roslaunch/" title="Previous Post: GazeboをROSに繋ぐ (roslaunchを使う 編) No.6.4">&laquo; GazeboをROSに繋ぐ (roslaunchを使う 編) No.6.4</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2015/01/31/gazebo-model-structure-and-requirements/" title="Next Post: ロボットを作ってみよう ! (モデルの構成と必要条件 編) No.2.1">ロボットを作ってみよう ! (モデルの構成と必要条件 編) No.2.1 &raquo;</a>
       
     </p>
   </footer>
