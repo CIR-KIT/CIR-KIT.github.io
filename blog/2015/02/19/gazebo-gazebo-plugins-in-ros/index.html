@@ -1,0 +1,1288 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>GazeboをROSに繋ぐ (ROSにおけるGazeboのプラグイン 編) No.6.6 - 九州工業大学 CIR-KIT Blog</title>
+  <meta name="author" content="">
+
+  
+  <meta name="description" content="検証日時 02/19/2015 (Thu) 概要 Gazeboのチュートリアル第六弾「Connect to ROS」。
+ROSはロボットの制御フレームワークです。このチュートリアルでは、GazeboとROSのインターフェースについて説明します。
+今回はその「Gazebo Plugins in &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://cir-kit.github.io/blog/2015/02/19/gazebo-gazebo-plugins-in-ros/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="九州工業大学 CIR-KIT Blog" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-59178596-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">九州工業大学 CIR-KIT Blog</a></h1>
+  
+    <h2>九工大自律移動ロボット製作プロジェクトCIR-KITの技術系ブログ</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="cir-kit.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">GazeboをROSに繋ぐ (ROSにおけるGazeboのプラグイン 編) No.6.6</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-02-19T03:23:21+09:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>19</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>3:23 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><img src="/images/gazebo_logo.png" alt="gazebo_logo" /></p>
+
+<h5>検証日時</h5>
+
+<p>02/19/2015 (Thu)</p>
+
+<h5>概要</h5>
+
+<p>Gazeboのチュートリアル第六弾「Connect to ROS」。
+ROSはロボットの制御フレームワークです。このチュートリアルでは、GazeboとROSのインターフェースについて説明します。
+今回はその「Gazebo Plugins in ROS」編です。
+公式サイトを適当に翻訳しただけですので、あしからず。</p>
+
+<h5>レベル</h5>
+
+<p><strong>INTERMEDIATE</strong></p>
+
+<!-- more -->
+
+
+<h5>環境</h5>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> <strong>PC</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Prosessor</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>RAM</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>OS</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Kernel</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> 3.13.0-44-generic </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Gazebo</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Version 5.0.1 </td>
+</tr>
+</tbody>
+</table>
+
+
+<h5>参考</h5>
+
+<p><a href="http://gazebosim.org/tutorials?cat=connect_ros">GAZEBO Tutorial-Connect to ROS</a></p>
+
+<h2>チュートリアル : ROSとともにGazeboのプラグインを使う</h2>
+
+<p>Gazeboのプラグインはあなたのrおボットモデルにより良い機能性を提供し、ROSのセンサ出力やモータ入力のためのメッセージやサービスコールと繋ぐことができる。このチュートリアルでは、すでに存在するプラグインをセットアップするやり方と、ROSとともに動作する独自のプラグインを作る方法を説明します。</p>
+
+<h2>前提条件</h2>
+
+<p><a href="https://cir-kit.github.io/blog/2015/02/17/gazebo-urdf-in-gazebo/">前回のURDFに関するチュートリアル</a>で述べた時のRRBotのセットアップを行っていることを確認してください。</p>
+
+<h2>プラグインを追加する</h2>
+
+<p>プラグインをURDFのメイン要素の多くに追加することができます。 - プラグインが注目し、目的としているものに依存している<code>&lt;robot&gt;</code>、<code>&lt;link&gt;</code>、<code>&lt;joint&gt;</code>などのことです。プラグインをあなたのURDFの主な要素に追加するには、<code>&lt;gazebo&gt;</code>要素にある<code>&lt;plugin&gt;</code>タグをラップする必要があります。</p>
+
+<h3><code>&lt;robot&gt;</code>要素にプラグインを追加する</h3>
+
+<p>以下に示すのは、URDFにある<code>&lt;robot&gt;</code>要素へのプラグインの例である。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;gazebo&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;plugin</span> <span class="na">name=</span><span class="s">&quot;differential_drive_controller&quot;</span> <span class="na">filename=</span><span class="s">&quot;libdiffdrive_plugin.so&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    ... plugin parameters ...
+</span><span class='line'>  <span class="nt">&lt;/plugin&gt;</span>
+</span><span class='line'><span class="nt">&lt;/gazebo&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上記の例のプラグインは<code>&lt;robot&gt;</code>要素に追加されている。なぜなら他の<code>&lt;gazebo&gt;</code>要素やプロパティをと同じように、もし<code>reference="x"</code>がないということは、<code>&lt;robot&gt;</code>全体を参照していると定義しているのである。<a href="http://gazebosim.org/sdf/">SDF</a>フォーマットでは、<code>&lt;model&gt;</code>を参照すると考えられる。</p>
+
+<h3><code>&lt;link&gt;</code>要素にプラグインを追加する</h3>
+
+<p><code>&lt;robot&gt;</code>要素での<code>&lt;plugin&gt;</code>と同じように、<code>reference"your_link_name"</code>とすることで、<code>&lt;link&gt;</code>に<code>&lt;plugin&gt;</code>要素を追加することが可能です。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;gazebo</span> <span class="na">reference=</span><span class="s">&quot;your_link_name&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;plugin</span> <span class="na">name=</span><span class="s">&quot;your_link_laser_controller&quot;</span> <span class="na">filename=</span><span class="s">&quot;libgazebo_ros_laser.so&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    ... plugin parameters ...
+</span><span class='line'>  <span class="nt">&lt;/plugin&gt;</span>
+</span><span class='line'><span class="nt">&lt;/gazebo&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3><code>&lt;joint&gt;</code>要素にプラグインを追加する</h3>
+
+<p>これはレファレンスの名前を除く、<code>&lt;link&gt;</code>の項で説明したものと同じで、<code>link</code>の部分を<code>joint</code>とします。</p>
+
+<h2><code>gazebo_plugins</code>で利用可能なプラグイン</h2>
+
+<p>以下のセクションでは、<code>gazebo_plugins</code>で利用可能なすべてのプラグインについて説明します。私達はこれらを閲覧することをおすすめします。というのも、さらなる詳細については最初のプラグインの組み合わせによってわかりづらくなっており、様々なプラグインのドキュメントからいくつかのコンセプトを学ぶことができるからです。<br/>
+それぞれのセクションの名前はプラグインのクラスの名前によって決定されています。例えば、<strong>Block Laser</strong>は<code>GazeboRosBlockLaser</code>クラスから来ており、それは<code>gazebo_plugins/src/gazebo_ros_block_laser.cpp</code>の中にあります。<br/>
+もしいくつかのセクションの空白があるなら、その筆者がすべてのプラグインを説明するのがめんどくさくなったということであり、そういったプラグインの使い方に関する知識と経験を積むことでそれを埋め合わさなければなりません。</p>
+
+<h3>カメラ</h3>
+
+<p><strong>注意 : </strong><code>CamderaInfo</code>や<code>Image ROS messages</code>を<code>sensormsgs</code>として記述し、publishすることにより、<code>wge100camera</code>のようなカメラをシミュレーションする際には、ROSインターフェースを用意してください。</p>
+
+<h2>RRBotの例</h2>
+
+<p>このセクションでは、RRBotの振り子型の腕の先に付けられた単純なRGBカメラについて検証してゆきます。以下の説明で、<code>rrbot.xacro</code>を見てゆくことができます。このブロックの最初の要素は、特別なリンクと、カメラを表すURDFファイルに追加されているジョイントについてです。カメラを表現するために、ここでは単純な赤い箱を使います。しかし、通常はより良い表現のために、メッシュファイルを使うことができます。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>  <span class="nt">&lt;joint</span> <span class="na">name=</span><span class="s">&quot;camera_joint&quot;</span> <span class="na">type=</span><span class="s">&quot;fixed&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;axis</span> <span class="na">xyz=</span><span class="s">&quot;0 1 0&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;origin</span> <span class="na">xyz=</span><span class="s">&quot;${camera_link} 0 ${height3 - axel_offset*2}&quot;</span> <span class="na">rpy=</span><span class="s">&quot;0 0 0&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;parent</span> <span class="na">link=</span><span class="s">&quot;link3&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;child</span> <span class="na">link=</span><span class="s">&quot;camera_link&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/joint&gt;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c">&lt;!-- Camera --&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;link</span> <span class="na">name=</span><span class="s">&quot;camera_link&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;collision&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;origin</span> <span class="na">xyz=</span><span class="s">&quot;0 0 0&quot;</span> <span class="na">rpy=</span><span class="s">&quot;0 0 0&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;geometry&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;box</span> <span class="na">size=</span><span class="s">&quot;${camera_link} ${camera_link} ${camera_link}&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/geometry&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/collision&gt;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nt">&lt;visual&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;origin</span> <span class="na">xyz=</span><span class="s">&quot;0 0 0&quot;</span> <span class="na">rpy=</span><span class="s">&quot;0 0 0&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;geometry&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;box</span> <span class="na">size=</span><span class="s">&quot;${camera_link} ${camera_link} ${camera_link}&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/geometry&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;material</span> <span class="na">name=</span><span class="s">&quot;red&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/visual&gt;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nt">&lt;inertial&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;mass</span> <span class="na">value=</span><span class="s">&quot;1e-5&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;origin</span> <span class="na">xyz=</span><span class="s">&quot;0 0 0&quot;</span> <span class="na">rpy=</span><span class="s">&quot;0 0 0&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;inertia</span> <span class="na">ixx=</span><span class="s">&quot;1e-6&quot;</span> <span class="na">ixy=</span><span class="s">&quot;0&quot;</span> <span class="na">ixz=</span><span class="s">&quot;0&quot;</span> <span class="na">iyy=</span><span class="s">&quot;1e-6&quot;</span> <span class="na">iyz=</span><span class="s">&quot;0&quot;</span> <span class="na">izz=</span><span class="s">&quot;1e-6&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/inertial&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/link&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Xacroのプロパティもまた以下のように定義されています。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>  <span class="nt">&lt;xacro:property</span> <span class="na">name=</span><span class="s">&quot;camera_link&quot;</span> <span class="na">value=</span><span class="s">&quot;0.05&quot;</span> <span class="nt">/&gt;</span> <span class="c">&lt;!-- Size of square &#39;camera&#39; box --&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>RRBotをlaunchし、アームの先に取り付けられたカメラを確認することができるはずです。</p>
+
+<p>続いて、カメラの機能性を与え、ROSメッセージにイメージをpublishするGazeboのプラグインについて検証して行きます。RRBotでは、<code>rrbot.gazebo</code>ファイルにGazeboの要素を記述するという決まりに従ってきました。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>  <span class="nt">&lt;gazebo</span> <span class="na">reference=</span><span class="s">&quot;camera_link&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;sensor</span> <span class="na">type=</span><span class="s">&quot;camera&quot;</span> <span class="na">name=</span><span class="s">&quot;camera1&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;update_rate&gt;</span>30.0<span class="nt">&lt;/update_rate&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;camera</span> <span class="na">name=</span><span class="s">&quot;head&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;horizontal_fov&gt;</span>1.3962634<span class="nt">&lt;/horizontal_fov&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;image&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;width&gt;</span>800<span class="nt">&lt;/width&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;height&gt;</span>800<span class="nt">&lt;/height&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;format&gt;</span>R8G8B8<span class="nt">&lt;/format&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/image&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;clip&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;near&gt;</span>0.02<span class="nt">&lt;/near&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;far&gt;</span>300<span class="nt">&lt;/far&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/clip&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;noise&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;type&gt;</span>gaussian<span class="nt">&lt;/type&gt;</span>
+</span><span class='line'>          <span class="c">&lt;!-- Noise is sampled independently per pixel on each frame.</span>
+</span><span class='line'><span class="c">               That pixel&#39;s noise value is added to each of its color</span>
+</span><span class='line'><span class="c">               channels, which at that point lie in the range [0,1]. --&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;mean&gt;</span>0.0<span class="nt">&lt;/mean&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;stddev&gt;</span>0.007<span class="nt">&lt;/stddev&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/noise&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/camera&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;plugin</span> <span class="na">name=</span><span class="s">&quot;camera_controller&quot;</span> <span class="na">filename=</span><span class="s">&quot;libgazebo_ros_camera.so&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;alwaysOn&gt;</span>true<span class="nt">&lt;/alwaysOn&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;updateRate&gt;</span>0.0<span class="nt">&lt;/updateRate&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;cameraName&gt;</span>rrbot/camera1<span class="nt">&lt;/cameraName&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;imageTopicName&gt;</span>image_raw<span class="nt">&lt;/imageTopicName&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;cameraInfoTopicName&gt;</span>camera_info<span class="nt">&lt;/cameraInfoTopicName&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;frameName&gt;</span>camera_link<span class="nt">&lt;/frameName&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;hackBaseline&gt;</span>0.07<span class="nt">&lt;/hackBaseline&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;distortionK1&gt;</span>0.0<span class="nt">&lt;/distortionK1&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;distortionK2&gt;</span>0.0<span class="nt">&lt;/distortionK2&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;distortionK3&gt;</span>0.0<span class="nt">&lt;/distortionK3&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;distortionT1&gt;</span>0.0<span class="nt">&lt;/distortionT1&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;distortionT2&gt;</span>0.0<span class="nt">&lt;/distortionT2&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/plugin&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/sensor&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/gazebo&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>このプラグインのいくつかのプラグインについて考えてみましょう&hellip;</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>  <span class="nt">&lt;gazebo</span> <span class="na">reference=</span><span class="s">&quot;camera_link&quot;</span><span class="nt">&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><strong>&ldquo;camera_link&rdquo;</strong>というリンクの名前はXacroのURDFに追加した名前と一致しなければなりません。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;sensor</span> <span class="na">type=</span><span class="s">&quot;camera&quot;</span> <span class="na">name=</span><span class="s">&quot;camera1&quot;</span><span class="nt">&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><strong>&ldquo;camera1&rdquo;</strong>というセンサの名前は他のセンサの名前と一致してはいけません。この名前は、アクセス可能なGazeboプラグインの中にあるものを除き、他のところで使用してはいけません。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>  <span class="nt">&lt;update_rate&gt;</span>30.0<span class="nt">&lt;/update_rate&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Gazeboで何秒ごとに新しいカメライメージを取得するのかという値です。これはセンサがシミュレーションの間に行う最大のアップデートレートです。しかし、もし物理シミュレータがセンサジェネレーションの苦心より早ければ、この目標レートには到達しないこともあります。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>    <span class="nt">&lt;horizontal_fov&gt;</span>1.3962634<span class="nt">&lt;/horizontal_fov&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;image&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;width&gt;</span>800<span class="nt">&lt;/width&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;height&gt;</span>800<span class="nt">&lt;/height&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;format&gt;</span>R8G8B8<span class="nt">&lt;/format&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/image&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;clip&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;near&gt;</span>0.02<span class="nt">&lt;/near&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;far&gt;</span>300<span class="nt">&lt;/far&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/clip&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>あなたの物理的なカメラハードウェアについての製造仕様と一致するように値を代入してください。ただし、ピクセルは正方形と仮定されているということを覚えてください。
+加えて、ニアクリップとファークリップは、シミュレーション中でカメラが見ることのできる範囲内の距離のための、物体を上下を定義する<code>simulation-specific</code>パラメータです。これは、カメラのオプトメトリフレームの中で定義されています。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>  <span class="nt">&lt;plugin</span> <span class="na">name=</span><span class="s">&quot;camera_controller&quot;</span> <span class="na">filename=</span><span class="s">&quot;libgazebo_ros_camera.so&quot;</span><span class="nt">&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>これは、現在の<code>gazeboros/gazeboros_camera.cpp</code>ファイルにあり、共有物体としてリンク付けされています。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>    <span class="nt">&lt;cameraName&gt;</span>rrbot/camera1<span class="nt">&lt;/cameraName&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;imageTopicName&gt;</span>image_raw<span class="nt">&lt;/imageTopicName&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;cameraInfoTopicName&gt;</span>camera_info<span class="nt">&lt;/cameraInfoTopicName&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ここに、カメラが<code>image</code>、<code>topic</code>、<code>camera info topic</code>としてpublishしているrostopicを定義します。とぴくもRRBotでは、以下のようなものをsubscribeできるはずです。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>/rrbot/camera1/image_raw
+</span><span class='line'>/rrbot/camera1/camera_info
+</span><span class='line'>
+</span><span class='line'>        <span class="nt">&lt;frameName&gt;</span>camera_link<span class="nt">&lt;/frameName&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>imageの座標系は、<code>tf</code>ツリーの下でpublishされています。</p>
+
+<h2>RRBotの例を実行する</h2>
+
+<p><code>rrbot.xacro</code>と<code>rrbot.gazebo</code>を保存したあと、RvizとGazeboをそれぞれ異なるターミナルでlaunchできるはずです。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>roslaunch rrbot_gazebo rrbot_world.launch
+</span><span class='line'>roslaunch rrbot_description rrbot_rviz.launch
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Rvizでは、<strong>Camera</strong>ディスプレイを追加し、<strong>image Topic</strong>を<code>/rrbot/camera1/</code>と設定してください。<br/>
+前回のチュートリアルからは特に変更せず、上記のコマンドを実行すると、Rvizは以下の動画のようになるはずです。<br/>
+尚、コーラのカンはわかりやすさのために設置しました。また、Gazeboでは、前回のチュートリアルと同様の動作が起きています。</p>
+
+<div class="youtube-container">
+<iframe width="420" height="315" src="https://www.youtube.com/embed/JlAculkV5Ug" frameborder="0" allowfullscreen></iframe>
+</div>
+
+
+<h3>マルチカメラ</h3>
+
+<p><strong>説明 : </strong> マルチカメラは、イメージを当時にpublishするように、同時にシャッターを切ります。典型的には、ステレオカメラで使われており、普通の<code>Camera</code>プラグインのインターフェースと同じように使用されています。<br/>
+<strong>注意 : </strong>現在は、ステレオカメラのみをサポートしています。<a href="https://github.com/osrf/gazebo_ros_pkgs/issues/13">Github issue</a>をご覧ください。</p>
+
+<h4>Atlasのコードの例</h4>
+
+<p>このコードの例では、左右のカメラがあります。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>In this code example there is both a left and right camera:
+</span><span class='line'>
+</span><span class='line'>  <span class="nt">&lt;gazebo</span> <span class="na">reference=</span><span class="s">&quot;left_camera_frame&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;sensor</span> <span class="na">type=</span><span class="s">&quot;multicamera&quot;</span> <span class="na">name=</span><span class="s">&quot;stereo_camera&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;update_rate&gt;</span>30.0<span class="nt">&lt;/update_rate&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;camera</span> <span class="na">name=</span><span class="s">&quot;left&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;horizontal_fov&gt;</span>1.3962634<span class="nt">&lt;/horizontal_fov&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;image&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;width&gt;</span>800<span class="nt">&lt;/width&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;height&gt;</span>800<span class="nt">&lt;/height&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;format&gt;</span>R8G8B8<span class="nt">&lt;/format&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/image&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;clip&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;near&gt;</span>0.02<span class="nt">&lt;/near&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;far&gt;</span>300<span class="nt">&lt;/far&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/clip&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;noise&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;type&gt;</span>gaussian<span class="nt">&lt;/type&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;mean&gt;</span>0.0<span class="nt">&lt;/mean&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;stddev&gt;</span>0.007<span class="nt">&lt;/stddev&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/noise&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/camera&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;camera</span> <span class="na">name=</span><span class="s">&quot;right&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;pose&gt;</span>0 -0.07 0 0 0 0<span class="nt">&lt;/pose&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;horizontal_fov&gt;</span>1.3962634<span class="nt">&lt;/horizontal_fov&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;image&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;width&gt;</span>800<span class="nt">&lt;/width&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;height&gt;</span>800<span class="nt">&lt;/height&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;format&gt;</span>R8G8B8<span class="nt">&lt;/format&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/image&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;clip&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;near&gt;</span>0.02<span class="nt">&lt;/near&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;far&gt;</span>300<span class="nt">&lt;/far&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/clip&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;noise&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;type&gt;</span>gaussian<span class="nt">&lt;/type&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;mean&gt;</span>0.0<span class="nt">&lt;/mean&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;stddev&gt;</span>0.007<span class="nt">&lt;/stddev&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/noise&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/camera&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;plugin</span> <span class="na">name=</span><span class="s">&quot;stereo_camera_controller&quot;</span> <span class="na">filename=</span><span class="s">&quot;libgazebo_ros_multicamera.so&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;alwaysOn&gt;</span>true<span class="nt">&lt;/alwaysOn&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;updateRate&gt;</span>0.0<span class="nt">&lt;/updateRate&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;cameraName&gt;</span>multisense_sl/camera<span class="nt">&lt;/cameraName&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;imageTopicName&gt;</span>image_raw<span class="nt">&lt;/imageTopicName&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;cameraInfoTopicName&gt;</span>camera_info<span class="nt">&lt;/cameraInfoTopicName&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;frameName&gt;</span>left_camera_optical_frame<span class="nt">&lt;/frameName&gt;</span>
+</span><span class='line'>        <span class="c">&lt;!--&lt;rightFrameName&gt;right_camera_optical_frame&lt;/rightFrameName&gt;--&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;hackBaseline&gt;</span>0.07<span class="nt">&lt;/hackBaseline&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;distortionK1&gt;</span>0.0<span class="nt">&lt;/distortionK1&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;distortionK2&gt;</span>0.0<span class="nt">&lt;/distortionK2&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;distortionK3&gt;</span>0.0<span class="nt">&lt;/distortionK3&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;distortionT1&gt;</span>0.0<span class="nt">&lt;/distortionT1&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;distortionT2&gt;</span>0.0<span class="nt">&lt;/distortionT2&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/plugin&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/sensor&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/gazebo&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>深度カメラ</h3>
+
+<p><strong>説明 : </strong><code>Kinect</code>のようにセンサをシミュレートします。また、これは<code>Kinect</code>プラグインにもあります。将来的には、統合します。</p>
+
+<h3>Openni Kinect</h3>
+
+<p><strong>説明 : </strong><code>Xbox-Kinect</code>をシミュレートし、<a href="http://www.ros.org/wiki/openni_camera">Fuerteドキュメント</a>で説明されている、<code>Xbox kinect</code>用のROSドライバと一致するようなトピックをpublishします。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;gazebo&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;plugin</span> <span class="na">name=</span><span class="s">&quot;${link_name}_controller&quot;</span> <span class="na">filename=</span><span class="s">&quot;libgazebo_ros_openni_kinect.so&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;baseline&gt;</span>0.2<span class="nt">&lt;/baseline&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;alwaysOn&gt;</span>true<span class="nt">&lt;/alwaysOn&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;updateRate&gt;</span>1.0<span class="nt">&lt;/updateRate&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;cameraName&gt;</span>${camera_name}_ir<span class="nt">&lt;/cameraName&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;imageTopicName&gt;</span>/${camera_name}/depth/image_raw<span class="nt">&lt;/imageTopicName&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;cameraInfoTopicName&gt;</span>/${camera_name}/depth/camera_info<span class="nt">&lt;/cameraInfoTopicName&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;depthImageTopicName&gt;</span>/${camera_name}/depth/image_raw<span class="nt">&lt;/depthImageTopicName&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;depthImageInfoTopicName&gt;</span>/${camera_name}/depth/camera_info<span class="nt">&lt;/depthImageInfoTopicName&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;pointCloudTopicName&gt;</span>/${camera_name}/depth/points<span class="nt">&lt;/pointCloudTopicName&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;frameName&gt;</span>${frame_name}<span class="nt">&lt;/frameName&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;pointCloudCutoff&gt;</span>0.5<span class="nt">&lt;/pointCloudCutoff&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;distortionK1&gt;</span>0.00000001<span class="nt">&lt;/distortionK1&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;distortionK2&gt;</span>0.00000001<span class="nt">&lt;/distortionK2&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;distortionK3&gt;</span>0.00000001<span class="nt">&lt;/distortionK3&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;distortionT1&gt;</span>0.00000001<span class="nt">&lt;/distortionT1&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;distortionT2&gt;</span>0.00000001<span class="nt">&lt;/distortionT2&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;CxPrime&gt;</span>0<span class="nt">&lt;/CxPrime&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;Cx&gt;</span>0<span class="nt">&lt;/Cx&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;Cy&gt;</span>0<span class="nt">&lt;/Cy&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;focalLength&gt;</span>0<span class="nt">&lt;/focalLength&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;hackBaseline&gt;</span>0<span class="nt">&lt;/hackBaseline&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/plugin&gt;</span>
+</span><span class='line'><span class="nt">&lt;/gazebo&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>GPUレーザー</h3>
+
+<p><strong>説明 : </strong><code>sensor_msgs</code>で記述されている<code>LaserScan</code>メッセージを配信し、レーザーレンジセンサをシミュレートします。<a href="http://ros.org/wiki/hokuyo_node">Hokuyo Laser Scannersレファレンス</a>をご覧ください。<br/>
+この例を試す前に、カメラをRRBotに追加した例をご覧ください。カメラを追加するのと同じように、新しいリンクとジョイントをRRBotのXacro URDFに追加することができます。今回は、外観モデルをカメラの時のように直方体だけで表現せず、メッシュを使います。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>  <span class="nt">&lt;joint</span> <span class="na">name=</span><span class="s">&quot;hokuyo_joint&quot;</span> <span class="na">type=</span><span class="s">&quot;fixed&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;axis</span> <span class="na">xyz=</span><span class="s">&quot;0 1 0&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;origin</span> <span class="na">xyz=</span><span class="s">&quot;0 0 ${height3 - axel_offset/2}&quot;</span> <span class="na">rpy=</span><span class="s">&quot;0 0 0&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;parent</span> <span class="na">link=</span><span class="s">&quot;link3&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;child</span> <span class="na">link=</span><span class="s">&quot;hokuyo_link&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/joint&gt;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c">&lt;!-- Hokuyo Laser --&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;link</span> <span class="na">name=</span><span class="s">&quot;hokuyo_link&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;collision&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;origin</span> <span class="na">xyz=</span><span class="s">&quot;0 0 0&quot;</span> <span class="na">rpy=</span><span class="s">&quot;0 0 0&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;geometry&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;box</span> <span class="na">size=</span><span class="s">&quot;0.1 0.1 0.1&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/geometry&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/collision&gt;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nt">&lt;visual&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;origin</span> <span class="na">xyz=</span><span class="s">&quot;0 0 0&quot;</span> <span class="na">rpy=</span><span class="s">&quot;0 0 0&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;geometry&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;mesh</span> <span class="na">filename=</span><span class="s">&quot;package://rrbot_description/meshes/hokuyo.dae&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/geometry&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/visual&gt;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nt">&lt;inertial&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;mass</span> <span class="na">value=</span><span class="s">&quot;1e-5&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;origin</span> <span class="na">xyz=</span><span class="s">&quot;0 0 0&quot;</span> <span class="na">rpy=</span><span class="s">&quot;0 0 0&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;inertia</span> <span class="na">ixx=</span><span class="s">&quot;1e-6&quot;</span> <span class="na">ixy=</span><span class="s">&quot;0&quot;</span> <span class="na">ixz=</span><span class="s">&quot;0&quot;</span> <span class="na">iyy=</span><span class="s">&quot;1e-6&quot;</span> <span class="na">iyz=</span><span class="s">&quot;0&quot;</span> <span class="na">izz=</span><span class="s">&quot;1e-6&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/inertial&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/link&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>続いて、カメラの例の時と同様に、<code>rrbot.gazebo</code>にプラグインの情報を追加します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>  <span class="c">&lt;!-- hokuyo --&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;gazebo</span> <span class="na">reference=</span><span class="s">&quot;hokuyo_link&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;sensor</span> <span class="na">type=</span><span class="s">&quot;gpu_ray&quot;</span> <span class="na">name=</span><span class="s">&quot;head_hokuyo_sensor&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;pose&gt;</span>0 0 0 0 0 0<span class="nt">&lt;/pose&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;visualize&gt;</span>false<span class="nt">&lt;/visualize&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;update_rate&gt;</span>40<span class="nt">&lt;/update_rate&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;ray&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;scan&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;horizontal&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;samples&gt;</span>720<span class="nt">&lt;/samples&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;resolution&gt;</span>1<span class="nt">&lt;/resolution&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;min_angle&gt;</span>-1.570796<span class="nt">&lt;/min_angle&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;max_angle&gt;</span>1.570796<span class="nt">&lt;/max_angle&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;/horizontal&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/scan&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;range&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;min&gt;</span>0.10<span class="nt">&lt;/min&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;max&gt;</span>30.0<span class="nt">&lt;/max&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;resolution&gt;</span>0.01<span class="nt">&lt;/resolution&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/range&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;noise&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;type&gt;</span>gaussian<span class="nt">&lt;/type&gt;</span>
+</span><span class='line'>          <span class="c">&lt;!-- Noise parameters based on published spec for Hokuyo laser</span>
+</span><span class='line'><span class="c">               achieving &quot;+-30mm&quot; accuracy at range &lt; 10m.  A mean of 0.0m and</span>
+</span><span class='line'><span class="c">               stddev of 0.01m will put 99.7% of samples within 0.03m of the true</span>
+</span><span class='line'><span class="c">               reading. --&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;mean&gt;</span>0.0<span class="nt">&lt;/mean&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;stddev&gt;</span>0.01<span class="nt">&lt;/stddev&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/noise&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/ray&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;plugin</span> <span class="na">name=</span><span class="s">&quot;gazebo_ros_head_hokuyo_controller&quot;</span> <span class="na">filename=</span><span class="s">&quot;libgazebo_ros_gpu_laser.so&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;topicName&gt;</span>/rrbot/laser/scan<span class="nt">&lt;/topicName&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;frameName&gt;</span>hokuyo_link<span class="nt">&lt;/frameName&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/plugin&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/sensor&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/gazebo&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ほとんどのプロパティは自明ですが、以下のものを検証したいと思います。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>  <span class="nt">&lt;visualize&gt;</span>false<span class="nt">&lt;/visualize&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>これが<code>true</code>の時は、GPUレーザのスキャンしている範囲内で半透明のレーザーレイが表示されます。これは視覚的に有効かもしれませんし、邪魔になるかもしれません。<br/>
+この要素についてのより詳しい説明は、<a href="http://gazebosim.org/sdf/dev.html#sensor225">SDFドキュメント</a>に載っています。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;topicName&gt;</span>/rrbot/laser/scan<span class="nt">&lt;/topicName&gt;</span>
+</span><span class='line'><span class="nt">&lt;frameName&gt;</span>hokuyo_link<span class="nt">&lt;/frameName&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>publishしたいレーザースキャンのROSのトピック名を設定し、TFで使用した座標系の名前も設定します。</p>
+
+<h2>RRBotの例を実行する</h2>
+
+<p><code>rrbot.xacro</code>と<code>rrbot.gazebo</code>を保存した後、RvizとGazeboをそれぞれ異なるターミナルでlaunchできるはずです。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>roslaunch rrbot_gazebo rrbot.launch
+</span><span class='line'>roslaunch rrbot_description rrbot_rviz.launch
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Rvizでは、<strong>LaserScan</strong>ディスプレイを追加し、<strong>Topic</strong>を<code>/rrbot/camera1/image_raw</code>としてください。<br/>
+レーザースキャンラインがGazeboの環境下で確認できるはずです。振り子が揺れている間、レーザースキャンも揺れているのを確認することができます。もし、スキャンが薄すぎるなら、レーザースキャンの大きさをRvizにある<strong>LaserScan</strong>ディスプレイのプロパティから変更できます。大きさは、1[m]とするのが見やすいです。<br/>
+この動作は、基本的に先ほど、カメラを追加した例と同じなので、動作の様子は省略します。<br/>
+因みに、公式チュートリアルでは、家のモデルなど、大きめのモデルを設置し、動作確認をしています。いろいろ置いてみて、確かめてみましょう。</p>
+
+<h3>レーザー</h3>
+
+<p><strong>説明 : </strong>GPUレーザーの非GPU型のレーザーですが、基本的には同じコードを使用しています。GPUレーザーの説明をご覧ください。<br/>
+RRBotで動かすためには、<code>rrbot.gazebo</code>を開き、以下の二行を変更してください。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'> <span class="nt">&lt;sensor</span> <span class="na">type=</span><span class="s">&quot;gpu_ray&quot;</span> <span class="na">name=</span><span class="s">&quot;head_hokuyo_sensor&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'> <span class="nt">&lt;/sensor&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>を</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;sensor</span> <span class="na">type=</span><span class="s">&quot;ray&quot;</span> <span class="na">name=</span><span class="s">&quot;head_hokuyo_sensor&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'><span class="nt">&lt;/sensor&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>に変更するのと、</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;plugin</span> <span class="na">name=</span><span class="s">&quot;gazebo_ros_head_hokuyo_controller&quot;</span> <span class="na">filename=</span><span class="s">&quot;libgazebo_ros_gpu_laser.so&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'><span class="nt">&lt;/plugin&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>を</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;plugin</span> <span class="na">name=</span><span class="s">&quot;gazebo_ros_head_hokuyo_controller&quot;</span> <span class="na">filename=</span><span class="s">&quot;libgazebo_ros_laser.so&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'><span class="nt">&lt;/plugin&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>に変更してください。
+できたら保存し、GPUレーザーの時と同じlaunchファイルでlaunchしてください。</p>
+
+<h3>ブロックレーザー</h3>
+
+<p><strong>説明 : </strong>グリッドスタイルのレーザレンジスキャナのシミュレーションを提供します。(例 : ヴェロダインセンサ)</p>
+
+<h3>F3D (Force Feedback Ground Truth)</h3>
+
+<p><strong>説明 : </strong>シミュレーションの中で<code>geometry_msgs</code>で記述されている<code>WrenchStampd</code>メッセージ上書きして、ボディへの外力を配信します。<a href="http://www.science.aster.ersdac.jspacesystems.or.jp/jp/glossary/jp/ku/ground_truth.html">Ground Truthとは&hellip;</a>
+Description: broadcasts external forces on a body in simulation over WrenchStamped message as described in geometry_msgs.</p>
+
+<h3>Force</h3>
+
+<p><strong>説明 : </strong>シミュレーション中のボディに<code>Wrench</code>(<code>geometry_msgs</code>)を適用するためのROSのインターフェースです。</p>
+
+<h3>IMU</h3>
+
+<p><strong>説明 : </strong><a href="http://ros.org/wiki/microstrain_3dmgx2_imu">imu_node</a>をシミュレートします。</p>
+
+<h3>Joint Pose Trajectory</h3>
+
+<p><strong>説明 : </strong><code>jointtrajectoryaction</code>をlistenし、ジョイントの姿勢の設定をプレイバックします。シミュレートされている物理量や力を考慮することなく、ジョイントの設定を正しい位置に設定します。</p>
+
+<h3>P3D (3D Position Interface for Ground Truth)</h3>
+
+<p><strong>説明 : </strong>シミュレーション中のすべてのボディの慣性データを<code>nav_msg</code>に記述されているオドメトリメッセージのROSトピックへ配信します。</p>
+
+<h3>プロジェクタ</h3>
+
+<p><strong>説明 : </strong>ソースから静的テクスチャを表示します。これは、RP2のオリジナルヘッドカメラセンサなどで使用されています。詳しくは、<a href="http://osrf-distributions.s3.amazonaws.com/gazebo/api/dev/classgazebo_1_1rendering_1_1Projector.html">APIドキュメント</a>をご覧ください。</p>
+
+<h3>Prosilicaカメラ</h3>
+
+<p><strong>説明 : </strong><a href="http://www.ros.org/wiki/prosilica_camera">ROSのProsilicaカメラ</a>によって配信されるインターフェースをシミュレートします。<a href="https://bitbucket.org/hsu/nasa_r2_simulator/src/5ee1de067038749dcc133ed7cf87b45715cc4457/r2_gazebo/urdf/sensors/grasshopper2.gazebo.xacro?at=hsu">URDF Xacroマクロの例</a>はここです。</p>
+
+<h3>バンパー</h3>
+
+<p><strong>説明 : </strong><a href="http://ros.org/doc/api/gazebo_plugins/html/msg/ContactsState.html"><code>ContactsState</code>メッセージ</a>へコンタクトフィードバックを提供します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;gazebo&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;plugin</span> <span class="na">name=</span><span class="s">&quot;${name}_gazebo_ros_bumper_controller&quot;</span> <span class="na">filename=</span><span class="s">&quot;libgazebo_ros_bumper.so&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;alwaysOn&gt;</span>true<span class="nt">&lt;/alwaysOn&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;updateRate&gt;</span>${update_rate}<span class="nt">&lt;/updateRate&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;bumperTopicName&gt;</span>${name}_bumper<span class="nt">&lt;/bumperTopicName&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;frameName&gt;</span>world<span class="nt">&lt;/frameName&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/plugin&gt;</span>
+</span><span class='line'><span class="nt">&lt;/gazebo&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Differential Drive</h3>
+
+<p><strong>説明 : </strong>Gazeboでのデファレンシャルドライブロボットの基本的なコントローラを提供するモデルプラグインです。このプラグインを使用するには、ディファレンシャルドライブのロボットが必要です。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;gazebo&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;plugin</span> <span class="na">name=</span><span class="s">&quot;differential_drive_controller&quot;</span> <span class="na">filename=</span><span class="s">&quot;libgazebo_ros_diff_drive.so&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;alwaysOn&gt;</span>true<span class="nt">&lt;/alwaysOn&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;updateRate&gt;</span>${update_rate}<span class="nt">&lt;/updateRate&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;leftJoint&gt;</span>base_link_right_wheel_joint<span class="nt">&lt;/leftJoint&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;rightJoint&gt;</span>base_link_left_wheel_joint<span class="nt">&lt;/rightJoint&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;wheelSeparation&gt;</span>0.5380<span class="nt">&lt;/wheelSeparation&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;wheelDiameter&gt;</span>0.2410<span class="nt">&lt;/wheelDiameter&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;torque&gt;</span>20<span class="nt">&lt;/torque&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;commandTopic&gt;</span>cmd_vel<span class="nt">&lt;/commandTopic&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;odometryTopic&gt;</span>odom<span class="nt">&lt;/odometryTopic&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;odometryFrame&gt;</span>odom<span class="nt">&lt;/odometryFrame&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;robotBaseFrame&gt;</span>base_footprint<span class="nt">&lt;/robotBaseFrame&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/plugin&gt;</span>
+</span><span class='line'><span class="nt">&lt;/gazebo&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Skid Steering Drive</h3>
+
+<p><strong>説明 : </strong>Gazeboでのスキッドステアリングドライブロボットの基本的なコントローラを提供するモデルプラグインです。(例 : Pioneer 3AT)</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;gazebo&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;plugin</span> <span class="na">name=</span><span class="s">&quot;skid_steer_drive_controller&quot;</span> <span class="na">filename=</span><span class="s">&quot;libgazebo_ros_skid_steer_drive.so&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;updateRate&gt;</span>100.0<span class="nt">&lt;/updateRate&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;robotNamespace&gt;</span>/<span class="nt">&lt;/robotNamespace&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;leftFrontJoint&gt;</span>front_left_wheel_joint<span class="nt">&lt;/leftFrontJoint&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;rightFrontJoint&gt;</span>front_right_wheel_joint<span class="nt">&lt;/rightFrontJoint&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;leftRearJoint&gt;</span>back_left_wheel_joint<span class="nt">&lt;/leftRearJoint&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;rightRearJoint&gt;</span>back_right_wheel_joint<span class="nt">&lt;/rightRearJoint&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;wheelSeparation&gt;</span>0.4<span class="nt">&lt;/wheelSeparation&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;wheelDiameter&gt;</span>0.215<span class="nt">&lt;/wheelDiameter&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;robotBaseFrame&gt;</span>base_link<span class="nt">&lt;/robotBaseFrame&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;torque&gt;</span>20<span class="nt">&lt;/torque&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;topicName&gt;</span>cmd_vel<span class="nt">&lt;/topicName&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;broadcastTF&gt;</span>false<span class="nt">&lt;/broadcastTF&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/plugin&gt;</span>
+</span><span class='line'><span class="nt">&lt;/gazebo&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ビデオプラグイン</h3>
+
+<p><strong>説明 : </strong>Gazeboの中のOGREテクスチャ上のROSのイメージストリームを表示するビジュアルプラグインです。このプラグインは存在するリンク表面の一つのテクスチャを修正するだけでなく、新しいテクスチャを作ります。このテクスチャはXY平面に作られ、+Zの方向からなら見ることができます。このプラグインはテクスチャを変換するピクセルサイズが必要です。また、サイズが異なれば、ROSイメージメッセージに一致するようリサイズします。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;gazebo</span> <span class="na">reference=</span><span class="s">&quot;display_screen_link&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;visual&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;plugin</span> <span class="na">name=</span><span class="s">&quot;display_video_controller&quot;</span> <span class="na">filename=</span><span class="s">&quot;libgazebo_ros_video.so&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;topicName&gt;</span>image<span class="nt">&lt;/topicName&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;height&gt;</span>120<span class="nt">&lt;/height&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;width&gt;</span>160<span class="nt">&lt;/width&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/plugin&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/visual&gt;</span>
+</span><span class='line'><span class="nt">&lt;/gazebo&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Planar Move Plugin</h3>
+
+<p><strong>説明 : </strong><code>geometry_msgs/Twist</code>を使って水平面上を動かすために、任意の物体(簡単な例 : 箱、球、円柱)に適用可能なモデルプラグインです。このプラグインは、並進速度(XY)と角速度(Z)をすべてのサイクルで物体に入力することで動きます。<br/>
+ここに完全なURDFの例を示します。このURDFではこのプラグインを使ったGazebo中の浮いている箱のコントロール方法を、異なる外観、衝突要素を使って示しています。<br/>
+<strong>注意 : </strong>この物体にはありえない動きを避けるため、十分な慣性が必要です。この、ありえない動きとは与えられた速度と反転するなどの形で発生し得ます。慣性の値を大きくしてゆくことにより、望み通りに物体を動かすことができるようになります。また、重心を地面に近づけるというのも良い方法です。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;robot</span> <span class="na">name=</span><span class="s">&quot;test_model&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c">&lt;!-- root link, on the ground just below the model origin --&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;link</span> <span class="na">name=</span><span class="s">&quot;base_footprint&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>   <span class="nt">&lt;visual&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;origin</span> <span class="na">xyz=</span><span class="s">&quot;0 0 0&quot;</span> <span class="na">rpy=</span><span class="s">&quot;0 0 0&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;geometry&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;box</span> <span class="na">size=</span><span class="s">&quot;0.001 0.001 0.001&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/geometry&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/visual&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/link&gt;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nt">&lt;joint</span> <span class="na">name=</span><span class="s">&quot;base_link_joint&quot;</span> <span class="na">type=</span><span class="s">&quot;fixed&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;origin</span> <span class="na">xyz=</span><span class="s">&quot;0.0 0 1.25&quot;</span> <span class="na">rpy=</span><span class="s">&quot;0 0 0&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;parent</span> <span class="na">link=</span><span class="s">&quot;base_footprint&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;child</span> <span class="na">link=</span><span class="s">&quot;base_link&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/joint&gt;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c">&lt;!-- the model --&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;link</span> <span class="na">name=</span><span class="s">&quot;base_link&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;inertial&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;mass</span> <span class="na">value=</span><span class="s">&quot;50&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;origin</span> <span class="na">xyz=</span><span class="s">&quot;0 0 -1.25&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;inertia</span> <span class="na">ixx=</span><span class="s">&quot;50.0&quot;</span> <span class="na">ixy=</span><span class="s">&quot;0.0&quot;</span> <span class="na">ixz=</span><span class="s">&quot;0.0&quot;</span>
+</span><span class='line'>        <span class="na">iyy=</span><span class="s">&quot;50.0&quot;</span> <span class="na">iyz=</span><span class="s">&quot;0.0&quot;</span>
+</span><span class='line'>        <span class="na">izz=</span><span class="s">&quot;50.0&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/inertial&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;visual&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;geometry&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;box</span> <span class="na">size=</span><span class="s">&quot;0.5 0.5 1.0&quot;</span> <span class="nt">/&gt;</span> <span class="c">&lt;!-- does not need to match collision --&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/geometry&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/visual&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;collision&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;origin</span> <span class="na">xyz=</span><span class="s">&quot;0 0 -1.0&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;geometry&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;cylinder</span> <span class="na">length=</span><span class="s">&quot;0.5&quot;</span> <span class="na">radius=</span><span class="s">&quot;0.25&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/geometry&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/collision&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/link&gt;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nt">&lt;gazebo&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;plugin</span> <span class="na">name=</span><span class="s">&quot;object_controller&quot;</span> <span class="na">filename=</span><span class="s">&quot;libgazebo_ros_planar_move.so&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;commandTopic&gt;</span>cmd_vel<span class="nt">&lt;/commandTopic&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;odometryTopic&gt;</span>odom<span class="nt">&lt;/odometryTopic&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;odometryFrame&gt;</span>odom<span class="nt">&lt;/odometryFrame&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;odometryRate&gt;</span>20.0<span class="nt">&lt;/odometryRate&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;robotBaseFrame&gt;</span>base_footprint<span class="nt">&lt;/robotBaseFrame&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/plugin&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/gazebo&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;/robot&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>テンプレート</h3>
+
+<p><strong>説明 : </strong>自身のプラグインを書きたいと思っている方用のC++のプラグインテンプレートの例です。</p>
+
+<h2>次のステップ</h2>
+
+<p>次は、<code>controller/actuator/simulator</code>と<a href="http://gazebosim.org/tutorials/?tut=ros_control">Actuators, controllers, <code>ros_control</code></a>のタイトな統合のためにGazeboと統合された<code>ros_control</code>パッケージについて検証します。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">RyodoTanaka</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2015-02-19T03:23:21+09:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>19</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>3:23 am</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/gazebo/'>gazebo</a>, <a class='category' href='/blog/categories/ros/'>ros</a>, <a class='category' href='/blog/categories/ubuntu/'>ubuntu</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://cir-kit.github.io/blog/2015/02/19/gazebo-gazebo-plugins-in-ros/" data-via="" data-counturl="http://cir-kit.github.io/blog/2015/02/19/gazebo-gazebo-plugins-in-ros/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2015/02/17/gazebo-urdf-in-gazebo/" title="Previous Post: GazeboをROSに繋ぐ (GazeboにおけるURDF 編) No.6.5">&laquo; GazeboをROSに繋ぐ (GazeboにおけるURDF 編) No.6.5</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/02/19/gazebo-gazebo-plugins-in-ros/">GazeboをROSに繋ぐ (ROSにおけるGazeboのプラグイン 編) No.6.6</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/02/17/gazebo-urdf-in-gazebo/">GazeboをROSに繋ぐ (GazeboにおけるURDF 編) No.6.5</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/02/15/gazebo-using-roslaunch/">GazeboをROSに繋ぐ (Roslaunchを使う 編) No.6.4</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/02/14/gazebo-installing-gazebo-ros-pkgs/">GazeboをROSに繋ぐ (Gazebo_ros_pkgsをインストールする 編) No.6.3</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/02/14/gazebo-which-combination-of-ros-and-gazebo-versions-to-use/">GazeboをROSに繋ぐ (どのGazebo/ROSのバージョンの組み合わせを使うか 編) No.6.2</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 -  -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
