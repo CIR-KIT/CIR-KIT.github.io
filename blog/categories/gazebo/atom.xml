@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Gazebo | 九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/blog/categories/gazebo/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-02-23T11:26:25+09:00</updated>
+  <updated>2015-02-23T11:48:17+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -14,7 +14,7 @@
 
   
   <entry>
-    <title type="html"><![CDATA[GazeboをROSに繋ぐ (ROSにおけるGazeboのプラグイン 編) No.6.6]]></title>
+    <title type="html"><![CDATA[No.6-6:GazeboをROSに繋ぐ (ROSにおけるGazeboのプラグイン 編)]]></title>
     <link href="http://cir-kit.github.io/blog/2015/02/19/gazebo-gazebo-plugins-in-ros/"/>
     <updated>2015-02-19T03:23:21+09:00</updated>
     <id>http://cir-kit.github.io/blog/2015/02/19/gazebo-gazebo-plugins-in-ros</id>
@@ -703,7 +703,7 @@ Description: broadcasts external forces on a body in simulation over WrenchStamp
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[GazeboをROSに繋ぐ (GazeboにおけるURDF 編) No.6.5]]></title>
+    <title type="html"><![CDATA[No.6-5:GazeboをROSに繋ぐ (GazeboにおけるURDF 編)]]></title>
     <link href="http://cir-kit.github.io/blog/2015/02/17/gazebo-urdf-in-gazebo/"/>
     <updated>2015-02-17T17:03:28+09:00</updated>
     <id>http://cir-kit.github.io/blog/2015/02/17/gazebo-urdf-in-gazebo</id>
@@ -1240,7 +1240,7 @@ Gazeboでデフォルトで使用可能な物質は<code>gazebo/media/materials/
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[GazeboをROSに繋ぐ (Roslaunchを使う 編) No.6.4]]></title>
+    <title type="html"><![CDATA[No.6-4:GazeboをROSに繋ぐ (Roslaunchを使う 編)]]></title>
     <link href="http://cir-kit.github.io/blog/2015/02/15/gazebo-using-roslaunch/"/>
     <updated>2015-02-15T17:03:28+09:00</updated>
     <id>http://cir-kit.github.io/blog/2015/02/15/gazebo-using-roslaunch</id>
@@ -1779,7 +1779,7 @@ rosrun gazebo_ros spawn_model -file `rospack find baxter_description`/urdf/baxte
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[GazeboをROSに繋ぐ (Gazebo_ros_pkgsをインストールする 編) No.6.3]]></title>
+    <title type="html"><![CDATA[No.6-3:GazeboをROSに繋ぐ (Gazebo_ros_pkgsをインストールする 編)]]></title>
     <link href="http://cir-kit.github.io/blog/2015/02/14/gazebo-installing-gazebo-ros-pkgs/"/>
     <updated>2015-02-14T21:33:12+09:00</updated>
     <id>http://cir-kit.github.io/blog/2015/02/14/gazebo-installing-gazebo-ros-pkgs</id>
@@ -2130,7 +2130,7 @@ ROSの接続が本当に完了しているか確かめるために、利用可�
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[GazeboをROSに繋ぐ (どのGazebo/ROSのバージョンの組み合わせを使うか 編) No.6.2]]></title>
+    <title type="html"><![CDATA[No.6-2:GazeboをROSに繋ぐ (どのGazebo/ROSのバージョンの組み合わせを使うか 編)]]></title>
     <link href="http://cir-kit.github.io/blog/2015/02/14/gazebo-which-combination-of-ros-and-gazebo-versions-to-use/"/>
     <updated>2015-02-14T15:29:45+09:00</updated>
     <id>http://cir-kit.github.io/blog/2015/02/14/gazebo-which-combination-of-ros-and-gazebo-versions-to-use</id>

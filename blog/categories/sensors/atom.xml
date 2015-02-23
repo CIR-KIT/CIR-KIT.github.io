@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Sensors | 九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/blog/categories/sensors/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-02-23T11:26:25+09:00</updated>
+  <updated>2015-02-23T11:48:17+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -14,7 +14,7 @@
 
   
   <entry>
-    <title type="html"><![CDATA[センサについて（カメラの歪み 編）No.5.2]]></title>
+    <title type="html"><![CDATA[No.5-2:センサについて（カメラの歪み 編)]]></title>
     <link href="http://cir-kit.github.io/blog/2015/02/14/gazebo-camera-distortion/"/>
     <updated>2015-02-14T04:06:22+09:00</updated>
     <id>http://cir-kit.github.io/blog/2015/02/14/gazebo-camera-distortion</id>
@@ -235,7 +235,7 @@ MatlabやOpenCVのようなカメラキャリブレーションツールを使�
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[センサについて (センサノイズモデル 編) No.5.1]]></title>
+    <title type="html"><![CDATA[No.5-1:センサについて (センサノイズモデル 編)]]></title>
     <link href="http://cir-kit.github.io/blog/2015/02/13/gazebo-sensor-noise-model/"/>
     <updated>2015-02-13T21:50:50+09:00</updated>
     <id>http://cir-kit.github.io/blog/2015/02/13/gazebo-sensor-noise-model</id>

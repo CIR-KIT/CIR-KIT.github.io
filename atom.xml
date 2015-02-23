@@ -4,7 +4,7 @@
   <title><![CDATA[九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-02-23T11:26:25+09:00</updated>
+  <updated>2015-02-23T11:47:42+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -14,7 +14,7 @@
 
   
   <entry>
-    <title type="html"><![CDATA[GazeboをROSに繋ぐ (ROSにおけるGazeboのプラグイン 編) No.6.6]]></title>
+    <title type="html"><![CDATA[No.6-6:GazeboをROSに繋ぐ (ROSにおけるGazeboのプラグイン 編)]]></title>
     <link href="http://cir-kit.github.io/blog/2015/02/19/gazebo-gazebo-plugins-in-ros/"/>
     <updated>2015-02-19T03:23:21+09:00</updated>
     <id>http://cir-kit.github.io/blog/2015/02/19/gazebo-gazebo-plugins-in-ros</id>
@@ -1094,7 +1094,7 @@ Description: broadcasts external forces on a body in simulation over WrenchStamp
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[GazeboをROSに繋ぐ (GazeboにおけるURDF 編) No.6.5]]></title>
+    <title type="html"><![CDATA[No.6-5:GazeboをROSに繋ぐ (GazeboにおけるURDF 編)]]></title>
     <link href="http://cir-kit.github.io/blog/2015/02/17/gazebo-urdf-in-gazebo/"/>
     <updated>2015-02-17T17:03:28+09:00</updated>
     <id>http://cir-kit.github.io/blog/2015/02/17/gazebo-urdf-in-gazebo</id>
@@ -1727,7 +1727,7 @@ Gazeboでデフォルトで使用可能な物質は<code>gazebo/media/materials/
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[GazeboをROSに繋ぐ (Roslaunchを使う 編) No.6.4]]></title>
+    <title type="html"><![CDATA[No.6-4:GazeboをROSに繋ぐ (Roslaunchを使う 編)]]></title>
     <link href="http://cir-kit.github.io/blog/2015/02/15/gazebo-using-roslaunch/"/>
     <updated>2015-02-15T17:03:28+09:00</updated>
     <id>http://cir-kit.github.io/blog/2015/02/15/gazebo-using-roslaunch</id>
@@ -2453,7 +2453,7 @@ worldファイルについて詳しく知りたければ、<a href="http://cir-k
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[GazeboをROSに繋ぐ (Gazebo_ros_pkgsをインストールする 編) No.6.3]]></title>
+    <title type="html"><![CDATA[No.6-3:GazeboをROSに繋ぐ (Gazebo_ros_pkgsをインストールする 編)]]></title>
     <link href="http://cir-kit.github.io/blog/2015/02/14/gazebo-installing-gazebo-ros-pkgs/"/>
     <updated>2015-02-14T21:33:12+09:00</updated>
     <id>http://cir-kit.github.io/blog/2015/02/14/gazebo-installing-gazebo-ros-pkgs</id>
@@ -2908,7 +2908,7 @@ ROSの接続が本当に完了しているか確かめるために、利用可�
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[GazeboをROSに繋ぐ (どのGazebo/ROSのバージョンの組み合わせを使うか 編) No.6.2]]></title>
+    <title type="html"><![CDATA[No.6-2:GazeboをROSに繋ぐ (どのGazebo/ROSのバージョンの組み合わせを使うか 編)]]></title>
     <link href="http://cir-kit.github.io/blog/2015/02/14/gazebo-which-combination-of-ros-and-gazebo-versions-to-use/"/>
     <updated>2015-02-14T15:29:45+09:00</updated>
     <id>http://cir-kit.github.io/blog/2015/02/14/gazebo-which-combination-of-ros-and-gazebo-versions-to-use</id>
@@ -3108,7 +3108,7 @@ Gazebo3.xのバージョンにだけある機能を使用する必要がある�
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[GazeboをROSに繋ぐ (ROSの概要 編) No.6.1]]></title>
+    <title type="html"><![CDATA[No.6-1:GazeboをROSに繋ぐ (ROSの概要 編)]]></title>
     <link href="http://cir-kit.github.io/blog/2015/02/14/gazebo-ros-overview/"/>
     <updated>2015-02-14T11:25:06+09:00</updated>
     <id>http://cir-kit.github.io/blog/2015/02/14/gazebo-ros-overview</id>
@@ -3319,7 +3319,7 @@ GazeboサーバーとGUIを両方起動します。</li>
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[センサについて（カメラの歪み 編）No.5.2]]></title>
+    <title type="html"><![CDATA[No.5-2:センサについて（カメラの歪み 編)]]></title>
     <link href="http://cir-kit.github.io/blog/2015/02/14/gazebo-camera-distortion/"/>
     <updated>2015-02-14T04:06:22+09:00</updated>
     <id>http://cir-kit.github.io/blog/2015/02/14/gazebo-camera-distortion</id>
@@ -3614,7 +3614,7 @@ MatlabやOpenCVのようなカメラキャリブレーションツールを使�
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[センサについて (センサノイズモデル 編) No.5.1]]></title>
+    <title type="html"><![CDATA[No.5-1:センサについて (センサノイズモデル 編)]]></title>
     <link href="http://cir-kit.github.io/blog/2015/02/13/gazebo-sensor-noise-model/"/>
     <updated>2015-02-13T21:50:50+09:00</updated>
     <id>http://cir-kit.github.io/blog/2015/02/13/gazebo-sensor-noise-model</id>
@@ -4352,7 +4352,7 @@ IMUノイズモデルをテストするには:</p>
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[ツールとユーティリティ (ログフィルタリング 編) No.4.1]]></title>
+    <title type="html"><![CDATA[No.4-1:ツールとユーティリティ (ログフィルタリング 編)]]></title>
     <link href="http://cir-kit.github.io/blog/2015/02/13/gazebo-log-filtering/"/>
     <updated>2015-02-13T20:57:58+09:00</updated>
     <id>http://cir-kit.github.io/blog/2015/02/13/gazebo-log-filtering</id>
@@ -4524,7 +4524,7 @@ Gazeboサーバを<code>-r</code>コマンドラインオプションをつけ�
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[環境をつくろう ! (建築エディタ 編) No.3.5]]></title>
+    <title type="html"><![CDATA[No.3-5:環境をつくろう ! (建築エディタ 編)]]></title>
     <link href="http://cir-kit.github.io/blog/2015/02/06/gazebo-building-editor/"/>
     <updated>2015-02-06T02:14:35+09:00</updated>
     <id>http://cir-kit.github.io/blog/2015/02/06/gazebo-building-editor</id>
@@ -4839,7 +4839,7 @@ Gazeboサーバを<code>-r</code>コマンドラインオプションをつけ�
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[環境をつくろう ! (Modelの集合化 編) No.3.4]]></title>
+    <title type="html"><![CDATA[No.3-4:環境をつくろう ! (Modelの集合化 編)]]></title>
     <link href="http://cir-kit.github.io/blog/2015/02/05/gazebo-population-of-models/"/>
     <updated>2015-02-05T23:10:04+09:00</updated>
     <id>http://cir-kit.github.io/blog/2015/02/05/gazebo-population-of-models</id>
@@ -5099,7 +5099,7 @@ Gazeboサーバを<code>-r</code>コマンドラインオプションをつけ�
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[環境をつくろう ! (Digital Elevation Models 編) No.3.3]]></title>
+    <title type="html"><![CDATA[No.3-3:環境をつくろう ! (Digital Elevation Models 編)]]></title>
     <link href="http://cir-kit.github.io/blog/2015/02/03/gazebo-digital-elevation-models/"/>
     <updated>2015-02-03T19:58:17+09:00</updated>
     <id>http://cir-kit.github.io/blog/2015/02/03/gazebo-digital-elevation-models</id>
@@ -5463,7 +5463,7 @@ GazeboをDEMファイルを含む<code>world</code>と共に立ち上げ、以�
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[環境をつくろう ! (環境を修正する 編) No.3.2]]></title>
+    <title type="html"><![CDATA[No.3-2:環境をつくろう ! (環境を修正する 編)]]></title>
     <link href="http://cir-kit.github.io/blog/2015/02/03/gazebo-modifying-a-world/"/>
     <updated>2015-02-03T18:59:45+09:00</updated>
     <id>http://cir-kit.github.io/blog/2015/02/03/gazebo-modifying-a-world</id>
@@ -5601,7 +5601,7 @@ Gazeboを起動してください。:</p>
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[環境をつくろう ! (新規の環境を作る 編) No.3.1]]></title>
+    <title type="html"><![CDATA[No.3-1:環境をつくろう ! (新規の環境を作る 編)]]></title>
     <link href="http://cir-kit.github.io/blog/2015/02/03/gazebo-building-a-new-world/"/>
     <updated>2015-02-03T17:42:21+09:00</updated>
     <id>http://cir-kit.github.io/blog/2015/02/03/gazebo-building-a-new-world</id>
@@ -5683,7 +5683,7 @@ Gazeboを起動してください。:</p>
 <ul>
 <li><p><strong>World : </strong>ロボットや物体（例えばビルやテーブル、照明など）さらに、空や照明のパラメータ、物理的特性を記述するのに使用します。</p></li>
 <li><p><strong>Static : </strong>staticマークがついた物体（SDFファイルで<code>&lt;static&gt;true&lt;/static&gt;</code>と記述されているもの）であり、衝突要素のみを持つ様な物体です。すべての動いていない物体は<code>static</code>と記述する必要があります。また、そのように記述することで、パフォーマンスが向上します。</p></li>
-<li><p><strong>Dynamic : </strong>dynamicマークがついた物体（SDFファイルには<code>&lt;static&gt;</code>要素がないか、<code>false</code>が設定されています）で、慣性要素と衝突要素を含みます。</p></li>
+<li><p><strong>Dynamic : </strong>dynamicマークがついた物体（SDFファイルには<code>&lt;static&gt;</code>要素がないか、<code>false</code>が設定されています）で、衝突要素の他に慣性要素を含みます。</p></li>
 </ul>
 
 

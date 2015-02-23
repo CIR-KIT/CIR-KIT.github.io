@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Build a World | 九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/blog/categories/build-a-world/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-02-23T11:26:25+09:00</updated>
+  <updated>2015-02-23T11:48:17+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -14,7 +14,7 @@
 
   
   <entry>
-    <title type="html"><![CDATA[環境をつくろう ! (建築エディタ 編) No.3.5]]></title>
+    <title type="html"><![CDATA[No.3-5:環境をつくろう ! (建築エディタ 編)]]></title>
     <link href="http://cir-kit.github.io/blog/2015/02/06/gazebo-building-editor/"/>
     <updated>2015-02-06T02:14:35+09:00</updated>
     <id>http://cir-kit.github.io/blog/2015/02/06/gazebo-building-editor</id>
@@ -323,7 +323,7 @@
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[環境をつくろう ! (Modelの集合化 編) No.3.4]]></title>
+    <title type="html"><![CDATA[No.3-4:環境をつくろう ! (Modelの集合化 編)]]></title>
     <link href="http://cir-kit.github.io/blog/2015/02/05/gazebo-population-of-models/"/>
     <updated>2015-02-05T23:10:04+09:00</updated>
     <id>http://cir-kit.github.io/blog/2015/02/05/gazebo-population-of-models</id>
@@ -517,7 +517,7 @@
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[環境をつくろう ! (Digital Elevation Models 編) No.3.3]]></title>
+    <title type="html"><![CDATA[No.3-3:環境をつくろう ! (Digital Elevation Models 編)]]></title>
     <link href="http://cir-kit.github.io/blog/2015/02/03/gazebo-digital-elevation-models/"/>
     <updated>2015-02-03T19:58:17+09:00</updated>
     <id>http://cir-kit.github.io/blog/2015/02/03/gazebo-digital-elevation-models</id>
@@ -796,7 +796,7 @@ DEMデータは、しばしば、<code>holes</code>や<code>void</code>エリア
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[環境をつくろう ! (環境を修正する 編) No.3.2]]></title>
+    <title type="html"><![CDATA[No.3-2:環境をつくろう ! (環境を修正する 編)]]></title>
     <link href="http://cir-kit.github.io/blog/2015/02/03/gazebo-modifying-a-world/"/>
     <updated>2015-02-03T18:59:45+09:00</updated>
     <id>http://cir-kit.github.io/blog/2015/02/03/gazebo-modifying-a-world</id>
@@ -932,7 +932,7 @@ Gazeboを起動してください。:
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[環境をつくろう ! (新規の環境を作る 編) No.3.1]]></title>
+    <title type="html"><![CDATA[No.3-1:環境をつくろう ! (新規の環境を作る 編)]]></title>
     <link href="http://cir-kit.github.io/blog/2015/02/03/gazebo-building-a-new-world/"/>
     <updated>2015-02-03T17:42:21+09:00</updated>
     <id>http://cir-kit.github.io/blog/2015/02/03/gazebo-building-a-new-world</id>
@@ -1014,7 +1014,7 @@ Gazeboを起動してください。:
 <ul>
 <li><p><strong>World : </strong>ロボットや物体（例えばビルやテーブル、照明など）さらに、空や照明のパラメータ、物理的特性を記述するのに使用します。</p></li>
 <li><p><strong>Static : </strong>staticマークがついた物体（SDFファイルで<code>&lt;static&gt;true&lt;/static&gt;</code>と記述されているもの）であり、衝突要素のみを持つ様な物体です。すべての動いていない物体は<code>static</code>と記述する必要があります。また、そのように記述することで、パフォーマンスが向上します。</p></li>
-<li><p><strong>Dynamic : </strong>dynamicマークがついた物体（SDFファイルには<code>&lt;static&gt;</code>要素がないか、<code>false</code>が設定されています）で、慣性要素と衝突要素を含みます。</p></li>
+<li><p><strong>Dynamic : </strong>dynamicマークがついた物体（SDFファイルには<code>&lt;static&gt;</code>要素がないか、<code>false</code>が設定されています）で、衝突要素の他に慣性要素を含みます。</p></li>
 </ul>
 
 
