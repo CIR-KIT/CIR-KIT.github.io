@@ -4,7 +4,7 @@
   <title><![CDATA[九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-02-23T12:14:34+09:00</updated>
+  <updated>2015-02-23T14:44:10+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -5943,7 +5943,7 @@ Gazeboを起動してください。:</p>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>他のターミナルで、<code>gz topc</code>コマンドを使用し、箱の姿勢を表示するユーザーインターフェースを起動しましょう。</p>
+<p>他のターミナルで、<code>gz topc</code>コマンドを使用し、箱の姿勢を表示するユーザーインターフェースを起動しましょう。この時、<code>build</code>ディレクトリ内でコマンドを使用してください。でなければパスが通らず、箱が動きません。</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>gz topic -v /gazebo/animated_box_world/pose/local/info
