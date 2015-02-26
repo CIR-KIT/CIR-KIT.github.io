@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Install | 九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/blog/categories/install/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-02-23T14:44:10+09:00</updated>
+  <updated>2015-02-26T10:56:15+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -154,7 +154,7 @@ gazebo
 <p>Gazeboでは<a href="https://www.debian.org/doc/manuals/maint-guide/">公式パッケージガイドライン</a>にそったその他のUbuntu debian パッケージを用意しています。これらではgazeboのオプションのインストール方法が更新されます。</p>
 
 <ul>
-<li><p>Gazeboをアプリケーショんとして使用する場合：Gazeboを提供済みのプラグイン、モデルとともにシミュレータとしてのみ使用し、ソフトウェア開発においてgazeboの最新版を利用する予定のないユーザ用。Gazebo4.0を使用するためには、<code>gazebo4</code>と呼ばれるパッケージをインストールしてください。</p></li>
+<li><p>Gazeboをアプリケーションとして使用する場合：Gazeboを提供済みのプラグイン、モデルとともにシミュレータとしてのみ使用し、ソフトウェア開発においてgazeboの最新版を利用する予定のないユーザ用。Gazebo4.0を使用するためには、<code>gazebo4</code>と呼ばれるパッケージをインストールしてください。</p></li>
 <li><p>Gzeboのライブラリを使用してGazeboを開発ツールとして使用する場合：最新のGazeboやライブラリが必要とする様々なソフトウェアやプラグインを開発するユーザ用。この場合、<code>gazebo4</code>パッケージと共に、<code>libgazebo4-dev</code>もインストールしてください。</p></li>
 </ul>
 
