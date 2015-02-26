@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Ubuntu | 九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/blog/categories/ubuntu/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-02-26T13:23:09+09:00</updated>
+  <updated>2015-02-26T13:39:16+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -12,6 +12,131 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[CIR-KITメンバーがUbuntuをインストールしてまずすべきこと]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/02/25/we-have-get-to-work-when-install-ubuntu/"/>
+    <updated>2015-02-25T20:31:54+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/02/25/we-have-get-to-work-when-install-ubuntu</id>
+    <content type="html"><![CDATA[<h1>CIR-KIT開発環境への道</h1>
+
+<h2>概要</h2>
+
+<p>この記事はOSインストールからのCIR-KITでの環境を整えるまでの手順を残すためのものです。
+なお、各手順の目的を達成できれば別の手段を使用しても構いません。</p>
+
+<h2>重要度</h2>
+
+<p>LOW</p>
+
+<!--more-->
+
+
+<h2>目的と手段の一覧</h2>
+
+<p>推奨時系列順にすべきことをリストアップしました。強調部分は手段が確定しています。
+|目的|手段|
+|日本語入力の獲得|mozcを導入|
+|gitの獲得|<strong>gitの導入</strong>|
+|githubへの参加|<strong>グループ(CIR-KIT)に招待を貰う</strong>|
+|blog更新手段の獲得|<strong>CIR-KIT.OctopressのWiki参照</strong>|
+|ROSの獲得|<strong>ROSの導入</strong>|
+|Gazeboの獲得|<strong>Gazeboの導入</strong>|</p>
+
+<h2>手段達成方法</h2>
+
+<p>各手段の達成方法を記す。</p>
+
+<h3>日本語入力の獲得(Mozcの導入)</h3>
+
+<p>デフォルトの設定では日本語入力ができなかったり、押したキーと別の文字が出たり(キー配列が英仕様として認識される)します。
+ここでは、Mozc(もずく)によって日本語入力できるようにし、設定をしてキー配列を日仕様にします。</p>
+
+<h4>この処置の結果</h4>
+
+<p>日仕様のキー配列に対応し、半角全角キーで日本語と半角英数字の切り替えを行える。</p>
+
+<h4>手順</h4>
+
+<p>1.Mozcをインストールする
+    -コンソールで<strong>sudo apt-get install mozc</strong>を実行する
+2.PCを再起動する
+3.テキスト入力設定を変更する
+-右上のWi-Fi設定の右隣にあるアイコンをクリックして、テキスト入力設定を選択
+-使用する日本語ソースを<strong>日本語</strong>,<strong>日本語(Mozc)</strong>の2つにする
+-次のソースへ切り替えのキーを半角全角キーにする</p>
+
+<h4>確認方法</h4>
+
+<p>どこでもいいのでテキストを入力する。半角全角キーで日本語入力と半角英数が切り替わるか確認する。</p>
+
+<h3>gitの獲得</h3>
+
+<p>CIR-KITでの開発はgitによって管理される。gitはバージョン管理システムであり、CIR-KITメンバーはこれをインストールしなければならない。</p>
+
+<h4>この処置の結果</h4>
+
+<p>gitの使用が可能になる。</p>
+
+<h4>手順</h4>
+
+<p>1.gitをインストールする
+    -コンソールで<strong>sudo apt-get install git</strong>を実行する</p>
+
+<h4>確認方法</h4>
+
+<p>コンソールで<strong>git &ndash;version</strong>を実行しversionを表す数字などが表示されればよい。</p>
+
+<h3>blog更新手段の獲得</h3>
+
+<p>CIR-KITでは発見、紹介、残しておきたいことをブログにしている。これにより、自らの学んだ技術が残せるだけでなく、後世の者まで知識を利用できる。CIR-KITメンバーはこれを有効に利用するべし。</p>
+
+<h4>この処置の結果</h4>
+
+<p>CIR-KITのブログが更新できるようになる。</p>
+
+<h4>手順</h4>
+
+<p><a href="https://github.com/CIR-KIT/CIR-KIT.Octopress/wiki/Home">専用のwiki</a>を読むこと</p>
+
+<h4>確認方法</h4>
+
+<p>上記のWikiを参考にしてください。</p>
+
+<h3>ROSの獲得</h3>
+
+<p>ROSはCIR-KITのロボット開発に使用されているものである。2015年現在これがないとCIE-KITのロボット開発ができない。</p>
+
+<h4>この処置の結果</h4>
+
+<p>ROSの環境が整い、ROSによるロボット開発が可能になる。</p>
+
+<h4>手順</h4>
+
+<p><a href="http://wiki.ros.org/ja">公式Wiki</a>を読んでください。</p>
+
+<h4>確認方法</h4>
+
+<p><a href="http://wiki.ros.org/ja">公式Wiki</a>を読んでください。</p>
+
+<h3>Gazeboの獲得</h3>
+
+<p>Gazeboは3Dロボットシュミレータである。ROSとの連携が豊富という特徴を持つ。これによりロボットが完成する前からソフトの開発が可能になる。また、ハードとソフトの問題の切り分けも容易になる。</p>
+
+<h4>この処置の結果</h4>
+
+<p>Gazeboの環境が整う。</p>
+
+<h4>手順</h4>
+
+<p>1.Gazeboをインストールする
+    -コンソールで<strong>wget -O /tmp/gazebo4_install.sh <a href="http://osrf-distributions.s3.amazonaws.com/gazebo/gazebo4_install.sh;">http://osrf-distributions.s3.amazonaws.com/gazebo/gazebo4_install.sh;</a> sudo sh /tmp/gazebo4_install.sh</strong>を実行する</p>
+
+<h4>確認方法</h4>
+
+<p>コンソールでgazeboを実行して、Gazeboが立ち上がればよい。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Education_plan]]></title>
@@ -1821,357 +1946,6 @@ rosrun gazebo_ros spawn_model -file `rospack find baxter_description`/urdf/baxte
 <h4>次のステップ</h4>
 
 <p>ここまでで、Gazeboやworldファイル、そしてURDFモデルを起動するroslaunchの作り方を学びました。チュートリアルを通して、<a href="">GazeboでURDFを使う</a>ことで、あなた独自のGazebo-ready URDFモデルを作成する準備が出来ました。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[No.6-3:GazeboをROSに繋ぐ (Gazebo_ros_pkgsをインストールする 編)]]></title>
-    <link href="http://cir-kit.github.io/blog/2015/02/14/gazebo-installing-gazebo-ros-pkgs/"/>
-    <updated>2015-02-14T21:33:12+09:00</updated>
-    <id>http://cir-kit.github.io/blog/2015/02/14/gazebo-installing-gazebo-ros-pkgs</id>
-    <content type="html"><![CDATA[<p><img src="/images/gazebo_logo.png" alt="gazebo_logo" /></p>
-
-<h5>検証日時</h5>
-
-<p>02/14/2015 (Sat)</p>
-
-<h5>概要</h5>
-
-<p>Gazeboのチュートリアル第六弾「Connect to ROS」。<br/>
-ROSはロボットの制御フレームワークです。このチュートリアルでは、GazeboとROSのインターフェースについて説明します。<br/>
-今回はその「Installing gazebo_ros_pkgs」編です。<br/>
-公式サイトを適当に翻訳しただけですので、あしからず。</p>
-
-<h5>レベル</h5>
-
-<p><strong>INTERMEDIATE</strong></p>
-
-<!-- more -->
-
-
-<h5>環境</h5>
-
-<table>
-<thead>
-<tr>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center;"> <strong>PC</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Prosessor</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>RAM</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>OS</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Kernel</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> 3.13.0-44-generic </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Gazebo</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Version 5.0.1 </td>
-</tr>
-</tbody>
-</table>
-
-
-<h5>参考</h5>
-
-<p><a href="http://gazebosim.org/tutorials?cat=connect_ros">GAZEBO Tutorial-Connect to ROS</a></p>
-
-<h2>はじめに</h2>
-
-<p>GazeboのインターフェースのためのROSパッケージのセットは、<code>gazebo_ros_pkgs</code>という名前の新しいメタパッケージで構成されています。続きを読む前に、前提情報として、<a href="http://cir-kit.github.io/blog/2015/02/14/gazebo-ros-overview/">ROSの統合についての概要</a>をご覧ください。<br/>
-これらの説明は、<a href="http://www.ros.org/wiki/hydro">ROS Hydro</a>と<a href="http://www.ros.org/wiki/indigo">Ros Indigo</a>と完全に統合されたGazeboのバージョンを使用するためのものです。チュートリアルを始める前に、<a href="http://cir-kit.github.io/blog/2015/02/14/gazebo-which-combination-of-ros-and-gazebo-versions-to-use/">どのGazebo/ROSのバージョンの組み合わせを使うか</a>をまず読むことをおすすめします。必要に応じて、それに応えるインストール方法が必要となります。</p>
-
-<h2>必須条件</h2>
-
-<p>ROSのコンセプトについて<a href="http://www.ros.org/wiki/ROS/Tutorials">ROSチュートリアル</a>を通じて理解しておく必要があります。</p>
-
-<h3>ROSをインストールする</h3>
-
-<p>ROSの統合チュートリアルのために、(<code>ros-hydro-desktop-full</code>もしくは<code>ros-indigo-desktop-full</code>)インストールをおすすめします。それにより、必要なパッケージを手に入れることができます。<br/>
-詳しくは、<a href="http://www.ros.org/wiki/ROS/Installation">ROSのインストール</a>ページをご覧ください。もちろん、ROSのインストールページの説明に従い、ROSの<code>setup.sh</code>を<code>source</code>コマンドで実行しておいてください。</p>
-
-<h3>Gazeboをインストールする</h3>
-
-<p>ソースコードまたは、プレビルドされたUbuntuのdebianパッケージのどちらを使っても、Gazeboをインストールできます。<br/>
-<a href="http://cir-kit.github.io/blog/2015/01/31/gazebo-install/">Gazeboのインストール</a>をご覧ください。ソースコードからインストールする場合には、<code>gazebo_X.Y</code>ブランチ(X.Yはあなたの必要とするバージョンを指します)をすることを忘れないでください。</p>
-
-<h4>スタンドアローンなGazeboの動作チェックをする</h4>
-
-<p><code>gazebo_ros_pkgs</code>のインストールを行う前に、以下のコマンドをターミナルで入力して、スタンドアローンなGazeboの動作チェックを行うことを忘れないでください。:</p>
-
-<pre><code class="bash">  gazebo
-</code></pre>
-
-<p>空のシミュレーションと、GUIが開くのが確認できるでしょう。また、画面左側の<strong>Insert</strong>タブをクリックし、モデルを選んで(クリックすると、モデルをシミュレーションのどこに置くか決定できます)、シミュレーションに足してください。</p>
-
-<h4>Gazeboのバージョンが正しいことを確認する</h4>
-
-<p>Gazeboがどこにインストールされているか探し、それが正しい位置にあるか確かめるために、以下のコマンドを実行してください。:</p>
-
-<pre><code class="bash">  which gzserver
-  which gzclient
-</code></pre>
-
-<p>もし、デフォルトの位置で、ソースコードからインストールしたのなら、結果は以下のようになるはずです。:</p>
-
-<pre><code class="bash">  /usr/local/bin/gzserver
-  /usr/local/bin/gzclient
-</code></pre>
-
-<p>もし、debianパッケージを使用してインストールしたなら、結果は以下のようになるはずです。:</p>
-
-<pre><code class="bash">  /usr/bin/gzserver
-  /usr/bin/gzclient
-</code></pre>
-
-<h2>gazebo_ros_pkgsのインストール</h2>
-
-<p>好きな方法を選んでください。早くて簡単な方法はパッケージからインストールすることです。しかし、ソースコードからインストールすることで、デバックとバグパッチの適用をより簡単にできます。(oω&lt;)</p>
-
-<h3>A. プレビルドDebianパッケージをインストールする</h3>
-
-<p><code>gazebo_ros_pkgs</code>パッケージは以下のそれぞれのバージョンで利用可能です。:</p>
-
-<ul>
-<li><a href="http://ros.org/wiki/hydro">ROS Hydro</a>:</li>
-</ul>
-
-
-<pre><code class="bash">sudo apt-get install ros-hydro-gazebo-ros-pkgs ros-hydro-gazebo-ros-control
-</code></pre>
-
-<ul>
-<li><a href="http://ros.org/wiki/indigo">ROS Indigo</a>:</li>
-</ul>
-
-
-<pre><code class="bash">sudo apt-get install ros-indigo-gazebo-ros-pkgs ros-indigo-gazebo-ros-control
-</code></pre>
-
-<p>もしこのインストール方法がうまく行ったら、このページの下の<strong>ROSの統合環境を使ってGazeboをテストする</strong>に進んでください。</p>
-
-<h3>B. ソースコードからインストールする(Ubuntu)</h3>
-
-<p>もしあなたが、ROSの最新バージョン(Groovy以上)を使用しているなら、ソースコードから<code>gazebo_ros_pkgs</code>をインストールする必要があります。ソースコードからインストールすることは、新しいプラグインを開発したり、パッチを適用したりするときに便利です。</p>
-
-<h4>Catkinワークスペースをセットアップする</h4>
-
-<p>これらのイントロダクションでは<a href="http://www.ros.org/wiki/catkin">catkinビルドシステム</a>を使うことが必要です。<br/>
-もし、まだcatkinワークスペースのセットアップをしていないなら、以下のコマンドを試してみてください。</p>
-
-<pre><code class="bash">mkdir -p ~/catkin_ws/src
-cd ~/catkin_ws/src
-catkin_init_workspace
-cd ~/catkin_ws
-catkin_make
-</code></pre>
-
-<p>次に、あなたの<code>.bash</code>ファイルにセットアップスクリプトを追加してください。:</p>
-
-<pre><code class="bash">echo "source ~/catkin_ws/devel/setup.bash" &gt;&gt; ~/.bashrc
-</code></pre>
-
-<p>もっと詳しい情報は、<a href="http://www.ros.org/wiki/catkin/Tutorials/create_a_workspace">Catkinワークスペースを作る</a>というチュートリアルをご覧ください。</p>
-
-<h4>GitHubレポジトリをCloneする</h4>
-
-<p><code>git</code>があなたのUbuntuマシンにインストールされていることを確認してください。:</p>
-
-<pre><code class="bash">sudo apt-get install git
-</code></pre>
-
-<h5>ROS Indigo</h5>
-
-<p>Indigoはgazebo2.xシリーズを使用しておりイます。以下のインストールから始めましょう。:</p>
-
-<pre><code class="bash">sudo apt-get install -y gazebo2
-</code></pre>
-
-<p><a href="https://github.com/ros-simulation/gazebo_ros_pkgs"><code>gazebo_ros_pkgs</code>のGitHubレポジトリ</a>からソースコードをダウンロードしましょう。</p>
-
-<pre><code class="bash">cd ~/catkin_ws/src
-git clone https://github.com/ros-simulation/gazebo_ros_pkgs.git -b indigo-devel
-</code></pre>
-
-<p><code>rosdep</code>コマンドを使って、足りない依存条件を確認しましょう。</p>
-
-<pre><code class="bash">rosdep update
-rosdep check --from-paths . --ignore-src --rosdistro indigo
-</code></pre>
-
-<p><code>rosdep</code>のdebianインストールを使って、自動的に、不足している依存条件をインストールすることができます。:</p>
-
-<pre><code class="bash">rosdep install --from-paths . --ignore-src --rosdistro indigo -y
-</code></pre>
-
-<p>完了したら、<strong>gazebo_ros_pkgsをビルドする</strong>というセクションに移動しましょう。</p>
-
-<h5>ROS Hydro</h5>
-
-<p>Hydroはgazebo1.xシリーズを使用しておりイます。以下のインストールから始めましょう。:</p>
-
-<pre><code class="bash">sudo apt-get install -y gazebo
-</code></pre>
-
-<p><a href="https://github.com/ros-simulation/gazebo_ros_pkgs"><code>gazebo_ros_pkgs</code>のGitHubレポジトリ</a>からソースコードをダウンロードしましょう。</p>
-
-<pre><code class="bash">cd ~/catkin_ws/src
-git clone https://github.com/ros-simulation/gazebo_ros_pkgs.git -b hydro-devel
-</code></pre>
-
-<p><code>rosdep</code>コマンドを使って、足りない依存条件を確認しましょう。</p>
-
-<pre><code class="bash">rosdep update
-rosdep check --from-paths . --ignore-src --rosdistro hydro
-</code></pre>
-
-<p><code>rosdep</code>のdebianインストールを使って、自動的に、不足している依存条件をインストールすることができます。:</p>
-
-<pre><code class="bash">rosdep install --from-paths . --ignore-src --rosdistro hydro -y
-</code></pre>
-
-<p>完了したら、<strong>gazebo_ros_pkgsをビルドする</strong>というセクションに移動しましょう。</p>
-
-<h2>ROSの統合環境を使ってGazeboをテストする</h2>
-
-<p>ROSのセットアップファイルを<code>source</code>コマンドで有効にすることを忘れないでください。Hydroの場合は、以下のコマンドでそれを有効にできます。:</p>
-
-<pre><code class="bash">source /opt/ros/hydro/setup.bash
-</code></pre>
-
-<p><code>~/.bashrc</code>に以上のようなコマンドは追加しているでしょう。<br/>
-GazeboとROSの環境については、おそらく、セットアップし、ビルドしていることと仮定すると、<code>roscore</code>を起動した後に、<code>rosrun</code>コマンドだけでGazeboを起草できるはずです。:<br/>
-もしまだ、<code>.bashrc</code>に以下のコマンドを追加していないなら、catkinの<code>setup.bash</code>を<code>source</code>コマンドで実行してください。</p>
-
-<pre><code class="bash">source ~/catkin_ws/devel/setup.bash
-</code></pre>
-
-<p>その後、以下のコマンドを実行してください。</p>
-
-<pre><code class="bash">roscore &amp;
-rosrun gazebo_ros gazebo
-</code></pre>
-
-<p>すると、ウィンドウの中に何も無いようなGazeboのGUIが立ち上がるでしょう。<br/>
-ROSの接続が本当に完了しているか確かめるために、利用可能なROSのトピックを見てみましょう。:</p>
-
-<pre><code class="bash">rostopic list
-</code></pre>
-
-<p>すると、トピックの一覧の中に、以下のようなトピックが確認できるはずです。:</p>
-
-<pre><code>/gazebo/link_states
-/gazebo/model_states
-/gazebo/parameter_descriptions
-/gazebo/parameter_updates
-/gazebo/set_link_state
-/gazebo/set_model_state
-</code></pre>
-
-<p>Gazeboのサービスの存在も確認することができます。:</p>
-
-<pre><code class="bash">rosservice list
-</code></pre>
-
-<p>すると、サービスの一覧の中に、以下のようなサービスが確認できるはずです。:</p>
-
-<pre><code class="bash">/gazebo/apply_body_wrench
-/gazebo/apply_joint_effort
-/gazebo/clear_body_wrenches
-/gazebo/clear_joint_forces
-/gazebo/delete_model
-/gazebo/get_joint_properties
-/gazebo/get_link_properties
-/gazebo/get_link_state
-/gazebo/get_loggers
-/gazebo/get_model_properties
-/gazebo/get_model_state
-/gazebo/get_physics_properties
-/gazebo/get_world_properties
-/gazebo/pause_physics
-/gazebo/reset_simulation
-/gazebo/reset_world
-/gazebo/set_joint_properties
-/gazebo/set_link_properties
-/gazebo/set_link_state
-/gazebo/set_logger_level
-/gazebo/set_model_configuration
-/gazebo/set_model_state
-/gazebo/set_parameters
-/gazebo/set_physics_properties
-/gazebo/spawn_gazebo_model
-/gazebo/spawn_sdf_model
-/gazebo/spawn_urdf_model
-/gazebo/unpause_physics
-/rosout/get_loggers
-/rosout/set_logger_level
-</code></pre>
-
-<h2>Gazeboを起動するためのROSの他の方法</h2>
-
-<p>Gazeboを起動するROSのコマンドはたくさんあります。:</p>
-
-<ul>
-<li>サーバーとクライアントを同時にlaunchする</li>
-</ul>
-
-
-<pre><code class="bash">    rosrun gazebo_ros gazebo
-</code></pre>
-
-<ul>
-<li>Gazeboサーバーだけをlaunchする</li>
-</ul>
-
-
-<pre><code class="bash">    rosrun gazebo_ros gzserver
-</code></pre>
-
-<ul>
-<li>Gazeboのクライアントだけをlaunchする</li>
-</ul>
-
-
-<pre><code class="bash">    rosrun gazebo_ros gzclient
-</code></pre>
-
-<ul>
-<li>GDBを使った、Gazeboサーバーだけをデバッグモードでlaunchする</li>
-</ul>
-
-
-<pre><code class="bash">    rosrun gazebo_ros debug
-</code></pre>
-
-<ul>
-<li>さらに、roslaunchを使ってGazeboを起動することもできます</li>
-</ul>
-
-
-<pre><code class="bash">    roslaunch gazebo_ros empty_world.launch
-</code></pre>
 ]]></content>
   </entry>
   

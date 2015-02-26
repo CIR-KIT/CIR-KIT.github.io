@@ -1,0 +1,332 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>CIR-KITメンバーがUbuntuをインストールしてまずすべきこと - 九州工業大学 CIR-KIT Blog</title>
+  <meta name="author" content="">
+
+  
+  <meta name="description" content="CIR-KIT開発環境への道 概要 この記事はOSインストールからのCIR-KITでの環境を整えるまでの手順を残すためのものです。
+なお、各手順の目的を達成できれば別の手段を使用しても構いません。 重要度 LOW 目的と手段の一覧 推奨時系列順にすべきことをリストアップしました。 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://cir-kit.github.io/blog/2015/02/25/we-have-get-to-work-when-install-ubuntu/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="九州工業大学 CIR-KIT Blog" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-59178596-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">九州工業大学 CIR-KIT Blog</a></h1>
+  
+    <h2>九工大自律移動ロボット製作プロジェクトCIR-KITの技術系ブログ</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="cir-kit.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">CIR-KITメンバーがUbuntuをインストールしてまずすべきこと</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-02-25T20:31:54+09:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>25</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>8:31 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h1>CIR-KIT開発環境への道</h1>
+
+<h2>概要</h2>
+
+<p>この記事はOSインストールからのCIR-KITでの環境を整えるまでの手順を残すためのものです。
+なお、各手順の目的を達成できれば別の手段を使用しても構いません。</p>
+
+<h2>重要度</h2>
+
+<p>LOW</p>
+
+<!--more-->
+
+
+<h2>目的と手段の一覧</h2>
+
+<p>推奨時系列順にすべきことをリストアップしました。強調部分は手段が確定しています。
+|目的|手段|
+|日本語入力の獲得|mozcを導入|
+|gitの獲得|<strong>gitの導入</strong>|
+|githubへの参加|<strong>グループ(CIR-KIT)に招待を貰う</strong>|
+|blog更新手段の獲得|<strong>CIR-KIT.OctopressのWiki参照</strong>|
+|ROSの獲得|<strong>ROSの導入</strong>|
+|Gazeboの獲得|<strong>Gazeboの導入</strong>|</p>
+
+<h2>手段達成方法</h2>
+
+<p>各手段の達成方法を記す。</p>
+
+<h3>日本語入力の獲得(Mozcの導入)</h3>
+
+<p>デフォルトの設定では日本語入力ができなかったり、押したキーと別の文字が出たり(キー配列が英仕様として認識される)します。
+ここでは、Mozc(もずく)によって日本語入力できるようにし、設定をしてキー配列を日仕様にします。</p>
+
+<h4>この処置の結果</h4>
+
+<p>日仕様のキー配列に対応し、半角全角キーで日本語と半角英数字の切り替えを行える。</p>
+
+<h4>手順</h4>
+
+<p>1.Mozcをインストールする
+    -コンソールで<strong>sudo apt-get install mozc</strong>を実行する
+2.PCを再起動する
+3.テキスト入力設定を変更する
+-右上のWi-Fi設定の右隣にあるアイコンをクリックして、テキスト入力設定を選択
+-使用する日本語ソースを<strong>日本語</strong>,<strong>日本語(Mozc)</strong>の2つにする
+-次のソースへ切り替えのキーを半角全角キーにする</p>
+
+<h4>確認方法</h4>
+
+<p>どこでもいいのでテキストを入力する。半角全角キーで日本語入力と半角英数が切り替わるか確認する。</p>
+
+<h3>gitの獲得</h3>
+
+<p>CIR-KITでの開発はgitによって管理される。gitはバージョン管理システムであり、CIR-KITメンバーはこれをインストールしなければならない。</p>
+
+<h4>この処置の結果</h4>
+
+<p>gitの使用が可能になる。</p>
+
+<h4>手順</h4>
+
+<p>1.gitをインストールする
+    -コンソールで<strong>sudo apt-get install git</strong>を実行する</p>
+
+<h4>確認方法</h4>
+
+<p>コンソールで<strong>git &ndash;version</strong>を実行しversionを表す数字などが表示されればよい。</p>
+
+<h3>blog更新手段の獲得</h3>
+
+<p>CIR-KITでは発見、紹介、残しておきたいことをブログにしている。これにより、自らの学んだ技術が残せるだけでなく、後世の者まで知識を利用できる。CIR-KITメンバーはこれを有効に利用するべし。</p>
+
+<h4>この処置の結果</h4>
+
+<p>CIR-KITのブログが更新できるようになる。</p>
+
+<h4>手順</h4>
+
+<p><a href="https://github.com/CIR-KIT/CIR-KIT.Octopress/wiki/Home">専用のwiki</a>を読むこと</p>
+
+<h4>確認方法</h4>
+
+<p>上記のWikiを参考にしてください。</p>
+
+<h3>ROSの獲得</h3>
+
+<p>ROSはCIR-KITのロボット開発に使用されているものである。2015年現在これがないとCIE-KITのロボット開発ができない。</p>
+
+<h4>この処置の結果</h4>
+
+<p>ROSの環境が整い、ROSによるロボット開発が可能になる。</p>
+
+<h4>手順</h4>
+
+<p><a href="http://wiki.ros.org/ja">公式Wiki</a>を読んでください。</p>
+
+<h4>確認方法</h4>
+
+<p><a href="http://wiki.ros.org/ja">公式Wiki</a>を読んでください。</p>
+
+<h3>Gazeboの獲得</h3>
+
+<p>Gazeboは3Dロボットシュミレータである。ROSとの連携が豊富という特徴を持つ。これによりロボットが完成する前からソフトの開発が可能になる。また、ハードとソフトの問題の切り分けも容易になる。</p>
+
+<h4>この処置の結果</h4>
+
+<p>Gazeboの環境が整う。</p>
+
+<h4>手順</h4>
+
+<p>1.Gazeboをインストールする
+    -コンソールで<strong>wget -O /tmp/gazebo4_install.sh <a href="http://osrf-distributions.s3.amazonaws.com/gazebo/gazebo4_install.sh;">http://osrf-distributions.s3.amazonaws.com/gazebo/gazebo4_install.sh;</a> sudo sh /tmp/gazebo4_install.sh</strong>を実行する</p>
+
+<h4>確認方法</h4>
+
+<p>コンソールでgazeboを実行して、Gazeboが立ち上がればよい。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">YusukeDoi</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2015-02-25T20:31:54+09:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>25</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>8:31 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/install/'>install</a>, <a class='category' href='/blog/categories/ubuntu/'>ubuntu</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://cir-kit.github.io/blog/2015/02/25/we-have-get-to-work-when-install-ubuntu/" data-via="" data-counturl="http://cir-kit.github.io/blog/2015/02/25/we-have-get-to-work-when-install-ubuntu/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2015/02/23/education-plan/" title="Previous Post: education_plan">&laquo; education_plan</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/02/25/we-have-get-to-work-when-install-ubuntu/">CIR-KITメンバーがUbuntuをインストールしてまずすべきこと</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/02/23/education-plan/">Education_plan</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/02/19/gazebo-gazebo-plugins-in-ros/">No.6-6:GazeboをROSに繋ぐ (ROSにおけるGazeboのプラグイン 編)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/02/17/gazebo-urdf-in-gazebo/">No.6-5:GazeboをROSに繋ぐ (GazeboにおけるURDF 編)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/02/15/gazebo-using-roslaunch/">No.6-4:GazeboをROSに繋ぐ (Roslaunchを使う 編)</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 -  -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

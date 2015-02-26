@@ -4,7 +4,7 @@
   <title><![CDATA[九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-02-26T13:23:09+09:00</updated>
+  <updated>2015-02-26T13:39:16+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -12,6 +12,131 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[CIR-KITメンバーがUbuntuをインストールしてまずすべきこと]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/02/25/we-have-get-to-work-when-install-ubuntu/"/>
+    <updated>2015-02-25T20:31:54+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/02/25/we-have-get-to-work-when-install-ubuntu</id>
+    <content type="html"><![CDATA[<h1>CIR-KIT開発環境への道</h1>
+
+<h2>概要</h2>
+
+<p>この記事はOSインストールからのCIR-KITでの環境を整えるまでの手順を残すためのものです。
+なお、各手順の目的を達成できれば別の手段を使用しても構いません。</p>
+
+<h2>重要度</h2>
+
+<p>LOW</p>
+
+<!--more-->
+
+
+<h2>目的と手段の一覧</h2>
+
+<p>推奨時系列順にすべきことをリストアップしました。強調部分は手段が確定しています。
+|目的|手段|
+|日本語入力の獲得|mozcを導入|
+|gitの獲得|<strong>gitの導入</strong>|
+|githubへの参加|<strong>グループ(CIR-KIT)に招待を貰う</strong>|
+|blog更新手段の獲得|<strong>CIR-KIT.OctopressのWiki参照</strong>|
+|ROSの獲得|<strong>ROSの導入</strong>|
+|Gazeboの獲得|<strong>Gazeboの導入</strong>|</p>
+
+<h2>手段達成方法</h2>
+
+<p>各手段の達成方法を記す。</p>
+
+<h3>日本語入力の獲得(Mozcの導入)</h3>
+
+<p>デフォルトの設定では日本語入力ができなかったり、押したキーと別の文字が出たり(キー配列が英仕様として認識される)します。
+ここでは、Mozc(もずく)によって日本語入力できるようにし、設定をしてキー配列を日仕様にします。</p>
+
+<h4>この処置の結果</h4>
+
+<p>日仕様のキー配列に対応し、半角全角キーで日本語と半角英数字の切り替えを行える。</p>
+
+<h4>手順</h4>
+
+<p>1.Mozcをインストールする
+    -コンソールで<strong>sudo apt-get install mozc</strong>を実行する
+2.PCを再起動する
+3.テキスト入力設定を変更する
+-右上のWi-Fi設定の右隣にあるアイコンをクリックして、テキスト入力設定を選択
+-使用する日本語ソースを<strong>日本語</strong>,<strong>日本語(Mozc)</strong>の2つにする
+-次のソースへ切り替えのキーを半角全角キーにする</p>
+
+<h4>確認方法</h4>
+
+<p>どこでもいいのでテキストを入力する。半角全角キーで日本語入力と半角英数が切り替わるか確認する。</p>
+
+<h3>gitの獲得</h3>
+
+<p>CIR-KITでの開発はgitによって管理される。gitはバージョン管理システムであり、CIR-KITメンバーはこれをインストールしなければならない。</p>
+
+<h4>この処置の結果</h4>
+
+<p>gitの使用が可能になる。</p>
+
+<h4>手順</h4>
+
+<p>1.gitをインストールする
+    -コンソールで<strong>sudo apt-get install git</strong>を実行する</p>
+
+<h4>確認方法</h4>
+
+<p>コンソールで<strong>git &ndash;version</strong>を実行しversionを表す数字などが表示されればよい。</p>
+
+<h3>blog更新手段の獲得</h3>
+
+<p>CIR-KITでは発見、紹介、残しておきたいことをブログにしている。これにより、自らの学んだ技術が残せるだけでなく、後世の者まで知識を利用できる。CIR-KITメンバーはこれを有効に利用するべし。</p>
+
+<h4>この処置の結果</h4>
+
+<p>CIR-KITのブログが更新できるようになる。</p>
+
+<h4>手順</h4>
+
+<p><a href="https://github.com/CIR-KIT/CIR-KIT.Octopress/wiki/Home">専用のwiki</a>を読むこと</p>
+
+<h4>確認方法</h4>
+
+<p>上記のWikiを参考にしてください。</p>
+
+<h3>ROSの獲得</h3>
+
+<p>ROSはCIR-KITのロボット開発に使用されているものである。2015年現在これがないとCIE-KITのロボット開発ができない。</p>
+
+<h4>この処置の結果</h4>
+
+<p>ROSの環境が整い、ROSによるロボット開発が可能になる。</p>
+
+<h4>手順</h4>
+
+<p><a href="http://wiki.ros.org/ja">公式Wiki</a>を読んでください。</p>
+
+<h4>確認方法</h4>
+
+<p><a href="http://wiki.ros.org/ja">公式Wiki</a>を読んでください。</p>
+
+<h3>Gazeboの獲得</h3>
+
+<p>Gazeboは3Dロボットシュミレータである。ROSとの連携が豊富という特徴を持つ。これによりロボットが完成する前からソフトの開発が可能になる。また、ハードとソフトの問題の切り分けも容易になる。</p>
+
+<h4>この処置の結果</h4>
+
+<p>Gazeboの環境が整う。</p>
+
+<h4>手順</h4>
+
+<p>1.Gazeboをインストールする
+    -コンソールで<strong>wget -O /tmp/gazebo4_install.sh <a href="http://osrf-distributions.s3.amazonaws.com/gazebo/gazebo4_install.sh;">http://osrf-distributions.s3.amazonaws.com/gazebo/gazebo4_install.sh;</a> sudo sh /tmp/gazebo4_install.sh</strong>を実行する</p>
+
+<h4>確認方法</h4>
+
+<p>コンソールでgazeboを実行して、Gazeboが立ち上がればよい。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Education_plan]]></title>
@@ -7536,260 +7661,6 @@ Gazeboを起動してください。:</p>
 <p>SDFについてのレファレンスは<a href="http://gazebosim.org/sdf/">ここ</a>にあります。</p>
 
 <h4>Next >> <a href="http://cir-kit.github.io/blog/2015/01/31/gazebo-make-a-simple-gripper/">簡単なグリッパをつくる</a></h4>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[No.2-6:ロボットを作ってみよう ! (メッシュをつける 編)]]></title>
-    <link href="http://cir-kit.github.io/blog/2015/01/31/gazebo-attach-meshes/"/>
-    <updated>2015-01-31T20:50:08+09:00</updated>
-    <id>http://cir-kit.github.io/blog/2015/01/31/gazebo-attach-meshes</id>
-    <content type="html"><![CDATA[<p><img src="http://cir-kit.github.io/images/gazebo_logo.png" alt="gazebo_logo" /></p>
-
-<h5>検証日時</h5>
-
-<p>01/25/2015 (Sun)</p>
-
-<h5>概要</h5>
-
-<p>Gazeboのチュートリアル第二弾「Build a Robot」。<br/>
-このチュートリアルではロボットを作ったり、修正したりします。また、センサ、アクチュエータを搭載した車輪型ロボットを作り、モデルを描画するなどの実践例も行います。<br/>
-今回はその「Attach Meshes」編です。<br/>
-公式サイトを適当に翻訳しただけですので、あしからず。</p>
-
-<h5>レベル</h5>
-
-<p><strong>BEGINNER</strong></p>
-
-<!-- more -->
-
-
-<h5>環境</h5>
-
-<table>
-<thead>
-<tr>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center;"> <strong>PC</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Prosessor</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>RAM</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>OS</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Kernel</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> 3.13.0-44-generic </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Gazebo</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Version 5.0.1 </td>
-</tr>
-</tbody>
-</table>
-
-
-<h5>参考</h5>
-
-<p><a href="http://gazebosim.org/tutorials?cat=build_robot">GAZEBO Tutorial-Build a Robot</a></p>
-
-<h2>はじめに</h2>
-
-<p>メッシュをモデルに追加すると、外観だけでなく、センサにとってもよりリアルなシミュレーションができます。このチュートリアルでは、カスタムメッシュの定義と、シミュレーションではそれがどのように見えるかを説明します。</p>
-
-<h2>メッシュを外観要素として追加する</h2>
-
-<p>メッシュを使う主な例は見た目のリアルさを高めるためです。</p>
-
-<ol>
-<li>まずは、<code>my_robot</code>ディレクトリまで移動しましょう。</li>
-</ol>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd</span> ~/.gazebo/models/my_robot
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ol>
-<li><code>model.sdf</code>ファイルを好きなエディタで開きましょう。(ここでは<a href="https://wiki.gnome.org/Apps/Gedit">gedit</a>を使用します。)</li>
-</ol>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gedit ~/.gazebo/models/my_robot/model.sdf
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ol>
-<li>台車の見た目にメッシュを取り付けます。以下のようなビジュアルについての定義を探してください。:</li>
-</ol>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>    <span class="nt">&lt;visual</span> <span class="na">name=</span><span class="s">&#39;visual&#39;</span><span class="nt">&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;box&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;size&gt;</span>.4 .2 .1<span class="nt">&lt;/size&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/box&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/visual&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ol>
-<li>メッシュはパソコン上のファイルもしくは他のモデルから引用することができます。今回は、<strong>pioneer2dx</strong>のメッシュを使用します。以下のようにして、メッシュを変更してください。(ただし、残りはそのままにして編集してください。)</li>
-</ol>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>    <span class="nt">&lt;visual</span> <span class="na">name=</span><span class="s">&#39;visual&#39;</span><span class="nt">&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;mesh&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;uri&gt;</span>model://pioneer2dx/meshes/chassis.dae<span class="nt">&lt;/uri&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/mesh&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/visual&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ol>
-<li>上記の<code>&lt;mesh&gt;</code>によって定義された<strong>pioneer2dx</strong>のモデルがあるなら、ローカルの台車モデルを見るために以下のコマンドで確認しましょう。:</li>
-</ol>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>ls -l ~/.gazebo/models/pioneer2dx/meshes/chassis.dae
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>もし、meshファイルが存在しないなら、Gazeboの中(<strong>Insert</strong>タブの下-><a href="http://gazebosim.org/models">http://gazebosim.org/models</a>) で少なくとも一回、<strong>Pioneer 2DX</strong>をスポーンさせて、モデルデータベースからGazeboにモデルを引っ張ってこさせましょう。<br/>
-もしくは、ローカルフォルダに直接ダウンロードしましょう。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd</span> ~/.gazebo/models
-</span><span class='line'>wget -R *index.html*,*.tar.gz --cut-dirs<span class="o">=</span><span class="m">1</span> --no-parent -r -x -nH http://gazebosim.org/models/pioneer2dx/
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ol>
-<li>Gazeboで、<code>My_Robot</code>モデルをドラッグしましょう。すると、さっきまでの台車が下図のように<code>pioneer2dx</code>の様な見た目になります。</li>
-</ol>
-
-
-<p><img src="http://cir-kit.github.io/images/2015-01-31-gazebo-attach-meshes/Mobile_robot_chassis_1.png" alt="Mobile_robot_chassis_1" /></p>
-
-<ul>
-<li><p>台車は、私達のロボットにほ明らかに大きすぎるので、見た目の大きさを作りなおす必要があります。</p></li>
-<li><p>見た目の大きさを変更する必要があります。以下のように<code>model.sdf</code>を編集しましょう。<br/>
-<strong>コピーはしないでください。手書きで追加していくことが、今回のチュートリアルです。</strong></p></li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>    <span class="nt">&lt;visual</span> <span class="na">name=</span><span class="s">&#39;visual&#39;</span><span class="nt">&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;mesh&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;uri&gt;</span>model://pioneer2dx/meshes/chassis.dae<span class="nt">&lt;/uri&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;scale&gt;</span>0.9 0.5 0.5<span class="nt">&lt;/scale&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/mesh&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/visual&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>  すると、以下の様になります。</p>
-
-<p><img src="http://cir-kit.github.io/images/2015-01-31-gazebo-attach-meshes/Mobile_robot_chassis_2.png" alt="Mobile_robot_chassis_2" /></p>
-
-<ul>
-<li>今度は、小さくなりすぎました。(z軸方向に)見た目を改善するために、少し上に上げてるよう、以下のようにして<code>pose</code>を変更しましょう。<br/>
-<strong>コピーはしないでください。手書きで追加していくことが、今回のチュートリアルです。</strong></li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;visual</span> <span class="na">name=</span><span class="s">&#39;visual&#39;</span><span class="nt">&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;pose&gt;</span>0 0 0.05 0 0 0<span class="nt">&lt;/pose&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;mesh&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;uri&gt;</span>model://pioneer2dx/meshes/chassis.dae<span class="nt">&lt;/uri&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;scale&gt;</span>0.9 0.5 0.5<span class="nt">&lt;/scale&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/mesh&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'><span class="nt">&lt;/visual&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>すると、以下のようになります。</p>
-
-<p>  <img src="http://cir-kit.github.io/images/2015-01-31-gazebo-attach-meshes/Mobile_robot_chassis_3.png" alt="Mobile_robot_chassis_3" /></p>
-
-<p>  ここまでで、ロボットの<code>&lt;visual&gt;</code>要素をシンプルに変更しました。なので、GUIや、カメラ、深度カメラ、GPUレーザーの様なセンサに基づくGPUやGUIが<code>Pioneer 2DX</code>のようになっているはずです。また、私達は、<code>&lt;collision&gt;</code>要素も変更していませんし、外観の幾何学形状は、衝突ダイナミクスエンジンや距離センサなどに使われます。</p>
-
-<h2>もっとよく知る</h2>
-
-<p>新しいロボットを作るとき、自分のオリジナルのメッシュを追加痛くなるでしょう。<a href="http://cir-kit.github.io/blog/2015/01/31/gazebo-import-meshes/">メッシュをインポートする</a>というチュートリアルでは、Gazeboに最適なフォーマットでメッシュをインポートする方法について取り上げています。</p>
-
-<h2>試してみる</h2>
-
-<ol>
-<li><p><a href="http://sketchup.google.com/3dwarehouse/">3D Warehouse</a>からメッシュをダウンロードしてください。ただし、メッシュデータは<strong>Collada(.dae)</strong>フォーマットにすることに注意してください。</p></li>
-<li><p>メッシュを<code>~/.gazebo/models/my_robot/meshes</code>に配置してください。もし<code>mesh</code>ディレクトリが存在しないなら、作成して、その下にメッシュを配置してください。</p></li>
-<li><p>台車を置き換えるか、追加するなどして、ロボットにメッシュを使ってみてください。</p></li>
-<li><p><strong>注意 : </strong>マテリアル（.pngや.jpgの様な拡張子を持つテクスチャファイル）は<code>~/.gazebo/models/my_robot/materials/textures</code>に配置する必要があります。</p></li>
-</ol>
-
-
-<h4>Next >> <a href="http://cir-kit.github.io/blog/2015/01/31/gazebo-add-a-sensor-to-a-robot/">ロボットにセンサを取り付ける</a></h4>
 ]]></content>
   </entry>
   
