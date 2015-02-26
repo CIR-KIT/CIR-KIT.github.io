@@ -172,11 +172,11 @@
 
 <p>worldディスクリプションファイルにはロボット、ライト、センサ、静的物体などのシミュレーションのすべての要素が含まれています。このファイルは<a href="http://sdformat.org/spec">SDF (Simulation Description Format)</a>フォーマットを使用しており、<code>.world</code>という拡張子がついています。<br/>
 Gazeboサーバー(<code>gzserver</code>)はこのファイルを読み込み、シミュレーションの環境を構築します。<br/>
-Gazeboでは宅sなんのworldデータの例が提供されています。それらのworldデータは<code>&lt;install_path&gt;/share/gazebo-&lt;version&gt;/worlds</code>に配置してあります。</p>
+Gazeboでは沢山のworldデータの例が提供されています。それらのworldデータは<code>&lt;install_path&gt;/share/gazebo-&lt;version&gt;/worlds</code>に配置してあります。</p>
 
 <h2>modelファイル</h2>
 
-<p>modelファイルもworldファイルと同じように<a href="http://sdformat.org/spec">SDF</a>フォーマットを使用していますが、唯一ひとつだけ<code>&lt;model&gt; ... &lt;/model&gt;</code>を含んでいなければなりません。これらのファイルの目的はモデルの再利用を用意にし、worldファイルを簡単化するというものです。一度modelファイルが生成されると、以下のようなSDF文法にしたがったコードを記入することでworldファイルにincludeすることが可能です。</p>
+<p>modelファイルもworldファイルと同じように<a href="http://sdformat.org/spec">SDF</a>フォーマットを使用していますが、唯一ひとつだけ<code>&lt;model&gt; ... &lt;/model&gt;</code>を含んでいなければなりません。これらのファイルの目的はモデルの再利用を容易にし、worldファイルを簡単化するというものです。一度modelファイルが生成されると、以下のようなSDF文法にしたがったコードを記入することでworldファイルにincludeすることが可能です。</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -199,7 +199,7 @@ Gazebo 1.9.0より、ほとんどの場合に使用するデフォルト変数�
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>例えば、もし、モジュールを検索するためのパスを拡張するなどして、Gazeboの挙動を修正したいなら、まず最初に<code>source</code>コマンドで上記のェルスクリプトを実行したあと、設定されている変数を修正するということです。</p>
+<p>例えば、もし、モジュールを検索するためのパスを拡張するなどして、Gazeboの挙動を修正したいなら、まず最初に<code>source</code>コマンドで上記のシェルスクリプトを実行したあと、設定されている変数を修正するということです。</p>
 
 <h3>Gazeboサーバー</h3>
 
@@ -322,15 +322,15 @@ Gazeboによって提供されるworldデータは<code>/share/gazebo-*/worlds</
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2015/02/26/greeting-arc/">Greeting Arc</a>
+        <a href="/blog/2015/02/26/greeting-arc/">新団体-ARC-設立</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2015/02/25/we-have-get-to-work-when-install-ubuntu/">CIR-KITメンバーがUbuntuをインストールしてまずすべきこと</a>
+        <a href="/blog/2015/02/25/we-have-get-to-work-when-install-ubuntu/">CIR-KITメンバーが必ずすべきこと</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2015/02/23/education-plan/">Education_plan</a>
+        <a href="/blog/2015/02/22/gazebo-ros-control/">No.6-7:GazeboをROSに繋ぐ (ROS Control 編)</a>
       </li>
     
       <li class="post">

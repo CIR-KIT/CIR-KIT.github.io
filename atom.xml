@@ -4,7 +4,7 @@
   <title><![CDATA[九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-02-26T17:20:23+09:00</updated>
+  <updated>2015-02-26T23:16:52+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -14,9 +14,9 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Greeting Arc]]></title>
+    <title type="html"><![CDATA[新団体-ARC-設立]]></title>
     <link href="http://cir-kit.github.io/blog/2015/02/26/greeting-arc/"/>
-    <updated>2015-02-26T00:00:00+09:00</updated>
+    <updated>2015-02-26T16:22:35+09:00</updated>
     <id>http://cir-kit.github.io/blog/2015/02/26/greeting-arc</id>
     <content type="html"><![CDATA[<h4>概要</h4>
 
@@ -36,7 +36,7 @@
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[CIR-KITメンバーがUbuntuをインストールしてまずすべきこと]]></title>
+    <title type="html"><![CDATA[CIR-KITメンバーが必ずすべきこと]]></title>
     <link href="http://cir-kit.github.io/blog/2015/02/25/we-have-get-to-work-when-install-ubuntu/"/>
     <updated>2015-02-25T20:31:54+09:00</updated>
     <id>http://cir-kit.github.io/blog/2015/02/25/we-have-get-to-work-when-install-ubuntu</id>
@@ -67,7 +67,7 @@
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">日本語入力の獲得   </td>
+<td style="text-align:left;">日本語入力の獲得</td>
 <td style="text-align:left;">mozcを導入</td>
 </tr>
 <tr>
@@ -115,7 +115,7 @@
 <li>Mozcをインストールする
 
 <ul>
-<li>コンソールで<strong>sudo apt-get install mozc</strong>を実行する</li>
+<li>コンソールで<strong>sudo apt-get install ibus-mozc</strong>を実行する</li>
 </ul>
 </li>
 <li>PCを再起動する</li>
@@ -226,48 +226,487 @@
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Education_plan]]></title>
-    <link href="http://cir-kit.github.io/blog/2015/02/23/education-plan/"/>
-    <updated>2015-02-23T14:24:10+09:00</updated>
-    <id>http://cir-kit.github.io/blog/2015/02/23/education-plan</id>
-    <content type="html"><![CDATA[<h1>新一年生勧誘＆教育計画（夏休みまで）</h1>
+    <title type="html"><![CDATA[No.6-7:GazeboをROSに繋ぐ (ROS Control 編)]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/02/22/gazebo-ros-control/"/>
+    <updated>2015-02-22T03:55:56+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/02/22/gazebo-ros-control</id>
+    <content type="html"><![CDATA[<p><img src="http://cir-kit.github.io/images/gazebo_logo.png" alt="gazebo_logo" /></p>
 
-<h3>勧誘</h3>
+<h5>検証日時</h5>
 
-<h4>学科別オリエンテーション</h4>
+<p>02/22/2015 (Sun)</p>
+
+<h5>概要</h5>
+
+<p>Gazeboのチュートリアル第六弾「Connect to ROS」。
+ROSはロボットの制御フレームワークです。このチュートリアルでは、GazeboとROSのインターフェースについて説明します。
+今回はその「ROS control」編です。
+公式サイトを適当に翻訳しただけですので、あしからず。</p>
+
+<h5>レベル</h5>
+
+<p><strong>INTERMEDIATE</strong></p>
+
+<!-- more -->
+
+
+<h5>環境</h5>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> <strong>PC</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Prosessor</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>RAM</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>OS</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Kernel</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> 3.13.0-44-generic </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Gazebo</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Version 5.0.1 </td>
+</tr>
+</tbody>
+</table>
+
+
+<h5>参考</h5>
+
+<p><a href="http://gazebosim.org/tutorials?cat=connect_ros">GAZEBO Tutorial-Connect to ROS</a></p>
+
+<h2>チュートリアル : ROS Control</h2>
+
+<p>このチュートリアルでは、あなたのロボットのジョイントを動かすために、シミュレートされたコントローラを設定してゆきます。これにより、<a href="http://moveit.ros.org/">MoveIt!</a>のようなプランナーのための正しいROSのインターフェースを提供することができるようになります。また、ROSの新しいスタンダードコントローラインターフェースである<a href="http://ros.org/wiki/ros_control"><code>ros_control</code></a>パッケージを使用してゆきます。</p>
+
+<h3><code>ros_control</code>について</h3>
+
+<p>次に進む前に、<a href="http://ros.org/wiki/ros_control"><code>ros_control</code></a>ドキュメントの概要を読んでおくことをおすすめします。
+About ros_control</p>
+
+<h3>Gazeboと<code>ros_control</code>のデータフロー</h3>
+
+<p>Gazeboでロボットのコントローラをシミュレートすることで、<code>ros_control</code>の使い方とシンプルなGazeboのプラグインアダプタの使い方を習得することができます。シミュレーション、ハードウェア、コントローラとトランスミッションの間の関係の概要は以下のようになっています。尚、以下の画像は公式サイトのものです。:
+<img src="http://cir-kit.github.io/images/2015-02-21-gazebo-ros-control/Gazebo_ros_transmission.png" alt="Gazebo_ros_transmission" /></p>
+
+<h2>必要条件</h2>
+
+<p>このチュートリアルでは、これまでのチュートリアルで紹介したコンセプトの多くを再編してゆきます。プラグイン構成のための例として、<a href="http://cir-kit.github.io/blog/2015/02/17/gazebo-urdf-in-gazebo/">GazeboにおけるURDF</a>のチュートリアルの中で設定したRRBotを再び使用してゆきます。<br/>
+すでに<code>ros_control</code>と<code>ros_controllers</code>をインストールしていることを確認してください。また、それらの依存関係は、<a href="http://cir-kit.github.io/blog/2015/02/14/gazebo-installing-gazebo-ros-pkgs/">Gazebo_ros_packageをインストールする</a>で説明しています。</p>
+
+<h2>使い方</h2>
+
+<h3>URDFに<code>transmission</code>要素を追加する</h3>
+
+<p>あなたのロボットで<code>ros_control</code>を使用するには、URDFにいくつかの追加要素が必要です。<code>&lt;transmission&gt;</code>要素はリンクアクチュエータやジョイントで使用されます。正確なXMLフォーマットのためには、<a href="http://ros.org/wiki/urdf/XML/Transmission"><code>&lt;transmission&gt;</code>の仕様</a>をご覧ください。<br/>
+実行途中の<code>gazebo_ros_control</code>の目的のために、<code>transmission</code>タグの中で唯一重要な情報は以下のとおりである。:</p>
 
 <ul>
-<li>他団体をまとめる
-　どの団体がプレゼンに参加するかを他団体に連絡を取る。しっかりと九工大にどんなものつくり系サークルがあるかを調べて、学科別オリエンテーションへの参加、不参加を質問してもらう。</li>
-<li>各学科長（新年度）の許可
-　学科別オリエンテーションをどの団体が行うかをまとめたものを書く学科長に申請する。
--プレゼン
-C言語講習会、教育プログラム、活動内容
--ビラ</li>
+<li><code>&lt;joint name=""&gt;</code> : URDFにあるジョイントの名前と一致していなければなりません。</li>
+<li><code>&lt;type&gt;</code> ; <code>transmission</code>のタイプです。現在では、<code>transmission_interface/SimpleTransmission</code>のみが実行されます。(遠慮無く追加してください)</li>
+<li><code>&lt;hardwareInterface&gt;</code> : <code>&lt;actuator&gt;</code>タグでは、<code>gazebo_ros_control</code>プラグインに姿勢、速度、実行インターフェースなどをロードするためのハードウェアインターフェースを知らせます。現在では、実行インターフェースのみが実行されます。(遠慮無く追加してください)</li>
 </ul>
 
 
-<p>-テーピング勧誘</p>
+<p>残りの名前と要素は現在は、無視されています。</p>
 
-<h4>新入生オリエンテーション</h4>
+<h3><code>gazebo_ros_control</code>プラグインを追加する</h3>
+
+<p><code>transmission</code>タグへの追加では、正確に<code>transmission</code>タグを記述し、適用するハードウェアインターフェースとコントローラマネージャを読み込む、URDFにGazeboのプラグインを追加する必要があります。デフォルトの<code>gazebo_ros_control</code>プラグインはシンプルですが、<code>ros_control</code>とGazeboの間のカスタムのロボットハードウェアインターフェースを使えるようにするために、追加のプラグインを展開することができます。<br/>
+デフォルトプラグインXMLをあなたのURDFに追加する必要があります。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;gazebo&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;plugin</span> <span class="na">name=</span><span class="s">&quot;gazebo_ros_control&quot;</span> <span class="na">filename=</span><span class="s">&quot;libgazebo_ros_control.so&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;robotNamespace&gt;</span>/MYROBOT<span class="nt">&lt;/robotNamespace&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/plugin&gt;</span>
+</span><span class='line'><span class="nt">&lt;/gazebo&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>gazebo_ros_control</code>の<code>&lt;plugin&gt;</code>タグには以下の子要素もあります。:</p>
 
 <ul>
-<li><p>ビラ作成
-→ロボットを動かしながら勧誘作業を行う。実際に、ロボットの動いてるところを見せることで、簡単にどのようなロボットを作っているのかを説明ができる。また、オリエンテーションとは違い強い印象を与えることが期待できる。</p></li>
-<li><p>新入生オリエンテーション
-→ビュートローバーを軽く動かさせてみる。これにより、自分が書いたプログラムでロボットが動くことの面白さを体験してもらう。</p></li>
+<li><code>&lt;robotNamespace&gt;</code> : プラグインの初期化に使用される名前空間です。デフォルトでは、URDF/SDFのロボット名となります。</li>
+<li><code>&lt;controlPeriod&gt;</code> : コントローラアップデートの周期です。デフォルトでは、Gazeboの手記です。</li>
+<li><code>&lt;robotParam&gt;</code> : パラメータサーバーの<code>robot_description</code>(URDF)のロケーションです。デフォルトでは、<code>/robot_description</code>です。</li>
+<li><code>&lt;robotSimType&gt;</code> : 使用されるカスタムのロボットシミュレーションインターフェースの<code>pluginlib</code>の名前です(詳しくは、続きをご覧ください)。デフォルトでは、<code>DefaultRobotHWSim</code>となります。</li>
 </ul>
 
 
-<h3>教育</h3>
+<h4>デフォルトの<code>gazebo_ros_control</code>の挙動</h4>
+
+<p>デフォルトで、<code>&lt;robotSimType&gt;</code>タグなしだと、<code>gazebo_ros_control</code>はURDF
+外の<code>ros_control-based</code>コントローラと通信するのに必要なすべての情報を手に入れようとします。これは、ほとんどの場合十分なことで、少なくとも、始めの内は良いことです。<br/>
+デフォルトの挙動では、以下の<code>ros_control</code>インターフェースを提供しています。:</p>
 
 <ul>
-<li><p>４月：ビュートローバーを用いてプログラムに慣れさせる  C言語講習会</p></li>
-<li><p>５月：ビュートローバー大会開催  C言語の入門編まで理解する</p></li>
-<li><p>以降：git,ROS,Gazeboをかじらせる。
-　　　</p></li>
+<li>hardware_interface::JointStateInterface</li>
+<li>hardware_interface::EffortJointInterface</li>
+<li>hardware_interface::VelocityJointInterface - not fully implemented</li>
 </ul>
 
+
+<h4>発展 : カスタムの<code>gazebo_ros_control</code>シミュレーションプラグイン</h4>
+
+<p><code>gazebo_ros_control</code>のGazeboプラグインは、より複雑なメカニズム(非線形バネ、リンクゲージ、etc&hellip;)のための<code>ros_control</code>とGazebo間のカスタムインターフェースを実行するため、<code>pluginlib-based</code>のインターフェースも提供しています。<br/>
+そういったプラグインでは、シミュレートされている<code>ros_control hardware_interface::RobotHW</code>を動かす<code>gazebo_ros_control::RobotHWSim</code>を継承していなければなりません。<code>RobotHWSim</code>では、Gazeboシミュレータの中で、ジョイントプロパティを読み、命令するためのAPIレベルのアクセスを提供します。<br/>
+それぞれの<code>RobotHWSim</code>のサブクラスはURDFモデルで定義されており、ロボットモデルが読み込まれた時に読み込まれます。例えば、以下のXMLはデフォルトプラグインを読み込みます。(<code>&lt;robotSimType&gt;</code>タグを使っていない時と同じ挙動です。):</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;gazebo&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;plugin</span> <span class="na">name=</span><span class="s">&quot;gazebo_ros_control&quot;</span> <span class="na">filename=</span><span class="s">&quot;libgazebo_ros_control.so&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;robotNamespace&gt;</span>/MYROBOT<span class="nt">&lt;/robotNamespace&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;robotSimType&gt;</span>gazebo_ros_control/DefaultRobotHWSim<span class="nt">&lt;/robotSimType&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/plugin&gt;</span>
+</span><span class='line'><span class="nt">&lt;/gazebo&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>RRBotの例</h3>
+
+<p>Gazeboので動作させたいジョイントのために、以下<code>&lt;transmission&gt;</code>ブロックシミュレータに追加します。<code>rrbot.xacro</code>ファイルを開くと、最後の方に、以下のようなソースコードを確認できるはずです。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>  <span class="nt">&lt;transmission</span> <span class="na">name=</span><span class="s">&quot;tran1&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;type&gt;</span>transmission_interface/SimpleTransmission<span class="nt">&lt;/type&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;joint</span> <span class="na">name=</span><span class="s">&quot;joint1&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;actuator</span> <span class="na">name=</span><span class="s">&quot;motor1&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;hardwareInterface&gt;</span>EffortJointInterface<span class="nt">&lt;/hardwareInterface&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;mechanicalReduction&gt;</span>1<span class="nt">&lt;/mechanicalReduction&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/actuator&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/transmission&gt;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nt">&lt;transmission</span> <span class="na">name=</span><span class="s">&quot;tran2&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;type&gt;</span>transmission_interface/SimpleTransmission<span class="nt">&lt;/type&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;joint</span> <span class="na">name=</span><span class="s">&quot;joint2&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;actuator</span> <span class="na">name=</span><span class="s">&quot;motor2&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;hardwareInterface&gt;</span>EffortJointInterface<span class="nt">&lt;/hardwareInterface&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;mechanicalReduction&gt;</span>1<span class="nt">&lt;/mechanicalReduction&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/actuator&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/transmission&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>すべての<code>&lt;transmission&gt;</code>タグを読む<code>rrbot.gazebo</code>の中に、<code>gazebo_ros_control</code>プラグインも確認できます。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;gazebo&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;plugin</span> <span class="na">name=</span><span class="s">&quot;gazebo_ros_control&quot;</span> <span class="na">filename=</span><span class="s">&quot;libgazebo_ros_control.so&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;robotNamespace&gt;</span>/rrbot<span class="nt">&lt;/robotNamespace&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/plugin&gt;</span>
+</span><span class='line'><span class="nt">&lt;/gazebo&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3><code>ros_controls</code>パッケージを作る</h3>
+
+<p>続いて、Gazeboと通信する<code>ros_contorl</code>コントローラのためのconfigurationファイルとlaunchファイルを作る必要があります。</p>
+
+<h4>新しいパッケージを作る</h4>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd</span> ~/catkin_ws
+</span><span class='line'>catkin_create_pkg MYROBOT_control ros_control ros_controllers
+</span><span class='line'><span class="nb">cd </span>MYROBOT_control
+</span><span class='line'>mkdir config
+</span><span class='line'>mkdir launch
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4><code>.yaml</code>のconfigファイルを作る</h4>
+
+<p>PIDゲインとコントローラ設定はroslaunchファイルを通じてparamサーバによって読み込まれるyamlファイルに保存しなければなりません。あなたの<code>MYROBOT_control</code>パッケージのconfigフォルダで、以下のRRBotの例をあなたのロボットに適用してください。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="l-Scalar-Plain">rrbot</span><span class="p-Indicator">:</span>
+</span><span class='line'>  <span class="c1"># Publish all joint states -----------------------------------</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">joint_state_controller</span><span class="p-Indicator">:</span>
+</span><span class='line'>    <span class="l-Scalar-Plain">type</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">joint_state_controller/JointStateController</span>
+</span><span class='line'>    <span class="l-Scalar-Plain">publish_rate</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">50</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># Position Controllers ---------------------------------------</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">joint1_position_controller</span><span class="p-Indicator">:</span>
+</span><span class='line'>    <span class="l-Scalar-Plain">type</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">effort_controllers/JointPositionController</span>
+</span><span class='line'>    <span class="l-Scalar-Plain">joint</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">joint1</span>
+</span><span class='line'>    <span class="l-Scalar-Plain">pid</span><span class="p-Indicator">:</span> <span class="p-Indicator">{</span><span class="nv">p</span><span class="p-Indicator">:</span> <span class="nv">100.0</span><span class="p-Indicator">,</span> <span class="nv">i</span><span class="p-Indicator">:</span> <span class="nv">0.01</span><span class="p-Indicator">,</span> <span class="nv">d</span><span class="p-Indicator">:</span> <span class="nv">10.0</span><span class="p-Indicator">}</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">joint2_position_controller</span><span class="p-Indicator">:</span>
+</span><span class='line'>    <span class="l-Scalar-Plain">type</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">effort_controllers/JointPositionController</span>
+</span><span class='line'>    <span class="l-Scalar-Plain">joint</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">joint2</span>
+</span><span class='line'>    <span class="l-Scalar-Plain">pid</span><span class="p-Indicator">:</span> <span class="p-Indicator">{</span><span class="nv">p</span><span class="p-Indicator">:</span> <span class="nv">100.0</span><span class="p-Indicator">,</span> <span class="nv">i</span><span class="p-Indicator">:</span> <span class="nv">0.01</span><span class="p-Indicator">,</span> <span class="nv">d</span><span class="p-Indicator">:</span> <span class="nv">10.0</span><span class="p-Indicator">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>これらのコントローラについては、次のセクションをご覧ください。</p>
+
+<h4>roslaunchファイルを作る</h4>
+
+<p><code>ros_control</code>コントローラを起動するためのroslaunchファイルを作ってください。launchフォルダで、<code>MYROBOT/_contorol.launch</code>ファイルを作り、以下のRRBotの例をあなたのロボットに適用してください。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;launch&gt;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c">&lt;!-- Load joint controller configurations from YAML file to parameter server --&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;rosparam</span> <span class="na">file=</span><span class="s">&quot;$(find rrbot_control)/config/rrbot_control.yaml&quot;</span> <span class="na">command=</span><span class="s">&quot;load&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c">&lt;!-- load the controllers --&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;node</span> <span class="na">name=</span><span class="s">&quot;controller_spawner&quot;</span> <span class="na">pkg=</span><span class="s">&quot;controller_manager&quot;</span> <span class="na">type=</span><span class="s">&quot;spawner&quot;</span> <span class="na">respawn=</span><span class="s">&quot;false&quot;</span>
+</span><span class='line'>    <span class="na">output=</span><span class="s">&quot;screen&quot;</span> <span class="na">ns=</span><span class="s">&quot;/rrbot&quot;</span> <span class="na">args=</span><span class="s">&quot;joint1_position_controller joint2_position_controller joint_state_controller&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c">&lt;!-- convert joint states to TF transforms for rviz, etc --&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;node</span> <span class="na">name=</span><span class="s">&quot;robot_state_publisher&quot;</span> <span class="na">pkg=</span><span class="s">&quot;robot_state_publisher&quot;</span> <span class="na">type=</span><span class="s">&quot;robot_state_publisher&quot;</span>
+</span><span class='line'>    <span class="na">respawn=</span><span class="s">&quot;false&quot;</span> <span class="na">output=</span><span class="s">&quot;screen&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;remap</span> <span class="na">from=</span><span class="s">&quot;/joint_states&quot;</span> <span class="na">to=</span><span class="s">&quot;/rrbot/joint_states&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/node&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;/launch&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h5>説明</h5>
+
+<p>第一行目の、<code>rosparam</code>では、パラメータサーバーにyamlのconfigurationファイル(次のセクションで説明します)を読み込むことでコントローラ設定を読み込んでいます。<br/>
+<code>controller_spawner</code>ノードは、RRBotのための2つのジョイントポジションコントローラを<code>ros_control</code>コントローラマネージャのためのサービスコールを生成するpythonスクリプトを実行することで起動します。サービスコールでは、あなたの望むコントローラのコントローラマネージャを呼び出します。また、<code>hardware_interfaces</code>とすべてのジョイントの姿勢をpublishし、<code>/joint_states</code>トピックを配信する三番目のコントローラも呼び出します。スポナーはroslaunchとの仕様のためのスクリプトを補助しているだけです。<br/>
+最後の行は、<code>joint_state_controller</code>からの<code>/joint_states</code>メッセージをlistenする<code>robot_state_publisher</code>ノードを起動し、起動したら、座標変換を<code>/tf</code>へpublishします。これにより、Rvizでシミュレートされるロボットを他のタスクがしているのと同じように観察することができます。</p>
+
+<h3>roslaunchを使ってコントローラを起動する</h3>
+
+<p>以下のコマンドを実行し、<code>ros_control</code>でコントロールされるRRBotをテストしてください。<br/>
+RRBotシミュレーションを起動する。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>roslaunch rrbot_gazebo rrbot_world.launch
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>2つ目のlaunchファイルを実行し、2つのジョイントのためのコントローラを読み込んでください。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>roslaunch rrbot_control rrbot_control.launch
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>サービスコールをマニュアルで使う</h4>
+
+<p><code>rrbot_control.yaml</code>ファイルをパラメータサーバーで初めて読み込んだら、サービスリクエストを通じてコントローラをマニュアルで読み込むことができます。いつものroslaunchと同じように、これらをインクルードします。:<br/>
+コントローラを読み込む:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rosservice call /rrbot/controller_manager/load_controller <span class="s2">&quot;name: &#39;joint1_position_controller&#39;&quot;</span>
+</span><span class='line'>rosservice call /rrbot/controller_manager/load_controller <span class="s2">&quot;name: &#39;joint2_position_controller&#39;&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>コントローラを起動する:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rosservice call /rrbot/controller_manager/switch_controller <span class="s2">&quot;{start_controllers: [&#39;joint1_position_controller&#39;,&#39;joint2_position_controller&#39;], stop_controllers: [], strictness: 2}&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>コントローラを停止する:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rossevice call /rrbot/controller_manager/switch_controller <span class="s2">&quot;{start_controllers: [], stop_controllers: [&#39;joint1_position_controller&#39;,&#39;joint2_position_controller&#39;], strictness: 2}&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>マニュアルでコマンドの例を送る</h3>
+
+<p>ジョイントコマンドの例をテストのために送ります。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>rostopic pub -1 /rrbot/joint1_position_controller/command std_msgs/Float64 &quot;data: 1.5&quot;
+</span><span class='line'>rostopic pub -1 /rrbot/joint2_position_controller/command std_msgs/Float64 &quot;data: 1.0&quot;
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>コマンドの送信のためのRQTを使う</h3>
+
+<p>このセクションでは、あなたのコントローラのパフォーマンスを視覚的に表示し、コントローラが持つであろうゲイン(一部にはPIDゲインも)やパラメータを調整するのを助けるツールについて見てゆきます。また、ROSの<code>plugin-based</code>なユーザーインターフェースである<a href="http://www.ros.org/wiki/rqt">RQT</a>を使います。なので、まずはそれがインストールされていることを確認しておいてください。<br/>
+RQTを起動する:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rosrun rqt_gui rqt_gui
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>コマンドpublisherを追加する</h4>
+
+<p><code>Publisher</code>プラグインを追加し、あなたがpublishしたいそれぞれのコントローラを命令するドロップダウンボックスからトピックを選択してください。RRBotの場合、以下のコントローラを追加してください。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>/rrbot/joint1_position_controller/command
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>できたら、緑色のプラスの形をしたボタンを押してください。<br/>
+ トピック名の左にあるチェックボックスを調べ、トピックpublisherを有効にしてください。<code>rate</code>の値を100に設定してください。(これはコマンドを送る周波数です。つまり、今回は100 [Hz]ということです)<br/>
+続いて、データを生の状態で確認するために、トピックを実行してください。生データが再生されている途中で、<code>join1</code>の<code>joint limits</code>のラジアンの値を変えてみてください。ただし、 RRBotの例ではジョイントは連続であるので、<code>joint limits</code>は存在しませんなので、どんな値を入れても動きます。もしこのチュートリアルを行っているなら、RRBotをいろいろな位置に振ることができるようになるはずです。<br/>
+続いて、同じ状態のボックスの中で、サイン波を使って自動で値を変えます。以下を追加してください。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>sin<span class="o">(</span>i/100<span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>さらなる応用的なコントロールのために、ロボットの正確な<code>joint limits</code>にサイン波をpublishするよう構成することができます。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>sin<span class="o">(</span>i/rate*speed<span class="o">)</span>*diff + offset
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>変数については、以下のとおりです。:</p>
+
+<ul>
+<li>i : RQTの時間変数</li>
+<li>rate : 式が評価される周波数です。これはトピックpublisherの周波数と同じであるべきです。おすすめの値は100です。</li>
+<li>speed : ジョイントをどれくらいの早さで動かすのかという指標です。1から始めるとゆっくりと動き始めます。</li>
+<li>upper_limit と lower_limits : コントローラによってコントロールされる、ハードウェアの<code>joint limits</code>です。</li>
+<li>diff = (upper_limit - lower_limit)/2</li>
+<li>offset = upper_limit-diff</li>
+</ul>
+
+
+<h4>コントローラのパフォーマンスを閲覧する</h4>
+
+<p>プロットプラグインをRQTに追加し、上記で選んだトピックpublisherと同じトピックを追加します。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>/rrbot/joint1_position_controller/command/data
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>緑色の追加ボタンをクリックしてください。すると、サイン波がスクリーン上にプロットされるのが確認できるはずです。<br/>
+スクリーンは以下のようになっているはずです。</p>
+
+<p><strong>注意 : </strong>RQTのプロットプラグインは、起動した後、しばらく(>1 min)バグが発生することが確認されています。直線が描かれるだけのバグです。現在の解決方法は、プラグイン画面の右上にある、青いリフレッシュボタンを押すことです。</p>
+
+<h4>PIDゲインを調整する</h4>
+
+<p>最終的に、あなたのロボットに適用可能と考えられる、適切で独創的であり、統合されたPIDコントローラゲインのチューニングを行うために、<a href="http://ros.org/wiki/dynamic_reconfigure">dynamic reconfigure</a>を使います。<br/>
+<code>Dynamic Reconfigure</code>プラグインをRQTに追加し、サブオプションを見るために、<strong>Expand All</strong>をクリックしてください。コントローラにPIDを使うなら、<strong>pid</strong>オプションを使ってください。以下のように、5段階のスライダをクリックして、コントローラを調節します。コントローラのパフォーマンスが望みのものとなるまで、値を調整してください。</p>
+
+<h4>RQTの図を保存するために、roslaunchを使う</h4>
+
+<p>RRBotのpre-configuredなRQTの図は以下のコマンドで簡単にlaunchすることができます。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>roslaunch rrbot_control rrbot_rqt.launch
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>これは、あなたのロボットに対しても、テンプレートとして使うことができます。</p>
+
+<h3>RvizをGazeboシミュレーションにつなぐ</h3>
+
+<p>シミュレーション中のロボットにコマンドを送るために、<code>ros_control</code>を使う時に、Gazeboからのロボットの姿勢を読むために、<code>ros_control</code>ジョイントステートコントローラを使用することもできます。良いシミュレータの前提的なアイデアはシミュレーションの中でするのと同じように、本物のハードウェア上で同じソフトウェアが使えるということです。そのスタートとなるのは、本物のハードウェアでも同じように使用する、Rvizでシミュレートされるあなたのロボットを可視化することです。<br/>
+これまで説明してきたような、<code>joint_state_controller</code>を、<code>rosparam</code>や<code>roslaunch</code>ファイルで起動する準備ができているとするなら、次のステップは、Rvizを起動することです。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rosrun rviz rviz
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>起こりうるエラーを解決するために、<strong>Global Options</strong>にある<strong>Fixed Frame</strong>を<strong>world</strong>に変更してください。<br/>
+次に<strong>RobotModel</strong>ディスプレイタイプをRvizに追加するとGazeboでシミュレートしているロボットがRvizでも見れるはずです！</p>
+
+<h2>デモコード</h2>
+
+<p>このチュートリアルにあるRRBotで使用されているコードの例は<a href="https://github.com/ros-simulation/gazebo_ros_demos"><code>gazebo_ros_demos</code></a>レポジトリで使用可能です。</p>
+
+<h2>次のステップ</h2>
+
+<p><a href="">ROSコミュニケーションをGazeboと使う</a>というチュートリアルの中でGazeboとともに使うことのできるROSメッセージコールとサービスコールについて学んでください。</p>
 ]]></content>
   </entry>
   
