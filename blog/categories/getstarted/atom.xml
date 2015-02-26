@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Getstarted | 九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/blog/categories/getstarted/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-02-26T14:32:40+09:00</updated>
+  <updated>2015-02-26T14:57:36+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -471,7 +471,7 @@ Gazebo 1.9.0より、ほとんどの場合に使用するデフォルト変数�
 <code>bash
 source &lt;install_path&gt;/share/gazebo/setup.sh
 </code>
-例えば、もし、モジュールを検索するためのパスを拡張するなどして、Gazeboの挙動を修正したいなら、まず最初に<code>source</code>コマンドで上記のェルスクリプトを実行したあと、設定されている変数を修正するということです。</p>
+例えば、もし、モジュールを検索するためのパスを拡張するなどして、Gazeboの挙動を修正したいなら、まず最初に<code>source</code>コマンドで上記のシェルスクリプトを実行したあと、設定されている変数を修正するということです。</p>
 
 <h3>Gazeboサーバー</h3>
 
