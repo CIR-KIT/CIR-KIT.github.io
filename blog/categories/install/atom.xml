@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Install | 九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/blog/categories/install/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-02-26T14:29:25+09:00</updated>
+  <updated>2015-02-26T14:32:40+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -14,7 +14,7 @@
 
   
   <entry>
-    <title type="html"><![CDATA[CIR-KITメンバーが必ずすべきこと]]></title>
+    <title type="html"><![CDATA[CIR-KITメンバーがUbuntuをインストールしてまずすべきこと]]></title>
     <link href="http://cir-kit.github.io/blog/2015/02/25/we-have-get-to-work-when-install-ubuntu/"/>
     <updated>2015-02-25T20:31:54+09:00</updated>
     <id>http://cir-kit.github.io/blog/2015/02/25/we-have-get-to-work-when-install-ubuntu</id>
@@ -45,7 +45,7 @@
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">日本語入力の獲得</td>
+<td style="text-align:left;">日本語入力の獲得   </td>
 <td style="text-align:left;">mozcを導入</td>
 </tr>
 <tr>
@@ -93,7 +93,7 @@
 <li>Mozcをインストールする
 
 <ul>
-<li>コンソールで<strong>sudo apt-get install ibus-mozc</strong>を実行する</li>
+<li>コンソールで<strong>sudo apt-get install mozc</strong>を実行する</li>
 </ul>
 </li>
 <li>PCを再起動する</li>
