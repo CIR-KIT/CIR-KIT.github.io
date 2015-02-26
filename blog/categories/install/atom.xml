@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Install | 九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/blog/categories/install/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-02-26T13:44:18+09:00</updated>
+  <updated>2015-02-26T14:00:55+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -34,18 +34,49 @@
 
 <h2>目的と手段の一覧</h2>
 
-<p>推奨時系列順にすべきことをリストアップしました。強調部分は手段が確定しています。
-|目的|手段|
-|日本語入力の獲得|mozcを導入|
-|gitの獲得|<strong>gitの導入</strong>|
-|githubへの参加|<strong>グループ(CIR-KIT)に招待を貰う</strong>|
-|blog更新手段の獲得|<strong>CIR-KIT.OctopressのWiki参照</strong>|
-|ROSの獲得|<strong>ROSの導入</strong>|
-|Gazeboの獲得|<strong>Gazeboの導入</strong>|</p>
+<p>推奨時系列順にすべきことをリストアップしました。強調部分は手段が確定しています。</p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">目的</th>
+<th style="text-align:left;">手段</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">日本語入力の獲得   </td>
+<td style="text-align:left;">mozcを導入</td>
+</tr>
+<tr>
+<td style="text-align:left;">gitの獲得</td>
+<td style="text-align:left;"><strong>gitの導入</strong></td>
+</tr>
+<tr>
+<td style="text-align:left;">githubへの参加</td>
+<td style="text-align:left;"><strong>グループ(CIR-KIT)に招待を貰う</strong></td>
+</tr>
+<tr>
+<td style="text-align:left;">blog更新手段の獲得</td>
+<td style="text-align:left;"><strong>CIR-KIT.OctopressのWiki参照</strong></td>
+</tr>
+<tr>
+<td style="text-align:left;">ROSの獲得</td>
+<td style="text-align:left;"><strong>ROSの導入</strong></td>
+</tr>
+<tr>
+<td style="text-align:left;">Gazeboの獲得</td>
+<td style="text-align:left;"><strong>Gazeboの導入</strong></td>
+</tr>
+</tbody>
+</table>
+
 
 <h2>手段達成方法</h2>
 
 <p>各手段の達成方法を記す。</p>
+
+<hr />
 
 <h3>日本語入力の獲得(Mozcの導入)</h3>
 
@@ -58,17 +89,30 @@
 
 <h4>手順</h4>
 
-<p>1.Mozcをインストールする
-    -コンソールで<strong>sudo apt-get install mozc</strong>を実行する
-2.PCを再起動する
-3.テキスト入力設定を変更する
--右上のWi-Fi設定の右隣にあるアイコンをクリックして、テキスト入力設定を選択
--使用する日本語ソースを<strong>日本語</strong>,<strong>日本語(Mozc)</strong>の2つにする
--次のソースへ切り替えのキーを半角全角キーにする</p>
+<ol>
+<li>Mozcをインストールする
+
+<ul>
+<li>コンソールで<strong>sudo apt-get install mozc</strong>を実行する</li>
+</ul>
+</li>
+<li>PCを再起動する</li>
+<li>テキスト入力設定を変更する
+
+<ul>
+<li>右上のWi-Fi設定の右隣にあるアイコンをクリックして、テキスト入力設定を選択</li>
+<li>使用する日本語ソースを<strong>日本語</strong>,<strong>日本語(Mozc)</strong>の2つにする</li>
+<li>次のソースへ切り替えのキーを半角全角キーにする</li>
+</ul>
+</li>
+</ol>
+
 
 <h4>確認方法</h4>
 
 <p>どこでもいいのでテキストを入力する。半角全角キーで日本語入力と半角英数が切り替わるか確認する。</p>
+
+<hr />
 
 <h3>gitの獲得</h3>
 
@@ -80,12 +124,22 @@
 
 <h4>手順</h4>
 
-<p>1.gitをインストールする
-    -コンソールで<strong>sudo apt-get install git</strong>を実行する</p>
+<ol>
+<li>gitをインストールする
+
+<ul>
+<li>コンソールで<strong>sudo apt-get install git</strong>を実行する</li>
+</ul>
+</li>
+</ol>
+
 
 <h4>確認方法</h4>
 
-<p>コンソールで<strong>git &ndash;version</strong>を実行しversionを表す数字などが表示されればよい。</p>
+<p>コンソールで<strong>git &ndash;version</strong>
+を実行しversionを表す数字などが表示されればよい。</p>
+
+<hr />
 
 <h3>blog更新手段の獲得</h3>
 
@@ -103,6 +157,8 @@
 
 <p>上記のWikiを参考にしてください。</p>
 
+<hr />
+
 <h3>ROSの獲得</h3>
 
 <p>ROSはCIR-KITのロボット開発に使用されているものである。2015年現在これがないとCIE-KITのロボット開発ができない。</p>
@@ -119,6 +175,8 @@
 
 <p><a href="http://wiki.ros.org/ja">公式Wiki</a>を読んでください。</p>
 
+<hr />
+
 <h3>Gazeboの獲得</h3>
 
 <p>Gazeboは3Dロボットシュミレータである。ROSとの連携が豊富という特徴を持つ。これによりロボットが完成する前からソフトの開発が可能になる。また、ハードとソフトの問題の切り分けも容易になる。</p>
@@ -129,8 +187,15 @@
 
 <h4>手順</h4>
 
-<p>1.Gazeboをインストールする
-    -コンソールで<strong>wget -O /tmp/gazebo4_install.sh <a href="http://osrf-distributions.s3.amazonaws.com/gazebo/gazebo4_install.sh;">http://osrf-distributions.s3.amazonaws.com/gazebo/gazebo4_install.sh;</a> sudo sh /tmp/gazebo4_install.sh</strong>を実行する</p>
+<ol>
+<li>Gazeboをインストールする
+
+<ul>
+<li>コンソールで<strong>wget -O /tmp/gazebo4_install.sh <a href="http://osrf-distributions.s3.amazonaws.com/gazebo/gazebo4_install.sh;">http://osrf-distributions.s3.amazonaws.com/gazebo/gazebo4_install.sh;</a> sudo sh /tmp/gazebo4_install.sh</strong>を実行する</li>
+</ul>
+</li>
+</ol>
+
 
 <h4>確認方法</h4>
 
