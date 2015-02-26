@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Gazebo | 九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/blog/categories/gazebo/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-02-26T10:56:15+09:00</updated>
+  <updated>2015-02-26T13:23:09+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -12,6 +12,52 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Education_plan]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/02/23/education-plan/"/>
+    <updated>2015-02-23T14:24:10+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/02/23/education-plan</id>
+    <content type="html"><![CDATA[<h1>新一年生勧誘＆教育計画（夏休みまで）</h1>
+
+<h3>勧誘</h3>
+
+<h4>学科別オリエンテーション</h4>
+
+<ul>
+<li>他団体をまとめる
+　どの団体がプレゼンに参加するかを他団体に連絡を取る。しっかりと九工大にどんなものつくり系サークルがあるかを調べて、学科別オリエンテーションへの参加、不参加を質問してもらう。</li>
+<li>各学科長（新年度）の許可
+　学科別オリエンテーションをどの団体が行うかをまとめたものを書く学科長に申請する。
+-プレゼン
+C言語講習会、教育プログラム、活動内容
+-ビラ</li>
+</ul>
+
+
+<p>-テーピング勧誘</p>
+
+<h4>新入生オリエンテーション</h4>
+
+<ul>
+<li><p>ビラ作成
+→ロボットを動かしながら勧誘作業を行う。実際に、ロボットの動いてるところを見せることで、簡単にどのようなロボットを作っているのかを説明ができる。また、オリエンテーションとは違い強い印象を与えることが期待できる。</p></li>
+<li><p>新入生オリエンテーション
+→ビュートローバーを軽く動かさせてみる。これにより、自分が書いたプログラムでロボットが動くことの面白さを体験してもらう。</p></li>
+</ul>
+
+
+<h3>教育</h3>
+
+<ul>
+<li><p>４月：ビュートローバーを用いてプログラムに慣れさせる  C言語講習会</p></li>
+<li><p>５月：ビュートローバー大会開催  C言語の入門編まで理解する</p></li>
+<li><p>以降：git,ROS,Gazeboをかじらせる。
+　　　</p></li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[No.6-6:GazeboをROSに繋ぐ (ROSにおけるGazeboのプラグイン 編)]]></title>
@@ -2126,206 +2172,6 @@ ROSの接続が本当に完了しているか確かめるために、利用可�
 
 <pre><code class="bash">    roslaunch gazebo_ros empty_world.launch
 </code></pre>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[No.6-2:GazeboをROSに繋ぐ (どのGazebo/ROSのバージョンの組み合わせを使うか 編)]]></title>
-    <link href="http://cir-kit.github.io/blog/2015/02/14/gazebo-which-combination-of-ros-and-gazebo-versions-to-use/"/>
-    <updated>2015-02-14T15:29:45+09:00</updated>
-    <id>http://cir-kit.github.io/blog/2015/02/14/gazebo-which-combination-of-ros-and-gazebo-versions-to-use</id>
-    <content type="html"><![CDATA[<p><img src="/images/gazebo_logo.png" alt="gazebo_logo" /></p>
-
-<h5>検証日時</h5>
-
-<p>02/14/2015 (Sat)</p>
-
-<h5>概要</h5>
-
-<p>Gazeboのチュートリアル第六弾「Connect to ROS」。<br/>
-ROSはロボットの制御フレームワークです。このチュートリアルでは、GazeboとROSのインターフェースについて説明します。<br/>
-今回はその「Which combination of ROS/Gazebo Versions to use」編です。<br/>
-公式サイトを適当に翻訳しただけですので、あしからず。</p>
-
-<h5>レベル</h5>
-
-<p><strong>INTERMEDIATE</strong></p>
-
-<!-- more -->
-
-
-<h5>環境</h5>
-
-<table>
-<thead>
-<tr>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center;"> <strong>PC</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Prosessor</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>RAM</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>OS</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Kernel</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> 3.13.0-44-generic </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Gazebo</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Version 5.0.1 </td>
-</tr>
-</tbody>
-</table>
-
-
-<h5>参考</h5>
-
-<p><a href="http://gazebosim.org/tutorials?cat=connect_ros">GAZEBO Tutorial-Connect to ROS</a></p>
-
-<h2>はじめに</h2>
-
-<p>このドキュメントでは、ROSとGazeboをそれぞれ異なるバージョンの組み合わせで使うためのオプションについて説明します。Gazebo ROSラッパーをインストールする前に、読んでおくことをおすすめします。</p>
-
-<h2>簡単な判断のための短いバージョン</h2>
-
-<p>もし、ROSの特定のバージョンを使用しており、Gazeboの特定のバージョンを使用する理由がないなら、<a href="http://cir-kit.github.io/blog/2015/02/14/gazebo-installing-gazebo-ros-pkgs/">gazebo_ros_pkgsをインストールする</a>というチュートリアルへ進むこともできます。</p>
-
-<h2>GazeboのバージョンとROSの統合</h2>
-
-<p>ROS Hydroまでは、GazeboはROSパッケージの代替とみなされていました。これは、Gazeboのメジャーバージョンの一つ（例えば、ROS Indigo用のgazebo2）はROSリリースサイクルの始まりであり、すべてのROSディストリビューションの間で保たれていたということを意味します。Gazeboの開発はROSから独立しています。なので、Gazeboの新しい各バージョンはROSディストリビューションで使用される前にリリースする必要があります。<br/>
-Gazebo ABIの安定化ポリシーは、同じメジャーナンバーを持つすべてのバージョン(<code>gazebo_2.0.0</code>,<code>gazebo_2.1.0</code>,<code>gazebo_2.0.1</code>,&hellip;etc)はバイナリー互換であり、それ故に同じROSディストリビューションを使用するなら、相互に使用することができるといったような、<a href="http://semver.org/">sematic versioning pholosophy</a>に準拠しているということを覚えておいてください。</p>
-
-<h3>Gazeboをインストールする</h3>
-
-<h4>GazeboのUbuntuパッケージ</h4>
-
-<p>Gazeboをインストールする簡単な方法は、パッケージを使うことです。Gazeboパッケージがホストしているレポジトリは主に2つあります。:一つは<code>package.ros.org</code>で、もうひとつは、<code>osrfoundation.packages.org</code>です。この投稿を行った時点では、ホストの状況は以下のようになっています。</p>
-
-<blockquote><ul>
-<li>packages.ros.org
-
-<ul>
-<li>Hydro: hosts gazebo version 1.x package.</li>
-<li>Indigo: host gazebo version 2.x package.</li>
-</ul>
-</li>
-<li>packages.osrfoundation.org
-
-<ul>
-<li>gazebo 1.x series (package name gazebo)</li>
-<li>gazebo 2.x series (package name gazebo-current or gazebo2 in saucy/trusty)</li>
-<li>gazebo 3.x series (package name gazebo3)</li>
-<li>gazebo 4.x series (package name gazebo4)</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-
-<p>このことは、<code>osrfoundation</code>レポジトリは必ずしもUbuntuのGazeboパッケージから取得する必要がないということを意味します。ROSのレポジトリからインストールすることができます。</p>
-
-<h4>Gazeboをソースからビルドする</h4>
-
-<p>ソースコードからGazeboのバージョンをコンパイルしたのなら、あなたのGazeboで使用しているレポジトリのブランチにおける依存関係(gazebo_3.0, gazebo_4.0,&hellip;etc)は、メジャー場＾ジョンがローカルブランチのレポジトリとROSのディストリビューションで使用しているGazeboのバージョンが一致するときにかぎり、<code>gazebo_ros_pkgs</code>(それとGazeboでコンパイル済みのすべてのROSパッケージも)と共にバイナリコンパイルされます。例えば、もしあなたが、<code>gazebo_2.0</code>のGazeboブランチよりコンパイルをしているのなら、Indigo(Indigoはgazebo2シリーズを使用している)にある<code>gazebo_ros_pkgs</code>を使用することができます。<br/>
-もしあなたが、デフォルトのブランチを使用しているなら、大抵のリリースされたパッケージと共にバイナリコンパイルを行うことはできません。なので、<code>gazebo_ros_pkgs</code>を有効にするために、<code>catkin</code>ワークスペースが必要となります。</p>
-
-<h3>ROSディストリビューションのためにGazeboのデフォルトバージョンを使う</h3>
-
-<p>特定のROSディストリビューションを使用する必要があり、out-of-the-boxのパッケージに関連するGazeboやROSを使用したい人にとって、このセクションは重要です。</p>
-
-<h4>Indigo</h4>
-
-<p>ROS IndigoはGazeboの2.xのバージョンをホストしています。完全に統合されたROSのシステムのためには、Gazeboの2.xバージョンを使用することをおすすめします。適用方法は、ROSレポジトリを使用するということだけで、(自動でgazebo2がインストールされます)<code>osrfoundation</code>レポジトリは必要ありません。</p>
-
-<h4>Hydro</h4>
-
-<p>ROS HydroはGazeboの1.9.xのバージョンをホストしています。完全に統合されたROSシステムのためには、Gazeboの1.9.xバージョンを使用することをおすすめします。適用する方法は、ROSレポジトリを使用するということだけで、(自動でgazeboがインストールされます)<code>osrfoundation</code>レポジトリは必要ありません。</p>
-
-<h3>特定のバージョンのGazeboをROSと使用する</h3>
-
-<p><strong>!警告! : このオプションを使うと、ROSのdebレポジトリによるGazeboに関連したいかなるROS Ubuntuパッケージも使用できなくなるかもしれません。<code>gazebo_ros_pkgs</code>と同等のものは、debianパッケージによりインストールすることは可能ですが、その他のすべてのソフトウェア（<code>turtlebot_gazebo</code>など）はソースコードからビルドしなければなりませんが、<code>catkin</code>ワークスペースのおかげで、これを行うのはとても簡単です。</strong><br/>
-本当に必要であれば、特定のバージョンのGazeboとROSを使用する方法はたくさんあります:</p>
-
-<h4>Gazebo 4.x シリーズ</h4>
-
-<p>OSRFレポジトリは、gazebo4パッケージの最新をビルドする、<code>-gazebo4-</code>バージョンのROS/IndigoとROS/HydroのGazeboラッパーを提供しています。(`gazebo4_ros_pkgs)これらを使用する手順は以下のとおりです。</p>
-
-<ul>
-<li><code>osrfoundation</code>レポジトリをソースリストに追加する</li>
-<li><code>gazebo4</code>パッケージをインストールするのに使う、<code>ros-distro-gazebo4-ros-pkgs</code>を<code>osrfoundation</code>レポジトリより追加する。</li>
-<li>ソースコードから、残りのソフトウェアをコンパイルするために、<code>catkin</code>ワークスペースを使う</li>
-</ul>
-
-
-<h4>Gazebo 3.x シリーズ</h4>
-
-<p>OSRFレポジトリは、gazebo3パッケージの最新をビルドする、<code>-gazebo3-</code>バージョンのROS/HydroとROS/GroovyのGazeboラッパーを提供しています。(<code>gazebo3_ros_pkgs</code>)これらを使用する手順は以下のとおりです。</p>
-
-<ul>
-<li><code>osrfoundation</code>レポジトリをソースリストに追加する</li>
-<li><code>gazebo3</code>パッケージをインストールするのに使う、<code>ros-distro-gazebo3-ros-pkgs</code>を<code>osrfoundation</code>レポジトリより追加する。</li>
-<li>ソースコードから、残りのソフトウェアをコンパイルするために、<code>catkin</code>ワークスペースを使う</li>
-</ul>
-
-
-<h4>Gazebo 2.x シリーズ</h4>
-
-<p>OSRFレポジトリは、gazebo-currentパッケージの最新をビルドする、<code>-current-</code>バージョンのROS/HydroとROS/GroovyのGazeboラッパーを提供しています。(<code>gazebo_ros_pkgs-current</code>)これらを使用する手順は以下のとおりです。</p>
-
-<ul>
-<li><code>osrfoundation</code>レポジトリをソースリストに追加する</li>
-<li><code>gazebo-current</code>パッケージをインストールするのに使う、<code>ros-distro-gazebo-ros-pkgs-current</code>を<code>osrfoundation</code>レポジトリより追加する。</li>
-<li>ソースコードから、残りのソフトウェアをコンパイルするために、<code>catkin</code>ワークスペースを使う</li>
-</ul>
-
-
-<h2>FAQ</h2>
-
-<h4>私はDARPAのロボティクスチャレンジ参加者です。どのバージョンを使うのが良いですか?</h4>
-
-<p><code>drcsim-3.2</code>は<code>gazebo3</code>でビルドされています。<code>drcsim-4.0</code>からスタートすると、<code>gazebo4</code>を使うことになります。</p>
-
-<h4>私はまだROSを使ったことがありません。どのバージョンを使うのが良いですか?</h4>
-
-<p>ROSのサポートが必要ないなら、<a href="http://gazebosim.org/tutorials/?cat=installation"><code>osrfoundation</code>のレポジトリを利用してインストール</a>できる、最新リリースのバージョンをおすすめします。</p>
-
-<h4><code>bullet/simbody/dart</code>物理エンジンを使いたいのですが、どのバージョンが良いですか?</h4>
-
-<p><code>gazebo4</code>から始めるなら、<code>bullet</code>と<code>simbody</code>がUbuntuパッケージでサポートされています。なので、ROSと一緒に、<code>gazebo4</code>を使用するには、上記の説明に従ってください。<code>Dart</code>はソースコードからのインストールも必要とします（<code>gazebo3</code>からはじめるなら）。なので、<code>gazebo3</code>かそれ以外のバージョンを使用することができます。ROSと共に使用するために、このページの上部の説明に従ってください。</p>
-
-<h4>ROS-JではどのバージョンのGazeboが動きますか?</h4>
-
-<p>まだ決まってません。しかし、<a href="http://gazebosim.org/#status">予定では</a>おそらく<code>gazebo5</code>でしょう。</p>
-
-<h4>gazebo4とROS Indigoを使う必要があります。どうしたらよいですか?</h4>
-
-<p><strong>!警告! : このオプションを使うと、ROSのdebレポジトリから供給されるGazebo関連のROS Indigoパッケージが使えなくなるかもしれません。ソースコードからビルドする必要がありますが、<code>catkin</code>ワークスペースのおかげで、これを行うのはとても簡単です。</strong><br/>
-Gazebo4.xのバージョンにだけある機能を使用する必要があるなら、<code>gazebo4</code>とROS Indigoをインストールするという方法があります。<strong>このページ内</strong>にある<code>gazebo4</code>パッケージを使ったROSの使い方についての説明に従ってください。</p>
-
-<h4>gazebo3とROS Indigoを使う必要があります。どうしたらよいですか?</h4>
-
-<p><strong>!警告! : このオプションを使うと、ROSのdebレポジトリから供給されるGazebo関連のROS Indigoパッケージが使えなくなるかもしれません。ソースコードからビルドする必要がありますが、<code>catkin</code>ワークスペースのおかげで、これを行うのはとても簡単です。</strong><br/>
-Gazebo3.xのバージョンにだけある機能を使用する必要があるなら、<code>gazebo3</code>とROS Indigoをインストールするという方法があります。<strong>このページ内</strong>にある<code>gazebo3</code>パッケージを使ったROSの使い方についての説明に従ってください。</p>
 ]]></content>
   </entry>
   
