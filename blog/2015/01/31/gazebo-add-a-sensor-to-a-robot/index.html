@@ -267,6 +267,15 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
+<p>この指定方法ではうまくいかない例がありましたので、その場合は<code>hokuyo</code>モデルを一つ上のフォルダにコピーするため、以下のコマンドを入力してください。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>cd ~/gazebo/models/gazebo_models
+</span><span class='line'>copy -rf hokuyo ../
+</span></code></pre></td></tr></table></div></figure>
+
+
 <ol>
 <li><p>では、Gazeboを起動してGUIに表示される<strong>Insert</strong>という項目を利用してシミュレーションにロボットを追加しましょう。すると、下図のようにロボットにレーザーが付いていると思います。
 <img src="/images/2015-01-31-gazebo-add-a-sensor-to-a-robot/Add_laser_pioneer.png" alt="Add_laser_pioneer" /></p></li>
@@ -338,7 +347,11 @@
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2015/02/25/we-have-get-to-work-when-install-ubuntu/">CIR-KITメンバーがUbuntuをインストールしてまずすべきこと</a>
+        <a href="/blog/2015/02/25/we-have-get-to-work-when-install-ubuntu/">CIR-KITメンバーが必ずすべきこと</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/02/23/education-plan/">Education_plan</a>
       </li>
     
       <li class="post">
@@ -351,10 +364,6 @@
     
       <li class="post">
         <a href="/blog/2015/02/15/gazebo-using-roslaunch/">No.6-4:GazeboをROSに繋ぐ (Roslaunchを使う 編)</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/02/14/gazebo-installing-gazebo-ros-pkgs/">No.6-3:GazeboをROSに繋ぐ (Gazebo_ros_pkgsをインストールする 編)</a>
       </li>
     
   </ul>
