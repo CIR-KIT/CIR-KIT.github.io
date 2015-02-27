@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Ubuntu | 九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/blog/categories/ubuntu/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-02-27T15:40:45+09:00</updated>
+  <updated>2015-02-27T15:53:38+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -93,7 +93,7 @@
 <li>Mozcをインストールする
 
 <ul>
-<li>コンソールで<strong>sudo apt-get install ibus-mozc</strong>を実行する</li>
+<li>コンソールで<code>sudo apt-get install ibus-mozc</code>を実行する</li>
 </ul>
 </li>
 <li>PCを再起動する</li>
@@ -128,7 +128,7 @@
 <li>gitをインストールする
 
 <ul>
-<li>コンソールで<strong>sudo apt-get install git</strong>を実行する</li>
+<li>コンソールで<code>sudo apt-get install git</code>を実行する</li>
 </ul>
 </li>
 </ol>
@@ -136,8 +136,7 @@
 
 <h4>確認方法</h4>
 
-<p>コンソールで<strong>git &ndash;version</strong>
-を実行しversionを表す数字などが表示されればよい。</p>
+<p>コンソールで<code>git --version</code>を実行しversionを表す数字などが表示されればよい。</p>
 
 <hr />
 
@@ -191,7 +190,7 @@
 <li>Gazeboをインストールする
 
 <ul>
-<li>コンソールで<strong>wget -O /tmp/gazebo4_install.sh <a href="http://osrf-distributions.s3.amazonaws.com/gazebo/gazebo4_install.sh;">http://osrf-distributions.s3.amazonaws.com/gazebo/gazebo4_install.sh;</a> sudo sh /tmp/gazebo4_install.sh</strong>を実行する</li>
+<li>コンソールで<code>wget -O /tmp/gazebo4_install.sh http://osrf-distributions.s3.amazonaws.com/gazebo/gazebo4_install.sh; sudo sh /tmp/gazebo4_install.sh</code>を実行する</li>
 </ul>
 </li>
 </ol>
