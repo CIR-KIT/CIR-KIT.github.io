@@ -4,10 +4,10 @@
   <title><![CDATA[Category: Install | 九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/blog/categories/install/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-02-28T16:04:41+09:00</updated>
+  <updated>2015-03-01T10:47:29+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
-    <name><![CDATA[]]></name>
+    <name><![CDATA[CIR-KIT Members]]></name>
     
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
@@ -93,7 +93,10 @@
 <li>Mozcをインストールする
 
 <ul>
-<li>コンソールで<code>sudo apt-get install ibus-mozc</code>を実行する</li>
+<li>コンソールで<code>sudo apt-get install ibus-mozc</code>を実行する
+<code>bash
+sudo apt-get install ibus-mozc
+</code></li>
 </ul>
 </li>
 <li>PCを再起動する</li>
@@ -128,7 +131,10 @@
 <li>gitをインストールする
 
 <ul>
-<li>コンソールで<code>sudo apt-get install git</code>を実行する</li>
+<li>コンソールで<code>sudo apt-get install git</code>を実行する
+<code>bash
+sudo apt-get install git
+</code></li>
 </ul>
 </li>
 </ol>
@@ -136,7 +142,10 @@
 
 <h4>確認方法</h4>
 
-<p>コンソールで<code>git --version</code>を実行しversionを表す数字などが表示されればよい。</p>
+<p>コンソールで<code>git --version</code>を実行しversionを表す数字などが表示されればよい。
+<code>bash
+git --version
+</code></p>
 
 <hr />
 
@@ -190,7 +199,10 @@
 <li>Gazeboをインストールする
 
 <ul>
-<li>コンソールで<code>wget -O /tmp/gazebo4_install.sh http://osrf-distributions.s3.amazonaws.com/gazebo/gazebo4_install.sh; sudo sh /tmp/gazebo4_install.sh</code>を実行する</li>
+<li>コンソールで以下のコードを実行する
+<code>bash
+wget -O /tmp/gazebo4_install.sh http://osrf-distributions.s3.amazonaws.com/gazebo/gazebo4_install.sh; sudo sh /tmp/gazebo4_install.sh
+</code></li>
 </ul>
 </li>
 </ol>
@@ -198,7 +210,10 @@
 
 <h4>確認方法</h4>
 
-<p>コンソールでgazeboを実行して、Gazeboが立ち上がればよい。</p>
+<p>コンソールで<code>gazebo</code>を実行して、Gazeboが立ち上がればよい。
+<code>bash
+gazebo
+</code></p>
 ]]></content>
   </entry>
   

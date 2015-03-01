@@ -4,10 +4,10 @@
   <title><![CDATA[九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-02-28T16:04:41+09:00</updated>
+  <updated>2015-03-01T10:47:29+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
-    <name><![CDATA[]]></name>
+    <name><![CDATA[CIR-KIT Members]]></name>
     
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
@@ -123,6 +123,15 @@
 <li>コンソールで<code>sudo apt-get install ibus-mozc</code>を実行する</li>
 </ul>
 </li>
+</ol>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo apt-get install ibus-mozc
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ol>
 <li>PCを再起動する</li>
 <li>テキスト入力設定を変更する
 
@@ -161,9 +170,19 @@
 </ol>
 
 
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo apt-get install git
+</span></code></pre></td></tr></table></div></figure>
+
+
 <h4>確認方法</h4>
 
 <p>コンソールで<code>git --version</code>を実行しversionを表す数字などが表示されればよい。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>git --version
+</span></code></pre></td></tr></table></div></figure>
+
 
 <hr />
 
@@ -217,15 +236,25 @@
 <li>Gazeboをインストールする
 
 <ul>
-<li>コンソールで<code>wget -O /tmp/gazebo4_install.sh http://osrf-distributions.s3.amazonaws.com/gazebo/gazebo4_install.sh; sudo sh /tmp/gazebo4_install.sh</code>を実行する</li>
+<li>コンソールで以下のコードを実行する</li>
 </ul>
 </li>
 </ol>
 
 
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>wget -O /tmp/gazebo4_install.sh http://osrf-distributions.s3.amazonaws.com/gazebo/gazebo4_install.sh<span class="p">;</span> sudo sh /tmp/gazebo4_install.sh
+</span></code></pre></td></tr></table></div></figure>
+
+
 <h4>確認方法</h4>
 
-<p>コンソールでgazeboを実行して、Gazeboが立ち上がればよい。</p>
+<p>コンソールで<code>gazebo</code>を実行して、Gazeboが立ち上がればよい。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo
+</span></code></pre></td></tr></table></div></figure>
+
 ]]></content>
   </entry>
   
