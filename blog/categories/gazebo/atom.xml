@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Gazebo | 九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/blog/categories/gazebo/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-03-01T20:42:32+09:00</updated>
+  <updated>2015-03-02T21:00:36+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[CIR-KIT Members]]></name>
@@ -280,9 +280,14 @@ RRBotシミュレーションを起動する。:</p>
 <pre><code class="bash">roslaunch rrbot_control rrbot_control.launch 
 </code></pre>
 
+<p>尚、個々でエラーが出る場合は、<code>ros_control</code>と<code>ros_controller</code>がインストールされていない可能性があります。<em>*Indigo</em>を使用している場合は、以下のようにしてこれらをインストールしましょう。:</p>
+
+<pre><code class="bash">sudo apt-get install ros-indigo-ros-control ros-indigo-ros-controller 
+</code></pre>
+
 <h4>サービスコールをマニュアルで使う</h4>
 
-<p><code>rrbot_control.yaml</code>ファイルをパラメータサーバーで初めて読み込んだら、サービスリクエストを通じてコントローラをマニュアルで読み込むことができます。いつものroslaunchと同じように、これらをインクルードします。:<br/>
+<p><code>rrbot_control.yaml</code>ファイルをパラメータサーバーで読み込んだら、サービスリクエストを通じてコントローラをマニュアルで読み込むことができます。いつものroslaunchと同じように、これらをインクルードします。:<br/>
 コントローラを読み込む:</p>
 
 <pre><code class="bash">rosservice call /rrbot/controller_manager/load_controller "name: 'joint1_position_controller'"
@@ -299,43 +304,71 @@ rosservice call /rrbot/controller_manager/load_controller "name: 'joint2_positio
 <pre><code class="bash">rossevice call /rrbot/controller_manager/switch_controller "{start_controllers: [], stop_controllers: ['joint1_position_controller','joint2_position_controller'], strictness: 2}"
 </code></pre>
 
+<p>尚、これらひと通りの手順は、Gazeboとサービスを通じて通信する場合の例です。これを行うには、上記の通り、launchファイルにて<code>rrbot_control.yaml</code>を読み込んでおく必要があります。詳しくは、<a href="http://wiki.ros.org/ja/ROS/Tutorials/UnderstandingServicesParams">ROSのサービスとパラメータを理解する</a>をご覧ください。</p>
+
 <h3>マニュアルでコマンドの例を送る</h3>
 
-<p>ジョイントコマンドの例をテストのために送ります。:</p>
+<p>ジョイントコマンドをテストとして以下のコマンドで送ります。:</p>
 
-<pre><code class="xml">rostopic pub -1 /rrbot/joint1_position_controller/command std_msgs/Float64 "data: 1.5"
+<pre><code class="bash">rostopic pub -1 /rrbot/joint1_position_controller/command std_msgs/Float64 "data: 1.5"
 rostopic pub -1 /rrbot/joint2_position_controller/command std_msgs/Float64 "data: 1.0"
 </code></pre>
+
+<p>もちろん、上記のコマンドを送る前に、以下のコマンドでシミュレーションとコントローラが起動していることが前提です。:</p>
+
+<pre><code class="bash">roslaunch rrbot_gazebo rrbot_world.launch
+roslaunch rrbot_control rrbot_control.launch 
+</code></pre>
+
+<p>コマンドを送ると、以下のように、２つのジョイントが一定の場所で静止するはずです。
+<img src="/images/2015-02-21-gazebo-ros-control/rostopic-test-1.png" alt="rostopic-test-1" /></p>
 
 <h3>コマンドの送信のためのRQTを使う</h3>
 
 <p>このセクションでは、あなたのコントローラのパフォーマンスを視覚的に表示し、コントローラが持つであろうゲイン(一部にはPIDゲインも)やパラメータを調整するのを助けるツールについて見てゆきます。また、ROSの<code>plugin-based</code>なユーザーインターフェースである<a href="http://www.ros.org/wiki/rqt">RQT</a>を使います。なので、まずはそれがインストールされていることを確認しておいてください。<br/>
-RQTを起動する:</p>
+シミュレーションと<code>ros_control</code>を起動したまま、RQTを起動してください。:</p>
 
 <pre><code class="bash">rosrun rqt_gui rqt_gui
 </code></pre>
 
+<p>すると、以下のような画面が開いたはずです。
+<img src="/images/2015-02-21-gazebo-ros-control/rqt_gui-1.png" alt="rqt_gui-1" /></p>
+
 <h4>コマンドpublisherを追加する</h4>
 
-<p><code>Publisher</code>プラグインを追加し、あなたがpublishしたいそれぞれのコントローラを命令するドロップダウンボックスからトピックを選択してください。RRBotの場合、以下のコントローラを追加してください。:</p>
+<p>以下キャプチャ画面を参考にして、<code>Publisher</code>プラグインを追加し、あなたがpublishしたいそれぞれのコントローラを命令するドロップダウンボックスからトピックを選択してください。RRBotの場合、下記のコントローラを追加してください。:</p>
 
 <pre><code>/rrbot/joint1_position_controller/command
 </code></pre>
 
-<p>できたら、緑色のプラスの形をしたボタンを押してください。<br/>
- トピック名の左にあるチェックボックスを調べ、トピックpublisherを有効にしてください。<code>rate</code>の値を100に設定してください。(これはコマンドを送る周波数です。つまり、今回は100 [Hz]ということです)<br/>
-続いて、データを生の状態で確認するために、トピックを実行してください。生データが再生されている途中で、<code>join1</code>の<code>joint limits</code>のラジアンの値を変えてみてください。ただし、 RRBotの例ではジョイントは連続であるので、<code>joint limits</code>は存在しませんなので、どんな値を入れても動きます。もしこのチュートリアルを行っているなら、RRBotをいろいろな位置に振ることができるようになるはずです。<br/>
-続いて、同じ状態のボックスの中で、サイン波を使って自動で値を変えます。以下を追加してください。:</p>
+<p><img src="/images/2015-02-21-gazebo-ros-control/rqt_gui-2.png" alt="rqt_gui-2" />
+<img src="/images/2015-02-21-gazebo-ros-control/rqt_gui-3.png" alt="rqt_gui-3" /></p>
+
+<ul>
+<li>完了したら、緑色のプラスの形をしたボタンを押してください。</li>
+<li>トピック名の左にあるチェックボックスをクリックし、トピックpublisherを有効にしてください。</li>
+<li>できたら、<code>rate</code>の値を100に設定してください。(これはコマンドを送る周波数です。つまり、今回は100 [Hz]ということです)</li>
+<li>続いて、データを生の状態で確認するために、トピックを実行してください。生データが再生されている途中で、<code>join1</code>の<code>expression</code>のラジアンの値を変えてみてください。ただし、 RRBotの例ではジョイントは連続であるので、<code>joint limits</code>は存在しませんので、どんな値を入れても動きます。もしこのチュートリアルを行っているなら、RRBotをいろいろな位置に振ることができるようになるはずです。</li>
+<li>続いて、同じ状態のボックスの中で、サイン波を使って自動で値を変えます。<code>expression</code>の部分を以下のようにしてみてください。:</li>
+</ul>
+
 
 <pre><code>sin(i/100)
 </code></pre>
 
-<p>さらなる応用的なコントロールのために、ロボットの正確な<code>joint limits</code>にサイン波をpublishするよう構成することができます。:</p>
+<p>うまく行くと、以下の動画のようになっているはずです。</p>
+
+<div class="youtube-container">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/iaHBCLFAz_w" frameborder="0" allowfullscreen></iframe>
+</div>
+
+
+<p>さらなる応用的なコントロールのために、ロボットの正確な<code>expression</code>にサイン波をpublishするよう構成することができます。:</p>
 
 <pre><code>sin(i/rate*speed)*diff + offset
 </code></pre>
 
-<p>変数については、以下のとおりです。:</p>
+<p>ただし、変数については、以下のとおりです。:</p>
 
 <ul>
 <li>i : RQTの時間変数</li>
@@ -349,20 +382,29 @@ RQTを起動する:</p>
 
 <h4>コントローラのパフォーマンスを閲覧する</h4>
 
-<p>プロットプラグインをRQTに追加し、上記で選んだトピックpublisherと同じトピックを追加します。:</p>
+<p>先ほどと同じ手順で、プロットプラグインをRQTに追加し、上記で選んだトピックpublisherと同じトピックを追加します。:</p>
 
 <pre><code>/rrbot/joint1_position_controller/command/data
 </code></pre>
 
 <p>緑色の追加ボタンをクリックしてください。すると、サイン波がスクリーン上にプロットされるのが確認できるはずです。<br/>
-スクリーンは以下のようになっているはずです。</p>
+スクリーンは以下のようになっているはずです。<br/>
+また、他のデータもプロットしてみてください。例として、目標値との偏差をプロットするには、以下のトピックを追加します。:</p>
+
+<pre><code>/rrbot/joint1_position_controller/state/error
+</code></pre>
+
+<p>ここまでできたら、以下の様なグラフが表示されるはずです。尚、以下の画像では、プロットの表示範囲を時間軸方向に広げることで、見やすくしています。<br/>
+<img src="/images/2015-02-21-gazebo-ros-control/rqt_gui-4.png" alt="rqt_gui-4" /></p>
 
 <p><strong>注意 : </strong>RQTのプロットプラグインは、起動した後、しばらく(>1 min)バグが発生することが確認されています。直線が描かれるだけのバグです。現在の解決方法は、プラグイン画面の右上にある、青いリフレッシュボタンを押すことです。</p>
 
 <h4>PIDゲインを調整する</h4>
 
 <p>最終的に、あなたのロボットに適用可能と考えられる、適切で独創的であり、統合されたPIDコントローラゲインのチューニングを行うために、<a href="http://ros.org/wiki/dynamic_reconfigure">dynamic reconfigure</a>を使います。<br/>
-<code>Dynamic Reconfigure</code>プラグインをRQTに追加し、サブオプションを見るために、<strong>Expand All</strong>をクリックしてください。コントローラにPIDを使うなら、<strong>pid</strong>オプションを使ってください。以下のように、5段階のスライダをクリックして、コントローラを調節します。コントローラのパフォーマンスが望みのものとなるまで、値を調整してください。</p>
+これまでと同じように、以下の様なPIDゲインのコントロールウィンドウを表示するために、<code>Dynamic Reconfigure</code>プラグインをRQTに追加し、サブオプションを見るために、<strong>Expand All</strong>をクリックしてください。コントローラにPIDを使うなら、<strong>pid</strong>オプションを使ってください。以下のように、5段階のスライダをクリックして、コントローラを調節します。コントローラのパフォーマンスが望みのものとなるまで、値を調整してください。</p>
+
+<p><img src="/images/2015-02-21-gazebo-ros-control/rqt_gui-5.png" alt="rqt_gui-5" /></p>
 
 <h4>RQTの図を保存するために、roslaunchを使う</h4>
 
@@ -375,14 +417,20 @@ RQTを起動する:</p>
 
 <h3>RvizをGazeboシミュレーションにつなぐ</h3>
 
-<p>シミュレーション中のロボットにコマンドを送るために、<code>ros_control</code>を使う時に、Gazeboからのロボットの姿勢を読むために、<code>ros_control</code>ジョイントステートコントローラを使用することもできます。良いシミュレータの前提的なアイデアはシミュレーションの中でするのと同じように、本物のハードウェア上で同じソフトウェアが使えるということです。そのスタートとなるのは、本物のハードウェアでも同じように使用する、Rvizでシミュレートされるあなたのロボットを可視化することです。<br/>
+<p>シミュレーション中のロボットにコマンドを送るために、<code>ros_control</code>を使う時に、Gazeboからのロボットの姿勢を読むために、<code>ros_control</code>ジョイントステートコントローラを使用することもできます。良いシミュレータの前提的なアイデアはシミュレーションの中でするのと同じように、本物のハードウェア上で同じソフトウェアが使えるということです。そのスタートとなるのは、本物のハードウェアでも同じように使用する、Rviz上でシミュレートされるあなたのロボットを可視化することです。<br/>
 これまで説明してきたような、<code>joint_state_controller</code>を、<code>rosparam</code>や<code>roslaunch</code>ファイルで起動する準備ができているとするなら、次のステップは、Rvizを起動することです。:</p>
 
 <pre><code class="bash">rosrun rviz rviz
 </code></pre>
 
 <p>起こりうるエラーを解決するために、<strong>Global Options</strong>にある<strong>Fixed Frame</strong>を<strong>world</strong>に変更してください。<br/>
-次に<strong>RobotModel</strong>ディスプレイタイプをRvizに追加するとGazeboでシミュレートしているロボットがRvizでも見れるはずです！</p>
+次に<strong>RobotModel</strong>ディスプレイタイプをRvizに追加すると、以下のように、GazeboでシミュレートしているロボットがRvizでも見れるはずです！<br/>
+尚、以下の例ではカメライメージとレーザースキャンのイメージを追加しています。</p>
+
+<div class="youtube-container">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/FOMUt9Gm2NM" frameborder="0" allowfullscreen></iframe>
+</div>
+
 
 <h2>デモコード</h2>
 
