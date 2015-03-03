@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Ubuntu | 九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/blog/categories/ubuntu/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-03-04T05:51:32+09:00</updated>
+  <updated>2015-03-04T06:01:38+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[CIR-KIT Members]]></name>
@@ -359,7 +359,7 @@ catkin_make
 
 <h2>次のステップ</h2>
 
-<p>様々な、Gazebo-ROS間の仕組みについては、<a href="">発展的なROSの統合</a>をご覧ください。</p>
+<p>様々な、Gazebo-ROS間の仕組みについては、<a href="http://cir-kit.github.io/blog/2015/03/04/gazebo-ros-advanced-integration/">発展的なROSの統合</a>をご覧ください。</p>
 ]]></content>
   </entry>
   
