@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Gazebo | 九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/blog/categories/gazebo/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-03-02T21:00:36+09:00</updated>
+  <updated>2015-03-04T04:10:43+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[CIR-KIT Members]]></name>
@@ -12,6 +12,676 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[No.6-8:GazeboをROSに繋ぐ (ROS Communication 編)]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/03/02/gazebo-ros-communication/"/>
+    <updated>2015-03-02T21:11:56+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/03/02/gazebo-ros-communication</id>
+    <content type="html"><![CDATA[<p><img src="/images/gazebo_logo.png" alt="gazebo_logo" /></p>
+
+<h5>検証日時</h5>
+
+<p>02/22/2015 (Sun)</p>
+
+<h5>概要</h5>
+
+<p>Gazeboのチュートリアル第六弾「Connect to ROS」。
+ROSはロボットの制御フレームワークです。このチュートリアルでは、GazeboとROSのインターフェースについて説明します。
+今回はその「ROS Communication」編です。
+公式サイトを適当に翻訳しただけですので、あしからず。</p>
+
+<h5>レベル</h5>
+
+<p><strong>INTERMEDIATE</strong></p>
+
+<!-- more -->
+
+
+<h5>環境</h5>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> <strong>PC</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Prosessor</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>RAM</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>OS</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Kernel</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> 3.13.0-44-generic </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Gazebo</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Version 5.0.1 </td>
+</tr>
+</tbody>
+</table>
+
+
+<h5>参考</h5>
+
+<p><a href="http://gazebosim.org/tutorials?cat=connect_ros">GAZEBO Tutorial-Connect to ROS</a></p>
+
+<h2>チュートリアル : ROS Communication</h2>
+
+<p>Gazeboはユーザにシミュレートされたworldの様々な角度を取得したり修正したりできるROSのAPIを提供しています。以下のセクションでは、シミュレーションのworldと物体を操るための効果について説明します。GazeboのためのROSメッセージとサービスの完全なリストはこのチュートリアルに書いてあります。</p>
+
+<h2>必要条件</h2>
+
+<p>これから説明する例を実行していきたいなら、RRBotのセットアップは、<a href="http://cir-kit.github.io/blog/2015/02/17/gazebo-urdf-in-gazebo/">GazeboにおけるURDF</a>のチュートリアルで述べているということを念頭に置いてください。このチュートリアルでは、いろいろな方法を使ってコーラの缶を<strong>蹴ります</strong>。<br/>
+また、Gazeboが以下のコマンドですでにlaunchされていると仮定して話を進めます。:</p>
+
+<pre><code class="bash">roscore &amp;
+rosrun gazebo_ros gazebo
+</code></pre>
+
+<p>ただし、これから紹介するコマンドを打った後に、Gazeboを再起動する必要があるかもしれません。</p>
+
+<h2><code>gazeborosapi_plugin</code>について</h2>
+
+<p><code>gazeboros</code>パッケージと共に配置されている<code>gazeborosapi_plugin</code>は、<code>gazebo</code>と呼ばれるROSのノードを初期化します。これは、これから説明する様なROSのインターフェースを供給するために、ROSコールバックスケジュラー(<code>message passing</code>)とGazeboのインターナショナルスケジュラーを統合しています。このROSのAPIはユーザーがROSを超えたシミュレーション環境の詳細を扱うのと同じように、環境のモデルの姿勢の内観とスポーンを行うことを可能にします。<br/>
+また、このプラグインは<code>gzserver</code>によってのみ読み込まれます。</p>
+
+<h2><code>gazeborospaths_plugin</code>について</h2>
+
+<p>２つ目の<code>gazeborospath_plugin</code>という名前のプラグインはGazeboがROSリソースを探す(例えば、ROSパッケージのパス名を解決する)ことを可能にする<code>gazebo ros</code>パッケージの中で利用可能です。<br/>
+このプラグインは<code>gzserver</code>と<code>gzclient</code>の両方によって読み込まれます。</p>
+
+<h2>Gazeboのpublishしたパラメータ</h2>
+
+<p>Parameters</p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> 名前 </th>
+<th style="text-align:center;"> 型 </th>
+<th style="text-align:center;"> 説明 </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> /usesimtime </td>
+<td style="text-align:center;"> Bool </td>
+<td style="text-align:center;"> ROSがpublishされたROS timeのための<code>/clock</code>トピックを使うかどうか定義します </td>
+</tr>
+</tbody>
+</table>
+
+
+<p>Gazeboは、もしシミュレーション時間が<code>/usertime</code>パラメータに使用されるべきなら、他のアプリケーション(とりわけRviz)を定義するためにROSパラメータサーバーを使用します。これは、あなたが<code>gazebo_ros</code>を起動した時に、Gazeboが自動で設定すべきことです。<br/>
+もし、ROSシステムをシミュレーション同期時間と共に提供するために、<code>gazebo_ros</code>がROSの<code>/clock</code>トピックをpublishしているなら、<code>usesimtime</code>は<code>true</code>です。シミュレーション時間については<a href="http://www.ros.org/wiki/roscpp/Overview/Time">ROS C++ Time</a>をご覧ください。</p>
+
+<h3>値をクリックする</h3>
+
+<p>パラメータに何が設定されているか見るためには、以下のコマンドを実行してください。:</p>
+
+<pre><code class="bash">rosparam get /use_sim_time 
+</code></pre>
+
+<h2>Gazeboが購読するトピック</h2>
+
+<p>Topics</p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> 名前 </th>
+<th style="text-align:center;"> 型 </th>
+<th style="text-align:center;"> 説明 </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> ~/setlinkstate </td>
+<td style="text-align:center;">gazebomsgs/LinkState </td>
+<td style="text-align:center;"> リンクの姿勢(<code>pose/twist</code>)を設定します。</td>
+</tr>
+<tr>
+<td style="text-align:center;"> ~/setmodelstate </td>
+<td style="text-align:center;">gazebomsgs/ModelState </td>
+<td style="text-align:center;"> モデルの姿勢(<code>pose/twist</code>)を設定します。</td>
+</tr>
+</tbody>
+</table>
+
+
+<h3>トピックを通じたシミュレーションにおけるモデルのPoseとTwist</h3>
+
+<p><a href="http://www.ros.org/wiki/Topics">Topics</a>は<code>pose</code>の設定動作が完了するのを待つことなく、迅速にモデルの<code>pose</code>と<code>twist</code>を設定するのに使うことができます。そのようにするために、求められる<a href="http://www.ros.org/doc/api/gazebo/html/msg/ModelState.html">model state message</a>を<code>/gazebo/setmodelstate</code>トピックにpublishします。例えば、<code>topics</code>を通じて<code>pose</code>の設定をテストするために、オンラインデータベースからモデルをスポーンさせてコーラの缶をシミュレーションに追加します。:</p>
+
+<pre><code class="bash">rosrun gazebo_ros spawn_model -database coke_can -gazebo -model coke_can -y 1
+</code></pre>
+
+<p>そして<code>/gazebo/setmodelstate</code>トピックにpublishすることで、コーラの缶の姿勢を設定します。:</p>
+
+<pre><code class="bash">rostopic pub -r 20 /gazebo/set_model_state gazebo_msgs/ModelState '{model_name: coke_can, pose: { position: { x: 1, y: 0, z: 2 }, orientation: {x: 0, y: 0.491983115673, z: 0, w: 0.870604813099 } }, twist: { linear: { x: 0, y: 0, z: 0 }, angular: { x: 0, y: 0, z: 0}  }, reference_frame: world }'
+</code></pre>
+
+<p>すると以下のように、蹴ってくれと言わんばかりに(まあ、今から蹴るんですが)RRBotの前にコーラの缶が浮いているのを確認できるはずです。<br/>
+ただし、以下のように、RRBotを追加するため、これまでに説明したroslaunchを使っています。:</p>
+
+<pre><code class="bash">roslaunch rrbot_gazebo rrbot_world.launch
+</code></pre>
+
+<p><img src="/images/2015-03-02-gazebo-ros-communication/rrbot-test-1.png" alt="rrbot-test-1" /></p>
+
+<h2>Gazeboがpuvlishするトピック</h2>
+
+<p>Topics</p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> 名前 </th>
+<th style="text-align:center;"> 型 </th>
+<th style="text-align:center;"> 説明 </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> /clock </td>
+<td style="text-align:center;">rosgraphmsgs/Clock </td>
+<td style="text-align:center;"> シミュレーション時間を<code>/usertime</code>パラメータと共にpublishします。</td>
+</tr>
+<tr>
+<td style="text-align:center;"> ~/linkstates </td>
+<td style="text-align:center;">gazebomsgs/LinkStates </td>
+<td style="text-align:center;"> シミュレーション中のすべてのリンクの状態をpublishします。</td>
+</tr>
+<tr>
+<td style="text-align:center;"> ~/modelstates </td>
+<td style="text-align:center;">gazebo_msgs/ModelStates </td>
+<td style="text-align:center;"> シミュレーション中のすべてのモデルの状態をpublishします。</td>
+</tr>
+</tbody>
+</table>
+
+
+<h3>Topicを使ってモデルとリンクの姿勢を訂正する</h3>
+
+<p>Gazeboはworld座標系に関するシミュレーション中の物体のposeとtwistの情報を含む、<code>/gazebo/linkstates</code>と<code>/gazebo/modelstates</code>トピックをpublishしています。これらの挙動は、以下のコマンドを実行することで確認できます。</p>
+
+<pre><code class="bash">rostopic echo -n 1 /gazebo/model_states
+</code></pre>
+
+<p>もしくは</p>
+
+<pre><code class="bash">rostopic echo -n 1 /gazebo/link_states
+</code></pre>
+
+<p>繰り返すには、<code>link</code>が慣性、外観、衝突プロパティの定義された剛体として定義される必要があります。一方、<code>model</code>はリンクとジョイントの衝突要素として定義されます。<code>model</code>の状態は標準的な<code>link</code>の状態であります。URDFが木構造で与えられており、モデルのカノニカルリンクは自身のルートリンクによって定義されます。</p>
+
+<h2>サービス : シミュレーション中のモデルの削除と作成</h2>
+
+<p>以下のサービスでは、シミュレーション中のモデルを削除したり作成したりできます。:</p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> 名前 </th>
+<th style="text-align:center;"> 型 </th>
+<th style="text-align:center;"> 説明 </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> ~/spawnurdfmodel </td>
+<td style="text-align:center;">gazebomsgs/SpawnModel </td>
+<td style="text-align:center;"> Universal Robotic Description Format (URDF)をスポーンするために、このサービスを使います。</td>
+</tr>
+<tr>
+<td style="text-align:center;"> ~/spawnsdfmodel </td>
+<td style="text-align:center;">gazebomsgs/SpawnModel </td>
+<td style="text-align:center;"> Gazeboに記述されるSimulmulation Description Format (SDF)モデルをスポーンするために、このサービスを使います。</td>
+</tr>
+<tr>
+<td style="text-align:center;"> ~/deletemodel </td>
+<td style="text-align:center;">gazebomsgs/DeleteModel </td>
+<td style="text-align:center;"> シミュレーションからモデルを削除することができます。</td>
+</tr>
+</tbody>
+</table>
+
+
+<h3>モデルをスポーンする</h3>
+
+<p><code>spawnmodel</code>と呼ばれるスクリプトはモデルの<code>gazeboros</code>によって呼び出されるスポーンサービスをコールするために提供されています。モデルをサービスコールを使ってスポーンするための最も実践的な方法は<code>roslaunch</code>ファイルを使うことです。詳細は、<a href="http://cir-kit.github.io/blog/2015/02/15/gazebo-using-roslaunch/">roslaunchを使う</a>というチュートリアルに書いてあります。URDFやSDFをGazeboに追加するために<code>spawn_model</code>を使う方法はたくさんあります。以下はそのうちのいくつかの例です。:<br/>
+URDFをファイルからスポーンする - まず最初に<code>.Xacro</code>ファイルを<code>.xml</code>ファイルに変換し、スポーンします。:</p>
+
+<pre><code class="bash">rosrun xacro xacro `rospack find rrbot_description`/urdf/rrbot.xacro &gt;&gt; `rospack find rrbot_description`/urdf/rrbot.xml
+rosrun gazebo_ros spawn_model -file `rospack find rrbot_description`/urdf/rrbot.xml -urdf -y 1 -model rrbot1 -robot_namespace rrbot1
+</code></pre>
+
+<p><code>roslaunch</code>と<code>xacro</code>を使ったパラメータサーバーからのURDF: <a href="http://cir-kit.github.io/blog/2015/02/15/gazebo-using-roslaunch/">roslaunchを使う</a>をご覧ください。<br/>
+ローカルモデルデータベースからのSDF:</p>
+
+<pre><code class="bash">rosrun gazebo_ros spawn_model -file `echo $GAZEBO_MODEL_PATH`/coke_can/model.sdf -sdf -model coke_can1 -y 0.2 -x -0.3
+</code></pre>
+
+<p>オンラインモデルデータベースからのSDF:</p>
+
+<pre><code class="bash">rosrun gazebo_ros spawn_model -database coke_can -sdf -model coke_can3 -y 2.2 -x -0.3
+</code></pre>
+
+<p>名前空間、<code>trimesh</code>プロパティ、ジョイントポジション、RPYオリエンテーションを含む<code>spawn_model</code>のための利用可能な引数をすべて見るには、以下を実行してください。:</p>
+
+<pre><code class="bash">rosrun gazebo_ros spawn_model -h
+</code></pre>
+
+<h3>モデルを削除する</h3>
+
+<p>すでにGazeboの中にあるモデルの削除は、物体に与えたモデルの名前を覚えている限りは簡単です。もし、RRBotを前のセクションで記述したように、<code>rrbot1</code>と名付けているなら、以下のコマンドでそれを削除できます。:</p>
+
+<pre><code class="bash">rosservice call gazebo/delete_model '{model_name: rrbot1}'
+</code></pre>
+
+<h2>サービス : 状態とプロパティのセッティング</h2>
+
+<p>以下のサービスでは、シミュレーション中の物体やシミュレーションについての状態やプロパティの情報を設定することができます。:</p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> 名前 </th>
+<th style="text-align:center;"> 型 </th>
+<th style="text-align:center;"> 説明 </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> ~/setlinkproperties </td>
+<td style="text-align:center;">gazebomsgs/SetLinkProperties</td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align:center;"> ~/setphysicsproperties </td>
+<td style="text-align:center;">gazebomsgs/SetPhysicsProperties</td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align:center;"> ~/setmodelstate </td>
+<td style="text-align:center;">gazebomsgs/SetModelState</td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align:center;"> ~/setmodelconfiguration </td>
+<td style="text-align:center;">gazebomsgs/SetModelConfiguration </td>
+<td style="text-align:center;"> モデルのジョイントポジションをダイナミクスなしで設定できるようになります。</td>
+</tr>
+<tr>
+<td style="text-align:center;"> ~/setjointproperties </td>
+<td style="text-align:center;">gazebomsgs/SetJointProperties</td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align:center;"> ~/setlinkstate </td>
+<td style="text-align:center;">gazebomsgs/SetLinkState</td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align:center;"> ~/setlinkstate </td>
+<td style="text-align:center;">gazebomsgs/LinkState</td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align:center;"> ~/setmodelstate </td>
+<td style="text-align:center;">gazebomsgs/ModelState</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+
+<h3>モデルの姿勢を設定する例</h3>
+
+<p><code>/gazebo/setmodelstate</code>サービスを使い、RRBotでコーラの缶を蹴ってみましょう !<br/>
+もし、まだシミュレーションにコーラの缶を追加していないのなら、以下のコマンドを実行してください。:</p>
+
+<pre><code class="bash">rosrun gazebo_ros spawn_model -database coke_can -gazebo -model coke_can -y 1
+</code></pre>
+
+<p>これは、Gazeboもしくはオンラインモデルデータベース(インターネット接続が必要です)を通じて利用可能になるようパッケージされていなければなりません。尚、コーラの缶がどこにあっても問題はありません。<br/>
+続いて、コーラの缶をRRBotのポジションに動かすためのサービスリクエストをコールしましょう。:</p>
+
+<pre><code class="bash">rosservice call /gazebo/set_model_state '{model_state: { model_name: coke_can, pose: { position: { x: 0.3, y: 0.2 ,z: 0 }, orientation: {x: 0, y: 0.491983115673, z: 0, w: 0.870604813099 } }, twist: { linear: {x: 0.0 , y: 0 ,z: 0 } , angular: { x: 0.0 , y: 0 , z: 0.0 } } , reference_frame: world } }'
+</code></pre>
+
+<p>すると、以下のようになるはずです。</p>
+
+<p><img src="/images/2015-03-02-gazebo-ros-communication/rrbot-test-2.png" alt="rrobt-test-2" /></p>
+
+<p>続いて、RRBotを以下のコマンドを使って動かしてみましょう。</p>
+
+<pre><code class="bash">rosservice call /gazebo/set_model_state '{model_state: { model_name: rrbot, pose: { position: { x: 1, y: 1 ,z: 10 }, orientation: {x: 0, y: 0.491983115673, z: 0, w: 0.870604813099 } }, twist: { linear: {x: 0.0 , y: 0 ,z: 0 } , angular: { x: 0.0 , y: 0 , z: 0.0 } } , reference_frame: world } }'
+</code></pre>
+
+<p>うまく行けば、コーラの缶がどこかに飛んでゆくでしょう。(゜Д゜)ノ&#8221;<br/>
+うまいう行かなかったら、やり直してみましょう。これはチュートリアルなんですから。<br/>
+ちなみに、以下の動画みたいになります。以下の動画では、缶が転がってます。私も何回かやりましたが、缶が気持ちよく飛んでゆくこともありましたw</p>
+
+<p>&lt; div class=&ldquo;youtube-container&rdquo;></p>
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/A8tGFOlgRdg" frameborder="0" allowfullscreen></iframe>
+
+
+<p></div></p>
+
+<h2>サービス : 状態とプロパティの取得</h2>
+
+<p>以下のサービスでは、シミュレーション中の物体やシミュレーションについての状態やプロパティの情報を取得することができます。:</p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> 名前 </th>
+<th style="text-align:center;"> 型 </th>
+<th style="text-align:center;"> 説明 </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> ~/getmodelproperties </td>
+<td style="text-align:center;">gazebomsgs/GetModelProperties</td>
+<td style="text-align:center;"> シミュレーション中のモデルのプロパティを返します。</td>
+</tr>
+<tr>
+<td style="text-align:center;"> ~/getmodelstate </td>
+<td style="text-align:center;">gazebomsgs/GetModelState </td>
+<td style="text-align:center;"> シミュレーション中のモデルの状態を返します。</td>
+</tr>
+<tr>
+<td style="text-align:center;"> ~/getworldproperties </td>
+<td style="text-align:center;">gazebomsgs/GetWorldProperties </td>
+<td style="text-align:center;"> シミュレーションworldのプロパティを返します。</td>
+</tr>
+<tr>
+<td style="text-align:center;"> ~/getjointproperties </td>
+<td style="text-align:center;">gazebomsgs/GetJointProperties </td>
+<td style="text-align:center;"> シミュレーション中のジョイントのプロパティを返します。</td>
+</tr>
+<tr>
+<td style="text-align:center;"> ~/getlinkproperties </td>
+<td style="text-align:center;">gazebomsgs/GetLinkProperties </td>
+<td style="text-align:center;"> シミュレーション中のリンクのプロパティを返します。</td>
+</tr>
+<tr>
+<td style="text-align:center;"> ~/getlinkstate </td>
+<td style="text-align:center;">gazebomsgs/GetLinkState </td>
+<td style="text-align:center;"> シミュレーション中のリンクの状態を返します。</td>
+</tr>
+<tr>
+<td style="text-align:center;"> ~/getphysicsproperties </td>
+<td style="text-align:center;">gazebomsgs/GetPhysicsProperties </td>
+<td style="text-align:center;"> シミュレーション中で使用される物理エンジンのプロパティを返します。</td>
+</tr>
+<tr>
+<td style="text-align:center;"> ~/linkstates </td>
+<td style="text-align:center;">gazebomsgs/LinkStates </td>
+<td style="text-align:center;"> world座標の完全なリンクの状態をpublishします。</td>
+</tr>
+<tr>
+<td style="text-align:center;"> ~/modelstates </td>
+<td style="text-align:center;">gazebo_msgs/ModelStates </td>
+<td style="text-align:center;"> world座標の完全なモデルの状態をpublishします。</td>
+</tr>
+</tbody>
+</table>
+
+
+<h2>注意</h2>
+
+<p>Gazebo中のリンクの名前は<code>modelname::body_name</code>の名前表記にスコープされます。</p>
+
+<h3>モデルの状態を取得する例</h3>
+
+<p>さて、すでにコーラの缶を<strong>蹴った</strong>ことでしょう。今度は、それがどのくらい飛んだのか知りたいですね。これまでの例を使い(同じシミュレーションを実行して)、以下のサービスコールを使ってコーラの缶の<code>pose</code>と<code>twist</code>を取得しましょう。:</p>
+
+<pre><code class="bash">rosservice call gazebo/get_model_state '{model_name: coke_can}'
+</code></pre>
+
+<p>この結果は、ロボットの蹴った具合によって変わりますが、以下のような感じになるはずです。:</p>
+
+<pre><code class="bash">pose: 
+  position: 
+    x: -33.4741996929
+    y: 1.72965811349
+    z: 0.0715116701823
+  orientation: 
+    x: 0.52144600413
+    y: 0.478438115917
+    z: -0.471063379854
+    w: -0.526583636448
+twist: 
+  linear: 
+    x: 5.74579911953e-07
+    y: 0.000217124920081
+    z: 9.67915822705e-06
+  angular: 
+    x: -0.0029562892652
+    y: 7.77750570372e-06
+    z: 4.16767016512e-05
+success: True
+</code></pre>
+
+<p>私のロボットは 33 [m]飛ばしました。あなたのはどうでしたか ?</p>
+
+<h3>シミュレーションworldとオブジェクトプロパティを取得する</h3>
+
+<p>以下のコマンドで、worldの中のモデルのリスト(<code>ground_plane</code>, <code>coke cane</code>, <code>rrbot</code>)を取得することができます。:</p>
+
+<pre><code class="bash">rosservice call gazebo/get_world_properties
+</code></pre>
+
+<p>すると、以下のような結果が得られるはずです。</p>
+
+<pre><code class="bash">sim_time: 59.62
+model_names: ['ground_plane', 'rrbot', 'coke_can']
+rendering_enabled: True
+success: True
+status_message: GetWorldProperties: got properties
+</code></pre>
+
+<p>また、以下のコマンドで特定のモデルの詳細を取得できます。</p>
+
+<pre><code class="bash">rosservice call gazebo/get_model_properties '{model_name: rrbot}'
+</code></pre>
+
+<p>すると、以下の様な結果が得られるはずです。</p>
+
+<pre><code class="bash">parent_model_name: ''
+canonical_body_name: ''
+body_names: ['link1', 'link2', 'link3']
+geom_names: ['link1_collision', 'link2_collision', 'link3_collision', 'link3_collision_camera_link', 'link3_collision_hokuyo_link']
+joint_names: ['fixed', 'joint1', 'joint2']
+child_model_names: []
+is_static: False
+success: True
+status_message: GetModelProperties: got properties
+</code></pre>
+
+<h2>サービス : 力のコントロール</h2>
+
+<p>以下のサービスでは、シミュレーション中のボディやジョイントへの力とねじりを適用することができます。</p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> 名前 </th>
+<th style="text-align:center;"> 型 </th>
+<th style="text-align:center;"> 説明 </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> ~/applybodywrench </td>
+<td style="text-align:center;">gazebomsgs/ApplyBodyWrench </td>
+<td style="text-align:center;"> シミュレーション中のボディにねじりを適用します。同じボディに適用されるすべてのアクティブなねじりは累積します。</td>
+</tr>
+<tr>
+<td style="text-align:center;"> ~/applyjointeffort </td>
+<td style="text-align:center;">gazebomsgs/ApplyJointEffort </td>
+<td style="text-align:center;"> シミュレーション中のジョイントへの力を適用します。同じジョイントに適用されるすべてのアクティブな力は累積します。</td>
+</tr>
+<tr>
+<td style="text-align:center;"> ~/clearjointforces </td>
+<td style="text-align:center;">gazebomsgs/ClearJointForces </td>
+<td style="text-align:center;"> ジョイントへ適用されている力をクリアします。</td>
+</tr>
+<tr>
+<td style="text-align:center;"> ~/clearbodywrenches </td>
+<td style="text-align:center;">gazebomsgs/ClearBodyWrenches </td>
+<td style="text-align:center;"> ボディへ適用されているねじりをクリアします。</td>
+</tr>
+</tbody>
+</table>
+
+
+<h3>ねじりをリンクに適用する</h3>
+
+<p>Gazeboのボディへのねじりの適用を説明するために、重力をなくして物体をスポーンさせてみましょう。すでにコーラの缶が追加されていることを確認してください。:</p>
+
+<pre><code class="bash">rosrun gazebo_ros spawn_model -database coke_can -gazebo -model coke_can -y 1
+</code></pre>
+
+<p>続いて、<code>/gazebo/setphysicsproperties</code>サービスコールを送り、すべての軸の重力をなくしましょう。:</p>
+
+<p>Then to turn off gravity send a service call to /gazebo/setphysicsproperties with no gravity in any of the axis:</p>
+
+<pre><code class="bash">rosservice call /gazebo/set_physics_properties "
+time_step: 0.001
+max_update_rate: 1000.0
+gravity: 
+  x: 0.0
+  y: 0.0
+  z: 0.0
+ode_config: 
+  auto_disable_bodies: False
+  sor_pgs_precon_iters: 0
+  sor_pgs_iters: 50
+  sor_pgs_w: 1.3
+  sor_pgs_rms_error_tol: 0.0
+  contact_surface_layer: 0.001
+  contact_max_correcting_vel: 100.0
+  cfm: 0.0
+  erp: 0.2
+  max_contacts: 20"
+</code></pre>
+
+<p><code>/gazebo/applybodywerch</code>サービスを呼び、コーラの缶の原点に１秒間、0.01 [Nm]のトルクを適用しましょう。すると、コーラの缶が、X軸に対して正の方向にスピンするのが確認できるはずです。:</p>
+
+<pre><code class="bash">rosservice call /gazebo/apply_body_wrench '{body_name: "coke_can::link" , wrench: { torque: { x: 0.01, y: 0 , z: 0 } }, start_time: 10000000000, duration: 1000000000 }'
+</code></pre>
+
+<p>今度は、コーラの缶の原点に1秒間、-0.01 [Nm]のトルクを適用し、缶の回転を止めましょう。:</p>
+
+<pre><code class="bash">rosservice call /gazebo/apply_body_wrench '{body_name: "coke_can::link" , wrench: { torque: { x: -0.01, y: 0 , z: 0 } }, start_time: 10000000000, duration: 1000000000 }'
+</code></pre>
+
+<p>通常、負のトルクは、曖昧な定義であることが多いです。すべてのアクティブなねじりをボディに適用するには、以下のようなコマンドを実行してください。:</p>
+
+<pre><code class="bash">rosservice call /gazebo/clear_body_wrenches '{body_name: "coke_can::link"}'
+</code></pre>
+
+<h3>シミュレーション中のジョイントに力を適用する</h3>
+
+<p>ジョイントにトルクを適用するために、<code>/gazebo/applyjointeffort</code>をコールしてください。:</p>
+
+<pre><code class="bash">rosservice call /gazebo/apply_joint_effort "joint_name: 'joint2'
+effort: 10.0
+start_time:
+  secs: 0
+  nsecs: 0
+duration:
+  secs: 10
+  nsecs: 0"
+</code></pre>
+
+<p>するとリンクが回り始めるはずです。<br/>
+特定のジョイントの力をクリアするためには、以下のコマンドをコールしてください。:</p>
+
+<pre><code class="bash">rosservice call /gazebo/clear_joint_forces '{joint_name: joint2}'
+</code></pre>
+
+<h2>サービス : シミュレーションコントロール</h2>
+
+<p>以下のサービスでは、シミュレーション中の物理エンジンを一時停止したり解除したリアできます。:</p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> 名前 </th>
+<th style="text-align:center;"> 型 </th>
+<th style="text-align:center;"> 説明 </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> ~/pausephysics </td>
+<td style="text-align:center;">stdsrvs/Empty </td>
+<td style="text-align:center;"> 物理エンジンのアップデートを一時停止します。</td>
+</tr>
+<tr>
+<td style="text-align:center;"> ~/unpausephysics </td>
+<td style="text-align:center;">stdsrvs/Empty </td>
+<td style="text-align:center;"> 物理エンジンのアップデートを再開します。</td>
+</tr>
+<tr>
+<td style="text-align:center;"> ~/resetsimulation </td>
+<td style="text-align:center;">stdsrvs/Empty </td>
+<td style="text-align:center;"> モデルのポーズをリセットします。</td>
+</tr>
+<tr>
+<td style="text-align:center;"> ~/resetworld </td>
+<td style="text-align:center;">stdsrvs/Empty </td>
+<td style="text-align:center;"> 時間を含むすべてのシミュレーションをリセットします。</td>
+</tr>
+</tbody>
+</table>
+
+
+<h3>物理エンジンのアップデートを一時停止する</h3>
+
+<p>飛んでゆくコーラの缶のナイスなスクリーンショットを撮りたいとしましょう。いや、そうだと言ってください。そんな時には、以下のコマンドをコールすることで、物理エンジンを一時停止することができます。:</p>
+
+<pre><code class="bash">rosservice call gazebo/pause_physics
+</code></pre>
+
+<p>シミュレーションが一時停止するとき、シミュレーション時間が停止し、物体も静的になります。しかし、Gazeboの内部アップデートループ(カスタムのダイナミクスプラグインアップデートなど)は依然として動いており、シミュレーション時間は変わっていません。これは、シミュレーションタイムをアップデートしないことで抑制されているのです。シミュレーションを再開するために、以下のコマンドをコールして物理エンジンを再開してください。:</p>
+
+<pre><code class="bash">rosservice call gazebo/unpause_physics
+</code></pre>
+
+<h2>次のステップ</h2>
+
+<p>Gazeboのための独自のROSプラグインの作り方について学んでください。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[No.6-7:GazeboをROSに繋ぐ (ROS Control 編)]]></title>
@@ -438,7 +1108,7 @@ roslaunch rrbot_control rrbot_control.launch
 
 <h2>次のステップ</h2>
 
-<p><a href="">ROSコミュニケーションをGazeboと使う</a>というチュートリアルの中でGazeboとともに使うことのできるROSメッセージコールとサービスコールについて学んでください。</p>
+<p><a href="http://cir-kit.github.io/blog/2015/03/202/gazebo-ros-communication/">ROS Communication</a>というチュートリアルの中でGazeboとともに使うことのできるROSメッセージコールとサービスコールについて学んでください。</p>
 ]]></content>
   </entry>
   
@@ -2204,357 +2874,6 @@ rosrun gazebo_ros spawn_model -file `rospack find baxter_description`/urdf/baxte
 <h4>次のステップ</h4>
 
 <p>ここまでで、Gazeboやworldファイル、そしてURDFモデルを起動するroslaunchの作り方を学びました。チュートリアルを通して、<a href="">GazeboでURDFを使う</a>ことで、あなた独自のGazebo-ready URDFモデルを作成する準備が出来ました。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[No.6-3:GazeboをROSに繋ぐ (Gazebo_ros_pkgsをインストールする 編)]]></title>
-    <link href="http://cir-kit.github.io/blog/2015/02/14/gazebo-installing-gazebo-ros-pkgs/"/>
-    <updated>2015-02-14T21:33:12+09:00</updated>
-    <id>http://cir-kit.github.io/blog/2015/02/14/gazebo-installing-gazebo-ros-pkgs</id>
-    <content type="html"><![CDATA[<p><img src="/images/gazebo_logo.png" alt="gazebo_logo" /></p>
-
-<h5>検証日時</h5>
-
-<p>02/14/2015 (Sat)</p>
-
-<h5>概要</h5>
-
-<p>Gazeboのチュートリアル第六弾「Connect to ROS」。<br/>
-ROSはロボットの制御フレームワークです。このチュートリアルでは、GazeboとROSのインターフェースについて説明します。<br/>
-今回はその「Installing gazebo_ros_pkgs」編です。<br/>
-公式サイトを適当に翻訳しただけですので、あしからず。</p>
-
-<h5>レベル</h5>
-
-<p><strong>INTERMEDIATE</strong></p>
-
-<!-- more -->
-
-
-<h5>環境</h5>
-
-<table>
-<thead>
-<tr>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center;"> <strong>PC</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Prosessor</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>RAM</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>OS</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Kernel</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> 3.13.0-44-generic </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Gazebo</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Version 5.0.1 </td>
-</tr>
-</tbody>
-</table>
-
-
-<h5>参考</h5>
-
-<p><a href="http://gazebosim.org/tutorials?cat=connect_ros">GAZEBO Tutorial-Connect to ROS</a></p>
-
-<h2>はじめに</h2>
-
-<p>GazeboのインターフェースのためのROSパッケージのセットは、<code>gazebo_ros_pkgs</code>という名前の新しいメタパッケージで構成されています。続きを読む前に、前提情報として、<a href="http://cir-kit.github.io/blog/2015/02/14/gazebo-ros-overview/">ROSの統合についての概要</a>をご覧ください。<br/>
-これらの説明は、<a href="http://www.ros.org/wiki/hydro">ROS Hydro</a>と<a href="http://www.ros.org/wiki/indigo">Ros Indigo</a>と完全に統合されたGazeboのバージョンを使用するためのものです。チュートリアルを始める前に、<a href="http://cir-kit.github.io/blog/2015/02/14/gazebo-which-combination-of-ros-and-gazebo-versions-to-use/">どのGazebo/ROSのバージョンの組み合わせを使うか</a>をまず読むことをおすすめします。必要に応じて、それに応えるインストール方法が必要となります。</p>
-
-<h2>必須条件</h2>
-
-<p>ROSのコンセプトについて<a href="http://www.ros.org/wiki/ROS/Tutorials">ROSチュートリアル</a>を通じて理解しておく必要があります。</p>
-
-<h3>ROSをインストールする</h3>
-
-<p>ROSの統合チュートリアルのために、(<code>ros-hydro-desktop-full</code>もしくは<code>ros-indigo-desktop-full</code>)インストールをおすすめします。それにより、必要なパッケージを手に入れることができます。<br/>
-詳しくは、<a href="http://www.ros.org/wiki/ROS/Installation">ROSのインストール</a>ページをご覧ください。もちろん、ROSのインストールページの説明に従い、ROSの<code>setup.sh</code>を<code>source</code>コマンドで実行しておいてください。</p>
-
-<h3>Gazeboをインストールする</h3>
-
-<p>ソースコードまたは、プレビルドされたUbuntuのdebianパッケージのどちらを使っても、Gazeboをインストールできます。<br/>
-<a href="http://cir-kit.github.io/blog/2015/01/31/gazebo-install/">Gazeboのインストール</a>をご覧ください。ソースコードからインストールする場合には、<code>gazebo_X.Y</code>ブランチ(X.Yはあなたの必要とするバージョンを指します)をすることを忘れないでください。</p>
-
-<h4>スタンドアローンなGazeboの動作チェックをする</h4>
-
-<p><code>gazebo_ros_pkgs</code>のインストールを行う前に、以下のコマンドをターミナルで入力して、スタンドアローンなGazeboの動作チェックを行うことを忘れないでください。:</p>
-
-<pre><code class="bash">  gazebo
-</code></pre>
-
-<p>空のシミュレーションと、GUIが開くのが確認できるでしょう。また、画面左側の<strong>Insert</strong>タブをクリックし、モデルを選んで(クリックすると、モデルをシミュレーションのどこに置くか決定できます)、シミュレーションに足してください。</p>
-
-<h4>Gazeboのバージョンが正しいことを確認する</h4>
-
-<p>Gazeboがどこにインストールされているか探し、それが正しい位置にあるか確かめるために、以下のコマンドを実行してください。:</p>
-
-<pre><code class="bash">  which gzserver
-  which gzclient
-</code></pre>
-
-<p>もし、デフォルトの位置で、ソースコードからインストールしたのなら、結果は以下のようになるはずです。:</p>
-
-<pre><code class="bash">  /usr/local/bin/gzserver
-  /usr/local/bin/gzclient
-</code></pre>
-
-<p>もし、debianパッケージを使用してインストールしたなら、結果は以下のようになるはずです。:</p>
-
-<pre><code class="bash">  /usr/bin/gzserver
-  /usr/bin/gzclient
-</code></pre>
-
-<h2>gazebo_ros_pkgsのインストール</h2>
-
-<p>好きな方法を選んでください。早くて簡単な方法はパッケージからインストールすることです。しかし、ソースコードからインストールすることで、デバックとバグパッチの適用をより簡単にできます。(oω&lt;)</p>
-
-<h3>A. プレビルドDebianパッケージをインストールする</h3>
-
-<p><code>gazebo_ros_pkgs</code>パッケージは以下のそれぞれのバージョンで利用可能です。:</p>
-
-<ul>
-<li><a href="http://ros.org/wiki/hydro">ROS Hydro</a>:</li>
-</ul>
-
-
-<pre><code class="bash">sudo apt-get install ros-hydro-gazebo-ros-pkgs ros-hydro-gazebo-ros-control
-</code></pre>
-
-<ul>
-<li><a href="http://ros.org/wiki/indigo">ROS Indigo</a>:</li>
-</ul>
-
-
-<pre><code class="bash">sudo apt-get install ros-indigo-gazebo-ros-pkgs ros-indigo-gazebo-ros-control
-</code></pre>
-
-<p>もしこのインストール方法がうまく行ったら、このページの下の<strong>ROSの統合環境を使ってGazeboをテストする</strong>に進んでください。</p>
-
-<h3>B. ソースコードからインストールする(Ubuntu)</h3>
-
-<p>もしあなたが、ROSの最新バージョン(Groovy以上)を使用しているなら、ソースコードから<code>gazebo_ros_pkgs</code>をインストールする必要があります。ソースコードからインストールすることは、新しいプラグインを開発したり、パッチを適用したりするときに便利です。</p>
-
-<h4>Catkinワークスペースをセットアップする</h4>
-
-<p>これらのイントロダクションでは<a href="http://www.ros.org/wiki/catkin">catkinビルドシステム</a>を使うことが必要です。<br/>
-もし、まだcatkinワークスペースのセットアップをしていないなら、以下のコマンドを試してみてください。</p>
-
-<pre><code class="bash">mkdir -p ~/catkin_ws/src
-cd ~/catkin_ws/src
-catkin_init_workspace
-cd ~/catkin_ws
-catkin_make
-</code></pre>
-
-<p>次に、あなたの<code>.bash</code>ファイルにセットアップスクリプトを追加してください。:</p>
-
-<pre><code class="bash">echo "source ~/catkin_ws/devel/setup.bash" &gt;&gt; ~/.bashrc
-</code></pre>
-
-<p>もっと詳しい情報は、<a href="http://www.ros.org/wiki/catkin/Tutorials/create_a_workspace">Catkinワークスペースを作る</a>というチュートリアルをご覧ください。</p>
-
-<h4>GitHubレポジトリをCloneする</h4>
-
-<p><code>git</code>があなたのUbuntuマシンにインストールされていることを確認してください。:</p>
-
-<pre><code class="bash">sudo apt-get install git
-</code></pre>
-
-<h5>ROS Indigo</h5>
-
-<p>Indigoはgazebo2.xシリーズを使用しておりイます。以下のインストールから始めましょう。:</p>
-
-<pre><code class="bash">sudo apt-get install -y gazebo2
-</code></pre>
-
-<p><a href="https://github.com/ros-simulation/gazebo_ros_pkgs"><code>gazebo_ros_pkgs</code>のGitHubレポジトリ</a>からソースコードをダウンロードしましょう。</p>
-
-<pre><code class="bash">cd ~/catkin_ws/src
-git clone https://github.com/ros-simulation/gazebo_ros_pkgs.git -b indigo-devel
-</code></pre>
-
-<p><code>rosdep</code>コマンドを使って、足りない依存条件を確認しましょう。</p>
-
-<pre><code class="bash">rosdep update
-rosdep check --from-paths . --ignore-src --rosdistro indigo
-</code></pre>
-
-<p><code>rosdep</code>のdebianインストールを使って、自動的に、不足している依存条件をインストールすることができます。:</p>
-
-<pre><code class="bash">rosdep install --from-paths . --ignore-src --rosdistro indigo -y
-</code></pre>
-
-<p>完了したら、<strong>gazebo_ros_pkgsをビルドする</strong>というセクションに移動しましょう。</p>
-
-<h5>ROS Hydro</h5>
-
-<p>Hydroはgazebo1.xシリーズを使用しておりイます。以下のインストールから始めましょう。:</p>
-
-<pre><code class="bash">sudo apt-get install -y gazebo
-</code></pre>
-
-<p><a href="https://github.com/ros-simulation/gazebo_ros_pkgs"><code>gazebo_ros_pkgs</code>のGitHubレポジトリ</a>からソースコードをダウンロードしましょう。</p>
-
-<pre><code class="bash">cd ~/catkin_ws/src
-git clone https://github.com/ros-simulation/gazebo_ros_pkgs.git -b hydro-devel
-</code></pre>
-
-<p><code>rosdep</code>コマンドを使って、足りない依存条件を確認しましょう。</p>
-
-<pre><code class="bash">rosdep update
-rosdep check --from-paths . --ignore-src --rosdistro hydro
-</code></pre>
-
-<p><code>rosdep</code>のdebianインストールを使って、自動的に、不足している依存条件をインストールすることができます。:</p>
-
-<pre><code class="bash">rosdep install --from-paths . --ignore-src --rosdistro hydro -y
-</code></pre>
-
-<p>完了したら、<strong>gazebo_ros_pkgsをビルドする</strong>というセクションに移動しましょう。</p>
-
-<h2>ROSの統合環境を使ってGazeboをテストする</h2>
-
-<p>ROSのセットアップファイルを<code>source</code>コマンドで有効にすることを忘れないでください。Hydroの場合は、以下のコマンドでそれを有効にできます。:</p>
-
-<pre><code class="bash">source /opt/ros/hydro/setup.bash
-</code></pre>
-
-<p><code>~/.bashrc</code>に以上のようなコマンドは追加しているでしょう。<br/>
-GazeboとROSの環境については、おそらく、セットアップし、ビルドしていることと仮定すると、<code>roscore</code>を起動した後に、<code>rosrun</code>コマンドだけでGazeboを起草できるはずです。:<br/>
-もしまだ、<code>.bashrc</code>に以下のコマンドを追加していないなら、catkinの<code>setup.bash</code>を<code>source</code>コマンドで実行してください。</p>
-
-<pre><code class="bash">source ~/catkin_ws/devel/setup.bash
-</code></pre>
-
-<p>その後、以下のコマンドを実行してください。</p>
-
-<pre><code class="bash">roscore &amp;
-rosrun gazebo_ros gazebo
-</code></pre>
-
-<p>すると、ウィンドウの中に何も無いようなGazeboのGUIが立ち上がるでしょう。<br/>
-ROSの接続が本当に完了しているか確かめるために、利用可能なROSのトピックを見てみましょう。:</p>
-
-<pre><code class="bash">rostopic list
-</code></pre>
-
-<p>すると、トピックの一覧の中に、以下のようなトピックが確認できるはずです。:</p>
-
-<pre><code>/gazebo/link_states
-/gazebo/model_states
-/gazebo/parameter_descriptions
-/gazebo/parameter_updates
-/gazebo/set_link_state
-/gazebo/set_model_state
-</code></pre>
-
-<p>Gazeboのサービスの存在も確認することができます。:</p>
-
-<pre><code class="bash">rosservice list
-</code></pre>
-
-<p>すると、サービスの一覧の中に、以下のようなサービスが確認できるはずです。:</p>
-
-<pre><code class="bash">/gazebo/apply_body_wrench
-/gazebo/apply_joint_effort
-/gazebo/clear_body_wrenches
-/gazebo/clear_joint_forces
-/gazebo/delete_model
-/gazebo/get_joint_properties
-/gazebo/get_link_properties
-/gazebo/get_link_state
-/gazebo/get_loggers
-/gazebo/get_model_properties
-/gazebo/get_model_state
-/gazebo/get_physics_properties
-/gazebo/get_world_properties
-/gazebo/pause_physics
-/gazebo/reset_simulation
-/gazebo/reset_world
-/gazebo/set_joint_properties
-/gazebo/set_link_properties
-/gazebo/set_link_state
-/gazebo/set_logger_level
-/gazebo/set_model_configuration
-/gazebo/set_model_state
-/gazebo/set_parameters
-/gazebo/set_physics_properties
-/gazebo/spawn_gazebo_model
-/gazebo/spawn_sdf_model
-/gazebo/spawn_urdf_model
-/gazebo/unpause_physics
-/rosout/get_loggers
-/rosout/set_logger_level
-</code></pre>
-
-<h2>Gazeboを起動するためのROSの他の方法</h2>
-
-<p>Gazeboを起動するROSのコマンドはたくさんあります。:</p>
-
-<ul>
-<li>サーバーとクライアントを同時にlaunchする</li>
-</ul>
-
-
-<pre><code class="bash">    rosrun gazebo_ros gazebo
-</code></pre>
-
-<ul>
-<li>Gazeboサーバーだけをlaunchする</li>
-</ul>
-
-
-<pre><code class="bash">    rosrun gazebo_ros gzserver
-</code></pre>
-
-<ul>
-<li>Gazeboのクライアントだけをlaunchする</li>
-</ul>
-
-
-<pre><code class="bash">    rosrun gazebo_ros gzclient
-</code></pre>
-
-<ul>
-<li>GDBを使った、Gazeboサーバーだけをデバッグモードでlaunchする</li>
-</ul>
-
-
-<pre><code class="bash">    rosrun gazebo_ros debug
-</code></pre>
-
-<ul>
-<li>さらに、roslaunchを使ってGazeboを起動することもできます</li>
-</ul>
-
-
-<pre><code class="bash">    roslaunch gazebo_ros empty_world.launch
-</code></pre>
 ]]></content>
   </entry>
   

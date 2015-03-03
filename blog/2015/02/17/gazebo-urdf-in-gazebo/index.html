@@ -28,10 +28,6 @@ ROSはロボットの制御フレームワークです。このチュートリ�
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
   <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
   <script src="/javascripts/octopress.js" type="text/javascript"></script>
-  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
-<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
-<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
-
   
   <script type="text/javascript">
     var _gaq = _gaq || [];
@@ -44,6 +40,22 @@ ROSはロボットの制御フレームワークです。このチュートリ�
       var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
     })();
   </script>
+
+
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<meta property="og:title" content="No.6-5:GazeboをROSに繋ぐ (GazeboにおけるURDF 編) - 九州工業大学 CIR-KIT Blog" />
+<meta property="og:description" content="検証日時 02/17/2015 (Tue) 概要 Gazeboのチュートリアル第六弾「Connect to ROS」。
+ROSはロボットの制御フレームワークです。このチュートリアルでは、GazeboとROSのインターフェースについて説明します。
+今回はその「URDF in Gazebo」編です &hellip;" />
+<meta property="og:url" content="http://cir-kit.github.io/blog/2015/02/17/gazebo-urdf-in-gazebo/" />
+<meta property="og:image" content="http://cir-kit.github.io/favicon.png" />
+
+<meta property="og:site_name" content="九州工業大学 CIR-KIT Blog" />
+<meta property="og:locale" content="ja_JP" />
+<meta property="og:type" content="blog" />
+<meta property="fb:app_id" content="930841560294053" />
 
 
 </head>
@@ -757,6 +769,13 @@ Gazeboでデフォルトで使用可能な物質は<code>gazebo/media/materials/
   
   
   
+  <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+  
+  <div class="fb-comments" data-href="http://cir-kit.github.io" data-num-posts="2" data-width="689"></div>
+  
+  
+
 </div>
 
     
@@ -775,9 +794,26 @@ Gazeboでデフォルトで使用可能な物質は<code>gazebo/media/materials/
 
 <aside class="sidebar">
   
-    <section>
+    
+
+
+
+
+<div class="fb-like-box" data-href="https://www.facebook.com/kyutechcirkit" data-width="210" data-height="400" data-colorscheme="light" data-show-faces="false" data-header="false" data-stream="true" data-show-border="false"></div>
+
+<section>
+  <h1>Categories</h1>
+    <ul id="category-list">
+      <li><a href='/blog/categories/build-a-robot/'>build a robot (10)</a></li><li><a href='/blog/categories/build-a-world/'>build a world (5)</a></li><li><a href='/blog/categories/gazebo/'>gazebo (31)</a></li><li><a href='/blog/categories/getstarted/'>getstarted (4)</a></li><li><a href='/blog/categories/install/'>install (2)</a></li><li><a href='/blog/categories/ros/'>ros (8)</a></li><li><a href='/blog/categories/sensors/'>sensors (2)</a></li><li><a href='/blog/categories/tools-and-utilities/'>tools and utilities (1)</a></li><li><a href='/blog/categories/ubuntu/'>ubuntu (32)</a></li>
+    </ul>
+</section>
+<section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/02/gazebo-ros-communication/">No.6-8:GazeboをROSに繋ぐ (ROS Communication 編)</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2015/02/26/greeting-arc/">新団体-ARC-設立</a>
@@ -795,21 +831,7 @@ Gazeboでデフォルトで使用可能な物質は<code>gazebo/media/materials/
         <a href="/blog/2015/02/19/gazebo-gazebo-plugins-in-ros/">No.6-6:GazeboをROSに繋ぐ (ROSにおけるGazeboのプラグイン 編)</a>
       </li>
     
-      <li class="post">
-        <a href="/blog/2015/02/17/gazebo-urdf-in-gazebo/">No.6-5:GazeboをROSに繋ぐ (GazeboにおけるURDF 編)</a>
-      </li>
-    
   </ul>
-</section>
-
-
-
-
-<section>
-  <h1>Categories</h1>
-    <ul id="category-list">
-      <li><a href='/blog/categories/build-a-robot/'>build a robot (10)</a></li><li><a href='/blog/categories/build-a-world/'>build a world (5)</a></li><li><a href='/blog/categories/gazebo/'>gazebo (30)</a></li><li><a href='/blog/categories/getstarted/'>getstarted (4)</a></li><li><a href='/blog/categories/install/'>install (2)</a></li><li><a href='/blog/categories/ros/'>ros (7)</a></li><li><a href='/blog/categories/sensors/'>sensors (2)</a></li><li><a href='/blog/categories/tools-and-utilities/'>tools and utilities (1)</a></li><li><a href='/blog/categories/ubuntu/'>ubuntu (31)</a></li>
-    </ul>
 </section>
 
   
@@ -827,6 +849,17 @@ Gazeboでデフォルトで使用可能な物質は<code>gazebo/media/materials/
   
 
 
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&appId=930841560294053&version=v2.0";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
 
 
 
