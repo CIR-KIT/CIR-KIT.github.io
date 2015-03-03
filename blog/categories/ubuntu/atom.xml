@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Ubuntu | 九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/blog/categories/ubuntu/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-03-04T05:20:37+09:00</updated>
+  <updated>2015-03-04T05:25:13+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[CIR-KIT Members]]></name>
@@ -22,7 +22,7 @@
 
 <h5>検証日時</h5>
 
-<p>02/22/2015 (Sun)</p>
+<p>03/04/2015 (Wed)</p>
 
 <h5>概要</h5>
 
@@ -256,7 +256,7 @@ catkin_make
 
 <h5>検証日時</h5>
 
-<p>02/22/2015 (Sun)</p>
+<p>03/02/2015 (Mon)</p>
 
 <h5>概要</h5>
 
@@ -1130,7 +1130,7 @@ gazebo
 
 <h5>検証日時</h5>
 
-<p>02/22/2015 (Sun)</p>
+<p>03/02/2015 (Mon)</p>
 
 <h5>概要</h5>
 
