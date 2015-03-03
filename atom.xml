@@ -4,7 +4,7 @@
   <title><![CDATA[九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-03-04T05:25:13+09:00</updated>
+  <updated>2015-03-04T05:51:32+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[CIR-KIT Members]]></name>
@@ -12,6 +12,132 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[No.6-10:GazeboをROSに繋ぐ (発展的なROSの統合 編)]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/03/04/gazebo-ros-advanced-integration/"/>
+    <updated>2015-03-04T05:26:59+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/03/04/gazebo-ros-advanced-integration</id>
+    <content type="html"><![CDATA[<p><img src="http://cir-kit.github.io/images/gazebo_logo.png" alt="gazebo_logo" /></p>
+
+<h5>検証日時</h5>
+
+<p>03/04/2015 (Wed)</p>
+
+<h5>概要</h5>
+
+<p>Gazeboのチュートリアル第六弾「Connect to ROS」。
+ROSはロボットの制御フレームワークです。このチュートリアルでは、GazeboとROSのインターフェースについて説明します。
+今回はその「Advanced ROS Integratio」編です。
+公式サイトを適当に翻訳しただけですので、あしからず。</p>
+
+<h5>レベル</h5>
+
+<p><strong>INTERMEDIATE</strong></p>
+
+<!-- more -->
+
+
+<h5>環境</h5>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> <strong>PC</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Prosessor</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>RAM</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>OS</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Kernel</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> 3.13.0-44-generic </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Gazebo</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Version 5.0.1 </td>
+</tr>
+</tbody>
+</table>
+
+
+<h5>参考</h5>
+
+<p><a href="http://gazebosim.org/tutorials?cat=connect_ros">GAZEBO Tutorial-Connect to ROS</a></p>
+
+<h2>チュートリアル : 発展的なROSの統合</h2>
+
+<h3>動的再構成</h3>
+
+<p>物理エンジンのパラメータの一部は<a href="http://cir-kit.github.io/blog/2015/02/03/gazebo-modifying-a-world/">環境を修正する</a>のチュートリアルで行ったように、Gazeboに合わせることが出きます。これに加えて、ROSの動的再構成メカニズムを使うことで、これらのパラメータを調整できます。<br/>
+例として、シミュレーション中の重力を入れ替えてみます。以下のインストールが完了しているか確認してください。:</p>
+
+<h5>Groovyの場合</h5>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo apt-get install ros-groovy-rqt-common-plugins ros-groovy-dynamic-reconfigure
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h5>Hydroの場合</h5>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo apt-get install ros-hydro-rqt-common-plugins ros-hydro-dynamic-reconfigure
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h5>Indigoの場合</h5>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo apt-get install ros-indigo-rqt-common-plugins ros-indigo-dynamic-reconfigure
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>続いて、Gazeboを起動してください。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rosrun gazebo_ros gazebo
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>物理エンジンについての変更を行う前に、Gazeboのモデルを挿入しましょう。画面左のタブより<strong>Insert</strong>をkリックし、<strong>Pioneer 2DX</strong>のロボットモデルをクリックしてください。<br/>
+完了したら、ランタイムのGazeboと情報を交換するために、ROSのGUIツールを起動してください。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rosrun rqt_gui rqt_gui
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="http://cir-kit.github.io/images/2015-03-04-ros-advanced-integration/rqt.png" alt="rqt" /></p>
+
+<p>上に載せたキャプチャと一致するように、RQT(前述のROSのGUI)のパラメータを設定してください。<br/>
+RQTの左側にある<strong>gazebo</strong>をクリックすると、調整可能な物理エンジンのパラメータのリストを確認できます。<br/>
+確認できたら、<code>gravity_z</code>を<strong>-9.8</strong>から<strong>+9.8</strong>にして、あなたのロボットに重力がどのような影響を及ぼすか、確認してみてください。<br/>
+ちなみに、変更すると、<strong>Pioneer2DX</strong>がどっかに飛んでいったはずです。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[No.6-9:GazeboをROSに繋ぐ (ROS Plugin 編)]]></title>
@@ -7697,249 +7823,6 @@ Gazeboを起動してください。:</p>
 <p>ファイル名は現在の作業ディレクトリ直下にしてください。そうしない場合には、絶対パスもしくは、作業ディレクトリからの相対パスを入力してください。</p>
 
 <h3>Next >> <a href="http://cir-kit.github.io/blog/2015/02/03/gazebo-modifying-a-world/">環境を修正する</a></h3>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[No.2-10:ロボットを作ってみよう !（動く箱 編)]]></title>
-    <link href="http://cir-kit.github.io/blog/2015/02/01/gazebo-animated-box/"/>
-    <updated>2015-02-01T10:50:42+09:00</updated>
-    <id>http://cir-kit.github.io/blog/2015/02/01/gazebo-animated-box</id>
-    <content type="html"><![CDATA[<p><img src="http://cir-kit.github.io/images/gazebo_logo.png" alt="gazebo_logo" /></p>
-
-<h5>検証日時</h5>
-
-<p>02/01/2015 (Sun)</p>
-
-<h5>概要</h5>
-
-<p>Gazeboのチュートリアル第二弾「Build a Robot」。<br/>
-このチュートリアルではロボットを作ったり、修正したりします。また、センサ、アクチュエータを搭載した車輪型ロボットを作り、モデルを描画するなどの実践例も行います。<br/>
-今回はその「Animated Box」編です。<br/>
-公式サイトを適当に翻訳しただけですので、あしからず。</p>
-
-<h5>レベル</h5>
-
-<p><strong>INTERMEDIATE</strong></p>
-
-<!-- more -->
-
-
-<h5>環境</h5>
-
-<table>
-<thead>
-<tr>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center;"> <strong>PC</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Prosessor</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>RAM</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>OS</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Kernel</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> 3.13.0-44-generic </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Gazebo</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Version 5.0.1 </td>
-</tr>
-</tbody>
-</table>
-
-
-<h5>参考</h5>
-
-<p><a href="http://gazebosim.org/tutorials?cat=build_robot">GAZEBO Tutorial-Build a Robot</a></p>
-
-<h2>はじめに</h2>
-
-<p>このチュートリアルでは、10周期で地面の上をスライドするようなシンプルな箱と、その<code>world</code>を生成します。<br/>
-また、Gazeboもしくは、自分独自の実行可能なシミュレーションを使用しての参照方法、アクセス方法、相互作用の様々な方法を紹介します。
-シミュレーションで生成する箱は自身の姿勢を配信し、姿勢を受け取るとコールバックを呼び、箱のロケーションとタイムスタンプをプリントアウトします。</p>
-
-<h2>セットアップ</h2>
-
-<p>作業ディレクトリを作成しましょう。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>mkdir ~/gazebo_animatebox_tutorial
-</span><span class='line'><span class="nb">cd</span> ~/gazebo_animatebox_tutorial
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>動く箱のコード</h2>
-
-<p><a href="https://bitbucket.org/osrf/gazebo/src/gazebo_4.0/examples/stand_alone/animated_box/animated_box.cc">animate_box.cc</a>、<a href="https://bitbucket.org/osrf/gazebo/src/gazebo_4.0/examples/stand_alone/animated_box/independent_listener.cc">independent_listner.cc</a>、<a href="https://bitbucket.org/osrf/gazebo/src/gazebo_4.0/examples/stand_alone/animated_box/integrated_main.cc">integrated_main.cc</a>、<a href="https://bitbucket.org/osrf/gazebo/src/gazebo_4.0/examples/stand_alone/animated_box/CMakeLists.txt">CMakeLists.txt</a>、<a href="https://bitbucket.org/osrf/gazebo/src/gazebo_4.0/examples/stand_alone/animated_box/animated_box.world">animated_box.world</a>を現在のディレクトリにコピーしましょう。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>wget http://bitbucket.org/osrf/gazebo/raw/gazebo_4.0/examples/stand_alone/animated_box/animated_box.cc
-</span><span class='line'>wget http://bitbucket.org/osrf/gazebo/raw/gazebo_4.0/examples/stand_alone/animated_box/independent_listener.cc
-</span><span class='line'>wget http://bitbucket.org/osrf/gazebo/raw/gazebo_4.0/examples/stand_alone/animated_box/integrated_main.cc
-</span><span class='line'>wget http://bitbucket.org/osrf/gazebo/raw/gazebo_4.0/examples/stand_alone/animated_box/CMakeLists.txt
-</span><span class='line'>wget http://bitbucket.org/osrf/gazebo/raw/gazebo_4.0/examples/stand_alone/animated_box/animated_box.world
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>プラグインをビルドしましょう。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>mkdir build
-</span><span class='line'><span class="nb">cd </span>build
-</span><span class='line'>cmake ../
-</span><span class='line'>make
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>ただし、Gazeboはプラグインを最後に読み込むことができるということを覚えておいてください。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">export </span><span class="nv">GAZEBO_PLUGIN_PATH</span><span class="o">=</span><span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>:<span class="nv">$GAZEBO_PLUGIN_PATH</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>Gazeboでシミュレーションする</h2>
-
-<p>今回は、プラグインを使ったGazeboをどのようにして使うかを説明します。<br/>
-以下のようにしてGazeboを起動しましょう。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd</span> ~/gazebo_animatebox_tutorial
-</span><span class='line'>gazebo animated_box.world
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>他のターミナルで、<code>gz topc</code>コマンドを使用し、箱の姿勢を表示するユーザーインターフェースを起動しましょう。この時、<code>build</code>ディレクトリ内でコマンドを使用してください。でなければパスが通らず、箱が動きません。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gz topic -v /gazebo/animated_box_world/pose/local/info
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>すると、箱の姿勢を表示するGUIが表示できたはずです。<br/>
-以下の動画は、動く箱と、その状態を表示するGUIが動いている様子です。</p>
-
-<div class="youtube-container">
-<iframe width="560" height="315" src="https://www.youtube.com/embed/QMrT0iapF4g" frameborder="0" allowfullscreen></iframe>
-</div>
-
-
-<h2>独自の実行ファイルを使ってシミュレーションに接続する。</h2>
-
-<p>Gazeboが起動していないことを確認してください。<br/>
-これまでの説明通りにGazeboを起動してください。同時にGazeboに接続できる独立したリスナを起動してください。このリスナというのは、箱のロケーションとタイムスタンプを受け取り、それをプリントアウトするようなものです。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd</span> ~/gazebo_animatebox_tutorial
-</span><span class='line'>gazebo animated_box.world <span class="p">&amp;</span> ./build/independent_listener
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>実行すると、以下の動画のようになります。<br/>
-先ほどまでのように、<code>gz topic</code>によるアプリケーションとは異なり、箱の状態が端末に表示されていることがわかります。<br/>
-<strong>注目 : </strong>もし、Gazeboは起動するが、箱が動ないという現象に陥ったなら、それは、パス通しがうまく行っていません。一つ前の項でパス通しをしていますので、<code>libanimated_box.so</code>ファイルのあるディレクトリで、以下のコマンドを実行し、パス通しをし直しましょう。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">export </span><span class="nv">GAZEBO_PLUGIN_PATH</span><span class="o">=</span><span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>:<span class="nv">$GAZEBO_PLUGIN_PATH</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>ちなみに、この現象は、パスを通した後に一旦端末を閉じ、新しい端末で実行した場合に起きるようです。</p>
-
-<div class="youtube-container">
-<iframe width="560" height="315" src="https://www.youtube.com/embed/e3kCrol8XA8" frameborder="0" allowfullscreen></iframe>
-</div>
-
-
-<h2>シミュレーションを起動し、独自の実行ファイルを接続する。</h2>
-
-<p>Gazeboが起動していないことを確認してください。
-例<code>integrated_main</code>は以下のようになっています。</p>
-
-<ol>
-<li><p>箱を表示するシミュレーションを起動する。</p></li>
-<li><p>シミュレーションにリスナを接続する。</p></li>
-<li><p>リスナはタイムスタンプと姿勢を受け取り、それぞれをプリントアウトします。</p></li>
-</ol>
-
-
-<p>ファイル<code>integrated_main</code>を実行しましょう。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd</span> ~/gazebo_animatebox_tutorial
-</span><span class='line'>./build/integrated_main animated_box.world
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>シミュレーションを見るために、以下のコマンドを実行しましょう。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gzclient
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>実行すると、以下の動画のようになります。<br/>
-先ほどと同様、端末に箱の状態が表示されますが、コマンド一つでGazeboが立ち上がっていないところに違いがあります。つまり、今回は、<code>gzserver</code>のみを立ち上げ、その後手動で<code>gzclient</code>を立ち上げたということです。この、<code>gzserver</code>と<code>gzclient</code>の概念については<a href="http://cir-kit.github.io/blog/2015/01/31/gazebo-components/">GAZEBOを使ってみよう ! (Gazebo コンポーネント 編)</a>で説明していますので、そちらをご覧ください。</p>
-
-<div class="youtube-container">
-<iframe width="560" height="315" src="https://www.youtube.com/embed/dY7pIIXt85E" frameborder="0" allowfullscreen></iframe>
-</div>
-
-
-<h2>ソースコード</h2>
-
-<h3>independent_listner.cc</h3>
-
-<p>実行しているシミュレーションに接続し、姿勢情報トピックを受け取り、物体の姿勢を表示します。</p>
-
-<h3>integrated_main.cc</h3>
-
-<p>シミュレーションを起動し、姿勢情報トピックを受け取り、物体の姿勢を表示します。</p>
-
-<h3>animated_box.cc</h3>
-
-<p>シミュレーションのアニメーション要素を定義したプラグインライブラリです。アニメーション要素とは、シミュレーションの中で、箱を動かすようなものです。</p>
-
-<h3>animated_box.world</h3>
-
-<p>シミュレーションの環境とその環境下に置く箱のについて定義下XMLファイルです。</p>
-
-<h3>CMakeLists.txt</h3>
-
-<p>スクリプトをビルドするCMakeです。</p>
 ]]></content>
   </entry>
   

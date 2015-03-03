@@ -5,12 +5,13 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>No.0:Gazeboのインストール - 九州工業大学 CIR-KIT Blog</title>
+  <title>No.6-10:GazeboをROSに繋ぐ (発展的なROSの統合 編) - 九州工業大学 CIR-KIT Blog</title>
   <meta name="author" content="RyodoTanaka">
 
   
-  <meta name="description" content="検証日時 01/31/2015 (Sat) 概要 Robot Simulaterのgazeboの概要とそのインストールについてです。
-インストール編は、公式サイトを適当に翻訳しただけですので、あしからず。 レベル BEGINNER 環境 PC : Lenovo ThinkPad X240 &hellip;">
+  <meta name="description" content="検証日時 03/04/2015 (Wed) 概要 Gazeboのチュートリアル第六弾「Connect to ROS」。
+ROSはロボットの制御フレームワークです。このチュートリアルでは、GazeboとROSのインターフェースについて説明します。
+今回はその「Advanced ROS &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -19,7 +20,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://cir-kit.github.io/blog/2015/01/31/gazebo-install/">
+  <link rel="canonical" href="http://cir-kit.github.io/blog/2015/03/04/gazebo-ros-advanced-integration/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="九州工業大学 CIR-KIT Blog" type="application/atom+xml">
@@ -44,10 +45,11 @@
   <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
 <link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 <link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
-<meta property="og:title" content="No.0:Gazeboのインストール - 九州工業大学 CIR-KIT Blog" />
-<meta property="og:description" content="検証日時 01/31/2015 (Sat) 概要 Robot Simulaterのgazeboの概要とそのインストールについてです。
-インストール編は、公式サイトを適当に翻訳しただけですので、あしからず。 レベル BEGINNER 環境 PC : Lenovo ThinkPad X240 &hellip;" />
-<meta property="og:url" content="http://cir-kit.github.io/blog/2015/01/31/gazebo-install/" />
+<meta property="og:title" content="No.6-10:GazeboをROSに繋ぐ (発展的なROSの統合 編) - 九州工業大学 CIR-KIT Blog" />
+<meta property="og:description" content="検証日時 03/04/2015 (Wed) 概要 Gazeboのチュートリアル第六弾「Connect to ROS」。
+ROSはロボットの制御フレームワークです。このチュートリアルでは、GazeboとROSのインターフェースについて説明します。
+今回はその「Advanced ROS &hellip;" />
+<meta property="og:url" content="http://cir-kit.github.io/blog/2015/03/04/gazebo-ros-advanced-integration/" />
 <meta property="og:image" content="http://cir-kit.github.io/favicon.png" />
 
 <meta property="og:site_name" content="九州工業大学 CIR-KIT Blog" />
@@ -93,7 +95,7 @@
   
   <header>
     
-      <h1 class="entry-title">No.0:Gazeboのインストール</h1>
+      <h1 class="entry-title">No.6-10:GazeboをROSに繋ぐ (発展的なROSの統合 編)</h1>
     
     
       <p class="meta">
@@ -102,7 +104,7 @@
 
 
 
-<time class='entry-date' datetime='2015-01-31T15:28:43+09:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>31</span><span class='date-suffix'>st</span>, <span class='date-year'>2015</span></span> <span class='time'>3:28 pm</span></time>
+<time class='entry-date' datetime='2015-03-04T05:26:59+09:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>4</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>5:26 am</span></time>
         
       </p>
     
@@ -113,16 +115,18 @@
 
 <h5>検証日時</h5>
 
-<p>01/31/2015 (Sat)</p>
+<p>03/04/2015 (Wed)</p>
 
 <h5>概要</h5>
 
-<p>Robot Simulaterの<code>gazebo</code>の概要とそのインストールについてです。<br/>
-インストール編は、公式サイトを適当に翻訳しただけですので、あしからず。</p>
+<p>Gazeboのチュートリアル第六弾「Connect to ROS」。
+ROSはロボットの制御フレームワークです。このチュートリアルでは、GazeboとROSのインターフェースについて説明します。
+今回はその「Advanced ROS Integratio」編です。
+公式サイトを適当に翻訳しただけですので、あしからず。</p>
 
 <h5>レベル</h5>
 
-<p><strong>BEGINNER</strong></p>
+<p><strong>INTERMEDIATE</strong></p>
 
 <!-- more -->
 
@@ -174,113 +178,57 @@
 
 <h5>参考</h5>
 
-<p><a href="http://gazebosim.org/tutorials?cat=install">GAZEBO Tutorial-Installation</a><br/>
-<a href="http://www.slideshare.net/akio19937/1rosrosgazebo">第1回ROS勉強会発表資料 ROS+Gazeboではじめるロボットシミュレーション</a></p>
+<p><a href="http://gazebosim.org/tutorials?cat=connect_ros">GAZEBO Tutorial-Connect to ROS</a></p>
 
-<h2>「GAZEBO」ってなに?</h2>
+<h2>チュートリアル : 発展的なROSの統合</h2>
 
-<p>gazeboは以下のような特徴を持っています。</p>
+<h3>動的再構成</h3>
 
-<ul>
-<li><p>オープンソース（Apache ライセンス）の3Dロボットシミュレータ</p></li>
-<li><p><a href="http://qt-project.org/">Qt</a>を利用した強力なGUI</p></li>
-<li><p>複数の物理エンジンを切り替えられる(<a href="http://www.ode.org/">ODE</a>含む)</p></li>
-<li><p>カメラ、LRFなどのセンサシミュレーションが豊富</p></li>
-<li><p>センサだけでなく、ロボットモデルも豊富(<a href="http://www.nihonbinary.co.jp/Products/Robot/TurtleBot.html">TurtleBot</a>、<a href="https://www.willowgarage.com/pages/pr2/overview">PR2</a>etc&hellip;)</p></li>
-<li><p><a href="http://www.ros.org/">ROS</a>との連携も充実</p></li>
-</ul>
+<p>物理エンジンのパラメータの一部は<a href="http://cir-kit.github.io/blog/2015/02/03/gazebo-modifying-a-world/">環境を修正する</a>のチュートリアルで行ったように、Gazeboに合わせることが出きます。これに加えて、ROSの動的再構成メカニズムを使うことで、これらのパラメータを調整できます。<br/>
+例として、シミュレーション中の重力を入れ替えてみます。以下のインストールが完了しているか確認してください。:</p>
 
-
-<p>という感じで、もはや使わない手はないロボットシミュレータです。</p>
-
-<!-- 下図みたいな感じで使えるのでとってもGoodですね !   -->
-
-
-
-
-<!-- ![gazebo_example](/images/2015-01-31-gazebo-install/gazebo_example.jpg) -->
-
-
-<h2>GAZEBOのインストール</h2>
-
-<p>通常は、OnlineInstallの方の手順にしたがってインストールしてください。<br/>
-尚、<code>gazebo</code>コマンドを入力したあと、アプリケーションが立ち上がるまでに時間がかかるみたいなので、落ち着いて待ちましょう。</p>
-
-<h3>Online-Install</h3>
-
-<ol>
-<li>インストール</li>
-</ol>
-
+<h5>Groovyの場合</h5>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>wget -O /tmp/gazebo4_install.sh http://osrf-distributions.s3.amazonaws.com/gazebo/gazebo4_install.sh<span class="p">;</span> sudo sh /tmp/gazebo4_install.sh
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo apt-get install ros-groovy-rqt-common-plugins ros-groovy-dynamic-reconfigure
 </span></code></pre></td></tr></table></div></figure>
 
 
-<ol>
-<li>実行</li>
-</ol>
-
+<h5>Hydroの場合</h5>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo apt-get install ros-hydro-rqt-common-plugins ros-hydro-dynamic-reconfigure
 </span></code></pre></td></tr></table></div></figure>
 
 
-<h3>Step-by-step Install</h3>
-
-<ol>
-<li><code>packages.osrfoundation.org.</code> パッケージからのソフトウェア取得を許可するようコンピュータを設定します。
-<strong>Note : </strong>このパッケージの<a href="https://bitbucket.org/osrf/gazebo/wiki/gazebo_mirrors">ダウンロードミラー</a>があるので、それを使うと、ダウンロード速度が早くなるかもしれません。</li>
-</ol>
-
+<h5>Indigoの場合</h5>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo sh -c <span class="s1">&#39;echo &quot;deb http://packages.osrfoundation.org/gazebo/ubuntu `lsb_release -cs` main&quot; &gt; /etc/apt/sources.list.d/gazebo-latest.list&#39;</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo apt-get install ros-indigo-rqt-common-plugins ros-indigo-dynamic-reconfigure
 </span></code></pre></td></tr></table></div></figure>
 
 
-<ol>
-<li>Keyの設定</li>
-</ol>
-
+<p>続いて、Gazeboを起動してください。:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>wget http://packages.osrfoundation.org/gazebo.key -O - <span class="p">|</span> sudo apt-key add -
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rosrun gazebo_ros gazebo
 </span></code></pre></td></tr></table></div></figure>
 
 
-<ol>
-<li>インストールのチェック(実行)
-<strong>Note : </strong>初めて<code>gazebo</code>コマンドを実行する時には、ダウンロードなどを行うので時間がかかります。落ち着いて待ちましょう。</li>
-</ol>
-
+<p>物理エンジンについての変更を行う前に、Gazeboのモデルを挿入しましょう。画面左のタブより<strong>Insert</strong>をkリックし、<strong>Pioneer 2DX</strong>のロボットモデルをクリックしてください。<br/>
+完了したら、ランタイムのGazeboと情報を交換するために、ROSのGUIツールを起動してください。</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rosrun rqt_gui rqt_gui
 </span></code></pre></td></tr></table></div></figure>
 
 
-<h3>他のdebパッケージ</h3>
+<p><img src="/images/2015-03-04-ros-advanced-integration/rqt.png" alt="rqt" /></p>
 
-<p>Gazeboでは<a href="https://www.debian.org/doc/manuals/maint-guide/">公式パッケージガイドライン</a>にそったその他のUbuntu debian パッケージを用意しています。これらではgazeboのオプションのインストール方法が更新されます。</p>
-
-<ul>
-<li><p>Gazeboをアプリケーションとして使用する場合：Gazeboを提供済みのプラグイン、モデルとともにシミュレータとしてのみ使用し、ソフトウェア開発においてgazeboの最新版を利用する予定のないユーザ用。Gazebo4.0を使用するためには、<code>gazebo4</code>と呼ばれるパッケージをインストールしてください。</p></li>
-<li><p>Gzeboのライブラリを使用してGazeboを開発ツールとして使用する場合：最新のGazeboやライブラリが必要とする様々なソフトウェアやプラグインを開発するユーザ用。この場合、<code>gazebo4</code>パッケージと共に、<code>libgazebo4-dev</code>もインストールしてください。</p></li>
-</ul>
-
-
-<h4>Gazeboマルチ物理エンジンサポート</h4>
-
-<p>Gazeboではシミュレーション実行のためにいろいろな物理エンジンを使用することができます。<br/>
-<a href="http://www.ode.org/">ODE</a>はデフォルトで使用されているものです。しかし、Ubuntuパッケージでは、<a href="http://bulletphysics.org/wordpress/">Bullet</a>や<a href="https://simtk.org/home/simbody/">Simbody</a>もまたサポートされています。<br/>
-それらを使用するユーザはgazeboをソースコードからインストールする<a href="http://dartsim.github.io/">DART</a>に接続(wan)する事になります。なので、<code>.deb</code>パッケージは使用しないでください。</p>
-
-<h3>ROSとGazebo</h3>
-
-<p>GazeboをROSと共に使用するためには、<a href="http://gazebosim.org/tutorials?cat=connect_ros">ROSとつなぐ</a>というチュートリアルを参照してください。</p>
+<p>上に載せたキャプチャと一致するように、RQT(前述のROSのGUI)のパラメータを設定してください。<br/>
+RQTの左側にある<strong>gazebo</strong>をクリックすると、調整可能な物理エンジンのパラメータのリストを確認できます。<br/>
+確認できたら、<code>gravity_z</code>を<strong>-9.8</strong>から<strong>+9.8</strong>にして、あなたのロボットに重力がどのような影響を及ぼすか、確認してみてください。<br/>
+ちなみに、変更すると、<strong>Pioneer2DX</strong>がどっかに飛んでいったはずです。</p>
 </div>
 
 
@@ -296,12 +244,12 @@
 
 
 
-<time class='entry-date' datetime='2015-01-31T15:28:43+09:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>31</span><span class='date-suffix'>st</span>, <span class='date-year'>2015</span></span> <span class='time'>3:28 pm</span></time>
+<time class='entry-date' datetime='2015-03-04T05:26:59+09:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>4</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>5:26 am</span></time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/gazebo/'>gazebo</a>, <a class='category' href='/blog/categories/install/'>install</a>, <a class='category' href='/blog/categories/ubuntu/'>ubuntu</a>
+    <a class='category' href='/blog/categories/gazebo/'>gazebo</a>, <a class='category' href='/blog/categories/ros/'>ros</a>, <a class='category' href='/blog/categories/ubuntu/'>ubuntu</a>
   
 </span>
 
@@ -310,7 +258,7 @@
     
       <div class="sharing">
   
-  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://cir-kit.github.io/blog/2015/01/31/gazebo-install/" data-via="" data-counturl="http://cir-kit.github.io/blog/2015/01/31/gazebo-install/" >Tweet</a>
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://cir-kit.github.io/blog/2015/03/04/gazebo-ros-advanced-integration/" data-via="" data-counturl="http://cir-kit.github.io/blog/2015/03/04/gazebo-ros-advanced-integration/" >Tweet</a>
   
   
   
@@ -324,10 +272,8 @@
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2015/01/31/information-the-change-of-cir-kit-blog/" title="Previous Post: ブログ移転の挨拶">&laquo; ブログ移転の挨拶</a>
+        <a class="basic-alignment left" href="/blog/2015/03/04/gazebo-ros-plugin/" title="Previous Post: No.6-9:GazeboをROSに繋ぐ (ROS Plugin 編)">&laquo; No.6-9:GazeboをROSに繋ぐ (ROS Plugin 編)</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2015/01/31/gazebo-quickstart/" title="Next Post: No.1-1:GAZEBOを使ってみよう ! (Quick Start 編)">No.1-1:GAZEBOを使ってみよう ! (Quick Start 編) &raquo;</a>
       
     </p>
   </footer>
