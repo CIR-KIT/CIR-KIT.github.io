@@ -4,7 +4,7 @@
   <title><![CDATA[九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-03-03T21:03:30+09:00</updated>
+  <updated>2015-03-04T06:01:38+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[CIR-KIT Members]]></name>
@@ -12,6 +12,1244 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[No.6-10:GazeboをROSに繋ぐ (発展的なROSの統合 編)]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/03/04/gazebo-ros-advanced-integration/"/>
+    <updated>2015-03-04T05:26:59+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/03/04/gazebo-ros-advanced-integration</id>
+    <content type="html"><![CDATA[<p><img src="http://cir-kit.github.io/images/gazebo_logo.png" alt="gazebo_logo" /></p>
+
+<h5>検証日時</h5>
+
+<p>03/04/2015 (Wed)</p>
+
+<h5>概要</h5>
+
+<p>Gazeboのチュートリアル第六弾「Connect to ROS」。
+ROSはロボットの制御フレームワークです。このチュートリアルでは、GazeboとROSのインターフェースについて説明します。
+今回はその「Advanced ROS Integratio」編です。
+公式サイトを適当に翻訳しただけですので、あしからず。</p>
+
+<h5>レベル</h5>
+
+<p><strong>INTERMEDIATE</strong></p>
+
+<!-- more -->
+
+
+<h5>環境</h5>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> <strong>PC</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Prosessor</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>RAM</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>OS</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Kernel</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> 3.13.0-44-generic </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Gazebo</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Version 5.0.1 </td>
+</tr>
+</tbody>
+</table>
+
+
+<h5>参考</h5>
+
+<p><a href="http://gazebosim.org/tutorials?cat=connect_ros">GAZEBO Tutorial-Connect to ROS</a></p>
+
+<h2>チュートリアル : 発展的なROSの統合</h2>
+
+<h3>動的再構成</h3>
+
+<p>物理エンジンのパラメータの一部は<a href="http://cir-kit.github.io/blog/2015/02/03/gazebo-modifying-a-world/">環境を修正する</a>のチュートリアルで行ったように、Gazeboに合わせることが出きます。これに加えて、ROSの動的再構成メカニズムを使うことで、これらのパラメータを調整できます。<br/>
+例として、シミュレーション中の重力を入れ替えてみます。以下のインストールが完了しているか確認してください。:</p>
+
+<h5>Groovyの場合</h5>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo apt-get install ros-groovy-rqt-common-plugins ros-groovy-dynamic-reconfigure
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h5>Hydroの場合</h5>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo apt-get install ros-hydro-rqt-common-plugins ros-hydro-dynamic-reconfigure
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h5>Indigoの場合</h5>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo apt-get install ros-indigo-rqt-common-plugins ros-indigo-dynamic-reconfigure
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>続いて、Gazeboを起動してください。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rosrun gazebo_ros gazebo
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>物理エンジンについての変更を行う前に、Gazeboのモデルを挿入しましょう。画面左のタブより<strong>Insert</strong>をkリックし、<strong>Pioneer 2DX</strong>のロボットモデルをクリックしてください。<br/>
+完了したら、ランタイムのGazeboと情報を交換するために、ROSのGUIツールを起動してください。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rosrun rqt_gui rqt_gui
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="http://cir-kit.github.io/images/2015-03-04-ros-advanced-integration/rqt.png" alt="rqt" /></p>
+
+<p>上に載せたキャプチャと一致するように、RQT(前述のROSのGUI)のパラメータを設定してください。<br/>
+RQTの左側にある<strong>gazebo</strong>をクリックすると、調整可能な物理エンジンのパラメータのリストを確認できます。<br/>
+確認できたら、<code>gravity_z</code>を<strong>-9.8</strong>から<strong>+9.8</strong>にして、あなたのロボットに重力がどのような影響を及ぼすか、確認してみてください。<br/>
+ちなみに、変更すると、<strong>Pioneer2DX</strong>がどっかに飛んでいったはずです。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[No.6-9:GazeboをROSに繋ぐ (ROS Plugin 編)]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/03/04/gazebo-ros-plugin/"/>
+    <updated>2015-03-04T04:45:47+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/03/04/gazebo-ros-plugin</id>
+    <content type="html"><![CDATA[<p><img src="http://cir-kit.github.io/images/gazebo_logo.png" alt="gazebo_logo" /></p>
+
+<h5>検証日時</h5>
+
+<p>03/04/2015 (Wed)</p>
+
+<h5>概要</h5>
+
+<p>Gazeboのチュートリアル第六弾「Connect to ROS」。
+ROSはロボットの制御フレームワークです。このチュートリアルでは、GazeboとROSのインターフェースについて説明します。
+今回はその「ROS Plugin」編です。
+公式サイトを適当に翻訳しただけですので、あしからず。</p>
+
+<h5>レベル</h5>
+
+<p><strong>INTERMEDIATE</strong></p>
+
+<!-- more -->
+
+
+<h5>環境</h5>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> <strong>PC</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Prosessor</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>RAM</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>OS</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Kernel</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> 3.13.0-44-generic </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Gazebo</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Version 5.0.1 </td>
+</tr>
+</tbody>
+</table>
+
+
+<h5>参考</h5>
+
+<p><a href="http://gazebosim.org/tutorials?cat=connect_ros">GAZEBO Tutorial-Connect to ROS</a></p>
+
+<h2>チュートリアル : ROSプラグイン</h2>
+
+<p>このチュートリアルでは、とても基本的なROSに関するGazeboのプラグインを作ってゆきます。</p>
+
+<h2>ROSパッケージを作る</h2>
+
+<p>あなたの<code>catkin</code>ワークスペースに新しいROSパッケージを作成してください。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd</span> ~/catkin_ws
+</span><span class='line'>catkin_create-pkg gazebo_tutorials gazebo_ros roscpp
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>プラグインを作る</h2>
+
+<p><a href="http://gazebosim.org/tutorials?tut=plugins_hello_world&amp;cat=write_plugin">ここ</a>で説明したような簡単なプラグインを制作し、<code>gazebotutorials/src/simpleworld_plugin.cpp</code>として保存してください。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+</pre></td><td class='code'><pre><code class='cpp'><span class='line'><span class="cp">#include &lt;gazebo/common/Plugin.hh&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;ros/ros.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">namespace</span> <span class="n">gazebo</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'><span class="k">class</span> <span class="nc">WorldPluginTutorial</span> <span class="o">:</span> <span class="k">public</span> <span class="n">WorldPlugin</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'><span class="k">public</span><span class="o">:</span>
+</span><span class='line'>  <span class="n">WorldPluginTutorial</span><span class="p">()</span> <span class="o">:</span> <span class="n">WorldPlugin</span><span class="p">()</span>
+</span><span class='line'>  <span class="p">{</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kt">void</span> <span class="n">Load</span><span class="p">(</span><span class="n">physics</span><span class="o">::</span><span class="n">WorldPtr</span> <span class="n">_world</span><span class="p">,</span> <span class="n">sdf</span><span class="o">::</span><span class="n">ElementPtr</span> <span class="n">_sdf</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">{</span>
+</span><span class='line'>    <span class="c1">// Make sure the ROS node for Gazebo has already been initialized                                                                                    </span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">ros</span><span class="o">::</span><span class="n">isInitialized</span><span class="p">())</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>      <span class="n">ROS_FATAL_STREAM</span><span class="p">(</span><span class="s">&quot;A ROS node for Gazebo has not been initialized, unable to load plugin. &quot;</span>
+</span><span class='line'>        <span class="o">&lt;&lt;</span> <span class="s">&quot;Load the Gazebo system plugin &#39;libgazebo_ros_api_plugin.so&#39; in the gazebo_ros package)&quot;</span><span class="p">);</span>
+</span><span class='line'>      <span class="k">return</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">ROS_INFO</span><span class="p">(</span><span class="s">&quot;Hello World!&quot;</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'><span class="n">GZ_REGISTER_WORLD_PLUGIN</span><span class="p">(</span><span class="n">WorldPluginTutorial</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2><code>CMakeLists.txt</code>をアップデートする</h2>
+
+<p><code>gazebo_tutorials/CMakeLists.txt</code>を開き、以下のようにしてください。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class='cmake'><span class='line'><span class="nb">cmake_minimum_required</span><span class="p">(</span><span class="s">VERSION</span> <span class="s">2.8.3</span><span class="p">)</span>
+</span><span class='line'><span class="nb">project</span><span class="p">(</span><span class="s">gazebo_tutorials</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># Load catkin and all dependencies required for this package</span>
+</span><span class='line'><span class="nb">find_package</span><span class="p">(</span><span class="s">catkin</span> <span class="s">REQUIRED</span> <span class="s">COMPONENTS</span>
+</span><span class='line'>  <span class="s">roscpp</span>
+</span><span class='line'>  <span class="s">gazebo_ros</span>
+</span><span class='line'><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># Depend on system install of Gazebo</span>
+</span><span class='line'><span class="nb">find_package</span><span class="p">(</span><span class="s">gazebo</span> <span class="s">REQUIRED</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">link_directories</span><span class="p">(</span><span class="o">${</span><span class="nv">GAZEBO_LIBRARY_DIRS</span><span class="o">}</span><span class="p">)</span>
+</span><span class='line'><span class="nb">include_directories</span><span class="p">(</span><span class="o">${</span><span class="nv">Boost_INCLUDE_DIR</span><span class="o">}</span> <span class="o">${</span><span class="nv">catkin_INCLUDE_DIRS</span><span class="o">}</span> <span class="o">${</span><span class="nv">GAZEBO_INCLUDE_DIRS</span><span class="o">}</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">add_library</span><span class="p">(</span><span class="o">${</span><span class="nv">PROJECT_NAME</span><span class="o">}</span> <span class="s">src/simple_world_plugin.cpp</span><span class="p">)</span>
+</span><span class='line'><span class="nb">target_link_libraries</span><span class="p">(</span><span class="o">${</span><span class="nv">PROJECT_NAME</span><span class="o">}</span> <span class="o">${</span><span class="nv">catkin_LIBRARIES</span><span class="o">}</span> <span class="o">${</span><span class="nv">GAZEBO_LIBRARIES</span><span class="o">}</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">catkin_package</span><span class="p">(</span>
+</span><span class='line'>  <span class="s">DEPENDS</span>
+</span><span class='line'>    <span class="s">roscpp</span>
+</span><span class='line'>    <span class="s">gazebo_ros</span>
+</span><span class='line'><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2><code>package.xml</code>をアップデートする</h2>
+
+<p>以下の行をタグの中に追加し(タグがなければ、タグも追加)、<code>gazebo_tutorials/package.xml</code>をアップデートしてください。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>  <span class="nt">&lt;gazebo_ros</span> <span class="na">plugin_path=</span><span class="s">&quot;${prefix}/lib&quot;</span> <span class="na">gazebo_media_path=</span><span class="s">&quot;${prefix}&quot;</span> <span class="nt">/&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>プラグインをコンパイルする</h2>
+
+<p>catkinをあなたのワークスペースで実行して、プラグインをビルドしてください。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd</span> ~/catkin_ws
+</span><span class='line'>catkin_make
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Worldファイルを作る</h2>
+
+<p>以下のファイルを<code>gazebo_tutorials/worlds/hello.World</code>として保存してください。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; ?&gt;</span>
+</span><span class='line'><span class="nt">&lt;sdf</span> <span class="na">version=</span><span class="s">&quot;1.4&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;world</span> <span class="na">name=</span><span class="s">&quot;default&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;include&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;uri&gt;</span>model://ground_plane<span class="nt">&lt;/uri&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/include&gt;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nt">&lt;include&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;uri&gt;</span>model://sun<span class="nt">&lt;/uri&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/include&gt;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c">&lt;!-- reference to your plugin --&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;plugin</span> <span class="na">name=</span><span class="s">&quot;gazebo_tutorials&quot;</span> <span class="na">filename=</span><span class="s">&quot;libgazebo_tutorials.so&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/world&gt;</span>
+</span><span class='line'><span class="nt">&lt;/sdf&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Launchファイルを作る</h2>
+
+<p>以下のファイルを<code>gazebo_tutorials/launch/hello.launch</code>として作成してください。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;launch&gt;</span>
+</span><span class='line'>  <span class="c">&lt;!-- We resume the logic in empty_world.launch, changing only the name of the world to be launched --&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;include</span> <span class="na">file=</span><span class="s">&quot;$(find gazebo_ros)/launch/empty_world.launch&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;arg</span> <span class="na">name=</span><span class="s">&quot;world_name&quot;</span> <span class="na">value=</span><span class="s">&quot;$(find gazebo_tutorials)/worlds/hello.world&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>    <span class="c">&lt;!-- more default parameters can be changed here --&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/include&gt;</span>
+</span><span class='line'><span class="nt">&lt;/launch&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>プラグインを実行する</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>roslaunch gazebo_tutorials hello.launch
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>空のGazeboが開き、ターミナルには以下のような文字列が表示されるはずです。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'> INFO ros.gazebo_tutorials: Hello World!
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>テンプレートから始める</h2>
+
+<p>GazeboとROSのプラグインについて手っ取り早く理解するには、テンプレートが有効です。:</p>
+
+<p><a href="https://github.com/ros-simulation/gazebo_ros_pkgs/blob/hydro-devel/gazebo_plugins/src/gazebo_ros_template.cpp">gazeborostemplate.cpp</a></p>
+
+<h2>機能性を追加する</h2>
+
+<p>GazeboとROSで有用な効果を果たすプラグインを作るために、<a href="http://gazebosim.org/tutorials/?cat=write_plugin">プラグインについて</a>のチュートリアルを読むことをおすすめします。</p>
+
+<h2>ROSのノードの注意点</h2>
+
+<p>もし、ROSノードが<code>Load()</code>関数によって初期化されているなら、すべての<code>gazebo-ros</code>プラグインは、チェックするべきです。これについては、<a href="http://answers.gazebosim.org/question/1493/rosinit-needed-for-ros-gazebo-plugin/">issues</a>でも議論されています。ROSノードの初期化は、実行した時に自動的に初期化されます。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rosrun gazeboros gazebo
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>もしくは、<code>empty.world</code>のlaunchファイルを使用してください。<br/>
+<code>gazeboros/src/gazeborosapi_plugin.cpp</code>は<code>ros::init()</code>をコールするGazeboの中にのみあるべきです。</p>
+
+<h2>次のステップ</h2>
+
+<p>様々な、Gazebo-ROS間の仕組みについては、<a href="http://cir-kit.github.io/blog/2015/03/04/gazebo-ros-advanced-integration/">発展的なROSの統合</a>をご覧ください。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[No.6-8:GazeboをROSに繋ぐ (ROS Communication 編)]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/03/02/gazebo-ros-communication/"/>
+    <updated>2015-03-02T21:11:56+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/03/02/gazebo-ros-communication</id>
+    <content type="html"><![CDATA[<p><img src="http://cir-kit.github.io/images/gazebo_logo.png" alt="gazebo_logo" /></p>
+
+<h5>検証日時</h5>
+
+<p>03/02/2015 (Mon)</p>
+
+<h5>概要</h5>
+
+<p>Gazeboのチュートリアル第六弾「Connect to ROS」。
+ROSはロボットの制御フレームワークです。このチュートリアルでは、GazeboとROSのインターフェースについて説明します。
+今回はその「ROS Communication」編です。
+公式サイトを適当に翻訳しただけですので、あしからず。</p>
+
+<h5>レベル</h5>
+
+<p><strong>INTERMEDIATE</strong></p>
+
+<!-- more -->
+
+
+<h5>環境</h5>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> <strong>PC</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Prosessor</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>RAM</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>OS</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Kernel</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> 3.13.0-44-generic </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Gazebo</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Version 5.0.1 </td>
+</tr>
+</tbody>
+</table>
+
+
+<h5>参考</h5>
+
+<p><a href="http://gazebosim.org/tutorials?cat=connect_ros">GAZEBO Tutorial-Connect to ROS</a></p>
+
+<h2>チュートリアル : ROS Communication</h2>
+
+<p>Gazeboはユーザにシミュレートされたworldの様々な角度を取得したり修正したりできるROSのAPIを提供しています。以下のセクションでは、シミュレーションのworldと物体を操るための効果について説明します。GazeboのためのROSメッセージとサービスの完全なリストはこのチュートリアルに書いてあります。</p>
+
+<h2>必要条件</h2>
+
+<p>これから説明する例を実行していきたいなら、RRBotのセットアップは、<a href="http://cir-kit.github.io/blog/2015/02/17/gazebo-urdf-in-gazebo/">GazeboにおけるURDF</a>のチュートリアルで述べているということを念頭に置いてください。このチュートリアルでは、いろいろな方法を使ってコーラの缶を<strong>蹴ります</strong>。<br/>
+また、Gazeboが以下のコマンドですでにlaunchされていると仮定して話を進めます。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>roscore <span class="p">&amp;</span>
+</span><span class='line'>rosrun gazebo_ros gazebo
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ただし、これから紹介するコマンドを打った後に、Gazeboを再起動する必要があるかもしれません。</p>
+
+<h2><code>gazeborosapi_plugin</code>について</h2>
+
+<p><code>gazeboros</code>パッケージと共に配置されている<code>gazeborosapi_plugin</code>は、<code>gazebo</code>と呼ばれるROSのノードを初期化します。これは、これから説明する様なROSのインターフェースを供給するために、ROSコールバックスケジュラー(<code>message passing</code>)とGazeboのインターナショナルスケジュラーを統合しています。このROSのAPIはユーザーがROSを超えたシミュレーション環境の詳細を扱うのと同じように、環境のモデルの姿勢の内観とスポーンを行うことを可能にします。<br/>
+また、このプラグインは<code>gzserver</code>によってのみ読み込まれます。</p>
+
+<h2><code>gazeborospaths_plugin</code>について</h2>
+
+<p>２つ目の<code>gazeborospath_plugin</code>という名前のプラグインはGazeboがROSリソースを探す(例えば、ROSパッケージのパス名を解決する)ことを可能にする<code>gazebo ros</code>パッケージの中で利用可能です。<br/>
+このプラグインは<code>gzserver</code>と<code>gzclient</code>の両方によって読み込まれます。</p>
+
+<h2>Gazeboのpublishしたパラメータ</h2>
+
+<p>Parameters</p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> 名前 </th>
+<th style="text-align:center;"> 型 </th>
+<th style="text-align:center;"> 説明 </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> /usesimtime </td>
+<td style="text-align:center;"> Bool </td>
+<td style="text-align:center;"> ROSがpublishされたROS timeのための<code>/clock</code>トピックを使うかどうか定義します </td>
+</tr>
+</tbody>
+</table>
+
+
+<p>Gazeboは、もしシミュレーション時間が<code>/usertime</code>パラメータに使用されるべきなら、他のアプリケーション(とりわけRviz)を定義するためにROSパラメータサーバーを使用します。これは、あなたが<code>gazebo_ros</code>を起動した時に、Gazeboが自動で設定すべきことです。<br/>
+もし、ROSシステムをシミュレーション同期時間と共に提供するために、<code>gazebo_ros</code>がROSの<code>/clock</code>トピックをpublishしているなら、<code>usesimtime</code>は<code>true</code>です。シミュレーション時間については<a href="http://www.ros.org/wiki/roscpp/Overview/Time">ROS C++ Time</a>をご覧ください。</p>
+
+<h3>値をクリックする</h3>
+
+<p>パラメータに何が設定されているか見るためには、以下のコマンドを実行してください。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rosparam get /use_sim_time
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Gazeboが購読するトピック</h2>
+
+<p>Topics</p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> 名前 </th>
+<th style="text-align:center;"> 型 </th>
+<th style="text-align:center;"> 説明 </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> ~/setlinkstate </td>
+<td style="text-align:center;">gazebomsgs/LinkState </td>
+<td style="text-align:center;"> リンクの姿勢(<code>pose/twist</code>)を設定します。</td>
+</tr>
+<tr>
+<td style="text-align:center;"> ~/setmodelstate </td>
+<td style="text-align:center;">gazebomsgs/ModelState </td>
+<td style="text-align:center;"> モデルの姿勢(<code>pose/twist</code>)を設定します。</td>
+</tr>
+</tbody>
+</table>
+
+
+<h3>トピックを通じたシミュレーションにおけるモデルのPoseとTwist</h3>
+
+<p><a href="http://www.ros.org/wiki/Topics">Topics</a>は<code>pose</code>の設定動作が完了するのを待つことなく、迅速にモデルの<code>pose</code>と<code>twist</code>を設定するのに使うことができます。そのようにするために、求められる<a href="http://www.ros.org/doc/api/gazebo/html/msg/ModelState.html">model state message</a>を<code>/gazebo/setmodelstate</code>トピックにpublishします。例えば、<code>topics</code>を通じて<code>pose</code>の設定をテストするために、オンラインデータベースからモデルをスポーンさせてコーラの缶をシミュレーションに追加します。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rosrun gazebo_ros spawn_model -database coke_can -gazebo -model coke_can -y 1
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>そして<code>/gazebo/setmodelstate</code>トピックにpublishすることで、コーラの缶の姿勢を設定します。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rostopic pub -r <span class="m">20</span> /gazebo/set_model_state gazebo_msgs/ModelState <span class="s1">&#39;{model_name: coke_can, pose: { position: { x: 1, y: 0, z: 2 }, orientation: {x: 0, y: 0.491983115673, z: 0, w: 0.870604813099 } }, twist: { linear: { x: 0, y: 0, z: 0 }, angular: { x: 0, y: 0, z: 0}  }, reference_frame: world }&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>すると以下のように、蹴ってくれと言わんばかりに(まあ、今から蹴るんですが)RRBotの前にコーラの缶が浮いているのを確認できるはずです。<br/>
+ただし、以下のように、RRBotを追加するため、これまでに説明したroslaunchを使っています。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>roslaunch rrbot_gazebo rrbot_world.launch
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="http://cir-kit.github.io/images/2015-03-02-gazebo-ros-communication/rrbot-test-1.png" alt="rrbot-test-1" /></p>
+
+<h2>Gazeboがpuvlishするトピック</h2>
+
+<p>Topics</p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> 名前 </th>
+<th style="text-align:center;"> 型 </th>
+<th style="text-align:center;"> 説明 </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> /clock </td>
+<td style="text-align:center;">rosgraphmsgs/Clock </td>
+<td style="text-align:center;"> シミュレーション時間を<code>/usertime</code>パラメータと共にpublishします。</td>
+</tr>
+<tr>
+<td style="text-align:center;"> ~/linkstates </td>
+<td style="text-align:center;">gazebomsgs/LinkStates </td>
+<td style="text-align:center;"> シミュレーション中のすべてのリンクの状態をpublishします。</td>
+</tr>
+<tr>
+<td style="text-align:center;"> ~/modelstates </td>
+<td style="text-align:center;">gazebo_msgs/ModelStates </td>
+<td style="text-align:center;"> シミュレーション中のすべてのモデルの状態をpublishします。</td>
+</tr>
+</tbody>
+</table>
+
+
+<h3>Topicを使ってモデルとリンクの姿勢を訂正する</h3>
+
+<p>Gazeboはworld座標系に関するシミュレーション中の物体のposeとtwistの情報を含む、<code>/gazebo/linkstates</code>と<code>/gazebo/modelstates</code>トピックをpublishしています。これらの挙動は、以下のコマンドを実行することで確認できます。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rostopic <span class="nb">echo</span> -n <span class="m">1</span> /gazebo/model_states
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>もしくは</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rostopic <span class="nb">echo</span> -n <span class="m">1</span> /gazebo/link_states
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>繰り返すには、<code>link</code>が慣性、外観、衝突プロパティの定義された剛体として定義される必要があります。一方、<code>model</code>はリンクとジョイントの衝突要素として定義されます。<code>model</code>の状態は標準的な<code>link</code>の状態であります。URDFが木構造で与えられており、モデルのカノニカルリンクは自身のルートリンクによって定義されます。</p>
+
+<h2>サービス : シミュレーション中のモデルの削除と作成</h2>
+
+<p>以下のサービスでは、シミュレーション中のモデルを削除したり作成したりできます。:</p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> 名前 </th>
+<th style="text-align:center;"> 型 </th>
+<th style="text-align:center;"> 説明 </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> ~/spawnurdfmodel </td>
+<td style="text-align:center;">gazebomsgs/SpawnModel </td>
+<td style="text-align:center;"> Universal Robotic Description Format (URDF)をスポーンするために、このサービスを使います。</td>
+</tr>
+<tr>
+<td style="text-align:center;"> ~/spawnsdfmodel </td>
+<td style="text-align:center;">gazebomsgs/SpawnModel </td>
+<td style="text-align:center;"> Gazeboに記述されるSimulmulation Description Format (SDF)モデルをスポーンするために、このサービスを使います。</td>
+</tr>
+<tr>
+<td style="text-align:center;"> ~/deletemodel </td>
+<td style="text-align:center;">gazebomsgs/DeleteModel </td>
+<td style="text-align:center;"> シミュレーションからモデルを削除することができます。</td>
+</tr>
+</tbody>
+</table>
+
+
+<h3>モデルをスポーンする</h3>
+
+<p><code>spawnmodel</code>と呼ばれるスクリプトはモデルの<code>gazeboros</code>によって呼び出されるスポーンサービスをコールするために提供されています。モデルをサービスコールを使ってスポーンするための最も実践的な方法は<code>roslaunch</code>ファイルを使うことです。詳細は、<a href="http://cir-kit.github.io/blog/2015/02/15/gazebo-using-roslaunch/">roslaunchを使う</a>というチュートリアルに書いてあります。URDFやSDFをGazeboに追加するために<code>spawn_model</code>を使う方法はたくさんあります。以下はそのうちのいくつかの例です。:<br/>
+URDFをファイルからスポーンする - まず最初に<code>.Xacro</code>ファイルを<code>.xml</code>ファイルに変換し、スポーンします。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rosrun xacro xacro <span class="sb">`</span>rospack find rrbot_description<span class="sb">`</span>/urdf/rrbot.xacro &gt;&gt; <span class="sb">`</span>rospack find rrbot_description<span class="sb">`</span>/urdf/rrbot.xml
+</span><span class='line'>rosrun gazebo_ros spawn_model -file <span class="sb">`</span>rospack find rrbot_description<span class="sb">`</span>/urdf/rrbot.xml -urdf -y <span class="m">1</span> -model rrbot1 -robot_namespace rrbot1
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>roslaunch</code>と<code>xacro</code>を使ったパラメータサーバーからのURDF: <a href="http://cir-kit.github.io/blog/2015/02/15/gazebo-using-roslaunch/">roslaunchを使う</a>をご覧ください。<br/>
+ローカルモデルデータベースからのSDF:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rosrun gazebo_ros spawn_model -file <span class="sb">`</span><span class="nb">echo</span> <span class="nv">$GAZEBO_MODEL_PATH</span><span class="sb">`</span>/coke_can/model.sdf -sdf -model coke_can1 -y 0.2 -x -0.3
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>オンラインモデルデータベースからのSDF:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rosrun gazebo_ros spawn_model -database coke_can -sdf -model coke_can3 -y 2.2 -x -0.3
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>名前空間、<code>trimesh</code>プロパティ、ジョイントポジション、RPYオリエンテーションを含む<code>spawn_model</code>のための利用可能な引数をすべて見るには、以下を実行してください。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rosrun gazebo_ros spawn_model -h
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>モデルを削除する</h3>
+
+<p>すでにGazeboの中にあるモデルの削除は、物体に与えたモデルの名前を覚えている限りは簡単です。もし、RRBotを前のセクションで記述したように、<code>rrbot1</code>と名付けているなら、以下のコマンドでそれを削除できます。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rosservice call gazebo/delete_model <span class="s1">&#39;{model_name: rrbot1}&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>サービス : 状態とプロパティのセッティング</h2>
+
+<p>以下のサービスでは、シミュレーション中の物体やシミュレーションについての状態やプロパティの情報を設定することができます。:</p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> 名前 </th>
+<th style="text-align:center;"> 型 </th>
+<th style="text-align:center;"> 説明 </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> ~/setlinkproperties </td>
+<td style="text-align:center;">gazebomsgs/SetLinkProperties</td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align:center;"> ~/setphysicsproperties </td>
+<td style="text-align:center;">gazebomsgs/SetPhysicsProperties</td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align:center;"> ~/setmodelstate </td>
+<td style="text-align:center;">gazebomsgs/SetModelState</td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align:center;"> ~/setmodelconfiguration </td>
+<td style="text-align:center;">gazebomsgs/SetModelConfiguration </td>
+<td style="text-align:center;"> モデルのジョイントポジションをダイナミクスなしで設定できるようになります。</td>
+</tr>
+<tr>
+<td style="text-align:center;"> ~/setjointproperties </td>
+<td style="text-align:center;">gazebomsgs/SetJointProperties</td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align:center;"> ~/setlinkstate </td>
+<td style="text-align:center;">gazebomsgs/SetLinkState</td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align:center;"> ~/setlinkstate </td>
+<td style="text-align:center;">gazebomsgs/LinkState</td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align:center;"> ~/setmodelstate </td>
+<td style="text-align:center;">gazebomsgs/ModelState</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+
+<h3>モデルの姿勢を設定する例</h3>
+
+<p><code>/gazebo/setmodelstate</code>サービスを使い、RRBotでコーラの缶を蹴ってみましょう !<br/>
+もし、まだシミュレーションにコーラの缶を追加していないのなら、以下のコマンドを実行してください。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rosrun gazebo_ros spawn_model -database coke_can -gazebo -model coke_can -y 1
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>これは、Gazeboもしくはオンラインモデルデータベース(インターネット接続が必要です)を通じて利用可能になるようパッケージされていなければなりません。尚、コーラの缶がどこにあっても問題はありません。<br/>
+続いて、コーラの缶をRRBotのポジションに動かすためのサービスリクエストをコールしましょう。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rosservice call /gazebo/set_model_state <span class="s1">&#39;{model_state: { model_name: coke_can, pose: { position: { x: 0.3, y: 0.2 ,z: 0 }, orientation: {x: 0, y: 0.491983115673, z: 0, w: 0.870604813099 } }, twist: { linear: {x: 0.0 , y: 0 ,z: 0 } , angular: { x: 0.0 , y: 0 , z: 0.0 } } , reference_frame: world } }&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>すると、以下のようになるはずです。</p>
+
+<p><img src="http://cir-kit.github.io/images/2015-03-02-gazebo-ros-communication/rrbot-test-2.png" alt="rrobt-test-2" /></p>
+
+<p>続いて、RRBotを以下のコマンドを使って動かしてみましょう。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rosservice call /gazebo/set_model_state <span class="s1">&#39;{model_state: { model_name: rrbot, pose: { position: { x: 1, y: 1 ,z: 10 }, orientation: {x: 0, y: 0.491983115673, z: 0, w: 0.870604813099 } }, twist: { linear: {x: 0.0 , y: 0 ,z: 0 } , angular: { x: 0.0 , y: 0 , z: 0.0 } } , reference_frame: world } }&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>うまく行けば、コーラの缶がどこかに飛んでゆくでしょう。(゜Д゜)ノ&#8221;<br/>
+うまいう行かなかったら、やり直してみましょう。これはチュートリアルなんですから。<br/>
+ちなみに、以下の動画みたいになります。以下の動画では、缶が転がってます。私も何回かやりましたが、缶が気持ちよく飛んでゆくこともありましたw</p>
+
+<p>&lt; div class=&ldquo;youtube-container&rdquo;></p>
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/A8tGFOlgRdg" frameborder="0" allowfullscreen></iframe>
+
+
+<p></div></p>
+
+<h2>サービス : 状態とプロパティの取得</h2>
+
+<p>以下のサービスでは、シミュレーション中の物体やシミュレーションについての状態やプロパティの情報を取得することができます。:</p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> 名前 </th>
+<th style="text-align:center;"> 型 </th>
+<th style="text-align:center;"> 説明 </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> ~/getmodelproperties </td>
+<td style="text-align:center;">gazebomsgs/GetModelProperties</td>
+<td style="text-align:center;"> シミュレーション中のモデルのプロパティを返します。</td>
+</tr>
+<tr>
+<td style="text-align:center;"> ~/getmodelstate </td>
+<td style="text-align:center;">gazebomsgs/GetModelState </td>
+<td style="text-align:center;"> シミュレーション中のモデルの状態を返します。</td>
+</tr>
+<tr>
+<td style="text-align:center;"> ~/getworldproperties </td>
+<td style="text-align:center;">gazebomsgs/GetWorldProperties </td>
+<td style="text-align:center;"> シミュレーションworldのプロパティを返します。</td>
+</tr>
+<tr>
+<td style="text-align:center;"> ~/getjointproperties </td>
+<td style="text-align:center;">gazebomsgs/GetJointProperties </td>
+<td style="text-align:center;"> シミュレーション中のジョイントのプロパティを返します。</td>
+</tr>
+<tr>
+<td style="text-align:center;"> ~/getlinkproperties </td>
+<td style="text-align:center;">gazebomsgs/GetLinkProperties </td>
+<td style="text-align:center;"> シミュレーション中のリンクのプロパティを返します。</td>
+</tr>
+<tr>
+<td style="text-align:center;"> ~/getlinkstate </td>
+<td style="text-align:center;">gazebomsgs/GetLinkState </td>
+<td style="text-align:center;"> シミュレーション中のリンクの状態を返します。</td>
+</tr>
+<tr>
+<td style="text-align:center;"> ~/getphysicsproperties </td>
+<td style="text-align:center;">gazebomsgs/GetPhysicsProperties </td>
+<td style="text-align:center;"> シミュレーション中で使用される物理エンジンのプロパティを返します。</td>
+</tr>
+<tr>
+<td style="text-align:center;"> ~/linkstates </td>
+<td style="text-align:center;">gazebomsgs/LinkStates </td>
+<td style="text-align:center;"> world座標の完全なリンクの状態をpublishします。</td>
+</tr>
+<tr>
+<td style="text-align:center;"> ~/modelstates </td>
+<td style="text-align:center;">gazebo_msgs/ModelStates </td>
+<td style="text-align:center;"> world座標の完全なモデルの状態をpublishします。</td>
+</tr>
+</tbody>
+</table>
+
+
+<h2>注意</h2>
+
+<p>Gazebo中のリンクの名前は<code>modelname::body_name</code>の名前表記にスコープされます。</p>
+
+<h3>モデルの状態を取得する例</h3>
+
+<p>さて、すでにコーラの缶を<strong>蹴った</strong>ことでしょう。今度は、それがどのくらい飛んだのか知りたいですね。これまでの例を使い(同じシミュレーションを実行して)、以下のサービスコールを使ってコーラの缶の<code>pose</code>と<code>twist</code>を取得しましょう。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rosservice call gazebo/get_model_state <span class="s1">&#39;{model_name: coke_can}&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>この結果は、ロボットの蹴った具合によって変わりますが、以下のような感じになるはずです。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>pose:
+</span><span class='line'>  position:
+</span><span class='line'>    x: -33.4741996929
+</span><span class='line'>    y: 1.72965811349
+</span><span class='line'>    z: 0.0715116701823
+</span><span class='line'>  orientation:
+</span><span class='line'>    x: 0.52144600413
+</span><span class='line'>    y: 0.478438115917
+</span><span class='line'>    z: -0.471063379854
+</span><span class='line'>    w: -0.526583636448
+</span><span class='line'>twist:
+</span><span class='line'>  linear:
+</span><span class='line'>    x: 5.74579911953e-07
+</span><span class='line'>    y: 0.000217124920081
+</span><span class='line'>    z: 9.67915822705e-06
+</span><span class='line'>  angular:
+</span><span class='line'>    x: -0.0029562892652
+</span><span class='line'>    y: 7.77750570372e-06
+</span><span class='line'>    z: 4.16767016512e-05
+</span><span class='line'>success: True
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>私のロボットは 33 [m]飛ばしました。あなたのはどうでしたか ?</p>
+
+<h3>シミュレーションworldとオブジェクトプロパティを取得する</h3>
+
+<p>以下のコマンドで、worldの中のモデルのリスト(<code>ground_plane</code>, <code>coke cane</code>, <code>rrbot</code>)を取得することができます。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rosservice call gazebo/get_world_properties
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>すると、以下のような結果が得られるはずです。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>sim_time: 59.62
+</span><span class='line'>model_names: <span class="o">[</span><span class="s1">&#39;ground_plane&#39;</span>, <span class="s1">&#39;rrbot&#39;</span>, <span class="s1">&#39;coke_can&#39;</span><span class="o">]</span>
+</span><span class='line'>rendering_enabled: True
+</span><span class='line'>success: True
+</span><span class='line'>status_message: GetWorldProperties: got properties
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>また、以下のコマンドで特定のモデルの詳細を取得できます。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rosservice call gazebo/get_model_properties <span class="s1">&#39;{model_name: rrbot}&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>すると、以下の様な結果が得られるはずです。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>parent_model_name: <span class="s1">&#39;&#39;</span>
+</span><span class='line'>canonical_body_name: <span class="s1">&#39;&#39;</span>
+</span><span class='line'>body_names: <span class="o">[</span><span class="s1">&#39;link1&#39;</span>, <span class="s1">&#39;link2&#39;</span>, <span class="s1">&#39;link3&#39;</span><span class="o">]</span>
+</span><span class='line'>geom_names: <span class="o">[</span><span class="s1">&#39;link1_collision&#39;</span>, <span class="s1">&#39;link2_collision&#39;</span>, <span class="s1">&#39;link3_collision&#39;</span>, <span class="s1">&#39;link3_collision_camera_link&#39;</span>, <span class="s1">&#39;link3_collision_hokuyo_link&#39;</span><span class="o">]</span>
+</span><span class='line'>joint_names: <span class="o">[</span><span class="s1">&#39;fixed&#39;</span>, <span class="s1">&#39;joint1&#39;</span>, <span class="s1">&#39;joint2&#39;</span><span class="o">]</span>
+</span><span class='line'>child_model_names: <span class="o">[]</span>
+</span><span class='line'>is_static: False
+</span><span class='line'>success: True
+</span><span class='line'>status_message: GetModelProperties: got properties
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>サービス : 力のコントロール</h2>
+
+<p>以下のサービスでは、シミュレーション中のボディやジョイントへの力とねじりを適用することができます。</p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> 名前 </th>
+<th style="text-align:center;"> 型 </th>
+<th style="text-align:center;"> 説明 </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> ~/applybodywrench </td>
+<td style="text-align:center;">gazebomsgs/ApplyBodyWrench </td>
+<td style="text-align:center;"> シミュレーション中のボディにねじりを適用します。同じボディに適用されるすべてのアクティブなねじりは累積します。</td>
+</tr>
+<tr>
+<td style="text-align:center;"> ~/applyjointeffort </td>
+<td style="text-align:center;">gazebomsgs/ApplyJointEffort </td>
+<td style="text-align:center;"> シミュレーション中のジョイントへの力を適用します。同じジョイントに適用されるすべてのアクティブな力は累積します。</td>
+</tr>
+<tr>
+<td style="text-align:center;"> ~/clearjointforces </td>
+<td style="text-align:center;">gazebomsgs/ClearJointForces </td>
+<td style="text-align:center;"> ジョイントへ適用されている力をクリアします。</td>
+</tr>
+<tr>
+<td style="text-align:center;"> ~/clearbodywrenches </td>
+<td style="text-align:center;">gazebomsgs/ClearBodyWrenches </td>
+<td style="text-align:center;"> ボディへ適用されているねじりをクリアします。</td>
+</tr>
+</tbody>
+</table>
+
+
+<h3>ねじりをリンクに適用する</h3>
+
+<p>Gazeboのボディへのねじりの適用を説明するために、重力をなくして物体をスポーンさせてみましょう。すでにコーラの缶が追加されていることを確認してください。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rosrun gazebo_ros spawn_model -database coke_can -gazebo -model coke_can -y 1
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>続いて、<code>/gazebo/setphysicsproperties</code>サービスコールを送り、すべての軸の重力をなくしましょう。:</p>
+
+<p>Then to turn off gravity send a service call to /gazebo/setphysicsproperties with no gravity in any of the axis:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rosservice call /gazebo/set_physics_properties <span class="s2">&quot;</span>
+</span><span class='line'><span class="s2">time_step: 0.001</span>
+</span><span class='line'><span class="s2">max_update_rate: 1000.0</span>
+</span><span class='line'><span class="s2">gravity: </span>
+</span><span class='line'><span class="s2">  x: 0.0</span>
+</span><span class='line'><span class="s2">  y: 0.0</span>
+</span><span class='line'><span class="s2">  z: 0.0</span>
+</span><span class='line'><span class="s2">ode_config: </span>
+</span><span class='line'><span class="s2">  auto_disable_bodies: False</span>
+</span><span class='line'><span class="s2">  sor_pgs_precon_iters: 0</span>
+</span><span class='line'><span class="s2">  sor_pgs_iters: 50</span>
+</span><span class='line'><span class="s2">  sor_pgs_w: 1.3</span>
+</span><span class='line'><span class="s2">  sor_pgs_rms_error_tol: 0.0</span>
+</span><span class='line'><span class="s2">  contact_surface_layer: 0.001</span>
+</span><span class='line'><span class="s2">  contact_max_correcting_vel: 100.0</span>
+</span><span class='line'><span class="s2">  cfm: 0.0</span>
+</span><span class='line'><span class="s2">  erp: 0.2</span>
+</span><span class='line'><span class="s2">  max_contacts: 20&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>/gazebo/applybodywerch</code>サービスを呼び、コーラの缶の原点に１秒間、0.01 [Nm]のトルクを適用しましょう。すると、コーラの缶が、X軸に対して正の方向にスピンするのが確認できるはずです。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rosservice call /gazebo/apply_body_wrench <span class="s1">&#39;{body_name: &quot;coke_can::link&quot; , wrench: { torque: { x: 0.01, y: 0 , z: 0 } }, start_time: 10000000000, duration: 1000000000 }&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>今度は、コーラの缶の原点に1秒間、-0.01 [Nm]のトルクを適用し、缶の回転を止めましょう。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rosservice call /gazebo/apply_body_wrench <span class="s1">&#39;{body_name: &quot;coke_can::link&quot; , wrench: { torque: { x: -0.01, y: 0 , z: 0 } }, start_time: 10000000000, duration: 1000000000 }&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>通常、負のトルクは、曖昧な定義であることが多いです。すべてのアクティブなねじりをボディに適用するには、以下のようなコマンドを実行してください。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rosservice call /gazebo/clear_body_wrenches <span class="s1">&#39;{body_name: &quot;coke_can::link&quot;}&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>シミュレーション中のジョイントに力を適用する</h3>
+
+<p>ジョイントにトルクを適用するために、<code>/gazebo/applyjointeffort</code>をコールしてください。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rosservice call /gazebo/apply_joint_effort <span class="s2">&quot;joint_name: &#39;joint2&#39;</span>
+</span><span class='line'><span class="s2">effort: 10.0</span>
+</span><span class='line'><span class="s2">start_time:</span>
+</span><span class='line'><span class="s2">  secs: 0</span>
+</span><span class='line'><span class="s2">  nsecs: 0</span>
+</span><span class='line'><span class="s2">duration:</span>
+</span><span class='line'><span class="s2">  secs: 10</span>
+</span><span class='line'><span class="s2">  nsecs: 0&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>するとリンクが回り始めるはずです。<br/>
+特定のジョイントの力をクリアするためには、以下のコマンドをコールしてください。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rosservice call /gazebo/clear_joint_forces <span class="s1">&#39;{joint_name: joint2}&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>サービス : シミュレーションコントロール</h2>
+
+<p>以下のサービスでは、シミュレーション中の物理エンジンを一時停止したり解除したリアできます。:</p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> 名前 </th>
+<th style="text-align:center;"> 型 </th>
+<th style="text-align:center;"> 説明 </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> ~/pausephysics </td>
+<td style="text-align:center;">stdsrvs/Empty </td>
+<td style="text-align:center;"> 物理エンジンのアップデートを一時停止します。</td>
+</tr>
+<tr>
+<td style="text-align:center;"> ~/unpausephysics </td>
+<td style="text-align:center;">stdsrvs/Empty </td>
+<td style="text-align:center;"> 物理エンジンのアップデートを再開します。</td>
+</tr>
+<tr>
+<td style="text-align:center;"> ~/resetsimulation </td>
+<td style="text-align:center;">stdsrvs/Empty </td>
+<td style="text-align:center;"> モデルのポーズをリセットします。</td>
+</tr>
+<tr>
+<td style="text-align:center;"> ~/resetworld </td>
+<td style="text-align:center;">stdsrvs/Empty </td>
+<td style="text-align:center;"> 時間を含むすべてのシミュレーションをリセットします。</td>
+</tr>
+</tbody>
+</table>
+
+
+<h3>物理エンジンのアップデートを一時停止する</h3>
+
+<p>飛んでゆくコーラの缶のナイスなスクリーンショットを撮りたいとしましょう。いや、そうだと言ってください。そんな時には、以下のコマンドをコールすることで、物理エンジンを一時停止することができます。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rosservice call gazebo/pause_physics
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>シミュレーションが一時停止するとき、シミュレーション時間が停止し、物体も静的になります。しかし、Gazeboの内部アップデートループ(カスタムのダイナミクスプラグインアップデートなど)は依然として動いており、シミュレーション時間は変わっていません。これは、シミュレーションタイムをアップデートしないことで抑制されているのです。シミュレーションを再開するために、以下のコマンドをコールして物理エンジンを再開してください。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rosservice call gazebo/unpause_physics
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>次のステップ</h2>
+
+<p>Gazeboのための独自のROSプラグインの作り方について学んでください。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[新団体-ARC-設立]]></title>
@@ -267,7 +1505,7 @@
 
 <h5>検証日時</h5>
 
-<p>02/22/2015 (Sun)</p>
+<p>03/02/2015 (Mon)</p>
 
 <h5>概要</h5>
 
@@ -794,7 +2032,7 @@ RRBotシミュレーションを起動する。:</p>
 
 <h2>次のステップ</h2>
 
-<p><a href="">ROSコミュニケーションをGazeboと使う</a>というチュートリアルの中でGazeboとともに使うことのできるROSメッセージコールとサービスコールについて学んでください。</p>
+<p><a href="http://cir-kit.github.io/blog/2015/03/02/gazebo-ros-communication/">ROS Communication</a>というチュートリアルの中でGazeboとともに使うことのできるROSメッセージコールとサービスコールについて学んでください。</p>
 ]]></content>
   </entry>
   
@@ -6585,1504 +7823,6 @@ Gazeboを起動してください。:</p>
 <p>ファイル名は現在の作業ディレクトリ直下にしてください。そうしない場合には、絶対パスもしくは、作業ディレクトリからの相対パスを入力してください。</p>
 
 <h3>Next >> <a href="http://cir-kit.github.io/blog/2015/02/03/gazebo-modifying-a-world/">環境を修正する</a></h3>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[No.2-10:ロボットを作ってみよう !（動く箱 編)]]></title>
-    <link href="http://cir-kit.github.io/blog/2015/02/01/gazebo-animated-box/"/>
-    <updated>2015-02-01T10:50:42+09:00</updated>
-    <id>http://cir-kit.github.io/blog/2015/02/01/gazebo-animated-box</id>
-    <content type="html"><![CDATA[<p><img src="http://cir-kit.github.io/images/gazebo_logo.png" alt="gazebo_logo" /></p>
-
-<h5>検証日時</h5>
-
-<p>02/01/2015 (Sun)</p>
-
-<h5>概要</h5>
-
-<p>Gazeboのチュートリアル第二弾「Build a Robot」。<br/>
-このチュートリアルではロボットを作ったり、修正したりします。また、センサ、アクチュエータを搭載した車輪型ロボットを作り、モデルを描画するなどの実践例も行います。<br/>
-今回はその「Animated Box」編です。<br/>
-公式サイトを適当に翻訳しただけですので、あしからず。</p>
-
-<h5>レベル</h5>
-
-<p><strong>INTERMEDIATE</strong></p>
-
-<!-- more -->
-
-
-<h5>環境</h5>
-
-<table>
-<thead>
-<tr>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center;"> <strong>PC</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Prosessor</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>RAM</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>OS</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Kernel</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> 3.13.0-44-generic </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Gazebo</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Version 5.0.1 </td>
-</tr>
-</tbody>
-</table>
-
-
-<h5>参考</h5>
-
-<p><a href="http://gazebosim.org/tutorials?cat=build_robot">GAZEBO Tutorial-Build a Robot</a></p>
-
-<h2>はじめに</h2>
-
-<p>このチュートリアルでは、10周期で地面の上をスライドするようなシンプルな箱と、その<code>world</code>を生成します。<br/>
-また、Gazeboもしくは、自分独自の実行可能なシミュレーションを使用しての参照方法、アクセス方法、相互作用の様々な方法を紹介します。
-シミュレーションで生成する箱は自身の姿勢を配信し、姿勢を受け取るとコールバックを呼び、箱のロケーションとタイムスタンプをプリントアウトします。</p>
-
-<h2>セットアップ</h2>
-
-<p>作業ディレクトリを作成しましょう。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>mkdir ~/gazebo_animatebox_tutorial
-</span><span class='line'><span class="nb">cd</span> ~/gazebo_animatebox_tutorial
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>動く箱のコード</h2>
-
-<p><a href="https://bitbucket.org/osrf/gazebo/src/gazebo_4.0/examples/stand_alone/animated_box/animated_box.cc">animate_box.cc</a>、<a href="https://bitbucket.org/osrf/gazebo/src/gazebo_4.0/examples/stand_alone/animated_box/independent_listener.cc">independent_listner.cc</a>、<a href="https://bitbucket.org/osrf/gazebo/src/gazebo_4.0/examples/stand_alone/animated_box/integrated_main.cc">integrated_main.cc</a>、<a href="https://bitbucket.org/osrf/gazebo/src/gazebo_4.0/examples/stand_alone/animated_box/CMakeLists.txt">CMakeLists.txt</a>、<a href="https://bitbucket.org/osrf/gazebo/src/gazebo_4.0/examples/stand_alone/animated_box/animated_box.world">animated_box.world</a>を現在のディレクトリにコピーしましょう。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>wget http://bitbucket.org/osrf/gazebo/raw/gazebo_4.0/examples/stand_alone/animated_box/animated_box.cc
-</span><span class='line'>wget http://bitbucket.org/osrf/gazebo/raw/gazebo_4.0/examples/stand_alone/animated_box/independent_listener.cc
-</span><span class='line'>wget http://bitbucket.org/osrf/gazebo/raw/gazebo_4.0/examples/stand_alone/animated_box/integrated_main.cc
-</span><span class='line'>wget http://bitbucket.org/osrf/gazebo/raw/gazebo_4.0/examples/stand_alone/animated_box/CMakeLists.txt
-</span><span class='line'>wget http://bitbucket.org/osrf/gazebo/raw/gazebo_4.0/examples/stand_alone/animated_box/animated_box.world
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>プラグインをビルドしましょう。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>mkdir build
-</span><span class='line'><span class="nb">cd </span>build
-</span><span class='line'>cmake ../
-</span><span class='line'>make
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>ただし、Gazeboはプラグインを最後に読み込むことができるということを覚えておいてください。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">export </span><span class="nv">GAZEBO_PLUGIN_PATH</span><span class="o">=</span><span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>:<span class="nv">$GAZEBO_PLUGIN_PATH</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>Gazeboでシミュレーションする</h2>
-
-<p>今回は、プラグインを使ったGazeboをどのようにして使うかを説明します。<br/>
-以下のようにしてGazeboを起動しましょう。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd</span> ~/gazebo_animatebox_tutorial
-</span><span class='line'>gazebo animated_box.world
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>他のターミナルで、<code>gz topc</code>コマンドを使用し、箱の姿勢を表示するユーザーインターフェースを起動しましょう。この時、<code>build</code>ディレクトリ内でコマンドを使用してください。でなければパスが通らず、箱が動きません。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gz topic -v /gazebo/animated_box_world/pose/local/info
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>すると、箱の姿勢を表示するGUIが表示できたはずです。<br/>
-以下の動画は、動く箱と、その状態を表示するGUIが動いている様子です。</p>
-
-<div class="youtube-container">
-<iframe width="560" height="315" src="https://www.youtube.com/embed/QMrT0iapF4g" frameborder="0" allowfullscreen></iframe>
-</div>
-
-
-<h2>独自の実行ファイルを使ってシミュレーションに接続する。</h2>
-
-<p>Gazeboが起動していないことを確認してください。<br/>
-これまでの説明通りにGazeboを起動してください。同時にGazeboに接続できる独立したリスナを起動してください。このリスナというのは、箱のロケーションとタイムスタンプを受け取り、それをプリントアウトするようなものです。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd</span> ~/gazebo_animatebox_tutorial
-</span><span class='line'>gazebo animated_box.world <span class="p">&amp;</span> ./build/independent_listener
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>実行すると、以下の動画のようになります。<br/>
-先ほどまでのように、<code>gz topic</code>によるアプリケーションとは異なり、箱の状態が端末に表示されていることがわかります。<br/>
-<strong>注目 : </strong>もし、Gazeboは起動するが、箱が動ないという現象に陥ったなら、それは、パス通しがうまく行っていません。一つ前の項でパス通しをしていますので、<code>libanimated_box.so</code>ファイルのあるディレクトリで、以下のコマンドを実行し、パス通しをし直しましょう。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">export </span><span class="nv">GAZEBO_PLUGIN_PATH</span><span class="o">=</span><span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>:<span class="nv">$GAZEBO_PLUGIN_PATH</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>ちなみに、この現象は、パスを通した後に一旦端末を閉じ、新しい端末で実行した場合に起きるようです。</p>
-
-<div class="youtube-container">
-<iframe width="560" height="315" src="https://www.youtube.com/embed/e3kCrol8XA8" frameborder="0" allowfullscreen></iframe>
-</div>
-
-
-<h2>シミュレーションを起動し、独自の実行ファイルを接続する。</h2>
-
-<p>Gazeboが起動していないことを確認してください。
-例<code>integrated_main</code>は以下のようになっています。</p>
-
-<ol>
-<li><p>箱を表示するシミュレーションを起動する。</p></li>
-<li><p>シミュレーションにリスナを接続する。</p></li>
-<li><p>リスナはタイムスタンプと姿勢を受け取り、それぞれをプリントアウトします。</p></li>
-</ol>
-
-
-<p>ファイル<code>integrated_main</code>を実行しましょう。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd</span> ~/gazebo_animatebox_tutorial
-</span><span class='line'>./build/integrated_main animated_box.world
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>シミュレーションを見るために、以下のコマンドを実行しましょう。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gzclient
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>実行すると、以下の動画のようになります。<br/>
-先ほどと同様、端末に箱の状態が表示されますが、コマンド一つでGazeboが立ち上がっていないところに違いがあります。つまり、今回は、<code>gzserver</code>のみを立ち上げ、その後手動で<code>gzclient</code>を立ち上げたということです。この、<code>gzserver</code>と<code>gzclient</code>の概念については<a href="http://cir-kit.github.io/blog/2015/01/31/gazebo-components/">GAZEBOを使ってみよう ! (Gazebo コンポーネント 編)</a>で説明していますので、そちらをご覧ください。</p>
-
-<div class="youtube-container">
-<iframe width="560" height="315" src="https://www.youtube.com/embed/dY7pIIXt85E" frameborder="0" allowfullscreen></iframe>
-</div>
-
-
-<h2>ソースコード</h2>
-
-<h3>independent_listner.cc</h3>
-
-<p>実行しているシミュレーションに接続し、姿勢情報トピックを受け取り、物体の姿勢を表示します。</p>
-
-<h3>integrated_main.cc</h3>
-
-<p>シミュレーションを起動し、姿勢情報トピックを受け取り、物体の姿勢を表示します。</p>
-
-<h3>animated_box.cc</h3>
-
-<p>シミュレーションのアニメーション要素を定義したプラグインライブラリです。アニメーション要素とは、シミュレーションの中で、箱を動かすようなものです。</p>
-
-<h3>animated_box.world</h3>
-
-<p>シミュレーションの環境とその環境下に置く箱のについて定義下XMLファイルです。</p>
-
-<h3>CMakeLists.txt</h3>
-
-<p>スクリプトをビルドするCMakeです。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[No.2-9:ロボットを作ってみよう ! (ロボットにグリッパを取り付ける 編)]]></title>
-    <link href="http://cir-kit.github.io/blog/2015/02/01/gazebo-attach-gripper-to-robot/"/>
-    <updated>2015-02-01T01:24:00+09:00</updated>
-    <id>http://cir-kit.github.io/blog/2015/02/01/gazebo-attach-gripper-to-robot</id>
-    <content type="html"><![CDATA[<p><img src="http://cir-kit.github.io/images/gazebo_logo.png" alt="gazebo_logo" /></p>
-
-<h5>検証日時</h5>
-
-<p>02/01/2015 (Sun)</p>
-
-<h5>概要</h5>
-
-<p>Gazeboのチュートリアル第二弾「Build a Robot」。<br/>
-このチュートリアルではロボットを作ったり、修正したりします。また、センサ、アクチュエータを搭載した車輪型ロボットを作り、モデルを描画するなどの実践例も行います。<br/>
-今回はその「Attach Gripper to Robot」編です。<br/>
-公式サイトを適当に翻訳しただけですので、あしからず。</p>
-
-<h5>レベル</h5>
-
-<p><strong>BEGINNER</strong></p>
-
-<!-- more -->
-
-
-<h5>環境</h5>
-
-<table>
-<thead>
-<tr>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center;"> <strong>PC</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Prosessor</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>RAM</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>OS</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Kernel</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> 3.13.0-44-generic </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Gazebo</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Version 5.0.1 </td>
-</tr>
-</tbody>
-</table>
-
-
-<h5>参考</h5>
-
-<p><a href="http://gazebosim.org/tutorials?cat=build_robot">GAZEBO Tutorial-Build a Robot</a></p>
-
-<h2>はじめに</h2>
-
-<h4>始める前に以下を参照してください（してない人は）</h4>
-
-<ul>
-<li><p><a href="http://cir-kit.github.io/2015/01/31/gazebo-make-a-mobile-robot/">移動ロボットを作る</a></p></li>
-<li><p><a href="http://cir-kit.github.io/2015/01/31/gazebo-make-a-simple-gripper">簡単なグリッパを作る</a></p></li>
-</ul>
-
-
-<p>このチュートリアルでは、すでに存在するロボットの部品を組み立てて、新しいロボットを作るにはどうするかについて説明します。例えば、移動ロボットに簡単な腕とグリッパを取り付けると言った具合です。</p>
-
-<h2>ロボットの組み立て</h2>
-
-<p>Gazeboを立ち上げてください。その際に、以前のチュートリアルで製作したロボットを読み込むことができるか確認してください。</p>
-
-<h3>移動台車ベース</h3>
-
-<ol>
-<li><p>以前<a href="http://cir-kit.github.io/2015/01/31/gazebo-make-a-mobile-robot/">移動ロボットを作る</a>で以下のような移動ロボット（台車）を作成したはずです。
-<img src="http://cir-kit.github.io/images/2015-02-01-gazebo-attach-gripper-to-robot/Mobile_base.png" alt="Mobile_base" /></p></li>
-<li><p>このチュートリアルでは<code>~/.gazebo/models/my_robot/model.sdf</code>を修正し、モデルをより大きくすることでグリッパを搭載します。故に、以下のようにして、<code>model.sdf</code>を修正してゆきましょう。:</p></li>
-</ol>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gedit ~/.gazebo/models/my_robot/model.sdf
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>以下のようにして、モデルを大きくし、タイヤの位置を設定し直します。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-<span class='line-number'>70</span>
-<span class='line-number'>71</span>
-<span class='line-number'>72</span>
-<span class='line-number'>73</span>
-<span class='line-number'>74</span>
-<span class='line-number'>75</span>
-<span class='line-number'>76</span>
-<span class='line-number'>77</span>
-<span class='line-number'>78</span>
-<span class='line-number'>79</span>
-<span class='line-number'>80</span>
-<span class='line-number'>81</span>
-<span class='line-number'>82</span>
-<span class='line-number'>83</span>
-<span class='line-number'>84</span>
-<span class='line-number'>85</span>
-<span class='line-number'>86</span>
-<span class='line-number'>87</span>
-<span class='line-number'>88</span>
-<span class='line-number'>89</span>
-<span class='line-number'>90</span>
-<span class='line-number'>91</span>
-<span class='line-number'>92</span>
-<span class='line-number'>93</span>
-<span class='line-number'>94</span>
-<span class='line-number'>95</span>
-<span class='line-number'>96</span>
-<span class='line-number'>97</span>
-<span class='line-number'>98</span>
-<span class='line-number'>99</span>
-<span class='line-number'>100</span>
-<span class='line-number'>101</span>
-<span class='line-number'>102</span>
-<span class='line-number'>103</span>
-<span class='line-number'>104</span>
-<span class='line-number'>105</span>
-<span class='line-number'>106</span>
-<span class='line-number'>107</span>
-<span class='line-number'>108</span>
-<span class='line-number'>109</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&#39;1.0&#39;?&gt;</span>
-</span><span class='line'><span class="nt">&lt;sdf</span> <span class="na">version=</span><span class="s">&#39;1.4&#39;</span><span class="nt">&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;model</span> <span class="na">name=</span><span class="s">&quot;mobile_base&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;link</span> <span class="na">name=</span><span class="s">&#39;chassis&#39;</span><span class="nt">&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;pose&gt;</span>0 0 .25 0 0 0<span class="nt">&lt;/pose&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;inertial&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;mass&gt;</span>20.0<span class="nt">&lt;/mass&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;pose&gt;</span>-0.1 0 -0.1 0 0 0<span class="nt">&lt;/pose&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;inertia&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;ixx&gt;</span>0.5<span class="nt">&lt;/ixx&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;iyy&gt;</span>1.0<span class="nt">&lt;/iyy&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;izz&gt;</span>0.1<span class="nt">&lt;/izz&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/inertia&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/inertial&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;collision</span> <span class="na">name=</span><span class="s">&#39;collision&#39;</span><span class="nt">&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;box&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;size&gt;</span>2 1 0.3<span class="nt">&lt;/size&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;/box&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/collision&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;visual</span> <span class="na">name=</span><span class="s">&#39;visual&#39;</span><span class="nt">&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;box&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;size&gt;</span>2 1 0.3<span class="nt">&lt;/size&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;/box&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/visual&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;collision</span> <span class="na">name=</span><span class="s">&#39;caster_collision&#39;</span><span class="nt">&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;pose&gt;</span>-0.8 0 -0.125 0 0 0<span class="nt">&lt;/pose&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;sphere&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;radius&gt;</span>.125<span class="nt">&lt;/radius&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;/sphere&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;surface&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;friction&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;ode&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;mu&gt;</span>0<span class="nt">&lt;/mu&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;mu2&gt;</span>0<span class="nt">&lt;/mu2&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/ode&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;/friction&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/surface&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/collision&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;visual</span> <span class="na">name=</span><span class="s">&#39;caster_visual&#39;</span><span class="nt">&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;pose&gt;</span>-0.8 0 -0.125 0 0 0<span class="nt">&lt;/pose&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;sphere&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;radius&gt;</span>.125<span class="nt">&lt;/radius&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;/sphere&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/visual&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/link&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;link</span> <span class="na">name=</span><span class="s">&quot;left_wheel&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;pose&gt;</span>0.8 0.6 0.125 0 1.5707 1.5707<span class="nt">&lt;/pose&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;collision</span> <span class="na">name=</span><span class="s">&quot;collision&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;cylinder&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;radius&gt;</span>.125<span class="nt">&lt;/radius&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;length&gt;</span>.05<span class="nt">&lt;/length&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;/cylinder&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/collision&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;visual</span> <span class="na">name=</span><span class="s">&quot;visual&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;cylinder&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;radius&gt;</span>.125<span class="nt">&lt;/radius&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;length&gt;</span>.05<span class="nt">&lt;/length&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;/cylinder&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/visual&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/link&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;link</span> <span class="na">name=</span><span class="s">&quot;right_wheel&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;pose&gt;</span>0.8 -0.6 0.125 0 1.5707 1.5707<span class="nt">&lt;/pose&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;collision</span> <span class="na">name=</span><span class="s">&quot;collision&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;cylinder&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;radius&gt;</span>.125<span class="nt">&lt;/radius&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;length&gt;</span>.05<span class="nt">&lt;/length&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;/cylinder&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/collision&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;visual</span> <span class="na">name=</span><span class="s">&quot;visual&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;cylinder&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;radius&gt;</span>.125<span class="nt">&lt;/radius&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;length&gt;</span>.05<span class="nt">&lt;/length&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;/cylinder&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/visual&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/link&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;joint</span> <span class="na">type=</span><span class="s">&quot;revolute&quot;</span> <span class="na">name=</span><span class="s">&quot;left_wheel_hinge&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;pose&gt;</span>0 0 -0.03 0 0 0<span class="nt">&lt;/pose&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;child&gt;</span>left_wheel<span class="nt">&lt;/child&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;parent&gt;</span>chassis<span class="nt">&lt;/parent&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;axis&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;xyz&gt;</span>0 1 0<span class="nt">&lt;/xyz&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/axis&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/joint&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;joint</span> <span class="na">type=</span><span class="s">&quot;revolute&quot;</span> <span class="na">name=</span><span class="s">&quot;right_wheel_hinge&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;pose&gt;</span>0 0 0.03 0 0 0<span class="nt">&lt;/pose&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;child&gt;</span>right_wheel<span class="nt">&lt;/child&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;parent&gt;</span>chassis<span class="nt">&lt;/parent&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;axis&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;xyz&gt;</span>0 1 0<span class="nt">&lt;/xyz&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/axis&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/joint&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;/model&gt;</span>
-</span><span class='line'> <span class="nt">&lt;/sdf&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>すると以下の様になっているはずです。
-<img src="http://cir-kit.github.io/images/2015-02-01-gazebo-attach-gripper-to-robot/Mobile_base_large.png" alt="Mobile_base_large" /></p>
-
-<h2>ロボットを組み立てる</h2>
-
-<ol>
-<li>簡単なグリッパを取り付けたロボットを作成するために、新しいモデルディレクトリを作成しましょう。</li>
-</ol>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>mkdir ~/.gazebo/models/simple_mobile_manipulator
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>そしてモデルのConfigファイル<code>model.config</code>を編集しましょう。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gedit ~/.gazebo/models/simple_mobile_manipulator/model.config
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>作成する<code>model.config</code>の内容は以下のようにしましょう。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot;?&gt;</span>
-</span><span class='line'><span class="nt">&lt;model&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;name&gt;</span>Simple Mobile Manipulator<span class="nt">&lt;/name&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;version&gt;</span>1.0<span class="nt">&lt;/version&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;sdf</span> <span class="na">version=</span><span class="s">&#39;1.4&#39;</span><span class="nt">&gt;</span>manipulator.sdf<span class="nt">&lt;/sdf&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;author&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;name&gt;</span>My Name<span class="nt">&lt;/name&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;email&gt;</span>me@my.email<span class="nt">&lt;/email&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;/author&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;description&gt;</span>
-</span><span class='line'>    My simple mobile manipulator
-</span><span class='line'>  <span class="nt">&lt;/description&gt;</span>
-</span><span class='line'><span class="nt">&lt;/model&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ol>
-<li>続いて、モデルのSDFファイル<code>manipulator.sdf</code>を作成しましょう。:</li>
-</ol>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gedit ~/.gazebo/models/simple_mobile_manipulator/manipulator.sdf
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>作成する<code>manipulator.sdf</code>の内容は以下のようにしましょう。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; ?&gt;</span>
-</span><span class='line'><span class="nt">&lt;sdf</span> <span class="na">version=</span><span class="s">&quot;1.3&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;model</span> <span class="na">name=</span><span class="s">&quot;simple_mobile_manipulator&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;include&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;uri&gt;</span>model://my_gripper<span class="nt">&lt;/uri&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;pose&gt;</span>1.3 0 0.1 0 0 0<span class="nt">&lt;/pose&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/include&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;include&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;uri&gt;</span>model://my_robot<span class="nt">&lt;/uri&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;pose&gt;</span>0 0 0 0 0 0<span class="nt">&lt;/pose&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/include&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;joint</span> <span class="na">name=</span><span class="s">&quot;arm_gripper_joint&quot;</span> <span class="na">type=</span><span class="s">&quot;revolute&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;parent&gt;</span>mobile_base::chassis<span class="nt">&lt;/parent&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;child&gt;</span>simple_gripper::riser<span class="nt">&lt;/child&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;axis&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;limit&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;lower&gt;</span>0<span class="nt">&lt;/lower&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;upper&gt;</span>0<span class="nt">&lt;/upper&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/limit&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;xyz&gt;</span>0 0 1<span class="nt">&lt;/xyz&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/axis&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/joint&gt;</span>
-</span><span class='line'>    <span class="c">&lt;!-- attach sensor to the gripper --&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;include&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;uri&gt;</span>model://hokuyo<span class="nt">&lt;/uri&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;pose&gt;</span>1.3 0 0.3 0 0 0<span class="nt">&lt;/pose&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/include&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;joint</span> <span class="na">name=</span><span class="s">&quot;hokuyo_joint&quot;</span> <span class="na">type=</span><span class="s">&quot;revolute&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;child&gt;</span>hokuyo::link<span class="nt">&lt;/child&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;parent&gt;</span>simple_gripper::palm<span class="nt">&lt;/parent&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;axis&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;xyz&gt;</span>0 0 1<span class="nt">&lt;/xyz&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;limit&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;upper&gt;</span>0<span class="nt">&lt;/upper&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;lower&gt;</span>0<span class="nt">&lt;/lower&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/limit&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/axis&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/joint&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;/model&gt;</span>
-</span><span class='line'><span class="nt">&lt;/sdf&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ol>
-<li>編集した<code>model.config</code>と<code>manipulator.sdf</code>をセーブしたら、Gazeboを立ち上げ、<strong>Insert</strong>タブより<strong>Simple Mobile Manipulator</strong>モデルを選択して、作成したモデルをシミュレータに表示してください。すると、以下のようになっているはずです。
-<img src="http://cir-kit.github.io/images/2015-02-01-gazebo-attach-gripper-to-robot/Simple_mobile_manipulator.png" alt="Simple_mobile_manipulator" /></li>
-</ol>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[No.2-8:ロボットを作ってみよう ! (簡単なグリッパーを作る 編)]]></title>
-    <link href="http://cir-kit.github.io/blog/2015/01/31/gazebo-make-a-simple-gripper/"/>
-    <updated>2015-01-31T22:35:00+09:00</updated>
-    <id>http://cir-kit.github.io/blog/2015/01/31/gazebo-make-a-simple-gripper</id>
-    <content type="html"><![CDATA[<p><img src="http://cir-kit.github.io/images/gazebo_logo.png" alt="gazebo_logo" /></p>
-
-<h5>検証日時</h5>
-
-<p>01/30/2015 (Fri)</p>
-
-<h5>概要</h5>
-
-<p>Gazeboのチュートリアル第二弾「Build a Robot」。<br/>
-このチュートリアルではロボットを作ったり、修正したりします。また、センサ、アクチュエータを搭載した車輪型ロボットを作り、モデルを描画するなどの実践例も行います。<br/>
-今回はその「Make a simple gripper」編です。<br/>
-公式サイトを適当に翻訳しただけですので、あしからず。</p>
-
-<h5>レベル</h5>
-
-<p><strong>BEGINNER</strong></p>
-
-<!-- more -->
-
-
-<h5>環境</h5>
-
-<table>
-<thead>
-<tr>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center;"> <strong>PC</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Prosessor</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>RAM</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>OS</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Kernel</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> 3.13.0-44-generic </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Gazebo</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Version 5.0.1 </td>
-</tr>
-</tbody>
-</table>
-
-
-<h5>参考</h5>
-
-<p><a href="http://gazebosim.org/tutorials?cat=build_robot">GAZEBO Tutorial-Build a Robot</a></p>
-
-<h2>はじめに</h2>
-
-<p>このチュートリアルでは，２つの棒を使ったピンチンググリッパーの作り方を説明します。</p>
-
-<h2>モデルディレクトリを作る</h2>
-
-<p>このチュートリアルを始めるために、<a href="http://gazebosim.org/user_guide/started__models__database.html">モデルデータベースドキュメント</a>と<a href="http://sdformat.org/spec">SDF</a>のレファレンスをご覧ください。</p>
-
-<h2>モデルを作る</h2>
-
-<ol>
-<li><code>world</code> ファイルのためのディレクトリを作成しましょう。</li>
-</ol>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>mkdir ~/simple_gripper_tutorial
-</span><span class='line'><span class="nb">cd</span> ~/simple_gripper_tutorial
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ol>
-<li>まずはシンプルな空の<code>world</code>から始めます。<code>world</code>ファイルを作成しましょう。</li>
-</ol>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gedit ~/simple_gripper_tutorial/gripper.world
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>以下のSDFファイル<a href="http://bitbucket.org/osrf/gazebo_tutorials/raw/default/simple_gripper/files/box.sdf">gripper.world</a>をコピペしてください。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot;?&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;sdf</span> <span class="na">version=</span><span class="s">&quot;1.4&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;world</span> <span class="na">name=</span><span class="s">&quot;default&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>    <span class="c">&lt;!-- A ground plane --&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;include&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;uri&gt;</span>model://ground_plane<span class="nt">&lt;/uri&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/include&gt;</span>
-</span><span class='line'>    <span class="c">&lt;!-- A global light source --&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;include&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;uri&gt;</span>model://sun<span class="nt">&lt;/uri&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/include&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;include&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;uri&gt;</span>model://my_gripper<span class="nt">&lt;/uri&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/include&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/world&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;/sdf&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ol>
-<li><code>~/.gazebo</code> ディレクトリの中に，<code>model</code> ディレクトリを作成してください。作成したディレクトリには、これから作成するモデルを置いてゆきます。:</li>
-</ol>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>mkdir -p ~/.gazebo/models/my_gripper
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ol>
-<li><p>作成するグリッパの基本的な構造を作りましょう。その最も簡単な方法は静的モデルを作り、リンクを一つ追加することです。静的モデルとは、シミュレーションがスタートしてもリンクが動かないということを意味します。これにより、シミュレータをスタートさせ、ジョイントを追加する前に、モデルを見ながら、リンクの位置を調べることができます。</p></li>
-<li><p>以下のように、<a href="http://bitbucket.org/osrf/gazebo_tutorials/raw/default/simple_gripper/files/model.config">model.config</a>を作成しましょう。</p></li>
-</ol>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot;?&gt;</span>
-</span><span class='line'><span class="nt">&lt;model&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;name&gt;</span>My Gripper<span class="nt">&lt;/name&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;version&gt;</span>1.0<span class="nt">&lt;/version&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;sdf</span> <span class="na">version=</span><span class="s">&#39;1.4&#39;</span><span class="nt">&gt;</span>simple_gripper.sdf<span class="nt">&lt;/sdf&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;author&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;name&gt;</span>My Name<span class="nt">&lt;/name&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;email&gt;</span>me@my.email<span class="nt">&lt;/email&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;/author&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;description&gt;</span>
-</span><span class='line'>    My awesome robot.
-</span><span class='line'>  <span class="nt">&lt;/description&gt;</span>
-</span><span class='line'><span class="nt">&lt;/model&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ol>
-<li>以下の<a href="http://bitbucket.org/osrf/gazebo_tutorials/raw/default/simple_gripper/files/simple_gripper.sdf">simple_gripper.sdf</a>ファイルをコピペしてください。</li>
-</ol>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-<span class='line-number'>70</span>
-<span class='line-number'>71</span>
-<span class='line-number'>72</span>
-<span class='line-number'>73</span>
-<span class='line-number'>74</span>
-<span class='line-number'>75</span>
-<span class='line-number'>76</span>
-<span class='line-number'>77</span>
-<span class='line-number'>78</span>
-<span class='line-number'>79</span>
-<span class='line-number'>80</span>
-<span class='line-number'>81</span>
-<span class='line-number'>82</span>
-<span class='line-number'>83</span>
-<span class='line-number'>84</span>
-<span class='line-number'>85</span>
-<span class='line-number'>86</span>
-<span class='line-number'>87</span>
-<span class='line-number'>88</span>
-<span class='line-number'>89</span>
-<span class='line-number'>90</span>
-<span class='line-number'>91</span>
-<span class='line-number'>92</span>
-<span class='line-number'>93</span>
-<span class='line-number'>94</span>
-<span class='line-number'>95</span>
-<span class='line-number'>96</span>
-<span class='line-number'>97</span>
-<span class='line-number'>98</span>
-<span class='line-number'>99</span>
-<span class='line-number'>100</span>
-<span class='line-number'>101</span>
-<span class='line-number'>102</span>
-<span class='line-number'>103</span>
-<span class='line-number'>104</span>
-<span class='line-number'>105</span>
-<span class='line-number'>106</span>
-<span class='line-number'>107</span>
-<span class='line-number'>108</span>
-<span class='line-number'>109</span>
-<span class='line-number'>110</span>
-<span class='line-number'>111</span>
-<span class='line-number'>112</span>
-<span class='line-number'>113</span>
-<span class='line-number'>114</span>
-<span class='line-number'>115</span>
-<span class='line-number'>116</span>
-<span class='line-number'>117</span>
-<span class='line-number'>118</span>
-<span class='line-number'>119</span>
-<span class='line-number'>120</span>
-<span class='line-number'>121</span>
-<span class='line-number'>122</span>
-<span class='line-number'>123</span>
-<span class='line-number'>124</span>
-<span class='line-number'>125</span>
-<span class='line-number'>126</span>
-<span class='line-number'>127</span>
-<span class='line-number'>128</span>
-<span class='line-number'>129</span>
-<span class='line-number'>130</span>
-<span class='line-number'>131</span>
-<span class='line-number'>132</span>
-<span class='line-number'>133</span>
-<span class='line-number'>134</span>
-<span class='line-number'>135</span>
-<span class='line-number'>136</span>
-<span class='line-number'>137</span>
-<span class='line-number'>138</span>
-<span class='line-number'>139</span>
-<span class='line-number'>140</span>
-<span class='line-number'>141</span>
-<span class='line-number'>142</span>
-<span class='line-number'>143</span>
-<span class='line-number'>144</span>
-<span class='line-number'>145</span>
-<span class='line-number'>146</span>
-<span class='line-number'>147</span>
-<span class='line-number'>148</span>
-<span class='line-number'>149</span>
-<span class='line-number'>150</span>
-<span class='line-number'>151</span>
-<span class='line-number'>152</span>
-<span class='line-number'>153</span>
-<span class='line-number'>154</span>
-<span class='line-number'>155</span>
-<span class='line-number'>156</span>
-<span class='line-number'>157</span>
-<span class='line-number'>158</span>
-<span class='line-number'>159</span>
-<span class='line-number'>160</span>
-<span class='line-number'>161</span>
-<span class='line-number'>162</span>
-<span class='line-number'>163</span>
-<span class='line-number'>164</span>
-<span class='line-number'>165</span>
-<span class='line-number'>166</span>
-<span class='line-number'>167</span>
-<span class='line-number'>168</span>
-<span class='line-number'>169</span>
-<span class='line-number'>170</span>
-<span class='line-number'>171</span>
-<span class='line-number'>172</span>
-<span class='line-number'>173</span>
-<span class='line-number'>174</span>
-<span class='line-number'>175</span>
-<span class='line-number'>176</span>
-<span class='line-number'>177</span>
-<span class='line-number'>178</span>
-<span class='line-number'>179</span>
-<span class='line-number'>180</span>
-<span class='line-number'>181</span>
-<span class='line-number'>182</span>
-<span class='line-number'>183</span>
-<span class='line-number'>184</span>
-<span class='line-number'>185</span>
-<span class='line-number'>186</span>
-<span class='line-number'>187</span>
-<span class='line-number'>188</span>
-<span class='line-number'>189</span>
-<span class='line-number'>190</span>
-<span class='line-number'>191</span>
-<span class='line-number'>192</span>
-<span class='line-number'>193</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot;?&gt;</span>
-</span><span class='line'><span class="nt">&lt;sdf</span> <span class="na">version=</span><span class="s">&quot;1.4&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;model</span> <span class="na">name=</span><span class="s">&quot;simple_gripper&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;link</span> <span class="na">name=</span><span class="s">&quot;riser&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;pose&gt;</span>-0.15 0.0 0.5 0 0 0<span class="nt">&lt;/pose&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;inertial&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;pose&gt;</span>0 0 -0.5 0 0 0<span class="nt">&lt;/pose&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;inertia&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;ixx&gt;</span>0.01<span class="nt">&lt;/ixx&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;ixy&gt;</span>0<span class="nt">&lt;/ixy&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;ixz&gt;</span>0<span class="nt">&lt;/ixz&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;iyy&gt;</span>0.01<span class="nt">&lt;/iyy&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;iyz&gt;</span>0<span class="nt">&lt;/iyz&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;izz&gt;</span>0.01<span class="nt">&lt;/izz&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;/inertia&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;mass&gt;</span>10.0<span class="nt">&lt;/mass&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/inertial&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;collision</span> <span class="na">name=</span><span class="s">&quot;collision&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;box&gt;</span>
-</span><span class='line'>                        <span class="nt">&lt;size&gt;</span>0.2 0.2 1.0<span class="nt">&lt;/size&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;/box&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/collision&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;visual</span> <span class="na">name=</span><span class="s">&quot;visual&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;box&gt;</span>
-</span><span class='line'>                        <span class="nt">&lt;size&gt;</span>0.2 0.2 1.0<span class="nt">&lt;/size&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;/box&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;material&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;script&gt;</span>Gazebo/Purple<span class="nt">&lt;/script&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;/material&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/visual&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/link&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;link</span> <span class="na">name=</span><span class="s">&quot;palm&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;pose&gt;</span>0.0 0.0 0.05 0 0 0<span class="nt">&lt;/pose&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;inertial&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;inertia&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;ixx&gt;</span>0.01<span class="nt">&lt;/ixx&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;ixy&gt;</span>0<span class="nt">&lt;/ixy&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;ixz&gt;</span>0<span class="nt">&lt;/ixz&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;iyy&gt;</span>0.01<span class="nt">&lt;/iyy&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;iyz&gt;</span>0<span class="nt">&lt;/iyz&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;izz&gt;</span>0.01<span class="nt">&lt;/izz&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;/inertia&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;mass&gt;</span>0.5<span class="nt">&lt;/mass&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/inertial&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;collision</span> <span class="na">name=</span><span class="s">&quot;collision&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;box&gt;</span>
-</span><span class='line'>                        <span class="nt">&lt;size&gt;</span>0.1 0.2 0.1<span class="nt">&lt;/size&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;/box&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/collision&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;visual</span> <span class="na">name=</span><span class="s">&quot;visual&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;box&gt;</span>
-</span><span class='line'>                        <span class="nt">&lt;size&gt;</span>0.1 0.2 0.1<span class="nt">&lt;/size&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;/box&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;material&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;script&gt;</span>Gazebo/Red<span class="nt">&lt;/script&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;/material&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/visual&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/link&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;link</span> <span class="na">name=</span><span class="s">&quot;left_finger&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;pose&gt;</span>0.1 0.2 0.05 0 0 -0.78539<span class="nt">&lt;/pose&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;inertial&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;inertia&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;ixx&gt;</span>0.01<span class="nt">&lt;/ixx&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;ixy&gt;</span>0<span class="nt">&lt;/ixy&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;ixz&gt;</span>0<span class="nt">&lt;/ixz&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;iyy&gt;</span>0.01<span class="nt">&lt;/iyy&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;iyz&gt;</span>0<span class="nt">&lt;/iyz&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;izz&gt;</span>0.01<span class="nt">&lt;/izz&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;/inertia&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;mass&gt;</span>0.1<span class="nt">&lt;/mass&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/inertial&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;collision</span> <span class="na">name=</span><span class="s">&quot;collision&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;box&gt;</span>
-</span><span class='line'>                        <span class="nt">&lt;size&gt;</span>0.1 0.3 0.1<span class="nt">&lt;/size&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;/box&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/collision&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;visual</span> <span class="na">name=</span><span class="s">&quot;visual&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;box&gt;</span>
-</span><span class='line'>                        <span class="nt">&lt;size&gt;</span>0.1 0.3 0.1<span class="nt">&lt;/size&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;/box&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;material&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;script&gt;</span>Gazebo/Blue<span class="nt">&lt;/script&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;/material&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/visual&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/link&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;link</span> <span class="na">name=</span><span class="s">&quot;left_finger_tip&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;pose&gt;</span>0.336 0.3 0.05 0 0 1.5707<span class="nt">&lt;/pose&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;inertial&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;inertia&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;ixx&gt;</span>0.01<span class="nt">&lt;/ixx&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;ixy&gt;</span>0<span class="nt">&lt;/ixy&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;ixz&gt;</span>0<span class="nt">&lt;/ixz&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;iyy&gt;</span>0.01<span class="nt">&lt;/iyy&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;iyz&gt;</span>0<span class="nt">&lt;/iyz&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;izz&gt;</span>0.01<span class="nt">&lt;/izz&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;/inertia&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;mass&gt;</span>0.1<span class="nt">&lt;/mass&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/inertial&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;collision</span> <span class="na">name=</span><span class="s">&quot;collision&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;box&gt;</span>
-</span><span class='line'>                        <span class="nt">&lt;size&gt;</span>0.1 0.2 0.1<span class="nt">&lt;/size&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;/box&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/collision&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;visual</span> <span class="na">name=</span><span class="s">&quot;visual&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;box&gt;</span>
-</span><span class='line'>                        <span class="nt">&lt;size&gt;</span>0.1 0.2 0.1<span class="nt">&lt;/size&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;/box&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;material&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;script&gt;</span>Gazebo/Blue<span class="nt">&lt;/script&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;/material&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/visual&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/link&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;link</span> <span class="na">name=</span><span class="s">&quot;right_finger&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;pose&gt;</span>0.1 -0.2 0.05 0 0 .78539<span class="nt">&lt;/pose&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;inertial&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;inertia&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;ixx&gt;</span>0.01<span class="nt">&lt;/ixx&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;ixy&gt;</span>0<span class="nt">&lt;/ixy&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;ixz&gt;</span>0<span class="nt">&lt;/ixz&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;iyy&gt;</span>0.01<span class="nt">&lt;/iyy&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;iyz&gt;</span>0<span class="nt">&lt;/iyz&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;izz&gt;</span>0.01<span class="nt">&lt;/izz&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;/inertia&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;mass&gt;</span>0.1<span class="nt">&lt;/mass&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/inertial&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;collision</span> <span class="na">name=</span><span class="s">&quot;collision&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;box&gt;</span>
-</span><span class='line'>                        <span class="nt">&lt;size&gt;</span>0.1 0.3 0.1<span class="nt">&lt;/size&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;/box&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/collision&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;visual</span> <span class="na">name=</span><span class="s">&quot;visual&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;box&gt;</span>
-</span><span class='line'>                        <span class="nt">&lt;size&gt;</span>0.1 0.3 0.1<span class="nt">&lt;/size&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;/box&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;material&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;script&gt;</span>Gazebo/Green<span class="nt">&lt;/script&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;/material&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/visual&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/link&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;link</span> <span class="na">name=</span><span class="s">&quot;right_finger_tip&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;pose&gt;</span>0.336 -0.3 0.05 0 0 1.5707<span class="nt">&lt;/pose&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;inertial&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;inertia&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;ixx&gt;</span>0.01<span class="nt">&lt;/ixx&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;ixy&gt;</span>0<span class="nt">&lt;/ixy&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;ixz&gt;</span>0<span class="nt">&lt;/ixz&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;iyy&gt;</span>0.01<span class="nt">&lt;/iyy&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;iyz&gt;</span>0<span class="nt">&lt;/iyz&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;izz&gt;</span>0.01<span class="nt">&lt;/izz&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;/inertia&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;mass&gt;</span>0.1<span class="nt">&lt;/mass&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/inertial&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;collision</span> <span class="na">name=</span><span class="s">&quot;collision&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;box&gt;</span>
-</span><span class='line'>                        <span class="nt">&lt;size&gt;</span>0.1 0.2 0.1<span class="nt">&lt;/size&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;/box&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/collision&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;visual</span> <span class="na">name=</span><span class="s">&quot;visual&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;box&gt;</span>
-</span><span class='line'>                        <span class="nt">&lt;size&gt;</span>0.1 0.2 0.1<span class="nt">&lt;/size&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;/box&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;material&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;script&gt;</span>Gazebo/Green<span class="nt">&lt;/script&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;/material&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/visual&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/link&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;static&gt;</span>true<span class="nt">&lt;/static&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/model&gt;</span>
-</span><span class='line'><span class="nt">&lt;/sdf&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ol>
-<li>ここまでで、何が作成できたのかを見るために、<code>world</code>ファイルを実行しましょう。</li>
-</ol>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo ~/simple_gripper_tutorial/gripper.world
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>すると、以下のようになっているはずです。
-<img src="http://cir-kit.github.io/images/2015-01-31-gazebo-make-a-simple-gripper/Simple-gripper-1.png" alt="Simple-gripper-1" /></p>
-
-<ol>
-<li>一度でもリンクを作成できたら安心です。<code>simple_gripper.sdf</code>ファイルの中の<code>&lt;/model&gt;</code>と書いてある前に、以下のコードを追加することで、ジョイントを追加することができます。</li>
-</ol>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gedit ~/.gazebo/models/my_gripper/simple_gripper.sdf
-</span></code></pre></td></tr></table></div></figure>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>        <span class="nt">&lt;joint</span> <span class="na">name=</span><span class="s">&quot;palm_left_finger&quot;</span> <span class="na">type=</span><span class="s">&quot;revolute&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;pose&gt;</span>0 -0.15 0 0 0 0<span class="nt">&lt;/pose&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;child&gt;</span>left_finger<span class="nt">&lt;/child&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;parent&gt;</span>palm<span class="nt">&lt;/parent&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;axis&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;limit&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;lower&gt;</span>-0.4<span class="nt">&lt;/lower&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;upper&gt;</span>0.4<span class="nt">&lt;/upper&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;/limit&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;xyz&gt;</span>0 0 1<span class="nt">&lt;/xyz&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/axis&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/joint&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;joint</span> <span class="na">name=</span><span class="s">&quot;left_finger_tip&quot;</span> <span class="na">type=</span><span class="s">&quot;revolute&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;pose&gt;</span>0 0.1 0 0 0 0<span class="nt">&lt;/pose&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;child&gt;</span>left_finger_tip<span class="nt">&lt;/child&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;parent&gt;</span>left_finger<span class="nt">&lt;/parent&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;axis&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;limit&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;lower&gt;</span>-0.4<span class="nt">&lt;/lower&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;upper&gt;</span>0.4<span class="nt">&lt;/upper&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;/limit&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;xyz&gt;</span>0 0 1<span class="nt">&lt;/xyz&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/axis&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/joint&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;joint</span> <span class="na">name=</span><span class="s">&quot;palm_right_finger&quot;</span> <span class="na">type=</span><span class="s">&quot;revolute&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;pose&gt;</span>0 0.15 0 0 0 0<span class="nt">&lt;/pose&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;child&gt;</span>right_finger<span class="nt">&lt;/child&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;parent&gt;</span>palm<span class="nt">&lt;/parent&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;axis&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;limit&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;lower&gt;</span>-0.4<span class="nt">&lt;/lower&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;upper&gt;</span>0.4<span class="nt">&lt;/upper&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;/limit&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;xyz&gt;</span>0 0 1<span class="nt">&lt;/xyz&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/axis&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/joint&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;joint</span> <span class="na">name=</span><span class="s">&quot;right_finger_tip&quot;</span> <span class="na">type=</span><span class="s">&quot;revolute&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;pose&gt;</span>0 0.1 0 0 0 0<span class="nt">&lt;/pose&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;child&gt;</span>right_finger_tip<span class="nt">&lt;/child&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;parent&gt;</span>right_finger<span class="nt">&lt;/parent&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;axis&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;limit&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;lower&gt;</span>-0.4<span class="nt">&lt;/lower&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;upper&gt;</span>0.4<span class="nt">&lt;/upper&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;/limit&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;xyz&gt;</span>0 0 1<span class="nt">&lt;/xyz&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/axis&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/joint&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;joint</span> <span class="na">name=</span><span class="s">&quot;palm_riser&quot;</span> <span class="na">type=</span><span class="s">&quot;prismatic&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;child&gt;</span>palm<span class="nt">&lt;/child&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;parent&gt;</span>riser<span class="nt">&lt;/parent&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;axis&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;limit&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;lower&gt;</span>0<span class="nt">&lt;/lower&gt;</span>
-</span><span class='line'>                    <span class="nt">&lt;upper&gt;</span>0.9<span class="nt">&lt;/upper&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;/limit&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;xyz&gt;</span>0 0 1<span class="nt">&lt;/xyz&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/axis&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/joint&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>また、モデルを<code>non-static</code>にしましょう。：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>        ...
-</span><span class='line'>        <span class="nt">&lt;static&gt;</span>false<span class="nt">&lt;/static&gt;</span>
-</span><span class='line'>        ...
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ol>
-<li>Gazeboをもう一度立ち上げましょう。</li>
-</ol>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo ~/simple_gripper_tutorial/gripper.world
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ol>
-<li><p>モデルの上で右クリックをし、<strong>&ldquo;View->Joints&rdquo;</strong>というのを選択しましょう。新たに作成したジョイントが表示されます。
-<img src="http://cir-kit.github.io/images/2015-01-31-gazebo-make-a-simple-gripper/Simple-gripper-joints.png" alt="Simple-gripper-joints" /></p></li>
-<li><p>ジョイントコントロールウィジェットを使えば、それぞれのジョイントの力をコントロールすることができます。グリッパーモデルをクリックしてください。次に、GUIの右端にある直立したハンドル(白いポチが３つ付いているところ)を左にドラックしてください。するとウィジェットが表示されます。ウィジェットでは、それぞれのジョイントのリストとそのスライダーを表示しています。<strong>Force</strong>タブを選択し、スライダーを使ってそれぞれのジョイントに力を適用し、グリッパが動くことを確認してください。例えば、<code>palm_riser</code>の値を<code>10[N]</code>にセットすると、以下のようになるはずです。:</p></li>
-</ol>
-
-
-<div class="youtube-container">
-<iframe width="420" height="315" src="https://www.youtube.com/embed/lPvVqTvr_BA" frameborder="0" allowfullscreen></iframe>
-</div>
-
-
-<ol>
-<li><p>オプション</p></li>
-<li><p>小さい箱もしくは円柱をシミュレータに追加し、グリッパーのところに置いてください。</p></li>
-<li><p>GUIインターフェースを使って物体を持ち上げてみましょう。</p>
-
-<p><strong>コツ : </strong>物体への慣性力をなるべく少なくするとうまく行くでしょう。</p></li>
-</ol>
-
-
-<h4>Next >> <a href="http://cir-kit.github.io/blog/2015/02/01/gazebo-attach-gripper-to-robot/:">グリッパをロボットに取り付ける</a></h4>
 ]]></content>
   </entry>
   
