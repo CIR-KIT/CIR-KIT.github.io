@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Ros | 九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/blog/categories/ros/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-03-11T10:41:02+09:00</updated>
+  <updated>2015-03-11T18:59:00+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[CIR-KIT Members]]></name>
@@ -372,7 +372,7 @@ echo "float32 y" &gt;&gt; Vector2.msg
 </span><span class='line'>
 </span><span class='line'>&lt;h1&gt;Generate messages in the <span class="p">&amp;</span>lsquo<span class="p">;</span>msg<span class="p">&amp;</span>rsquo<span class="p">;</span> folder&lt;/h1&gt;
 </span><span class='line'>
-</span><span class='line'>&lt;p&gt;add_message_files<span class="o">(</span>FILES Vector.msg<span class="o">)</span>&lt;/p&gt;
+</span><span class='line'>&lt;p&gt;add_message_files<span class="o">(</span>FILES Vector2.msg<span class="o">)</span>&lt;/p&gt;
 </span><span class='line'>
 </span><span class='line'>&lt;h2&gt;Generate added messages with any dependencies listed here&lt;/h2&gt;
 </span><span class='line'>
@@ -513,7 +513,7 @@ catkin_create_pkg light_fourleds_adapters roscpp light_fourleds joy
 cd light_fourleds_adapters
 </code></pre>
 
-<p>以後しばらくは<code>light_fourleds</code>パッケージの中で作業します．</p>
+<p>以後しばらくは<code>light_fourleds_adapters</code>パッケージの中で作業します．</p>
 
 <h3>アダプターノード作成</h3>
 
@@ -524,7 +524,7 @@ cd src
 <p>このsrcディレクトリに<code>adapt_joy_node.cpp</code>を作成し，以下の文を書き込みます．</p>
 
 <pre><code class="bash">#include "ros/ros.h"
-#include "light_fourleds/Vector.h"
+#include "light_fourleds/Vector2.h"
 #include "sensor_msgs/Joy.h"
 
 ros::Publisher pub;

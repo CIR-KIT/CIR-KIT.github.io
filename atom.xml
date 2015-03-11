@@ -4,7 +4,7 @@
   <title><![CDATA[九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-03-11T10:41:02+09:00</updated>
+  <updated>2015-03-11T18:59:00+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[CIR-KIT Members]]></name>
@@ -386,7 +386,7 @@ Arduinoへの書き込みが済んだら，早速確認してみましょう．<
 </span><span class='line'><span class="c">########################</span>
 </span><span class='line'>
 </span><span class='line'><span class="c"># Generate messages in the &#39;msg&#39; folder</span>
-</span><span class='line'>add_message_files<span class="o">(</span>FILES Vector.msg<span class="o">)</span>
+</span><span class='line'>add_message_files<span class="o">(</span>FILES Vector2.msg<span class="o">)</span>
 </span><span class='line'>
 </span><span class='line'><span class="c">## Generate added messages with any dependencies listed here</span>
 </span><span class='line'>generate_messages<span class="o">()</span>
@@ -585,7 +585,7 @@ Arduinoへの書き込みが済んだら，早速確認してみましょう．<
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>以後しばらくは<code>light_fourleds</code>パッケージの中で作業します．</p>
+<p>以後しばらくは<code>light_fourleds_adapters</code>パッケージの中で作業します．</p>
 
 <h3>アダプターノード作成</h3>
 
@@ -620,7 +620,7 @@ Arduinoへの書き込みが済んだら，早速確認してみましょう．<
 <span class='line-number'>20</span>
 <span class='line-number'>21</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#include &quot;ros/ros.h&quot;</span>
-</span><span class='line'><span class="c">#include &quot;light_fourleds/Vector.h&quot;</span>
+</span><span class='line'><span class="c">#include &quot;light_fourleds/Vector2.h&quot;</span>
 </span><span class='line'><span class="c">#include &quot;sensor_msgs/Joy.h&quot;</span>
 </span><span class='line'>
 </span><span class='line'>ros::Publisher pub<span class="p">;</span>
