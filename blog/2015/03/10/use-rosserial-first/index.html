@@ -1,0 +1,438 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>ArduinoをROSで動かす - 九州工業大学 CIR-KIT Blog</title>
+  <meta name="author" content="Yusuke Doi">
+
+  
+  <meta name="description" content="　Arduino を ROS で動かす 概要 ROSのトピックなどをArduinoで利用するためのインストール等． 検証情報 日時 03/09/2015 (Mon) スペック パーツ
+スペック PC
+Panasonic Let&rsquo;s note CF-LX3TG7TC Prosessor &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://cir-kit.github.io/blog/2015/03/10/use-rosserial-first/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="九州工業大学 CIR-KIT Blog" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-59178596-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<meta property="og:title" content="ArduinoをROSで動かす - 九州工業大学 CIR-KIT Blog" />
+<meta property="og:description" content="　Arduino を ROS で動かす 概要 ROSのトピックなどをArduinoで利用するためのインストール等． 検証情報 日時 03/09/2015 (Mon) スペック パーツ
+スペック PC
+Panasonic Let&rsquo;s note CF-LX3TG7TC Prosessor &hellip;" />
+<meta property="og:url" content="http://cir-kit.github.io/blog/2015/03/10/use-rosserial-first/" />
+<meta property="og:image" content="http://cir-kit.github.io/favicon.png" />
+
+<meta property="og:site_name" content="九州工業大学 CIR-KIT Blog" />
+<meta property="og:locale" content="ja_JP" />
+<meta property="og:type" content="blog" />
+<meta property="fb:app_id" content="930841560294053" />
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">九州工業大学 CIR-KIT Blog</a></h1>
+  
+    <h2>九工大自律移動ロボット製作プロジェクトCIR-KITの技術系ブログ</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="cir-kit.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/information">Information</a><li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">ArduinoをROSで動かす</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-03-10T16:59:22+09:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>10</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>4:59 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h1>　Arduino を ROS で動かす</h1>
+
+<h2>概要</h2>
+
+<p>ROSのトピックなどをArduinoで利用するためのインストール等．</p>
+
+<h2>検証情報</h2>
+
+<h3>日時</h3>
+
+<p>03/09/2015 (Mon)</p>
+
+<h3>スペック</h3>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;">パーツ</th>
+<th style="text-align:center;">スペック</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">PC</td>
+<td style="text-align:center;">Panasonic Let&rsquo;s note CF-LX3TG7TC</td>
+</tr>
+<tr>
+<td style="text-align:center;">Prosessor</td>
+<td style="text-align:center;">Intel core i7-4500U (1.8GHz)</td>
+</tr>
+<tr>
+<td style="text-align:center;">RAM</td>
+<td style="text-align:center;">DDR3 SDRAM(PC3-12800) 4GB</td>
+</tr>
+<tr>
+<td style="text-align:center;">OS</td>
+<td style="text-align:center;">Ubuntu 14.04.2 LTS 64bit</td>
+</tr>
+<tr>
+<td style="text-align:center;">Kernel</td>
+<td style="text-align:center;">3.13.0-46-generic</td>
+</tr>
+<tr>
+<td style="text-align:center;">ROS</td>
+<td style="text-align:center;">indigo 1.11.10</td>
+</tr>
+<tr>
+<td style="text-align:center;">Arduino</td>
+<td style="text-align:center;">Arduino UNO</td>
+</tr>
+</tbody>
+</table>
+
+
+<!--more-->
+
+
+<h2>前提条件</h2>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">対象</th>
+<th style="text-align:left;">条件</th>
+<th style="text-align:left;">参考</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">ROS</td>
+<td style="text-align:left;">Install済み</td>
+<td style="text-align:left;"><a href="/blog/2015/02/25/we-have-get-to-work-when-install-ubuntu">CIR-KITメンバーが必ずすべきこと</a></td>
+</tr>
+<tr>
+<td style="text-align:left;">Arduino</td>
+<td style="text-align:left;">Install済み</td>
+<td style="text-align:left;">&lsquo;sudo apt-get install Arduino&rsquo;</td>
+</tr>
+</tbody>
+</table>
+
+
+<h2>Arduino で ROS を利用する</h2>
+
+<p>まずは，ArduinoをROSのnodeに見せかけるためのROSパッケージをインストールします．
+<a href="http://wiki.ros.org/rosserial_arduino/Tutorials/Arduino%20IDE%20Setup">対象パッケージのROS Wiki</a>を参考に行います．</p>
+
+<h3>install</h3>
+
+<p>参考サイトの3.install the Softwereを見ると，2種類のインストール方法があるようです．</p>
+
+<hr />
+
+<p>1つ目は3.1の方法で，下のコマンドを実行します．workspaceが汚れ無いのでこっちおすすめです．</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo apt-get install ros-indigo-rosserial-arduino
+</span><span class='line'>sudo apt-get install ros-indigo-rosserial
+</span></code></pre></td></tr></table></div></figure>
+
+
+<hr />
+
+<p>2つ目は3.2の方法で，下の手順で行います．&lt;ws>は自分のrosWorkspaceまでのパスに置き換えてください．</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>  <span class="nb">cd</span> &lt;ws&gt;/src
+</span><span class='line'>  git clone https://github.com/ros-drivers/rosserial.git
+</span><span class='line'>  <span class="nb">cd</span> ../
+</span><span class='line'>  catkin_make
+</span><span class='line'>  catkin_make install
+</span><span class='line'>  <span class="nb">source</span> &lt;ws&gt;/install/setup.bash
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>この時，<code>~/.bashrc</code>へ<code>source &lt;ws&gt;/install/setup.bash</code>を追加しておくことを推奨します．(以後入力がいらなくなります)</p>
+
+<ul>
+<li>Note:<em>devel/setup.bash</em>では<strong>無い</strong>ことに注意してください</li>
+</ul>
+
+
+<hr />
+
+<h3>setup</h3>
+
+<p>3.3にArduinoの(ごく普通の)ライブラリとしてros_libを追加するように書いてあります．
+必ず<code>roscore</code>を起動して下のコマンドでros_libを追加してください．</p>
+
+<p>&lt;sketchbook>は各自のArduinoのライブラリがあるディレクトリに置き換えてください．</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>  <span class="nb">cd</span> &lt;sketchbook&gt;/libraries
+</span><span class='line'>  rosrun rosserial_arduino make_libraries.py .
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>Note:環境によってlibrariesディレクトリの名前や場所が違うので注意．</li>
+<li>sketchbookはrosパッケージ内に作ると管理しやすいと思います．</li>
+</ul>
+
+
+<h4>確認</h4>
+
+<p>Arduinoライブラリにros_libが入っていて，その中にROSにパスが通っているmsgやsrvを定義している<strong>ROSパッケージすべて</strong>のディレクトリが含まれていることを確認する．</p>
+
+<h3>使ってみる</h3>
+
+<p><code>/libraries/examples/HelloWorld/HelloWorld.pde</code>をビルドしてみる．
+Arduino IDEなら下の画像の所をクリックすることでソースが出るので，それをビルドして書き込んでください．</p>
+
+<p><img src="/images/2015-03-10-light-four-leds-on-arduino-by-ros/arduinoIed1.png" alt="arduinoIed1" /></p>
+
+<p>このプログラムは，<code>chatter</code>トピックに&#8221;Hello world&#8221;と1秒毎にPublishします．
+Arduinoへの書き込みが済んだら，早速確認してみましょう．</p>
+
+<ol>
+<li>まずは<code>roscore</code>を起動します．</li>
+<li>次に<code>rosrun rosserial_python serial_node.py _port:=/dev/ttyACM0</code>を起動します．</li>
+</ol>
+
+
+<p>  Note: <em>_port:=</em>のパスは自分のArduinoへのパスを入れてください．</p>
+
+<p>これで<code>chatter</code>トピックへの配信が始まりました．<code>rostopic</code>で確認してみましょう．</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rostopic <span class="nb">echo </span>chatter
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>&ldquo;Hello World&#8221;と送られていたら成功です．</p>
+
+<p><code>rosserial_python serial_node</code>でArduinoに書き込んだノードを実行していると考えるとわかりやすいと思います．(実際は全然違います)</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Yusuke Doi</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2015-03-10T16:59:22+09:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>10</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>4:59 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/arduino/'>arduino</a>, <a class='category' href='/blog/categories/ros/'>ros</a>, <a class='category' href='/blog/categories/rosserial/'>rosserial</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://cir-kit.github.io/blog/2015/03/10/use-rosserial-first/" data-via="" data-counturl="http://cir-kit.github.io/blog/2015/03/10/use-rosserial-first/" >Tweet</a>
+  
+  
+  
+  
+  <div class="fb-comments" data-href="http://cir-kit.github.io" data-num-posts="2" data-width="500"></div>
+  
+  
+
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2015/03/10/light-four-leds-on-arduino-by-ros/" title="Previous Post: ジョイスティックで4つのLEDをつける(Arduino&ROS)">&laquo; ジョイスティックで4つのLEDをつける(Arduino&ROS)</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    
+
+
+
+
+<section>
+<div class="fb-like-box" data-href="https://www.facebook.com/kyutechcirkit" data-width="210" data-height="400" data-colorscheme="light" data-show-faces="false" data-header="false" data-stream="true" data-show-border="false"></div>
+</section>
+
+<section>
+  <h1>Categories</h1>
+    <ul id="category-list">
+      <li><a href='/blog/categories/arduino/'>arduino (2)</a></li><li><a href='/blog/categories/build-a-robot/'>build a robot (10)</a></li><li><a href='/blog/categories/build-a-world/'>build a world (5)</a></li><li><a href='/blog/categories/gazebo/'>gazebo (33)</a></li><li><a href='/blog/categories/getstarted/'>getstarted (4)</a></li><li><a href='/blog/categories/install/'>install (2)</a></li><li><a href='/blog/categories/joystick-driver/'>joystick_driver (1)</a></li><li><a href='/blog/categories/ros/'>ros (12)</a></li><li><a href='/blog/categories/rosserial/'>rosserial (2)</a></li><li><a href='/blog/categories/sensors/'>sensors (2)</a></li><li><a href='/blog/categories/tools-and-utilities/'>tools and utilities (1)</a></li><li><a href='/blog/categories/ubuntu/'>ubuntu (34)</a></li>
+    </ul>
+</section>
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/10/use-rosserial-first/">ArduinoをROSで動かす</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/10/light-four-leds-on-arduino-by-ros/">ジョイスティックで4つのLEDをつける(Arduino&ROS)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/04/gazebo-ros-advanced-integration/">No.6-10:GazeboをROSに繋ぐ (発展的なROSの統合 編)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/04/gazebo-ros-plugin/">No.6-9:GazeboをROSに繋ぐ (ROS Plugin 編)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/02/gazebo-ros-communication/">No.6-8:GazeboをROSに繋ぐ (ROS Communication 編)</a>
+      </li>
+    
+  </ul>
+</section>
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Yusuke Doi -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&appId=930841560294053&version=v2.0";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,798 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>ジョイスティックで4つのLEDをつける(Arduino&ROS) - 九州工業大学 CIR-KIT Blog</title>
+  <meta name="author" content="Yusuke Doi">
+
+  
+  <meta name="description" content="　ジョイスティックで4つのLEDをつけるbyROS 概要 ROSのトピックを利用してArduinoでledをつける．
+更に，ROSのjoystick_driversを利用してDualShock3でledを制御する． 検証情報 日時 03/09/2015 (Mon) スペック パーツ
+スペック PC &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://cir-kit.github.io/blog/2015/03/10/light-four-leds-on-arduino-by-ros/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="九州工業大学 CIR-KIT Blog" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-59178596-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<meta property="og:title" content="ジョイスティックで4つのLEDをつける(Arduino&ROS) - 九州工業大学 CIR-KIT Blog" />
+<meta property="og:description" content="　ジョイスティックで4つのLEDをつけるbyROS 概要 ROSのトピックを利用してArduinoでledをつける．
+更に，ROSのjoystick_driversを利用してDualShock3でledを制御する． 検証情報 日時 03/09/2015 (Mon) スペック パーツ
+スペック PC &hellip;" />
+<meta property="og:url" content="http://cir-kit.github.io/blog/2015/03/10/light-four-leds-on-arduino-by-ros/" />
+<meta property="og:image" content="http://cir-kit.github.io/favicon.png" />
+
+<meta property="og:site_name" content="九州工業大学 CIR-KIT Blog" />
+<meta property="og:locale" content="ja_JP" />
+<meta property="og:type" content="blog" />
+<meta property="fb:app_id" content="930841560294053" />
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">九州工業大学 CIR-KIT Blog</a></h1>
+  
+    <h2>九工大自律移動ロボット製作プロジェクトCIR-KITの技術系ブログ</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="cir-kit.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/information">Information</a><li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">ジョイスティックで4つのLEDをつける(Arduino&ROS)</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-03-10T16:59:22+09:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>10</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>4:59 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h1>　ジョイスティックで4つのLEDをつけるbyROS</h1>
+
+<h2>概要</h2>
+
+<p>ROSのトピックを利用してArduinoでledをつける．
+更に，ROSのjoystick_driversを利用してDualShock3でledを制御する．</p>
+
+<h2>検証情報</h2>
+
+<h3>日時</h3>
+
+<p>03/09/2015 (Mon)</p>
+
+<h3>スペック</h3>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;">パーツ</th>
+<th style="text-align:center;">スペック</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">PC</td>
+<td style="text-align:center;">Panasonic Let&rsquo;s note CF-LX3TG7TC</td>
+</tr>
+<tr>
+<td style="text-align:center;">Prosessor</td>
+<td style="text-align:center;">Intel core i7-4500U (1.8GHz)</td>
+</tr>
+<tr>
+<td style="text-align:center;">RAM</td>
+<td style="text-align:center;">DDR3 SDRAM(PC3-12800) 4GB</td>
+</tr>
+<tr>
+<td style="text-align:center;">OS</td>
+<td style="text-align:center;">Ubuntu 14.04.2 LTS 64bit</td>
+</tr>
+<tr>
+<td style="text-align:center;">Kernel</td>
+<td style="text-align:center;">3.13.0-46-generic</td>
+</tr>
+<tr>
+<td style="text-align:center;">ROS</td>
+<td style="text-align:center;">indigo 1.11.10</td>
+</tr>
+<tr>
+<td style="text-align:center;">Arduino</td>
+<td style="text-align:center;">Arduino UNO</td>
+</tr>
+<tr>
+<td style="text-align:center;">joystick_drivers</td>
+<td style="text-align:center;">1.10.0</td>
+</tr>
+</tbody>
+</table>
+
+
+<!--more-->
+
+
+<h2>前提条件</h2>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">対象</th>
+<th style="text-align:left;">条件</th>
+<th style="text-align:left;">参考</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">ROS</td>
+<td style="text-align:left;">Install済み</td>
+<td style="text-align:left;"><a href="/blog/2015/02/25/we-have-get-to-work-when-install-ubuntu">CIR-KITメンバーが必ずすべきこと</a></td>
+</tr>
+<tr>
+<td style="text-align:left;">Arduino</td>
+<td style="text-align:left;">Install済み</td>
+<td style="text-align:left;">&lsquo;sudo apt-get install Arduino&rsquo;</td>
+</tr>
+<tr>
+<td style="text-align:left;">rosserial</td>
+<td style="text-align:left;">Install済み</td>
+<td style="text-align:left;"><a href="/blog/2015/03/10/use-rosserial-first.md">ArduinoをROSで動かす</a></td>
+</tr>
+<tr>
+<td style="text-align:left;">joystick_drivers</td>
+<td style="text-align:left;">Install済み</td>
+<td style="text-align:left;"><a href="http://wiki.ros.org/turtlebot_teleop/Tutorials/PS3%20Joystick%20Teleop">ROS Wiki</a></td>
+</tr>
+</tbody>
+</table>
+
+
+<h2>はじめに</h2>
+
+<p>ROSは，ノードの再利用を理念に作成されているため，出力用，入力用，計算用，アダプター用の４種のパッケージを作るべきだと私は考えています．今回は入力をjoystick_driversに任せて，出力パッケージとアダプターパッケージを作成します．</p>
+
+<h2>仕様作成</h2>
+
+<p>今回は４つのLEDを十字に配置して，ジョイスティックのアナログパッドを傾けた方向のLEDを光らせます．この時，傾きに合わせて光る強さを変えられるようにします．</p>
+
+<h2>出力パッケージ作成</h2>
+
+<p>出力パッケージは，受け取るメッセージ型を定義し，そのメッセージに対する処理をするノードを作成します．今回パッケージ名は<code>light_fourleds</code>とします．今回はArduinoを使用し，ROSノードは作らないため依存パッケージはありません．</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd</span> &lt;catkin_ws&gt;/src
+</span><span class='line'>catkin_create_pkg light_fourleds
+</span><span class='line'><span class="nb">cd </span>light_fourleds
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>以後しばらくは<code>light_fourleds</code>パッケージの中で作業します．</p>
+
+<h3>メッセージ作成</h3>
+
+<h4>msg定義</h4>
+
+<p>x軸とy軸を考えてそれぞれの強さを受け取るようにするのが良いと考えました．
+よってメッセージ型は<code>Vector2</code>とします．内容はfloat32 のxとyです．</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>mkdir -p msg
+</span><span class='line'><span class="nb">cd </span>msg
+</span><span class='line'><span class="nb">echo</span> <span class="s2">&quot;float32 x&quot;</span> &gt; Vector2.msg
+</span><span class='line'><span class="nb">echo</span> <span class="s2">&quot;float32 y&quot;</span> &gt;&gt; Vector2.msg
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>msg生成</h4>
+
+<p>まずは定義したmsgをmakeします．Arduinoでmsgを利用するには必ず対象のmsgがmakeされていなければなりません．これはros_libとの関係です．</p>
+
+<p>作ったmsgのためにCMakeListsとpackage.xmlを下のように書き換えましょう．</p>
+
+<p>CMakeLists.txt</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>cmake_minimum_required<span class="o">(</span>VERSION 2.8.3<span class="o">)</span>
+</span><span class='line'>project<span class="o">(</span>light_fourleds<span class="o">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># Load catkin and all dependencies required for this package</span>
+</span><span class='line'>find_package<span class="o">(</span>catkin REQUIRED COMPONENTS message_generation<span class="o">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">########################</span>
+</span><span class='line'><span class="c">## Declare ROS message##</span>
+</span><span class='line'><span class="c">########################</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># Generate messages in the &#39;msg&#39; folder</span>
+</span><span class='line'>add_message_files<span class="o">(</span>FILES Vector.msg<span class="o">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">## Generate added messages with any dependencies listed here</span>
+</span><span class='line'>generate_messages<span class="o">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">###################################</span>
+</span><span class='line'><span class="c">## catkin specific configuration ##</span>
+</span><span class='line'><span class="c">###################################</span>
+</span><span class='line'>
+</span><span class='line'>catkin_package<span class="o">(</span>CATKIN_DEPENDS message_runtime<span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>package.txt</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>&lt;package&gt;
+</span><span class='line'>  &lt;name&gt;light_fourleds&lt;/name&gt;
+</span><span class='line'>  &lt;version&gt;0.1.0&lt;/version&gt;
+</span><span class='line'>  &lt;description&gt;
+</span><span class='line'>    This package defines message, and have node of arduino to light
+</span><span class='line'>  four leds.
+</span><span class='line'>  &lt;/description&gt;
+</span><span class='line'>  &lt;maintainer <span class="nv">email</span><span class="o">=</span><span class="s2">&quot;yourName@todo.todo&quot;</span>&gt;yourName&lt;/maintainer&gt;
+</span><span class='line'>  &lt;license&gt;BSD&lt;/license&gt;
+</span><span class='line'>
+</span><span class='line'>  &lt;buildtool_depend&gt;catkin&lt;/buildtool_depend&gt;
+</span><span class='line'>
+</span><span class='line'>  &lt;build_depend&gt;message_generation&lt;/build_depend&gt;
+</span><span class='line'>
+</span><span class='line'>  &lt;run_depend&gt;message_runtime&lt;/run_depend&gt;
+</span><span class='line'>  &lt;run_depend&gt;rosserial_python&lt;/run_depend&gt;
+</span><span class='line'>&lt;/package&gt;
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>書き終えたら<code>catkin_make --force-cmake</code>を実行します．</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd</span> &lt;catkin_ws&gt;
+</span><span class='line'>catkin_make --force-cmake
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Arduinoノード作成</h3>
+
+<p>それでは実際に今作ったmsgを利用して動く出力ノードを作成します．
+まずは，新しく作ったmsgを認識させるために<code>ros_lib</code>を削除し，再度rosrunで<code>ros_lib</code>を入れなおします．<code>roscore</code>を立ち上げるのを忘れないでください．</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd</span> &lt;sketchbook&gt;/libraries
+</span><span class='line'>rm -fr ros_lib
+</span><span class='line'>rosrun rosserial_arduino make_libraries.py
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>続いてそのライブラリが使用できるところでArduinoのプログラムを作成します．下のプログラムを作成してください．</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>/**
+</span><span class='line'> * light four leds on arduino
+</span><span class='line'> * @author <span class="s2">&quot;yourName&quot;</span>
+</span><span class='line'> */
+</span><span class='line'><span class="c">#include &lt;ros.h&gt;</span>
+</span><span class='line'><span class="c">#include &lt;light_fourleds/Vector2.h&gt;</span>
+</span><span class='line'><span class="c">#define UP 3</span>
+</span><span class='line'><span class="c">#define RIGHT 5</span>
+</span><span class='line'><span class="c">#define DOWN 6</span>
+</span><span class='line'><span class="c">#define LEFT 9</span>
+</span><span class='line'>unsigned int der<span class="o">[</span>4<span class="o">]</span><span class="p">;</span>
+</span><span class='line'>ros::NodeHandle nh<span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>void messageCb<span class="o">(</span>const light_fourleds::Vector2<span class="p">&amp;</span> msg<span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>  <span class="k">for</span> <span class="o">(</span>int i<span class="p">;</span> i &lt; 4<span class="p">;</span> i++<span class="o">)</span> analogWrite<span class="o">(</span>der<span class="o">[</span>i<span class="o">]</span>, 0<span class="o">)</span><span class="p">;</span> //all cleanup
+</span><span class='line'>  <span class="k">if</span> <span class="o">(</span>msg.x &gt; 0<span class="o">)</span> // left
+</span><span class='line'>  analogWrite<span class="o">(</span>der<span class="o">[</span>3<span class="o">]</span>, 255*msg.x<span class="o">)</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">else</span> <span class="k">if</span> <span class="o">(</span>msg.x &lt; 0<span class="o">)</span> // right
+</span><span class='line'>      analogWrite<span class="o">(</span>der<span class="o">[</span>1<span class="o">]</span>, -255*msg.x<span class="o">)</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">if</span> <span class="o">(</span>msg.y &gt; 0<span class="o">)</span> // up
+</span><span class='line'>      analogWrite<span class="o">(</span>der<span class="o">[</span>0<span class="o">]</span>, 255*msg.y<span class="o">)</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">else</span> <span class="k">if</span> <span class="o">(</span>msg.y &lt; 0<span class="o">)</span> // down
+</span><span class='line'>      analogWrite<span class="o">(</span>der<span class="o">[</span>2<span class="o">]</span>, -255*msg.y<span class="o">)</span><span class="p">;</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>ros::Subscriber&lt;light_fourleds::Vector2&gt; sub<span class="o">(</span><span class="s2">&quot;light_fourleds&quot;</span>, <span class="p">&amp;</span>messageCb<span class="o">)</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>void setup<span class="o">(</span>void<span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>  der<span class="o">[</span>0<span class="o">]</span> <span class="o">=</span> UP<span class="p">;</span>
+</span><span class='line'>  der<span class="o">[</span>1<span class="o">]</span> <span class="o">=</span> RIGHT<span class="p">;</span>
+</span><span class='line'>  der<span class="o">[</span>2<span class="o">]</span> <span class="o">=</span> DOWN<span class="p">;</span>
+</span><span class='line'>  der<span class="o">[</span>3<span class="o">]</span> <span class="o">=</span> LEFT<span class="p">;</span>
+</span><span class='line'>  nh.initNode<span class="o">()</span><span class="p">;</span>
+</span><span class='line'>  nh.subscribe<span class="o">(</span>sub<span class="o">)</span><span class="p">;</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>void loop<span class="o">(</span>void<span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>  nh.spinOnce<span class="o">()</span><span class="p">;</span>
+</span><span class='line'>  delay<span class="o">(</span>1<span class="o">)</span><span class="p">;</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>書き込んだら，Arduinoでビルドして，uploadしてください．</p>
+
+<h3>配線</h3>
+
+<p>3,5,6,9pinにLEDをそれぞれつけてください．3を上にして時計回りに配置すると想定された配置となります．</p>
+
+<p>画像は後ほど追加予定です．</p>
+
+<h3>ここまでの確認</h3>
+
+<p>これで出力部が作成できたはずです．ROSの強力な特徴として，ノード単位でのテストができる点があるので，早速実行して試してみましょう．</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rosrun rosserial_python serial_node.py
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rostopic pub light_fourleds/Vector2 -- <span class="m">1</span> 0
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>左のLED(9pin)が光っていれば成功です．</p>
+
+<h2>アダプターパッケージの作成</h2>
+
+<p>アダプターパッケージは出力と入力パッケージのmsgを適切につなぐパッケージです．個人的な命令方法は「出力パッケージ_adapters」です．これは，使いたい入力に対して適宜adapterノードを作成すれば良いと考えているからです．それでは下のコマンドでパッケージを作りましょう．</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd</span> &lt;catkin_ws&gt;/src
+</span><span class='line'>catkin_create_pkg light_fourleds_adapters roscpp light_fourleds joy
+</span><span class='line'><span class="nb">cd </span>light_fourleds_adapters
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>以後しばらくは<code>light_fourleds</code>パッケージの中で作業します．</p>
+
+<h3>アダプターノード作成</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>mkdir src
+</span><span class='line'><span class="nb">cd </span>src
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>このsrcディレクトリに<code>adapt_joy_node.cpp</code>を作成し，以下の文を書き込みます．</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#include &quot;ros/ros.h&quot;</span>
+</span><span class='line'><span class="c">#include &quot;light_fourleds/Vector.h&quot;</span>
+</span><span class='line'><span class="c">#include &quot;sensor_msgs/Joy.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'>ros::Publisher pub<span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>void joyCb<span class="o">(</span>const sensor_msgs::Joy::ConstPtr<span class="p">&amp;</span> joy<span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>  light_fourleds::Vector2 msg<span class="p">;</span>
+</span><span class='line'>  msg.x <span class="o">=</span> joy-&gt;axes<span class="o">[</span>0<span class="o">]</span><span class="p">;</span>
+</span><span class='line'>  msg.y <span class="o">=</span> joy-&gt;axes<span class="o">[</span>1<span class="o">]</span><span class="p">;</span>
+</span><span class='line'>  pub.publish<span class="o">(</span>msg<span class="o">)</span><span class="p">;</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>int main<span class="o">(</span>int argc, char **argv<span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>  ros::init<span class="o">(</span>argc, argv, <span class="s2">&quot;adapt_joy_node&quot;</span><span class="o">)</span><span class="p">;</span>
+</span><span class='line'>  ros::NodeHandle nh<span class="p">;</span>
+</span><span class='line'>  ros::Subscriber <span class="nv">sub</span> <span class="o">=</span> nh.subscribe<span class="o">(</span><span class="s2">&quot;joy&quot;</span>, 1, joyCb<span class="o">)</span><span class="p">;</span>
+</span><span class='line'>  <span class="nv">pub</span> <span class="o">=</span> nh.advertise&lt;light_fourleds::Vector2&gt;<span class="o">(</span><span class="s2">&quot;light_fourleds&quot;</span>, 1<span class="o">)</span><span class="p">;</span>
+</span><span class='line'>  ros::spin<span class="o">()</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">return</span> 0<span class="p">;</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>書き込んだら，CMakeLists.txtとpackage.xmlを下のように書き換えます．</p>
+
+<p>CMakeLists.txt</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>cmake_minimum_required<span class="o">(</span>VERSION 2.8.3<span class="o">)</span>
+</span><span class='line'>project<span class="o">(</span>light_fourleds_adapters<span class="o">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">set</span><span class="o">(</span>CATKIN_DEPS roscpp sensor_msgs<span class="o">)</span>
+</span><span class='line'><span class="nb">set</span><span class="o">(</span>ROSDEP_DEPS light_fourleds<span class="o">)</span>
+</span><span class='line'>find_package<span class="o">(</span>catkin REQUIRED COMPONENTS <span class="k">${</span><span class="nv">CATKIN_DEPS</span><span class="k">}</span> <span class="k">${</span><span class="nv">ROSDEP_DEPS</span><span class="k">}</span><span class="o">)</span>
+</span><span class='line'>catkin_package<span class="o">(</span>CATKIN_DEPENDS <span class="k">${</span><span class="nv">CATKIN_DEPS</span><span class="k">}</span> <span class="k">${</span><span class="nv">ROSDEP_DEPS</span><span class="k">}</span><span class="o">)</span>
+</span><span class='line'>
+</span><span class='line'>include_directories<span class="o">(</span><span class="k">${</span><span class="nv">catkin_INCLUDE_DIRS</span><span class="k">}</span><span class="o">)</span>
+</span><span class='line'>
+</span><span class='line'>add_executable<span class="o">(</span>adapt_joy_node src/adapt_joy_node.cpp<span class="o">)</span>
+</span><span class='line'>target_link_libraries<span class="o">(</span>adapt_joy_node <span class="k">${</span><span class="nv">catkin_LIBRARIES</span><span class="k">}</span><span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>package.xml</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>&lt;package&gt;
+</span><span class='line'>  &lt;name&gt;light_fourleds_adapters&lt;/name&gt;
+</span><span class='line'>  &lt;version&gt;0.1.0&lt;/version&gt;
+</span><span class='line'>
+</span><span class='line'>  &lt;description&gt;Adapt message to light_fourleds package.&lt;/description&gt;
+</span><span class='line'>
+</span><span class='line'>  &lt;maintainer <span class="nv">email</span><span class="o">=</span><span class="s2">&quot;yourName@todo.todo&quot;</span>&gt;yourName&lt;/maintainer&gt;
+</span><span class='line'>  &lt;license&gt;BSD&lt;/license&gt;
+</span><span class='line'>
+</span><span class='line'>  &lt;buildtool_depend&gt;catkin&lt;/buildtool_depend&gt;
+</span><span class='line'>
+</span><span class='line'>  &lt;build_depend&gt;light_fourleds&lt;/build_depend&gt;
+</span><span class='line'>  &lt;build_depend&gt;roscpp&lt;/build_depend&gt;
+</span><span class='line'>  &lt;build_depend&gt;sensor_msgs&lt;/build_depend&gt;
+</span><span class='line'>
+</span><span class='line'>  &lt;run_depend&gt;light_fourleds&lt;/run_depend&gt;
+</span><span class='line'>  &lt;run_depend&gt;roscpp&lt;/run_depend&gt;
+</span><span class='line'>  &lt;run_depend&gt;sensor_msgs&lt;/run_depend&gt;
+</span><span class='line'>&lt;/package&gt;
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>すべて書き込んだら<code>workspace</code>直下へ移動して<code>catkin_make</code>します．</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd</span> &lt;catkin_ws&gt;
+</span><span class='line'>catkin_make --force-cmake
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>makeが通ったら実行してみましょう．USBポートにジョイスティックとArduinoを接続して，以下の行を<strong>それぞれ別のターミナル</strong>で実行してください．</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>roscore
+</span><span class='line'>rosrun joy joy_node
+</span><span class='line'>rosrun light_fourleds_adapters adapt_joy_node
+</span><span class='line'>rosrun rosserial_python serial_node.py _port:<span class="o">=</span>ttyACM0
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>Note: Arduinoのbuildとuploadはしましたか？</li>
+<li>Note: rostopic コマンドでトピックを確認することで問題を特定しやすくなります．</li>
+</ul>
+
+
+<h3>補足など</h3>
+
+<p>後ほどコメントや修正，解説などを加えると思います．</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Yusuke Doi</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2015-03-10T16:59:22+09:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>10</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>4:59 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/arduino/'>arduino</a>, <a class='category' href='/blog/categories/joystick-driver/'>joystick_driver</a>, <a class='category' href='/blog/categories/ros/'>ros</a>, <a class='category' href='/blog/categories/rosserial/'>rosserial</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://cir-kit.github.io/blog/2015/03/10/light-four-leds-on-arduino-by-ros/" data-via="" data-counturl="http://cir-kit.github.io/blog/2015/03/10/light-four-leds-on-arduino-by-ros/" >Tweet</a>
+  
+  
+  
+  
+  <div class="fb-comments" data-href="http://cir-kit.github.io" data-num-posts="2" data-width="500"></div>
+  
+  
+
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2015/03/04/gazebo-ros-advanced-integration/" title="Previous Post: No.6-10:GazeboをROSに繋ぐ (発展的なROSの統合 編)">&laquo; No.6-10:GazeboをROSに繋ぐ (発展的なROSの統合 編)</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2015/03/10/use-rosserial-first/" title="Next Post: ArduinoをROSで動かす">ArduinoをROSで動かす &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    
+
+
+
+
+<section>
+<div class="fb-like-box" data-href="https://www.facebook.com/kyutechcirkit" data-width="210" data-height="400" data-colorscheme="light" data-show-faces="false" data-header="false" data-stream="true" data-show-border="false"></div>
+</section>
+
+<section>
+  <h1>Categories</h1>
+    <ul id="category-list">
+      <li><a href='/blog/categories/arduino/'>arduino (2)</a></li><li><a href='/blog/categories/build-a-robot/'>build a robot (10)</a></li><li><a href='/blog/categories/build-a-world/'>build a world (5)</a></li><li><a href='/blog/categories/gazebo/'>gazebo (33)</a></li><li><a href='/blog/categories/getstarted/'>getstarted (4)</a></li><li><a href='/blog/categories/install/'>install (2)</a></li><li><a href='/blog/categories/joystick-driver/'>joystick_driver (1)</a></li><li><a href='/blog/categories/ros/'>ros (12)</a></li><li><a href='/blog/categories/rosserial/'>rosserial (2)</a></li><li><a href='/blog/categories/sensors/'>sensors (2)</a></li><li><a href='/blog/categories/tools-and-utilities/'>tools and utilities (1)</a></li><li><a href='/blog/categories/ubuntu/'>ubuntu (34)</a></li>
+    </ul>
+</section>
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/10/use-rosserial-first/">ArduinoをROSで動かす</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/10/light-four-leds-on-arduino-by-ros/">ジョイスティックで4つのLEDをつける(Arduino&ROS)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/04/gazebo-ros-advanced-integration/">No.6-10:GazeboをROSに繋ぐ (発展的なROSの統合 編)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/04/gazebo-ros-plugin/">No.6-9:GazeboをROSに繋ぐ (ROS Plugin 編)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/02/gazebo-ros-communication/">No.6-8:GazeboをROSに繋ぐ (ROS Communication 編)</a>
+      </li>
+    
+  </ul>
+</section>
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Yusuke Doi -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&appId=930841560294053&version=v2.0";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
