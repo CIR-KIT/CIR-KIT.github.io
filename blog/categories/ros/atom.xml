@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Ros | 九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/blog/categories/ros/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-03-12T14:20:20+09:00</updated>
+  <updated>2015-03-12T14:25:06+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[CIR-KIT Members]]></name>
@@ -12,6 +12,635 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[ArduinoをROSで動かす]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/03/10/use-rosserial-first/"/>
+    <updated>2015-03-10T16:59:22+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/03/10/use-rosserial-first</id>
+    <content type="html"><![CDATA[<h1>　Arduino を ROS で動かす</h1>
+
+<h2>概要</h2>
+
+<p>ROSのトピックなどをArduinoで利用するためのインストール等．</p>
+
+<h2>検証情報</h2>
+
+<h3>日時</h3>
+
+<p>03/09/2015 (Mon)</p>
+
+<h3>スペック</h3>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;">パーツ</th>
+<th style="text-align:center;">スペック</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">PC</td>
+<td style="text-align:center;">Panasonic Let&rsquo;s note CF-LX3TG7TC</td>
+</tr>
+<tr>
+<td style="text-align:center;">Prosessor</td>
+<td style="text-align:center;">Intel core i7-4500U (1.8GHz)</td>
+</tr>
+<tr>
+<td style="text-align:center;">RAM</td>
+<td style="text-align:center;">DDR3 SDRAM(PC3-12800) 4GB</td>
+</tr>
+<tr>
+<td style="text-align:center;">OS</td>
+<td style="text-align:center;">Ubuntu 14.04.2 LTS 64bit</td>
+</tr>
+<tr>
+<td style="text-align:center;">Kernel</td>
+<td style="text-align:center;">3.13.0-46-generic</td>
+</tr>
+<tr>
+<td style="text-align:center;">ROS</td>
+<td style="text-align:center;">indigo 1.11.10</td>
+</tr>
+<tr>
+<td style="text-align:center;">Arduino</td>
+<td style="text-align:center;">Arduino UNO</td>
+</tr>
+</tbody>
+</table>
+
+
+<!--more-->
+
+
+<h2>前提条件</h2>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">対象</th>
+<th style="text-align:left;">条件</th>
+<th style="text-align:left;">参考</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">ROS</td>
+<td style="text-align:left;">Install済み</td>
+<td style="text-align:left;"><a href="/blog/2015/02/25/we-have-get-to-work-when-install-ubuntu">CIR-KITメンバーが必ずすべきこと</a></td>
+</tr>
+<tr>
+<td style="text-align:left;">Arduino</td>
+<td style="text-align:left;">Install済み</td>
+<td style="text-align:left;">&lsquo;sudo apt-get install Arduino&rsquo;</td>
+</tr>
+</tbody>
+</table>
+
+
+<h2>Arduino で ROS を利用する</h2>
+
+<p>まずは，ArduinoをROSのnodeに見せかけるためのROSパッケージをインストールします．
+<a href="http://wiki.ros.org/rosserial_arduino/Tutorials/Arduino%20IDE%20Setup">対象パッケージのROS Wiki</a>を参考に行います．</p>
+
+<h3>install</h3>
+
+<p>参考サイトの3.install the Softwereを見ると，2種類のインストール方法があるようです．</p>
+
+<hr />
+
+<p>1つ目は3.1の方法で，下のコマンドを実行します．workspaceが汚れ無いのでこっちおすすめです．</p>
+
+<pre><code class="bash">sudo apt-get install ros-indigo-rosserial-arduino
+sudo apt-get install ros-indigo-rosserial
+</code></pre>
+
+<hr />
+
+<p>2つ目は3.2の方法で，下の手順で行います．&lt;ws>は自分のrosWorkspaceまでのパスに置き換えてください．</p>
+
+<pre><code class="bash">  cd &lt;ws&gt;/src
+  git clone https://github.com/ros-drivers/rosserial.git
+  cd ../
+  catkin_make
+  catkin_make install
+  source &lt;ws&gt;/install/setup.bash
+</code></pre>
+
+<p>この時，<code>~/.bashrc</code>へ<code>source &lt;ws&gt;/install/setup.bash</code>を追加しておくことを推奨します．(以後入力がいらなくなります)</p>
+
+<ul>
+<li>Note:<em>devel/setup.bash</em>では<strong>無い</strong>ことに注意してください</li>
+</ul>
+
+
+<hr />
+
+<h3>setup</h3>
+
+<p>3.3にArduinoの(ごく普通の)ライブラリとしてros_libを追加するように書いてあります．
+必ず<code>roscore</code>を起動して下のコマンドでros_libを追加してください．</p>
+
+<p>&lt;sketchbook>は各自のArduinoのライブラリがあるディレクトリに置き換えてください．</p>
+
+<pre><code class="bash">  cd &lt;sketchbook&gt;/libraries
+  rosrun rosserial_arduino make_libraries.py .
+</code></pre>
+
+<ul>
+<li>Note:環境によってlibrariesディレクトリの名前や場所が違うので注意．</li>
+<li>sketchbookはrosパッケージ内に作ると管理しやすいと思います．</li>
+</ul>
+
+
+<h4>確認</h4>
+
+<p>Arduinoライブラリにros_libが入っていて，その中にROSにパスが通っているmsgやsrvを定義している<strong>ROSパッケージすべて</strong>のディレクトリが含まれていることを確認する．</p>
+
+<h3>使ってみる</h3>
+
+<p><code>/libraries/examples/HelloWorld/HelloWorld.pde</code>をビルドしてみる．
+Arduino IDEなら下の画像の所をクリックすることでソースが出るので，それをビルドして書き込んでください．</p>
+
+<p><img src="/images/2015-03-10-light-four-leds-on-arduino-by-ros/arduinoIed1.png" alt="arduinoIed1" /></p>
+
+<p>このプログラムは，<code>chatter</code>トピックに&#8221;Hello world&#8221;と1秒毎にPublishします．
+Arduinoへの書き込みが済んだら，早速確認してみましょう．</p>
+
+<ol>
+<li>まずは<code>roscore</code>を起動します．</li>
+<li>次に<code>rosrun rosserial_python serial_node.py _port:=/dev/ttyACM0</code>を起動します．</li>
+</ol>
+
+
+<p>  Note: <em>_port:=</em>のパスは自分のArduinoへのパスを入れてください．</p>
+
+<p>これで<code>chatter</code>トピックへの配信が始まりました．<code>rostopic</code>で確認してみましょう．</p>
+
+<pre><code class="bash">rostopic echo chatter
+</code></pre>
+
+<p>&ldquo;Hello World&#8221;と送られていたら成功です．</p>
+
+<p><code>rosserial_python serial_node</code>でArduinoに書き込んだノードを実行していると考えるとわかりやすいと思います．(実際は全然違います)</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[ジョイスティックで4つのLEDをつける(Arduino&ROS)]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/03/10/light-four-leds-on-arduino-by-ros/"/>
+    <updated>2015-03-10T16:59:22+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/03/10/light-four-leds-on-arduino-by-ros</id>
+    <content type="html"><![CDATA[<h1>　ジョイスティックで4つのLEDをつけるbyROS</h1>
+
+<h2>概要</h2>
+
+<p>ROSのトピックを利用してArduinoでledをつける．
+更に，ROSのjoystick_driversを利用してDualShock3でledを制御する．</p>
+
+<h2>検証情報</h2>
+
+<h3>日時</h3>
+
+<p>03/09/2015 (Mon)</p>
+
+<h3>スペック</h3>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;">パーツ</th>
+<th style="text-align:center;">スペック</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">PC</td>
+<td style="text-align:center;">Panasonic Let&rsquo;s note CF-LX3TG7TC</td>
+</tr>
+<tr>
+<td style="text-align:center;">Prosessor</td>
+<td style="text-align:center;">Intel core i7-4500U (1.8GHz)</td>
+</tr>
+<tr>
+<td style="text-align:center;">RAM</td>
+<td style="text-align:center;">DDR3 SDRAM(PC3-12800) 4GB</td>
+</tr>
+<tr>
+<td style="text-align:center;">OS</td>
+<td style="text-align:center;">Ubuntu 14.04.2 LTS 64bit</td>
+</tr>
+<tr>
+<td style="text-align:center;">Kernel</td>
+<td style="text-align:center;">3.13.0-46-generic</td>
+</tr>
+<tr>
+<td style="text-align:center;">ROS</td>
+<td style="text-align:center;">indigo 1.11.10</td>
+</tr>
+<tr>
+<td style="text-align:center;">Arduino</td>
+<td style="text-align:center;">Arduino UNO</td>
+</tr>
+<tr>
+<td style="text-align:center;">joystick_drivers</td>
+<td style="text-align:center;">1.10.0</td>
+</tr>
+</tbody>
+</table>
+
+
+<!--more-->
+
+
+<h2>前提条件</h2>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">対象</th>
+<th style="text-align:left;">条件</th>
+<th style="text-align:left;">参考</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">ROS</td>
+<td style="text-align:left;">Install済み</td>
+<td style="text-align:left;"><a href="/blog/2015/02/25/we-have-get-to-work-when-install-ubuntu">CIR-KITメンバーが必ずすべきこと</a></td>
+</tr>
+<tr>
+<td style="text-align:left;">Arduino</td>
+<td style="text-align:left;">Install済み</td>
+<td style="text-align:left;">&lsquo;sudo apt-get install Arduino&rsquo;</td>
+</tr>
+<tr>
+<td style="text-align:left;">rosserial</td>
+<td style="text-align:left;">Install済み</td>
+<td style="text-align:left;"><a href="/blog/2015/03/10/use-rosserial-first.md">ArduinoをROSで動かす</a></td>
+</tr>
+<tr>
+<td style="text-align:left;">joystick_drivers</td>
+<td style="text-align:left;">Install済み</td>
+<td style="text-align:left;"><a href="http://wiki.ros.org/turtlebot_teleop/Tutorials/PS3%20Joystick%20Teleop">ROS Wiki</a></td>
+</tr>
+</tbody>
+</table>
+
+
+<h2>はじめに</h2>
+
+<p>ROSは，ノードの再利用を理念に作成されているため，出力用，入力用，計算用，アダプター用の４種のパッケージを作るべきだと私は考えています．今回は入力をjoystick_driversに任せて，出力パッケージとアダプターパッケージを作成します．</p>
+
+<h2>仕様作成</h2>
+
+<p>今回は４つのLEDを十字に配置して，ジョイスティックのアナログパッドを傾けた方向のLEDを光らせます．この時，傾きに合わせて光る強さを変えられるようにします．</p>
+
+<h2>出力パッケージ作成</h2>
+
+<p>出力パッケージは，受け取るメッセージ型を定義し，そのメッセージに対する処理をするノードを作成します．今回パッケージ名は<code>light_fourleds</code>とします．今回はArduinoを使用し，ROSノードは作らないため依存パッケージはありません．</p>
+
+<pre><code class="bash">cd &lt;catkin_ws&gt;/src
+catkin_create_pkg light_fourleds
+cd light_fourleds
+</code></pre>
+
+<p>以後しばらくは<code>light_fourleds</code>パッケージの中で作業します．</p>
+
+<h3>メッセージ作成</h3>
+
+<h4>msg定義</h4>
+
+<p>x軸とy軸を考えてそれぞれの強さを受け取るようにするのが良いと考えました．
+よってメッセージ型は<code>Vector2</code>とします．内容はfloat32 のxとyです．</p>
+
+<pre><code class="bash">mkdir -p msg
+cd msg
+echo "float32 x" &gt; Vector2.msg
+echo "float32 y" &gt;&gt; Vector2.msg
+</code></pre>
+
+<h4>msg生成</h4>
+
+<p>まずは定義したmsgをmakeします．Arduinoでmsgを利用するには必ず対象のmsgがmakeされていなければなりません．これはros_libとの関係です．</p>
+
+<p>作ったmsgのためにCMakeListsとpackage.xmlを下のように書き換えましょう．</p>
+
+<p>CMakeLists.txt
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>cmake_minimum_required<span class="o">(</span>VERSION 2.8.3<span class="o">)</span>
+</span><span class='line'>project<span class="o">(</span>light_fourleds<span class="o">)</span>&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;h1&gt;Load catkin and all dependencies required <span class="k">for</span> this package&lt;/h1&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;find_package<span class="o">(</span>catkin REQUIRED COMPONENTS message_generation<span class="o">)</span>&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;h6&gt;#&lt;/h6&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;h2&gt;Declare ROS message&lt;/h2&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;h6&gt;#&lt;/h6&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;h1&gt;Generate messages in the <span class="p">&amp;</span>lsquo<span class="p">;</span>msg<span class="p">&amp;</span>rsquo<span class="p">;</span> folder&lt;/h1&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;add_message_files<span class="o">(</span>FILES Vector2.msg<span class="o">)</span>&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;h2&gt;Generate added messages with any dependencies listed here&lt;/h2&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;generate_messages<span class="o">()</span>&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;h6&gt;#&lt;/h6&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;h2&gt;catkin specific configuration&lt;/h2&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;h6&gt;#&lt;/h6&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;catkin_package<span class="o">(</span>CATKIN_DEPENDS message_runtime<span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>package.txt
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>&lt;package&gt;
+</span><span class='line'>  &lt;name&gt;light_fourleds&lt;/name&gt;
+</span><span class='line'>  &lt;version&gt;0.1.0&lt;/version&gt;
+</span><span class='line'>  &lt;description&gt;
+</span><span class='line'>    This package defines message, and have node of arduino to light
+</span><span class='line'>    four leds.
+</span><span class='line'>  &lt;/description&gt;
+</span><span class='line'>  &lt;maintainer <span class="nv">email</span><span class="o">=</span><span class="s2">&quot;yourName@todo.todo&quot;</span>&gt;yourName&lt;/maintainer&gt;
+</span><span class='line'>  &lt;license&gt;BSD&lt;/license&gt;&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;  &lt;buildtool_depend&gt;catkin&lt;/buildtool_depend&gt;&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;  &lt;build_depend&gt;message_generation&lt;/build_depend&gt;&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;  &lt;run_depend&gt;message_runtime&lt;/run_depend&gt;
+</span><span class='line'>  &lt;run_depend&gt;rosserial_python&lt;/run_depend&gt;
+</span><span class='line'>&lt;/package&gt;
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>書き終えたら<code>catkin_make --force-cmake</code>を実行します．
+<code>bash
+cd &lt;catkin_ws&gt;
+catkin_make --force-cmake
+</code></p>
+
+<h3>Arduinoノード作成</h3>
+
+<p>それでは実際に今作ったmsgを利用して動く出力ノードを作成します．
+まずは，新しく作ったmsgを認識させるために<code>ros_lib</code>を削除し，再度rosrunで<code>ros_lib</code>を入れなおします．<code>roscore</code>を立ち上げるのを忘れないでください．</p>
+
+<pre><code class="bash">cd &lt;sketchbook&gt;/libraries
+rm -fr ros_lib
+rosrun rosserial_arduino make_libraries.py
+</code></pre>
+
+<p>続いてそのライブラリが使用できるところでArduinoのプログラムを作成します．下のプログラムを作成してください．</p>
+
+<pre><code class="bash">/**
+ * light four leds on arduino
+ * @author "yourName"
+ */
+#include &lt;ros.h&gt;
+#include &lt;light_fourleds/Vector2.h&gt;
+#define UP 3
+#define RIGHT 5
+#define DOWN 6
+#define LEFT 9
+unsigned int der[4];
+ros::NodeHandle nh;
+
+void messageCb(const light_fourleds::Vector2&amp; msg) {
+    for (int i; i &lt; 4; i++) analogWrite(der[i], 0); //all cleanup
+    if (msg.x &gt; 0) // left
+    analogWrite(der[3], 255*msg.x);
+    else if (msg.x &lt; 0) // right
+        analogWrite(der[1], -255*msg.x);
+    if (msg.y &gt; 0) // up
+        analogWrite(der[0], 255*msg.y);
+    else if (msg.y &lt; 0) // down
+        analogWrite(der[2], -255*msg.y);
+}
+
+ros::Subscriber&lt;light_fourleds::Vector2&gt; sub("light_fourleds", &amp;messageCb);
+
+void setup(void) {
+    der[0] = UP;
+    der[1] = RIGHT;
+    der[2] = DOWN;
+    der[3] = LEFT;
+    nh.initNode();
+    nh.subscribe(sub);
+}
+
+void loop(void) {
+    nh.spinOnce();
+    delay(1);
+}
+</code></pre>
+
+<p>書き込んだら，Arduinoでビルドして，uploadしてください．</p>
+
+<h3>配線</h3>
+
+<p>3,5,6,9pinにLEDをそれぞれつけてください．3を上にして時計回りに配置すると想定された配置となります．</p>
+
+<p>画像は後ほど追加予定です．</p>
+
+<h3>ここまでの確認</h3>
+
+<p>これで出力部が作成できたはずです．ROSの強力な特徴として，ノード単位でのテストができる点があるので，早速実行して試してみましょう．</p>
+
+<pre><code class="bash">rosrun rosserial_python serial_node.py
+</code></pre>
+
+<pre><code class="bash">rostopic pub light_fourleds/Vector2 -- 1 0
+</code></pre>
+
+<p>左のLED(9pin)が光っていれば成功です．</p>
+
+<h2>アダプターパッケージの作成</h2>
+
+<p>アダプターパッケージは出力と入力パッケージのmsgを適切につなぐパッケージです．個人的な命令方法は「出力パッケージ_adapters」です．これは，使いたい入力に対して適宜adapterノードを作成すれば良いと考えているからです．それでは下のコマンドでパッケージを作りましょう．</p>
+
+<pre><code class="bash">cd &lt;catkin_ws&gt;/src
+catkin_create_pkg light_fourleds_adapters roscpp light_fourleds joy
+cd light_fourleds_adapters
+</code></pre>
+
+<p>以後しばらくは<code>light_fourleds_adapters</code>パッケージの中で作業します．</p>
+
+<h3>アダプターノード作成</h3>
+
+<pre><code class="bash">mkdir src
+cd src
+</code></pre>
+
+<p>このsrcディレクトリに<code>adapt_joy_node.cpp</code>を作成し，以下の文を書き込みます．</p>
+
+<pre><code class="bash">#include "ros/ros.h"
+#include "light_fourleds/Vector2.h"
+#include "sensor_msgs/Joy.h"
+
+ros::Publisher pub;
+
+void joyCb(const sensor_msgs::Joy::ConstPtr&amp; joy) {
+    light_fourleds::Vector2 msg;
+    msg.x = joy-&gt;axes[0];
+    msg.y = joy-&gt;axes[1];
+    pub.publish(msg);
+}
+
+int main(int argc, char **argv) {
+    ros::init(argc, argv, "adapt_joy_node");
+    ros::NodeHandle nh;
+    ros::Subscriber sub = nh.subscribe("joy", 1, joyCb);
+    pub = nh.advertise&lt;light_fourleds::Vector2&gt;("light_fourleds", 1);
+    ros::spin();
+    return 0;
+}
+</code></pre>
+
+<p>書き込んだら，CMakeLists.txtとpackage.xmlを下のように書き換えます．</p>
+
+<p>CMakeLists.txt
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>cmake_minimum_required<span class="o">(</span>VERSION 2.8.3<span class="o">)</span>
+</span><span class='line'>project<span class="o">(</span>light_fourleds_adapters<span class="o">)</span>&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;set<span class="o">(</span>CATKIN_DEPS roscpp sensor_msgs<span class="o">)</span>
+</span><span class='line'><span class="nb">set</span><span class="o">(</span>ROSDEP_DEPS light_fourleds<span class="o">)</span>
+</span><span class='line'>find_package<span class="o">(</span>catkin REQUIRED COMPONENTS <span class="k">${</span><span class="nv">CATKIN_DEPS</span><span class="k">}</span> <span class="k">${</span><span class="nv">ROSDEP_DEPS</span><span class="k">}</span><span class="o">)</span>
+</span><span class='line'>catkin_package<span class="o">(</span>CATKIN_DEPENDS <span class="k">${</span><span class="nv">CATKIN_DEPS</span><span class="k">}</span> <span class="k">${</span><span class="nv">ROSDEP_DEPS</span><span class="k">}</span><span class="o">)</span>&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;include_directories<span class="o">(</span><span class="k">${</span><span class="nv">catkin_INCLUDE_DIRS</span><span class="k">}</span><span class="o">)</span>&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;add_executable<span class="o">(</span>adapt_joy_node src/adapt_joy_node.cpp<span class="o">)</span>
+</span><span class='line'>target_link_libraries<span class="o">(</span>adapt_joy_node <span class="k">${</span><span class="nv">catkin_LIBRARIES</span><span class="k">}</span><span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>package.xml
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>&lt;package&gt;
+</span><span class='line'>  &lt;name&gt;light_fourleds_adapters&lt;/name&gt;
+</span><span class='line'>  &lt;version&gt;0.1.0&lt;/version&gt;&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;  &lt;description&gt;Adapt message to light_fourleds package.&lt;/description&gt;&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;  &lt;maintainer <span class="nv">email</span><span class="o">=</span><span class="s2">&quot;yourName@todo.todo&quot;</span>&gt;yourName&lt;/maintainer&gt;
+</span><span class='line'>  &lt;license&gt;BSD&lt;/license&gt;&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;  &lt;buildtool_depend&gt;catkin&lt;/buildtool_depend&gt;&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;  &lt;build_depend&gt;light_fourleds&lt;/build_depend&gt;
+</span><span class='line'>  &lt;build_depend&gt;roscpp&lt;/build_depend&gt;
+</span><span class='line'>  &lt;build_depend&gt;sensor_msgs&lt;/build_depend&gt;&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;  &lt;run_depend&gt;light_fourleds&lt;/run_depend&gt;
+</span><span class='line'>  &lt;run_depend&gt;roscpp&lt;/run_depend&gt;
+</span><span class='line'>  &lt;run_depend&gt;sensor_msgs&lt;/run_depend&gt;
+</span><span class='line'>&lt;/package&gt;
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>すべて書き込んだら<code>workspace</code>直下へ移動して<code>catkin_make</code>します．</p>
+
+<pre><code class="bash">cd &lt;catkin_ws&gt;
+catkin_make --force-cmake
+</code></pre>
+
+<p>makeが通ったら実行してみましょう．USBポートにジョイスティックとArduinoを接続して，以下の行を<strong>それぞれ別のターミナル</strong>で実行してください．
+<code>bash
+roscore
+rosrun joy joy_node
+rosrun light_fourleds_adapters adapt_joy_node
+rosrun rosserial_python serial_node.py _port:=ttyACM0
+</code></p>
+
+<ul>
+<li>Note: Arduinoのbuildとuploadはしましたか？</li>
+<li>Note: rostopic コマンドでトピックを確認することで問題を特定しやすくなります．</li>
+</ul>
+
+
+<h3>補足など</h3>
+
+<p>後ほどコメントや修正，解説などを加えると思います．</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[No.6-10:GazeboをROSに繋ぐ (発展的なROSの統合 編)]]></title>
@@ -1030,1124 +1659,6 @@ duration:
 <h2>次のステップ</h2>
 
 <p>Gazeboのための独自のROSプラグインの作り方について学んでください。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[No.6-7:GazeboをROSに繋ぐ (ROS Control 編)]]></title>
-    <link href="http://cir-kit.github.io/blog/2015/02/22/gazebo-ros-control/"/>
-    <updated>2015-02-22T03:55:56+09:00</updated>
-    <id>http://cir-kit.github.io/blog/2015/02/22/gazebo-ros-control</id>
-    <content type="html"><![CDATA[<p><img src="/images/gazebo_logo.png" alt="gazebo_logo" /></p>
-
-<h5>検証日時</h5>
-
-<p>03/02/2015 (Mon)</p>
-
-<h5>概要</h5>
-
-<p>Gazeboのチュートリアル第六弾「Connect to ROS」。
-ROSはロボットの制御フレームワークです。このチュートリアルでは、GazeboとROSのインターフェースについて説明します。
-今回はその「ROS control」編です。
-公式サイトを適当に翻訳しただけですので、あしからず。</p>
-
-<h5>レベル</h5>
-
-<p><strong>INTERMEDIATE</strong></p>
-
-<!-- more -->
-
-
-<h5>環境</h5>
-
-<table>
-<thead>
-<tr>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center;"> <strong>PC</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Prosessor</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>RAM</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>OS</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Kernel</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> 3.13.0-44-generic </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Gazebo</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Version 5.0.1 </td>
-</tr>
-</tbody>
-</table>
-
-
-<h5>参考</h5>
-
-<p><a href="http://gazebosim.org/tutorials?cat=connect_ros">GAZEBO Tutorial-Connect to ROS</a></p>
-
-<h2>チュートリアル : ROS Control</h2>
-
-<p>このチュートリアルでは、あなたのロボットのジョイントを動かすために、シミュレートされたコントローラを設定してゆきます。これにより、<a href="http://moveit.ros.org/">MoveIt!</a>のようなプランナーのための正しいROSのインターフェースを提供することができるようになります。また、ROSの新しいスタンダードコントローラインターフェースである<a href="http://ros.org/wiki/ros_control"><code>ros_control</code></a>パッケージを使用してゆきます。</p>
-
-<h3><code>ros_control</code>について</h3>
-
-<p>次に進む前に、<a href="http://ros.org/wiki/ros_control"><code>ros_control</code></a>ドキュメントの概要を読んでおくことをおすすめします。
-About ros_control</p>
-
-<h3>Gazeboと<code>ros_control</code>のデータフロー</h3>
-
-<p>Gazeboでロボットのコントローラをシミュレートすることで、<code>ros_control</code>の使い方とシンプルなGazeboのプラグインアダプタの使い方を習得することができます。シミュレーション、ハードウェア、コントローラとトランスミッションの間の関係の概要は以下のようになっています。尚、以下の画像は公式サイトのものです。:
-<img src="/images/2015-02-21-gazebo-ros-control/Gazebo_ros_transmission.png" alt="Gazebo_ros_transmission" /></p>
-
-<h2>必要条件</h2>
-
-<p>このチュートリアルでは、これまでのチュートリアルで紹介したコンセプトの多くを再編してゆきます。プラグイン構成のための例として、<a href="http://cir-kit.github.io/blog/2015/02/17/gazebo-urdf-in-gazebo/">GazeboにおけるURDF</a>のチュートリアルの中で設定したRRBotを再び使用してゆきます。<br/>
-すでに<code>ros_control</code>と<code>ros_controllers</code>をインストールしていることを確認してください。また、それらの依存関係は、<a href="http://cir-kit.github.io/blog/2015/02/14/gazebo-installing-gazebo-ros-pkgs/">Gazebo_ros_packageをインストールする</a>で説明しています。</p>
-
-<h2>使い方</h2>
-
-<h3>URDFに<code>transmission</code>要素を追加する</h3>
-
-<p>あなたのロボットで<code>ros_control</code>を使用するには、URDFにいくつかの追加要素が必要です。<code>&lt;transmission&gt;</code>要素はリンクアクチュエータやジョイントで使用されます。正確なXMLフォーマットのためには、<a href="http://ros.org/wiki/urdf/XML/Transmission"><code>&lt;transmission&gt;</code>の仕様</a>をご覧ください。<br/>
-実行途中の<code>gazebo_ros_control</code>の目的のために、<code>transmission</code>タグの中で唯一重要な情報は以下のとおりである。:</p>
-
-<ul>
-<li><code>&lt;joint name=""&gt;</code> : URDFにあるジョイントの名前と一致していなければなりません。</li>
-<li><code>&lt;type&gt;</code> ; <code>transmission</code>のタイプです。現在では、<code>transmission_interface/SimpleTransmission</code>のみが実行されます。(遠慮無く追加してください)</li>
-<li><code>&lt;hardwareInterface&gt;</code> : <code>&lt;actuator&gt;</code>タグでは、<code>gazebo_ros_control</code>プラグインに姿勢、速度、実行インターフェースなどをロードするためのハードウェアインターフェースを知らせます。現在では、実行インターフェースのみが実行されます。(遠慮無く追加してください)</li>
-</ul>
-
-
-<p>残りの名前と要素は現在は、無視されています。</p>
-
-<h3><code>gazebo_ros_control</code>プラグインを追加する</h3>
-
-<p><code>transmission</code>タグへの追加では、正確に<code>transmission</code>タグを記述し、適用するハードウェアインターフェースとコントローラマネージャを読み込む、URDFにGazeboのプラグインを追加する必要があります。デフォルトの<code>gazebo_ros_control</code>プラグインはシンプルですが、<code>ros_control</code>とGazeboの間のカスタムのロボットハードウェアインターフェースを使えるようにするために、追加のプラグインを展開することができます。<br/>
-デフォルトプラグインXMLをあなたのURDFに追加する必要があります。</p>
-
-<pre><code class="xml">&lt;gazebo&gt;
-  &lt;plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so"&gt;
-    &lt;robotNamespace&gt;/MYROBOT&lt;/robotNamespace&gt;
-  &lt;/plugin&gt;
-&lt;/gazebo&gt;
-</code></pre>
-
-<p><code>gazebo_ros_control</code>の<code>&lt;plugin&gt;</code>タグには以下の子要素もあります。:</p>
-
-<ul>
-<li><code>&lt;robotNamespace&gt;</code> : プラグインの初期化に使用される名前空間です。デフォルトでは、URDF/SDFのロボット名となります。</li>
-<li><code>&lt;controlPeriod&gt;</code> : コントローラアップデートの周期です。デフォルトでは、Gazeboの手記です。</li>
-<li><code>&lt;robotParam&gt;</code> : パラメータサーバーの<code>robot_description</code>(URDF)のロケーションです。デフォルトでは、<code>/robot_description</code>です。</li>
-<li><code>&lt;robotSimType&gt;</code> : 使用されるカスタムのロボットシミュレーションインターフェースの<code>pluginlib</code>の名前です(詳しくは、続きをご覧ください)。デフォルトでは、<code>DefaultRobotHWSim</code>となります。</li>
-</ul>
-
-
-<h4>デフォルトの<code>gazebo_ros_control</code>の挙動</h4>
-
-<p>デフォルトで、<code>&lt;robotSimType&gt;</code>タグなしだと、<code>gazebo_ros_control</code>はURDF
-外の<code>ros_control-based</code>コントローラと通信するのに必要なすべての情報を手に入れようとします。これは、ほとんどの場合十分なことで、少なくとも、始めの内は良いことです。<br/>
-デフォルトの挙動では、以下の<code>ros_control</code>インターフェースを提供しています。:</p>
-
-<ul>
-<li>hardware_interface::JointStateInterface</li>
-<li>hardware_interface::EffortJointInterface</li>
-<li>hardware_interface::VelocityJointInterface - not fully implemented</li>
-</ul>
-
-
-<h4>発展 : カスタムの<code>gazebo_ros_control</code>シミュレーションプラグイン</h4>
-
-<p><code>gazebo_ros_control</code>のGazeboプラグインは、より複雑なメカニズム(非線形バネ、リンクゲージ、etc&hellip;)のための<code>ros_control</code>とGazebo間のカスタムインターフェースを実行するため、<code>pluginlib-based</code>のインターフェースも提供しています。<br/>
-そういったプラグインでは、シミュレートされている<code>ros_control hardware_interface::RobotHW</code>を動かす<code>gazebo_ros_control::RobotHWSim</code>を継承していなければなりません。<code>RobotHWSim</code>では、Gazeboシミュレータの中で、ジョイントプロパティを読み、命令するためのAPIレベルのアクセスを提供します。<br/>
-それぞれの<code>RobotHWSim</code>のサブクラスはURDFモデルで定義されており、ロボットモデルが読み込まれた時に読み込まれます。例えば、以下のXMLはデフォルトプラグインを読み込みます。(<code>&lt;robotSimType&gt;</code>タグを使っていない時と同じ挙動です。):</p>
-
-<pre><code class="xml">&lt;gazebo&gt;
-  &lt;plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so"&gt;
-    &lt;robotNamespace&gt;/MYROBOT&lt;/robotNamespace&gt;
-    &lt;robotSimType&gt;gazebo_ros_control/DefaultRobotHWSim&lt;/robotSimType&gt;
-  &lt;/plugin&gt;
-&lt;/gazebo&gt;
-</code></pre>
-
-<h3>RRBotの例</h3>
-
-<p>Gazeboので動作させたいジョイントのために、以下<code>&lt;transmission&gt;</code>ブロックシミュレータに追加します。<code>rrbot.xacro</code>ファイルを開くと、最後の方に、以下のようなソースコードを確認できるはずです。:</p>
-
-<pre><code class="xml">  &lt;transmission name="tran1"&gt;
-    &lt;type&gt;transmission_interface/SimpleTransmission&lt;/type&gt;
-    &lt;joint name="joint1"/&gt;
-    &lt;actuator name="motor1"&gt;
-      &lt;hardwareInterface&gt;EffortJointInterface&lt;/hardwareInterface&gt;
-      &lt;mechanicalReduction&gt;1&lt;/mechanicalReduction&gt;
-    &lt;/actuator&gt;
-  &lt;/transmission&gt;
-
-  &lt;transmission name="tran2"&gt;
-    &lt;type&gt;transmission_interface/SimpleTransmission&lt;/type&gt;
-    &lt;joint name="joint2"/&gt;
-    &lt;actuator name="motor2"&gt;
-      &lt;hardwareInterface&gt;EffortJointInterface&lt;/hardwareInterface&gt;
-      &lt;mechanicalReduction&gt;1&lt;/mechanicalReduction&gt;
-    &lt;/actuator&gt;
-  &lt;/transmission&gt;
-</code></pre>
-
-<p>すべての<code>&lt;transmission&gt;</code>タグを読む<code>rrbot.gazebo</code>の中に、<code>gazebo_ros_control</code>プラグインも確認できます。:</p>
-
-<pre><code class="xml">&lt;gazebo&gt;
-  &lt;plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so"&gt;
-    &lt;robotNamespace&gt;/rrbot&lt;/robotNamespace&gt;
-  &lt;/plugin&gt;
-&lt;/gazebo&gt;
-</code></pre>
-
-<h3><code>ros_controls</code>パッケージを作る</h3>
-
-<p>続いて、Gazeboと通信する<code>ros_contorl</code>コントローラのためのconfigurationファイルとlaunchファイルを作る必要があります。</p>
-
-<h4>新しいパッケージを作る</h4>
-
-<pre><code class="bash">cd ~/catkin_ws
-catkin_create_pkg MYROBOT_control ros_control ros_controllers
-cd MYROBOT_control
-mkdir config
-mkdir launch
-</code></pre>
-
-<h4><code>.yaml</code>のconfigファイルを作る</h4>
-
-<p>PIDゲインとコントローラ設定はroslaunchファイルを通じてparamサーバによって読み込まれるyamlファイルに保存しなければなりません。あなたの<code>MYROBOT_control</code>パッケージのconfigフォルダで、以下のRRBotの例をあなたのロボットに適用してください。</p>
-
-<pre><code class="yaml">rrbot:
-  # Publish all joint states -----------------------------------
-  joint_state_controller:
-    type: joint_state_controller/JointStateController
-    publish_rate: 50  
-
-  # Position Controllers ---------------------------------------
-  joint1_position_controller:
-    type: effort_controllers/JointPositionController
-    joint: joint1
-    pid: {p: 100.0, i: 0.01, d: 10.0}
-  joint2_position_controller:
-    type: effort_controllers/JointPositionController
-    joint: joint2
-    pid: {p: 100.0, i: 0.01, d: 10.0}
-</code></pre>
-
-<p>これらのコントローラについては、次のセクションをご覧ください。</p>
-
-<h4>roslaunchファイルを作る</h4>
-
-<p><code>ros_control</code>コントローラを起動するためのroslaunchファイルを作ってください。launchフォルダで、<code>MYROBOT/_contorol.launch</code>ファイルを作り、以下のRRBotの例をあなたのロボットに適用してください。:</p>
-
-<pre><code class="xml">&lt;launch&gt;
-
-  &lt;!-- Load joint controller configurations from YAML file to parameter server --&gt;
-  &lt;rosparam file="$(find rrbot_control)/config/rrbot_control.yaml" command="load"/&gt;
-
-  &lt;!-- load the controllers --&gt;
-  &lt;node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
-    output="screen" ns="/rrbot" args="joint1_position_controller joint2_position_controller joint_state_controller"/&gt;
-
-  &lt;!-- convert joint states to TF transforms for rviz, etc --&gt;
-  &lt;node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
-    respawn="false" output="screen"&gt;
-    &lt;remap from="/joint_states" to="/rrbot/joint_states" /&gt;
-  &lt;/node&gt;
-
-&lt;/launch&gt;
-</code></pre>
-
-<h5>説明</h5>
-
-<p>第一行目の、<code>rosparam</code>では、パラメータサーバーにyamlのconfigurationファイル(次のセクションで説明します)を読み込むことでコントローラ設定を読み込んでいます。<br/>
-<code>controller_spawner</code>ノードは、RRBotのための2つのジョイントポジションコントローラを<code>ros_control</code>コントローラマネージャのためのサービスコールを生成するpythonスクリプトを実行することで起動します。サービスコールでは、あなたの望むコントローラのコントローラマネージャを呼び出します。また、<code>hardware_interfaces</code>とすべてのジョイントの姿勢をpublishし、<code>/joint_states</code>トピックを配信する三番目のコントローラも呼び出します。スポナーはroslaunchとの仕様のためのスクリプトを補助しているだけです。<br/>
-最後の行は、<code>joint_state_controller</code>からの<code>/joint_states</code>メッセージをlistenする<code>robot_state_publisher</code>ノードを起動し、起動したら、座標変換を<code>/tf</code>へpublishします。これにより、Rvizでシミュレートされるロボットを他のタスクがしているのと同じように観察することができます。</p>
-
-<h3>roslaunchを使ってコントローラを起動する</h3>
-
-<p>以下のコマンドを実行し、<code>ros_control</code>でコントロールされるRRBotをテストしてください。<br/>
-RRBotシミュレーションを起動する。:</p>
-
-<pre><code class="bash">roslaunch rrbot_gazebo rrbot_world.launch
-</code></pre>
-
-<p>2つ目のlaunchファイルを実行し、2つのジョイントのためのコントローラを読み込んでください。</p>
-
-<pre><code class="bash">roslaunch rrbot_control rrbot_control.launch 
-</code></pre>
-
-<p>尚、個々でエラーが出る場合は、<code>ros_control</code>と<code>ros_controller</code>がインストールされていない可能性があります。<em>*Indigo</em>を使用している場合は、以下のようにしてこれらをインストールしましょう。:</p>
-
-<pre><code class="bash">sudo apt-get install ros-indigo-ros-control ros-indigo-ros-controller 
-</code></pre>
-
-<h4>サービスコールをマニュアルで使う</h4>
-
-<p><code>rrbot_control.yaml</code>ファイルをパラメータサーバーで読み込んだら、サービスリクエストを通じてコントローラをマニュアルで読み込むことができます。いつものroslaunchと同じように、これらをインクルードします。:<br/>
-コントローラを読み込む:</p>
-
-<pre><code class="bash">rosservice call /rrbot/controller_manager/load_controller "name: 'joint1_position_controller'"
-rosservice call /rrbot/controller_manager/load_controller "name: 'joint2_position_controller'"
-</code></pre>
-
-<p>コントローラを起動する:</p>
-
-<pre><code class="bash">rosservice call /rrbot/controller_manager/switch_controller "{start_controllers: ['joint1_position_controller','joint2_position_controller'], stop_controllers: [], strictness: 2}"
-</code></pre>
-
-<p>コントローラを停止する:</p>
-
-<pre><code class="bash">rossevice call /rrbot/controller_manager/switch_controller "{start_controllers: [], stop_controllers: ['joint1_position_controller','joint2_position_controller'], strictness: 2}"
-</code></pre>
-
-<p>尚、これらひと通りの手順は、Gazeboとサービスを通じて通信する場合の例です。これを行うには、上記の通り、launchファイルにて<code>rrbot_control.yaml</code>を読み込んでおく必要があります。詳しくは、<a href="http://wiki.ros.org/ja/ROS/Tutorials/UnderstandingServicesParams">ROSのサービスとパラメータを理解する</a>をご覧ください。</p>
-
-<h3>マニュアルでコマンドの例を送る</h3>
-
-<p>ジョイントコマンドをテストとして以下のコマンドで送ります。:</p>
-
-<pre><code class="bash">rostopic pub -1 /rrbot/joint1_position_controller/command std_msgs/Float64 "data: 1.5"
-rostopic pub -1 /rrbot/joint2_position_controller/command std_msgs/Float64 "data: 1.0"
-</code></pre>
-
-<p>もちろん、上記のコマンドを送る前に、以下のコマンドでシミュレーションとコントローラが起動していることが前提です。:</p>
-
-<pre><code class="bash">roslaunch rrbot_gazebo rrbot_world.launch
-roslaunch rrbot_control rrbot_control.launch 
-</code></pre>
-
-<p>コマンドを送ると、以下のように、２つのジョイントが一定の場所で静止するはずです。
-<img src="/images/2015-02-21-gazebo-ros-control/rostopic-test-1.png" alt="rostopic-test-1" /></p>
-
-<h3>コマンドの送信のためのRQTを使う</h3>
-
-<p>このセクションでは、あなたのコントローラのパフォーマンスを視覚的に表示し、コントローラが持つであろうゲイン(一部にはPIDゲインも)やパラメータを調整するのを助けるツールについて見てゆきます。また、ROSの<code>plugin-based</code>なユーザーインターフェースである<a href="http://www.ros.org/wiki/rqt">RQT</a>を使います。なので、まずはそれがインストールされていることを確認しておいてください。<br/>
-シミュレーションと<code>ros_control</code>を起動したまま、RQTを起動してください。:</p>
-
-<pre><code class="bash">rosrun rqt_gui rqt_gui
-</code></pre>
-
-<p>すると、以下のような画面が開いたはずです。
-<img src="/images/2015-02-21-gazebo-ros-control/rqt_gui-1.png" alt="rqt_gui-1" /></p>
-
-<h4>コマンドpublisherを追加する</h4>
-
-<p>以下キャプチャ画面を参考にして、<code>Publisher</code>プラグインを追加し、あなたがpublishしたいそれぞれのコントローラを命令するドロップダウンボックスからトピックを選択してください。RRBotの場合、下記のコントローラを追加してください。:</p>
-
-<pre><code>/rrbot/joint1_position_controller/command
-</code></pre>
-
-<p><img src="/images/2015-02-21-gazebo-ros-control/rqt_gui-2.png" alt="rqt_gui-2" />
-<img src="/images/2015-02-21-gazebo-ros-control/rqt_gui-3.png" alt="rqt_gui-3" /></p>
-
-<ul>
-<li>完了したら、緑色のプラスの形をしたボタンを押してください。</li>
-<li>トピック名の左にあるチェックボックスをクリックし、トピックpublisherを有効にしてください。</li>
-<li>できたら、<code>rate</code>の値を100に設定してください。(これはコマンドを送る周波数です。つまり、今回は100 [Hz]ということです)</li>
-<li>続いて、データを生の状態で確認するために、トピックを実行してください。生データが再生されている途中で、<code>join1</code>の<code>expression</code>のラジアンの値を変えてみてください。ただし、 RRBotの例ではジョイントは連続であるので、<code>joint limits</code>は存在しませんので、どんな値を入れても動きます。もしこのチュートリアルを行っているなら、RRBotをいろいろな位置に振ることができるようになるはずです。</li>
-<li>続いて、同じ状態のボックスの中で、サイン波を使って自動で値を変えます。<code>expression</code>の部分を以下のようにしてみてください。:</li>
-</ul>
-
-
-<pre><code>sin(i/100)
-</code></pre>
-
-<p>うまく行くと、以下の動画のようになっているはずです。</p>
-
-<div class="youtube-container">
-<iframe width="560" height="315" src="https://www.youtube.com/embed/iaHBCLFAz_w" frameborder="0" allowfullscreen></iframe>
-</div>
-
-
-<p>さらなる応用的なコントロールのために、ロボットの正確な<code>expression</code>にサイン波をpublishするよう構成することができます。:</p>
-
-<pre><code>sin(i/rate*speed)*diff + offset
-</code></pre>
-
-<p>ただし、変数については、以下のとおりです。:</p>
-
-<ul>
-<li>i : RQTの時間変数</li>
-<li>rate : 式が評価される周波数です。これはトピックpublisherの周波数と同じであるべきです。おすすめの値は100です。</li>
-<li>speed : ジョイントをどれくらいの早さで動かすのかという指標です。1から始めるとゆっくりと動き始めます。</li>
-<li>upper_limit と lower_limits : コントローラによってコントロールされる、ハードウェアの<code>joint limits</code>です。</li>
-<li>diff = (upper_limit - lower_limit)/2</li>
-<li>offset = upper_limit-diff</li>
-</ul>
-
-
-<h4>コントローラのパフォーマンスを閲覧する</h4>
-
-<p>先ほどと同じ手順で、プロットプラグインをRQTに追加し、上記で選んだトピックpublisherと同じトピックを追加します。:</p>
-
-<pre><code>/rrbot/joint1_position_controller/command/data
-</code></pre>
-
-<p>緑色の追加ボタンをクリックしてください。すると、サイン波がスクリーン上にプロットされるのが確認できるはずです。<br/>
-スクリーンは以下のようになっているはずです。<br/>
-また、他のデータもプロットしてみてください。例として、目標値との偏差をプロットするには、以下のトピックを追加します。:</p>
-
-<pre><code>/rrbot/joint1_position_controller/state/error
-</code></pre>
-
-<p>ここまでできたら、以下の様なグラフが表示されるはずです。尚、以下の画像では、プロットの表示範囲を時間軸方向に広げることで、見やすくしています。<br/>
-<img src="/images/2015-02-21-gazebo-ros-control/rqt_gui-4.png" alt="rqt_gui-4" /></p>
-
-<p><strong>注意 : </strong>RQTのプロットプラグインは、起動した後、しばらく(>1 min)バグが発生することが確認されています。直線が描かれるだけのバグです。現在の解決方法は、プラグイン画面の右上にある、青いリフレッシュボタンを押すことです。</p>
-
-<h4>PIDゲインを調整する</h4>
-
-<p>最終的に、あなたのロボットに適用可能と考えられる、適切で独創的であり、統合されたPIDコントローラゲインのチューニングを行うために、<a href="http://ros.org/wiki/dynamic_reconfigure">dynamic reconfigure</a>を使います。<br/>
-これまでと同じように、以下の様なPIDゲインのコントロールウィンドウを表示するために、<code>Dynamic Reconfigure</code>プラグインをRQTに追加し、サブオプションを見るために、<strong>Expand All</strong>をクリックしてください。コントローラにPIDを使うなら、<strong>pid</strong>オプションを使ってください。以下のように、5段階のスライダをクリックして、コントローラを調節します。コントローラのパフォーマンスが望みのものとなるまで、値を調整してください。</p>
-
-<p><img src="/images/2015-02-21-gazebo-ros-control/rqt_gui-5.png" alt="rqt_gui-5" /></p>
-
-<h4>RQTの図を保存するために、roslaunchを使う</h4>
-
-<p>RRBotのpre-configuredなRQTの図は以下のコマンドで簡単にlaunchすることができます。</p>
-
-<pre><code class="bash">roslaunch rrbot_control rrbot_rqt.launch
-</code></pre>
-
-<p>これは、あなたのロボットに対しても、テンプレートとして使うことができます。</p>
-
-<h3>RvizをGazeboシミュレーションにつなぐ</h3>
-
-<p>シミュレーション中のロボットにコマンドを送るために、<code>ros_control</code>を使う時に、Gazeboからのロボットの姿勢を読むために、<code>ros_control</code>ジョイントステートコントローラを使用することもできます。良いシミュレータの前提的なアイデアはシミュレーションの中でするのと同じように、本物のハードウェア上で同じソフトウェアが使えるということです。そのスタートとなるのは、本物のハードウェアでも同じように使用する、Rviz上でシミュレートされるあなたのロボットを可視化することです。<br/>
-これまで説明してきたような、<code>joint_state_controller</code>を、<code>rosparam</code>や<code>roslaunch</code>ファイルで起動する準備ができているとするなら、次のステップは、Rvizを起動することです。:</p>
-
-<pre><code class="bash">rosrun rviz rviz
-</code></pre>
-
-<p>起こりうるエラーを解決するために、<strong>Global Options</strong>にある<strong>Fixed Frame</strong>を<strong>world</strong>に変更してください。<br/>
-次に<strong>RobotModel</strong>ディスプレイタイプをRvizに追加すると、以下のように、GazeboでシミュレートしているロボットがRvizでも見れるはずです！<br/>
-尚、以下の例ではカメライメージとレーザースキャンのイメージを追加しています。</p>
-
-<div class="youtube-container">
-<iframe width="560" height="315" src="https://www.youtube.com/embed/FOMUt9Gm2NM" frameborder="0" allowfullscreen></iframe>
-</div>
-
-
-<h2>デモコード</h2>
-
-<p>このチュートリアルにあるRRBotで使用されているコードの例は<a href="https://github.com/ros-simulation/gazebo_ros_demos"><code>gazebo_ros_demos</code></a>レポジトリで使用可能です。</p>
-
-<h2>次のステップ</h2>
-
-<p><a href="http://cir-kit.github.io/blog/2015/03/02/gazebo-ros-communication/">ROS Communication</a>というチュートリアルの中でGazeboとともに使うことのできるROSメッセージコールとサービスコールについて学んでください。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[No.6-6:GazeboをROSに繋ぐ (ROSにおけるGazeboのプラグイン 編)]]></title>
-    <link href="http://cir-kit.github.io/blog/2015/02/19/gazebo-gazebo-plugins-in-ros/"/>
-    <updated>2015-02-19T03:23:21+09:00</updated>
-    <id>http://cir-kit.github.io/blog/2015/02/19/gazebo-gazebo-plugins-in-ros</id>
-    <content type="html"><![CDATA[<p><img src="/images/gazebo_logo.png" alt="gazebo_logo" /></p>
-
-<h5>検証日時</h5>
-
-<p>02/19/2015 (Thu)</p>
-
-<h5>概要</h5>
-
-<p>Gazeboのチュートリアル第六弾「Connect to ROS」。
-ROSはロボットの制御フレームワークです。このチュートリアルでは、GazeboとROSのインターフェースについて説明します。
-今回はその「Gazebo Plugins in ROS」編です。
-公式サイトを適当に翻訳しただけですので、あしからず。</p>
-
-<h5>レベル</h5>
-
-<p><strong>INTERMEDIATE</strong></p>
-
-<!-- more -->
-
-
-<h5>環境</h5>
-
-<table>
-<thead>
-<tr>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center;"> <strong>PC</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Prosessor</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>RAM</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>OS</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Kernel</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> 3.13.0-44-generic </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Gazebo</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Version 5.0.1 </td>
-</tr>
-</tbody>
-</table>
-
-
-<h5>参考</h5>
-
-<p><a href="http://gazebosim.org/tutorials?cat=connect_ros">GAZEBO Tutorial-Connect to ROS</a></p>
-
-<h2>チュートリアル : ROSとともにGazeboのプラグインを使う</h2>
-
-<p>Gazeboのプラグインはあなたのrおボットモデルにより良い機能性を提供し、ROSのセンサ出力やモータ入力のためのメッセージやサービスコールと繋ぐことができる。このチュートリアルでは、すでに存在するプラグインをセットアップするやり方と、ROSとともに動作する独自のプラグインを作る方法を説明します。</p>
-
-<h2>前提条件</h2>
-
-<p><a href="https://cir-kit.github.io/blog/2015/02/17/gazebo-urdf-in-gazebo/">前回のURDFに関するチュートリアル</a>で述べた時のRRBotのセットアップを行っていることを確認してください。</p>
-
-<h2>プラグインを追加する</h2>
-
-<p>プラグインをURDFのメイン要素の多くに追加することができます。 - プラグインが注目し、目的としているものに依存している<code>&lt;robot&gt;</code>、<code>&lt;link&gt;</code>、<code>&lt;joint&gt;</code>などのことです。プラグインをあなたのURDFの主な要素に追加するには、<code>&lt;gazebo&gt;</code>要素にある<code>&lt;plugin&gt;</code>タグをラップする必要があります。</p>
-
-<h3><code>&lt;robot&gt;</code>要素にプラグインを追加する</h3>
-
-<p>以下に示すのは、URDFにある<code>&lt;robot&gt;</code>要素へのプラグインの例である。:</p>
-
-<pre><code class="xml">&lt;gazebo&gt;
-  &lt;plugin name="differential_drive_controller" filename="libdiffdrive_plugin.so"&gt;
-    ... plugin parameters ...
-  &lt;/plugin&gt;
-&lt;/gazebo&gt;
-</code></pre>
-
-<p>上記の例のプラグインは<code>&lt;robot&gt;</code>要素に追加されている。なぜなら他の<code>&lt;gazebo&gt;</code>要素やプロパティをと同じように、もし<code>reference="x"</code>がないということは、<code>&lt;robot&gt;</code>全体を参照していると定義しているのである。<a href="http://gazebosim.org/sdf/">SDF</a>フォーマットでは、<code>&lt;model&gt;</code>を参照すると考えられる。</p>
-
-<h3><code>&lt;link&gt;</code>要素にプラグインを追加する</h3>
-
-<p><code>&lt;robot&gt;</code>要素での<code>&lt;plugin&gt;</code>と同じように、<code>reference"your_link_name"</code>とすることで、<code>&lt;link&gt;</code>に<code>&lt;plugin&gt;</code>要素を追加することが可能です。</p>
-
-<pre><code class="xml">&lt;gazebo reference="your_link_name"&gt;
-  &lt;plugin name="your_link_laser_controller" filename="libgazebo_ros_laser.so"&gt;
-    ... plugin parameters ...
-  &lt;/plugin&gt;
-&lt;/gazebo&gt;
-</code></pre>
-
-<h3><code>&lt;joint&gt;</code>要素にプラグインを追加する</h3>
-
-<p>これはレファレンスの名前を除く、<code>&lt;link&gt;</code>の項で説明したものと同じで、<code>link</code>の部分を<code>joint</code>とします。</p>
-
-<h2><code>gazebo_plugins</code>で利用可能なプラグイン</h2>
-
-<p>以下のセクションでは、<code>gazebo_plugins</code>で利用可能なすべてのプラグインについて説明します。私達はこれらを閲覧することをおすすめします。というのも、さらなる詳細については最初のプラグインの組み合わせによってわかりづらくなっており、様々なプラグインのドキュメントからいくつかのコンセプトを学ぶことができるからです。<br/>
-それぞれのセクションの名前はプラグインのクラスの名前によって決定されています。例えば、<strong>Block Laser</strong>は<code>GazeboRosBlockLaser</code>クラスから来ており、それは<code>gazebo_plugins/src/gazebo_ros_block_laser.cpp</code>の中にあります。<br/>
-もしいくつかのセクションの空白があるなら、その筆者がすべてのプラグインを説明するのがめんどくさくなったということであり、そういったプラグインの使い方に関する知識と経験を積むことでそれを埋め合わさなければなりません。</p>
-
-<h3>カメラ</h3>
-
-<p><strong>注意 : </strong><code>CamderaInfo</code>や<code>Image ROS messages</code>を<code>sensormsgs</code>として記述し、publishすることにより、<code>wge100camera</code>のようなカメラをシミュレーションする際には、ROSインターフェースを用意してください。</p>
-
-<h2>RRBotの例</h2>
-
-<p>このセクションでは、RRBotの振り子型の腕の先に付けられた単純なRGBカメラについて検証してゆきます。以下の説明で、<code>rrbot.xacro</code>を見てゆくことができます。このブロックの最初の要素は、特別なリンクと、カメラを表すURDFファイルに追加されているジョイントについてです。カメラを表現するために、ここでは単純な赤い箱を使います。しかし、通常はより良い表現のために、メッシュファイルを使うことができます。</p>
-
-<pre><code class="xml">  &lt;joint name="camera_joint" type="fixed"&gt;
-    &lt;axis xyz="0 1 0" /&gt;
-    &lt;origin xyz="${camera_link} 0 ${height3 - axel_offset*2}" rpy="0 0 0"/&gt;
-    &lt;parent link="link3"/&gt;
-    &lt;child link="camera_link"/&gt;
-  &lt;/joint&gt;
-
-  &lt;!-- Camera --&gt;
-  &lt;link name="camera_link"&gt;
-    &lt;collision&gt;
-      &lt;origin xyz="0 0 0" rpy="0 0 0"/&gt;
-      &lt;geometry&gt;
-    &lt;box size="${camera_link} ${camera_link} ${camera_link}"/&gt;
-      &lt;/geometry&gt;
-    &lt;/collision&gt;
-
-    &lt;visual&gt;
-      &lt;origin xyz="0 0 0" rpy="0 0 0"/&gt;
-      &lt;geometry&gt;
-    &lt;box size="${camera_link} ${camera_link} ${camera_link}"/&gt;
-      &lt;/geometry&gt;
-      &lt;material name="red"/&gt;
-    &lt;/visual&gt;
-
-    &lt;inertial&gt;
-      &lt;mass value="1e-5" /&gt;
-      &lt;origin xyz="0 0 0" rpy="0 0 0"/&gt;
-      &lt;inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" /&gt;
-    &lt;/inertial&gt;
-  &lt;/link&gt;
-</code></pre>
-
-<p>Xacroのプロパティもまた以下のように定義されています。:</p>
-
-<pre><code class="xml">  &lt;xacro:property name="camera_link" value="0.05" /&gt; &lt;!-- Size of square 'camera' box --&gt;
-</code></pre>
-
-<p>RRBotをlaunchし、アームの先に取り付けられたカメラを確認することができるはずです。</p>
-
-<p>続いて、カメラの機能性を与え、ROSメッセージにイメージをpublishするGazeboのプラグインについて検証して行きます。RRBotでは、<code>rrbot.gazebo</code>ファイルにGazeboの要素を記述するという決まりに従ってきました。:</p>
-
-<pre><code class="xml">  &lt;gazebo reference="camera_link"&gt;
-    &lt;sensor type="camera" name="camera1"&gt;
-      &lt;update_rate&gt;30.0&lt;/update_rate&gt;
-      &lt;camera name="head"&gt;
-        &lt;horizontal_fov&gt;1.3962634&lt;/horizontal_fov&gt;
-        &lt;image&gt;
-          &lt;width&gt;800&lt;/width&gt;
-          &lt;height&gt;800&lt;/height&gt;
-          &lt;format&gt;R8G8B8&lt;/format&gt;
-        &lt;/image&gt;
-        &lt;clip&gt;
-          &lt;near&gt;0.02&lt;/near&gt;
-          &lt;far&gt;300&lt;/far&gt;
-        &lt;/clip&gt;
-        &lt;noise&gt;
-          &lt;type&gt;gaussian&lt;/type&gt;
-          &lt;!-- Noise is sampled independently per pixel on each frame.
-               That pixel's noise value is added to each of its color
-               channels, which at that point lie in the range [0,1]. --&gt;
-          &lt;mean&gt;0.0&lt;/mean&gt;
-          &lt;stddev&gt;0.007&lt;/stddev&gt;
-        &lt;/noise&gt;
-      &lt;/camera&gt;
-      &lt;plugin name="camera_controller" filename="libgazebo_ros_camera.so"&gt;
-        &lt;alwaysOn&gt;true&lt;/alwaysOn&gt;
-        &lt;updateRate&gt;0.0&lt;/updateRate&gt;
-        &lt;cameraName&gt;rrbot/camera1&lt;/cameraName&gt;
-        &lt;imageTopicName&gt;image_raw&lt;/imageTopicName&gt;
-        &lt;cameraInfoTopicName&gt;camera_info&lt;/cameraInfoTopicName&gt;
-        &lt;frameName&gt;camera_link&lt;/frameName&gt;
-        &lt;hackBaseline&gt;0.07&lt;/hackBaseline&gt;
-        &lt;distortionK1&gt;0.0&lt;/distortionK1&gt;
-        &lt;distortionK2&gt;0.0&lt;/distortionK2&gt;
-        &lt;distortionK3&gt;0.0&lt;/distortionK3&gt;
-        &lt;distortionT1&gt;0.0&lt;/distortionT1&gt;
-        &lt;distortionT2&gt;0.0&lt;/distortionT2&gt;
-      &lt;/plugin&gt;
-    &lt;/sensor&gt;
-  &lt;/gazebo&gt;
-</code></pre>
-
-<p>このプラグインのいくつかのプラグインについて考えてみましょう&hellip;</p>
-
-<pre><code class="xml">  &lt;gazebo reference="camera_link"&gt;
-</code></pre>
-
-<p><strong>&ldquo;camera_link&rdquo;</strong>というリンクの名前はXacroのURDFに追加した名前と一致しなければなりません。</p>
-
-<pre><code class="xml">    &lt;sensor type="camera" name="camera1"&gt;
-</code></pre>
-
-<p><strong>&ldquo;camera1&rdquo;</strong>というセンサの名前は他のセンサの名前と一致してはいけません。この名前は、アクセス可能なGazeboプラグインの中にあるものを除き、他のところで使用してはいけません。</p>
-
-<pre><code class="xml">      &lt;update_rate&gt;30.0&lt;/update_rate&gt;
-</code></pre>
-
-<p>Gazeboで何秒ごとに新しいカメライメージを取得するのかという値です。これはセンサがシミュレーションの間に行う最大のアップデートレートです。しかし、もし物理シミュレータがセンサジェネレーションの苦心より早ければ、この目標レートには到達しないこともあります。</p>
-
-<pre><code class="xml">        &lt;horizontal_fov&gt;1.3962634&lt;/horizontal_fov&gt;
-        &lt;image&gt;
-          &lt;width&gt;800&lt;/width&gt;
-          &lt;height&gt;800&lt;/height&gt;
-          &lt;format&gt;R8G8B8&lt;/format&gt;
-        &lt;/image&gt;
-        &lt;clip&gt;
-          &lt;near&gt;0.02&lt;/near&gt;
-          &lt;far&gt;300&lt;/far&gt;
-        &lt;/clip&gt;
-</code></pre>
-
-<p>あなたの物理的なカメラハードウェアについての製造仕様と一致するように値を代入してください。ただし、ピクセルは正方形と仮定されているということを覚えてください。
-加えて、ニアクリップとファークリップは、シミュレーション中でカメラが見ることのできる範囲内の距離のための、物体を上下を定義する<code>simulation-specific</code>パラメータです。これは、カメラのオプトメトリフレームの中で定義されています。</p>
-
-<pre><code class="xml">      &lt;plugin name="camera_controller" filename="libgazebo_ros_camera.so"&gt;
-</code></pre>
-
-<p>これは、現在の<code>gazeboros/gazeboros_camera.cpp</code>ファイルにあり、共有物体としてリンク付けされています。</p>
-
-<pre><code class="xml">        &lt;cameraName&gt;rrbot/camera1&lt;/cameraName&gt;
-        &lt;imageTopicName&gt;image_raw&lt;/imageTopicName&gt;
-        &lt;cameraInfoTopicName&gt;camera_info&lt;/cameraInfoTopicName&gt;
-</code></pre>
-
-<p>ここに、カメラが<code>image</code>、<code>topic</code>、<code>camera info topic</code>としてpublishしているrostopicを定義します。とぴくもRRBotでは、以下のようなものをsubscribeできるはずです。:</p>
-
-<pre><code>/rrbot/camera1/image_raw
-/rrbot/camera1/camera_info
-
-        &lt;frameName&gt;camera_link&lt;/frameName&gt;
-</code></pre>
-
-<p>imageの座標系は、<code>tf</code>ツリーの下でpublishされています。</p>
-
-<h2>RRBotの例を実行する</h2>
-
-<p><code>rrbot.xacro</code>と<code>rrbot.gazebo</code>を保存したあと、RvizとGazeboをそれぞれ異なるターミナルでlaunchできるはずです。:</p>
-
-<pre><code class="bash">roslaunch rrbot_gazebo rrbot_world.launch
-roslaunch rrbot_description rrbot_rviz.launch
-</code></pre>
-
-<p>Rvizでは、<strong>Camera</strong>ディスプレイを追加し、<strong>image Topic</strong>を<code>/rrbot/camera1/</code>と設定してください。<br/>
-前回のチュートリアルからは特に変更せず、上記のコマンドを実行すると、Rvizは以下の動画のようになるはずです。<br/>
-尚、コーラのカンはわかりやすさのために設置しました。また、Gazeboでは、前回のチュートリアルと同様の動作が起きています。</p>
-
-<div class="youtube-container">
-<iframe width="420" height="315" src="https://www.youtube.com/embed/JlAculkV5Ug" frameborder="0" allowfullscreen></iframe>
-</div>
-
-
-<h3>マルチカメラ</h3>
-
-<p><strong>説明 : </strong> マルチカメラは、イメージを当時にpublishするように、同時にシャッターを切ります。典型的には、ステレオカメラで使われており、普通の<code>Camera</code>プラグインのインターフェースと同じように使用されています。<br/>
-<strong>注意 : </strong>現在は、ステレオカメラのみをサポートしています。<a href="https://github.com/osrf/gazebo_ros_pkgs/issues/13">Github issue</a>をご覧ください。</p>
-
-<h4>Atlasのコードの例</h4>
-
-<p>このコードの例では、左右のカメラがあります。:</p>
-
-<pre><code class="xml">In this code example there is both a left and right camera:
-
-  &lt;gazebo reference="left_camera_frame"&gt;
-    &lt;sensor type="multicamera" name="stereo_camera"&gt;
-      &lt;update_rate&gt;30.0&lt;/update_rate&gt;
-      &lt;camera name="left"&gt;
-        &lt;horizontal_fov&gt;1.3962634&lt;/horizontal_fov&gt;
-        &lt;image&gt;
-          &lt;width&gt;800&lt;/width&gt;
-          &lt;height&gt;800&lt;/height&gt;
-          &lt;format&gt;R8G8B8&lt;/format&gt;
-        &lt;/image&gt;
-        &lt;clip&gt;
-          &lt;near&gt;0.02&lt;/near&gt;
-          &lt;far&gt;300&lt;/far&gt;
-        &lt;/clip&gt;
-        &lt;noise&gt;
-          &lt;type&gt;gaussian&lt;/type&gt;
-          &lt;mean&gt;0.0&lt;/mean&gt;
-          &lt;stddev&gt;0.007&lt;/stddev&gt;
-        &lt;/noise&gt;
-      &lt;/camera&gt;
-      &lt;camera name="right"&gt;
-        &lt;pose&gt;0 -0.07 0 0 0 0&lt;/pose&gt;
-        &lt;horizontal_fov&gt;1.3962634&lt;/horizontal_fov&gt;
-        &lt;image&gt;
-          &lt;width&gt;800&lt;/width&gt;
-          &lt;height&gt;800&lt;/height&gt;
-          &lt;format&gt;R8G8B8&lt;/format&gt;
-        &lt;/image&gt;
-        &lt;clip&gt;
-          &lt;near&gt;0.02&lt;/near&gt;
-          &lt;far&gt;300&lt;/far&gt;
-        &lt;/clip&gt;
-        &lt;noise&gt;
-          &lt;type&gt;gaussian&lt;/type&gt;
-          &lt;mean&gt;0.0&lt;/mean&gt;
-          &lt;stddev&gt;0.007&lt;/stddev&gt;
-        &lt;/noise&gt;
-      &lt;/camera&gt;
-      &lt;plugin name="stereo_camera_controller" filename="libgazebo_ros_multicamera.so"&gt;
-        &lt;alwaysOn&gt;true&lt;/alwaysOn&gt;
-        &lt;updateRate&gt;0.0&lt;/updateRate&gt;
-        &lt;cameraName&gt;multisense_sl/camera&lt;/cameraName&gt;
-        &lt;imageTopicName&gt;image_raw&lt;/imageTopicName&gt;
-        &lt;cameraInfoTopicName&gt;camera_info&lt;/cameraInfoTopicName&gt;
-        &lt;frameName&gt;left_camera_optical_frame&lt;/frameName&gt;
-        &lt;!--&lt;rightFrameName&gt;right_camera_optical_frame&lt;/rightFrameName&gt;--&gt;
-        &lt;hackBaseline&gt;0.07&lt;/hackBaseline&gt;
-        &lt;distortionK1&gt;0.0&lt;/distortionK1&gt;
-        &lt;distortionK2&gt;0.0&lt;/distortionK2&gt;
-        &lt;distortionK3&gt;0.0&lt;/distortionK3&gt;
-        &lt;distortionT1&gt;0.0&lt;/distortionT1&gt;
-        &lt;distortionT2&gt;0.0&lt;/distortionT2&gt;
-      &lt;/plugin&gt;
-    &lt;/sensor&gt;
-  &lt;/gazebo&gt;
-</code></pre>
-
-<h3>深度カメラ</h3>
-
-<p><strong>説明 : </strong><code>Kinect</code>のようにセンサをシミュレートします。また、これは<code>Kinect</code>プラグインにもあります。将来的には、統合します。</p>
-
-<h3>Openni Kinect</h3>
-
-<p><strong>説明 : </strong><code>Xbox-Kinect</code>をシミュレートし、<a href="http://www.ros.org/wiki/openni_camera">Fuerteドキュメント</a>で説明されている、<code>Xbox kinect</code>用のROSドライバと一致するようなトピックをpublishします。</p>
-
-<pre><code class="xml">&lt;gazebo&gt;
-  &lt;plugin name="${link_name}_controller" filename="libgazebo_ros_openni_kinect.so"&gt;
-    &lt;baseline&gt;0.2&lt;/baseline&gt;
-    &lt;alwaysOn&gt;true&lt;/alwaysOn&gt;
-    &lt;updateRate&gt;1.0&lt;/updateRate&gt;
-    &lt;cameraName&gt;${camera_name}_ir&lt;/cameraName&gt;
-    &lt;imageTopicName&gt;/${camera_name}/depth/image_raw&lt;/imageTopicName&gt;
-    &lt;cameraInfoTopicName&gt;/${camera_name}/depth/camera_info&lt;/cameraInfoTopicName&gt;
-    &lt;depthImageTopicName&gt;/${camera_name}/depth/image_raw&lt;/depthImageTopicName&gt;
-    &lt;depthImageInfoTopicName&gt;/${camera_name}/depth/camera_info&lt;/depthImageInfoTopicName&gt;
-    &lt;pointCloudTopicName&gt;/${camera_name}/depth/points&lt;/pointCloudTopicName&gt;
-    &lt;frameName&gt;${frame_name}&lt;/frameName&gt;
-    &lt;pointCloudCutoff&gt;0.5&lt;/pointCloudCutoff&gt;
-    &lt;distortionK1&gt;0.00000001&lt;/distortionK1&gt;
-    &lt;distortionK2&gt;0.00000001&lt;/distortionK2&gt;
-    &lt;distortionK3&gt;0.00000001&lt;/distortionK3&gt;
-    &lt;distortionT1&gt;0.00000001&lt;/distortionT1&gt;
-    &lt;distortionT2&gt;0.00000001&lt;/distortionT2&gt;
-    &lt;CxPrime&gt;0&lt;/CxPrime&gt;
-    &lt;Cx&gt;0&lt;/Cx&gt;
-    &lt;Cy&gt;0&lt;/Cy&gt;
-    &lt;focalLength&gt;0&lt;/focalLength&gt;
-    &lt;hackBaseline&gt;0&lt;/hackBaseline&gt;
-  &lt;/plugin&gt;
-&lt;/gazebo&gt;
-</code></pre>
-
-<h3>GPUレーザー</h3>
-
-<p><strong>説明 : </strong><code>sensor_msgs</code>で記述されている<code>LaserScan</code>メッセージを配信し、レーザーレンジセンサをシミュレートします。<a href="http://ros.org/wiki/hokuyo_node">Hokuyo Laser Scannersレファレンス</a>をご覧ください。<br/>
-この例を試す前に、カメラをRRBotに追加した例をご覧ください。カメラを追加するのと同じように、新しいリンクとジョイントをRRBotのXacro URDFに追加することができます。今回は、外観モデルをカメラの時のように直方体だけで表現せず、メッシュを使います。:</p>
-
-<pre><code class="xml">  &lt;joint name="hokuyo_joint" type="fixed"&gt;
-    &lt;axis xyz="0 1 0" /&gt;
-    &lt;origin xyz="0 0 ${height3 - axel_offset/2}" rpy="0 0 0"/&gt;
-    &lt;parent link="link3"/&gt;
-    &lt;child link="hokuyo_link"/&gt;
-  &lt;/joint&gt;
-
-  &lt;!-- Hokuyo Laser --&gt;
-  &lt;link name="hokuyo_link"&gt;
-    &lt;collision&gt;
-      &lt;origin xyz="0 0 0" rpy="0 0 0"/&gt;
-      &lt;geometry&gt;
-    &lt;box size="0.1 0.1 0.1"/&gt;
-      &lt;/geometry&gt;
-    &lt;/collision&gt;
-
-    &lt;visual&gt;
-      &lt;origin xyz="0 0 0" rpy="0 0 0"/&gt;
-      &lt;geometry&gt;
-        &lt;mesh filename="package://rrbot_description/meshes/hokuyo.dae"/&gt;
-      &lt;/geometry&gt;
-    &lt;/visual&gt;
-
-    &lt;inertial&gt;
-      &lt;mass value="1e-5" /&gt;
-      &lt;origin xyz="0 0 0" rpy="0 0 0"/&gt;
-      &lt;inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" /&gt;
-    &lt;/inertial&gt;
-  &lt;/link&gt;
-</code></pre>
-
-<p>続いて、カメラの例の時と同様に、<code>rrbot.gazebo</code>にプラグインの情報を追加します。</p>
-
-<pre><code class="xml">  &lt;!-- hokuyo --&gt;
-  &lt;gazebo reference="hokuyo_link"&gt;
-    &lt;sensor type="gpu_ray" name="head_hokuyo_sensor"&gt;
-      &lt;pose&gt;0 0 0 0 0 0&lt;/pose&gt;
-      &lt;visualize&gt;false&lt;/visualize&gt;
-      &lt;update_rate&gt;40&lt;/update_rate&gt;
-      &lt;ray&gt;
-        &lt;scan&gt;
-          &lt;horizontal&gt;
-            &lt;samples&gt;720&lt;/samples&gt;
-            &lt;resolution&gt;1&lt;/resolution&gt;
-            &lt;min_angle&gt;-1.570796&lt;/min_angle&gt;
-            &lt;max_angle&gt;1.570796&lt;/max_angle&gt;
-          &lt;/horizontal&gt;
-        &lt;/scan&gt;
-        &lt;range&gt;
-          &lt;min&gt;0.10&lt;/min&gt;
-          &lt;max&gt;30.0&lt;/max&gt;
-          &lt;resolution&gt;0.01&lt;/resolution&gt;
-        &lt;/range&gt;
-        &lt;noise&gt;
-          &lt;type&gt;gaussian&lt;/type&gt;
-          &lt;!-- Noise parameters based on published spec for Hokuyo laser
-               achieving "+-30mm" accuracy at range &lt; 10m.  A mean of 0.0m and
-               stddev of 0.01m will put 99.7% of samples within 0.03m of the true
-               reading. --&gt;
-          &lt;mean&gt;0.0&lt;/mean&gt;
-          &lt;stddev&gt;0.01&lt;/stddev&gt;
-        &lt;/noise&gt;
-      &lt;/ray&gt;
-      &lt;plugin name="gazebo_ros_head_hokuyo_controller" filename="libgazebo_ros_gpu_laser.so"&gt;
-        &lt;topicName&gt;/rrbot/laser/scan&lt;/topicName&gt;
-        &lt;frameName&gt;hokuyo_link&lt;/frameName&gt;
-      &lt;/plugin&gt;
-    &lt;/sensor&gt;
-  &lt;/gazebo&gt;
-</code></pre>
-
-<p>ほとんどのプロパティは自明ですが、以下のものを検証したいと思います。:</p>
-
-<pre><code class="xml">      &lt;visualize&gt;false&lt;/visualize&gt;
-</code></pre>
-
-<p>これが<code>true</code>の時は、GPUレーザのスキャンしている範囲内で半透明のレーザーレイが表示されます。これは視覚的に有効かもしれませんし、邪魔になるかもしれません。<br/>
-この要素についてのより詳しい説明は、<a href="http://gazebosim.org/sdf/dev.html#sensor225">SDFドキュメント</a>に載っています。</p>
-
-<pre><code class="xml">&lt;topicName&gt;/rrbot/laser/scan&lt;/topicName&gt;
-&lt;frameName&gt;hokuyo_link&lt;/frameName&gt;
-</code></pre>
-
-<p>publishしたいレーザースキャンのROSのトピック名を設定し、TFで使用した座標系の名前も設定します。</p>
-
-<h2>RRBotの例を実行する</h2>
-
-<p><code>rrbot.xacro</code>と<code>rrbot.gazebo</code>を保存した後、RvizとGazeboをそれぞれ異なるターミナルでlaunchできるはずです。:</p>
-
-<pre><code class="xml">roslaunch rrbot_gazebo rrbot.launch
-roslaunch rrbot_description rrbot_rviz.launch
-</code></pre>
-
-<p>Rvizでは、<strong>LaserScan</strong>ディスプレイを追加し、<strong>Topic</strong>を<code>/rrbot/camera1/image_raw</code>としてください。<br/>
-レーザースキャンラインがGazeboの環境下で確認できるはずです。振り子が揺れている間、レーザースキャンも揺れているのを確認することができます。もし、スキャンが薄すぎるなら、レーザースキャンの大きさをRvizにある<strong>LaserScan</strong>ディスプレイのプロパティから変更できます。大きさは、1[m]とするのが見やすいです。<br/>
-この動作は、基本的に先ほど、カメラを追加した例と同じなので、動作の様子は省略します。<br/>
-因みに、公式チュートリアルでは、家のモデルなど、大きめのモデルを設置し、動作確認をしています。いろいろ置いてみて、確かめてみましょう。</p>
-
-<h3>レーザー</h3>
-
-<p><strong>説明 : </strong>GPUレーザーの非GPU型のレーザーですが、基本的には同じコードを使用しています。GPUレーザーの説明をご覧ください。<br/>
-RRBotで動かすためには、<code>rrbot.gazebo</code>を開き、以下の二行を変更してください。</p>
-
-<pre><code class="xml"> &lt;sensor type="gpu_ray" name="head_hokuyo_sensor"&gt;
- &lt;/sensor&gt;
-</code></pre>
-
-<p>を</p>
-
-<pre><code class="xml">&lt;sensor type="ray" name="head_hokuyo_sensor"&gt;
-&lt;/sensor&gt;
-</code></pre>
-
-<p>に変更するのと、</p>
-
-<pre><code class="xml">&lt;plugin name="gazebo_ros_head_hokuyo_controller" filename="libgazebo_ros_gpu_laser.so"&gt;
-&lt;/plugin&gt;
-</code></pre>
-
-<p>を</p>
-
-<pre><code class="xml">&lt;plugin name="gazebo_ros_head_hokuyo_controller" filename="libgazebo_ros_laser.so"&gt;
-&lt;/plugin&gt;
-</code></pre>
-
-<p>に変更してください。
-できたら保存し、GPUレーザーの時と同じlaunchファイルでlaunchしてください。</p>
-
-<h3>ブロックレーザー</h3>
-
-<p><strong>説明 : </strong>グリッドスタイルのレーザレンジスキャナのシミュレーションを提供します。(例 : ヴェロダインセンサ)</p>
-
-<h3>F3D (Force Feedback Ground Truth)</h3>
-
-<p><strong>説明 : </strong>シミュレーションの中で<code>geometry_msgs</code>で記述されている<code>WrenchStampd</code>メッセージ上書きして、ボディへの外力を配信します。<a href="http://www.science.aster.ersdac.jspacesystems.or.jp/jp/glossary/jp/ku/ground_truth.html">Ground Truthとは&hellip;</a>
-Description: broadcasts external forces on a body in simulation over WrenchStamped message as described in geometry_msgs.</p>
-
-<h3>Force</h3>
-
-<p><strong>説明 : </strong>シミュレーション中のボディに<code>Wrench</code>(<code>geometry_msgs</code>)を適用するためのROSのインターフェースです。</p>
-
-<h3>IMU</h3>
-
-<p><strong>説明 : </strong><a href="http://ros.org/wiki/microstrain_3dmgx2_imu">imu_node</a>をシミュレートします。</p>
-
-<h3>Joint Pose Trajectory</h3>
-
-<p><strong>説明 : </strong><code>jointtrajectoryaction</code>をlistenし、ジョイントの姿勢の設定をプレイバックします。シミュレートされている物理量や力を考慮することなく、ジョイントの設定を正しい位置に設定します。</p>
-
-<h3>P3D (3D Position Interface for Ground Truth)</h3>
-
-<p><strong>説明 : </strong>シミュレーション中のすべてのボディの慣性データを<code>nav_msg</code>に記述されているオドメトリメッセージのROSトピックへ配信します。</p>
-
-<h3>プロジェクタ</h3>
-
-<p><strong>説明 : </strong>ソースから静的テクスチャを表示します。これは、RP2のオリジナルヘッドカメラセンサなどで使用されています。詳しくは、<a href="http://osrf-distributions.s3.amazonaws.com/gazebo/api/dev/classgazebo_1_1rendering_1_1Projector.html">APIドキュメント</a>をご覧ください。</p>
-
-<h3>Prosilicaカメラ</h3>
-
-<p><strong>説明 : </strong><a href="http://www.ros.org/wiki/prosilica_camera">ROSのProsilicaカメラ</a>によって配信されるインターフェースをシミュレートします。<a href="https://bitbucket.org/hsu/nasa_r2_simulator/src/5ee1de067038749dcc133ed7cf87b45715cc4457/r2_gazebo/urdf/sensors/grasshopper2.gazebo.xacro?at=hsu">URDF Xacroマクロの例</a>はここです。</p>
-
-<h3>バンパー</h3>
-
-<p><strong>説明 : </strong><a href="http://ros.org/doc/api/gazebo_plugins/html/msg/ContactsState.html"><code>ContactsState</code>メッセージ</a>へコンタクトフィードバックを提供します。</p>
-
-<pre><code class="xml">&lt;gazebo&gt;
-  &lt;plugin name="${name}_gazebo_ros_bumper_controller" filename="libgazebo_ros_bumper.so"&gt;
-    &lt;alwaysOn&gt;true&lt;/alwaysOn&gt;
-    &lt;updateRate&gt;${update_rate}&lt;/updateRate&gt;
-    &lt;bumperTopicName&gt;${name}_bumper&lt;/bumperTopicName&gt;
-    &lt;frameName&gt;world&lt;/frameName&gt;
-  &lt;/plugin&gt;
-&lt;/gazebo&gt;
-</code></pre>
-
-<h3>Differential Drive</h3>
-
-<p><strong>説明 : </strong>Gazeboでのデファレンシャルドライブロボットの基本的なコントローラを提供するモデルプラグインです。このプラグインを使用するには、ディファレンシャルドライブのロボットが必要です。</p>
-
-<pre><code class="xml">&lt;gazebo&gt;
-  &lt;plugin name="differential_drive_controller" filename="libgazebo_ros_diff_drive.so"&gt;
-    &lt;alwaysOn&gt;true&lt;/alwaysOn&gt;
-    &lt;updateRate&gt;${update_rate}&lt;/updateRate&gt;
-    &lt;leftJoint&gt;base_link_right_wheel_joint&lt;/leftJoint&gt;
-    &lt;rightJoint&gt;base_link_left_wheel_joint&lt;/rightJoint&gt;
-    &lt;wheelSeparation&gt;0.5380&lt;/wheelSeparation&gt;
-    &lt;wheelDiameter&gt;0.2410&lt;/wheelDiameter&gt;
-    &lt;torque&gt;20&lt;/torque&gt;
-    &lt;commandTopic&gt;cmd_vel&lt;/commandTopic&gt;
-    &lt;odometryTopic&gt;odom&lt;/odometryTopic&gt;
-    &lt;odometryFrame&gt;odom&lt;/odometryFrame&gt;
-    &lt;robotBaseFrame&gt;base_footprint&lt;/robotBaseFrame&gt;
-  &lt;/plugin&gt;
-&lt;/gazebo&gt;
-</code></pre>
-
-<h3>Skid Steering Drive</h3>
-
-<p><strong>説明 : </strong>Gazeboでのスキッドステアリングドライブロボットの基本的なコントローラを提供するモデルプラグインです。(例 : Pioneer 3AT)</p>
-
-<pre><code class="xml">&lt;gazebo&gt;
-  &lt;plugin name="skid_steer_drive_controller" filename="libgazebo_ros_skid_steer_drive.so"&gt;
-    &lt;updateRate&gt;100.0&lt;/updateRate&gt;
-    &lt;robotNamespace&gt;/&lt;/robotNamespace&gt;
-    &lt;leftFrontJoint&gt;front_left_wheel_joint&lt;/leftFrontJoint&gt;
-    &lt;rightFrontJoint&gt;front_right_wheel_joint&lt;/rightFrontJoint&gt;
-    &lt;leftRearJoint&gt;back_left_wheel_joint&lt;/leftRearJoint&gt;
-    &lt;rightRearJoint&gt;back_right_wheel_joint&lt;/rightRearJoint&gt;
-    &lt;wheelSeparation&gt;0.4&lt;/wheelSeparation&gt;
-    &lt;wheelDiameter&gt;0.215&lt;/wheelDiameter&gt;
-    &lt;robotBaseFrame&gt;base_link&lt;/robotBaseFrame&gt;
-    &lt;torque&gt;20&lt;/torque&gt;
-    &lt;topicName&gt;cmd_vel&lt;/topicName&gt;
-    &lt;broadcastTF&gt;false&lt;/broadcastTF&gt;
-  &lt;/plugin&gt;
-&lt;/gazebo&gt;
-</code></pre>
-
-<h3>ビデオプラグイン</h3>
-
-<p><strong>説明 : </strong>Gazeboの中のOGREテクスチャ上のROSのイメージストリームを表示するビジュアルプラグインです。このプラグインは存在するリンク表面の一つのテクスチャを修正するだけでなく、新しいテクスチャを作ります。このテクスチャはXY平面に作られ、+Zの方向からなら見ることができます。このプラグインはテクスチャを変換するピクセルサイズが必要です。また、サイズが異なれば、ROSイメージメッセージに一致するようリサイズします。</p>
-
-<pre><code class="xml">&lt;gazebo reference="display_screen_link"&gt;
-  &lt;visual&gt;
-    &lt;plugin name="display_video_controller" filename="libgazebo_ros_video.so"&gt;
-      &lt;topicName&gt;image&lt;/topicName&gt;
-      &lt;height&gt;120&lt;/height&gt;
-      &lt;width&gt;160&lt;/width&gt;
-    &lt;/plugin&gt;
-  &lt;/visual&gt;
-&lt;/gazebo&gt;
-</code></pre>
-
-<h3>Planar Move Plugin</h3>
-
-<p><strong>説明 : </strong><code>geometry_msgs/Twist</code>を使って水平面上を動かすために、任意の物体(簡単な例 : 箱、球、円柱)に適用可能なモデルプラグインです。このプラグインは、並進速度(XY)と角速度(Z)をすべてのサイクルで物体に入力することで動きます。<br/>
-ここに完全なURDFの例を示します。このURDFではこのプラグインを使ったGazebo中の浮いている箱のコントロール方法を、異なる外観、衝突要素を使って示しています。<br/>
-<strong>注意 : </strong>この物体にはありえない動きを避けるため、十分な慣性が必要です。この、ありえない動きとは与えられた速度と反転するなどの形で発生し得ます。慣性の値を大きくしてゆくことにより、望み通りに物体を動かすことができるようになります。また、重心を地面に近づけるというのも良い方法です。</p>
-
-<pre><code class="xml">&lt;robot name="test_model"&gt;
-
-  &lt;!-- root link, on the ground just below the model origin --&gt;
-  &lt;link name="base_footprint"&gt;
-   &lt;visual&gt;
-      &lt;origin xyz="0 0 0" rpy="0 0 0" /&gt;
-      &lt;geometry&gt;
-        &lt;box size="0.001 0.001 0.001" /&gt;
-      &lt;/geometry&gt;
-    &lt;/visual&gt;
-  &lt;/link&gt;
-
-  &lt;joint name="base_link_joint" type="fixed"&gt;
-    &lt;origin xyz="0.0 0 1.25" rpy="0 0 0" /&gt;
-    &lt;parent link="base_footprint"/&gt;
-    &lt;child link="base_link" /&gt;
-  &lt;/joint&gt;
-
-  &lt;!-- the model --&gt;
-  &lt;link name="base_link"&gt;
-    &lt;inertial&gt;
-      &lt;mass value="50" /&gt;
-      &lt;origin xyz="0 0 -1.25" /&gt;
-      &lt;inertia ixx="50.0" ixy="0.0" ixz="0.0"
-        iyy="50.0" iyz="0.0"
-        izz="50.0" /&gt;
-    &lt;/inertial&gt;
-    &lt;visual&gt;
-      &lt;geometry&gt;
-        &lt;box size="0.5 0.5 1.0" /&gt; &lt;!-- does not need to match collision --&gt;
-      &lt;/geometry&gt;
-    &lt;/visual&gt;
-    &lt;collision&gt;
-      &lt;origin xyz="0 0 -1.0" /&gt;
-      &lt;geometry&gt;
-        &lt;cylinder length="0.5" radius="0.25" /&gt;
-      &lt;/geometry&gt;
-    &lt;/collision&gt;
-  &lt;/link&gt;
-
-  &lt;gazebo&gt;
-    &lt;plugin name="object_controller" filename="libgazebo_ros_planar_move.so"&gt;
-      &lt;commandTopic&gt;cmd_vel&lt;/commandTopic&gt;
-      &lt;odometryTopic&gt;odom&lt;/odometryTopic&gt;
-      &lt;odometryFrame&gt;odom&lt;/odometryFrame&gt;
-      &lt;odometryRate&gt;20.0&lt;/odometryRate&gt;
-      &lt;robotBaseFrame&gt;base_footprint&lt;/robotBaseFrame&gt;
-    &lt;/plugin&gt;
-  &lt;/gazebo&gt;
-
-&lt;/robot&gt;
-</code></pre>
-
-<h3>テンプレート</h3>
-
-<p><strong>説明 : </strong>自身のプラグインを書きたいと思っている方用のC++のプラグインテンプレートの例です。</p>
-
-<h2>次のステップ</h2>
-
-<p>次は、<code>controller/actuator/simulator</code>と<a href="http://gazebosim.org/tutorials/?tut=ros_control">Actuators, controllers, <code>ros_control</code></a>のタイトな統合のためにGazeboと統合された<code>ros_control</code>パッケージについて検証します。</p>
 ]]></content>
   </entry>
   

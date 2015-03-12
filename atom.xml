@@ -4,7 +4,7 @@
   <title><![CDATA[九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-03-12T14:20:20+09:00</updated>
+  <updated>2015-03-12T14:25:06+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[CIR-KIT Members]]></name>
@@ -373,6 +373,744 @@ worldファイルの例は、<a href="https://bitbucket.org/osrf/gazebo/src/gaze
 </span><span class='line'>Hello World!
 </span></code></pre></td></tr></table></div></figure>
 
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[ArduinoをROSで動かす]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/03/10/use-rosserial-first/"/>
+    <updated>2015-03-10T16:59:22+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/03/10/use-rosserial-first</id>
+    <content type="html"><![CDATA[<h1>　Arduino を ROS で動かす</h1>
+
+<h2>概要</h2>
+
+<p>ROSのトピックなどをArduinoで利用するためのインストール等．</p>
+
+<h2>検証情報</h2>
+
+<h3>日時</h3>
+
+<p>03/09/2015 (Mon)</p>
+
+<h3>スペック</h3>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;">パーツ</th>
+<th style="text-align:center;">スペック</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">PC</td>
+<td style="text-align:center;">Panasonic Let&rsquo;s note CF-LX3TG7TC</td>
+</tr>
+<tr>
+<td style="text-align:center;">Prosessor</td>
+<td style="text-align:center;">Intel core i7-4500U (1.8GHz)</td>
+</tr>
+<tr>
+<td style="text-align:center;">RAM</td>
+<td style="text-align:center;">DDR3 SDRAM(PC3-12800) 4GB</td>
+</tr>
+<tr>
+<td style="text-align:center;">OS</td>
+<td style="text-align:center;">Ubuntu 14.04.2 LTS 64bit</td>
+</tr>
+<tr>
+<td style="text-align:center;">Kernel</td>
+<td style="text-align:center;">3.13.0-46-generic</td>
+</tr>
+<tr>
+<td style="text-align:center;">ROS</td>
+<td style="text-align:center;">indigo 1.11.10</td>
+</tr>
+<tr>
+<td style="text-align:center;">Arduino</td>
+<td style="text-align:center;">Arduino UNO</td>
+</tr>
+</tbody>
+</table>
+
+
+<!--more-->
+
+
+<h2>前提条件</h2>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">対象</th>
+<th style="text-align:left;">条件</th>
+<th style="text-align:left;">参考</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">ROS</td>
+<td style="text-align:left;">Install済み</td>
+<td style="text-align:left;"><a href="http://cir-kit.github.io/blog/2015/02/25/we-have-get-to-work-when-install-ubuntu">CIR-KITメンバーが必ずすべきこと</a></td>
+</tr>
+<tr>
+<td style="text-align:left;">Arduino</td>
+<td style="text-align:left;">Install済み</td>
+<td style="text-align:left;">&lsquo;sudo apt-get install Arduino&rsquo;</td>
+</tr>
+</tbody>
+</table>
+
+
+<h2>Arduino で ROS を利用する</h2>
+
+<p>まずは，ArduinoをROSのnodeに見せかけるためのROSパッケージをインストールします．
+<a href="http://wiki.ros.org/rosserial_arduino/Tutorials/Arduino%20IDE%20Setup">対象パッケージのROS Wiki</a>を参考に行います．</p>
+
+<h3>install</h3>
+
+<p>参考サイトの3.install the Softwereを見ると，2種類のインストール方法があるようです．</p>
+
+<hr />
+
+<p>1つ目は3.1の方法で，下のコマンドを実行します．workspaceが汚れ無いのでこっちおすすめです．</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo apt-get install ros-indigo-rosserial-arduino
+</span><span class='line'>sudo apt-get install ros-indigo-rosserial
+</span></code></pre></td></tr></table></div></figure>
+
+
+<hr />
+
+<p>2つ目は3.2の方法で，下の手順で行います．&lt;ws>は自分のrosWorkspaceまでのパスに置き換えてください．</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>  <span class="nb">cd</span> &lt;ws&gt;/src
+</span><span class='line'>  git clone https://github.com/ros-drivers/rosserial.git
+</span><span class='line'>  <span class="nb">cd</span> ../
+</span><span class='line'>  catkin_make
+</span><span class='line'>  catkin_make install
+</span><span class='line'>  <span class="nb">source</span> &lt;ws&gt;/install/setup.bash
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>この時，<code>~/.bashrc</code>へ<code>source &lt;ws&gt;/install/setup.bash</code>を追加しておくことを推奨します．(以後入力がいらなくなります)</p>
+
+<ul>
+<li>Note:<em>devel/setup.bash</em>では<strong>無い</strong>ことに注意してください</li>
+</ul>
+
+
+<hr />
+
+<h3>setup</h3>
+
+<p>3.3にArduinoの(ごく普通の)ライブラリとしてros_libを追加するように書いてあります．
+必ず<code>roscore</code>を起動して下のコマンドでros_libを追加してください．</p>
+
+<p>&lt;sketchbook>は各自のArduinoのライブラリがあるディレクトリに置き換えてください．</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>  <span class="nb">cd</span> &lt;sketchbook&gt;/libraries
+</span><span class='line'>  rosrun rosserial_arduino make_libraries.py .
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>Note:環境によってlibrariesディレクトリの名前や場所が違うので注意．</li>
+<li>sketchbookはrosパッケージ内に作ると管理しやすいと思います．</li>
+</ul>
+
+
+<h4>確認</h4>
+
+<p>Arduinoライブラリにros_libが入っていて，その中にROSにパスが通っているmsgやsrvを定義している<strong>ROSパッケージすべて</strong>のディレクトリが含まれていることを確認する．</p>
+
+<h3>使ってみる</h3>
+
+<p><code>/libraries/examples/HelloWorld/HelloWorld.pde</code>をビルドしてみる．
+Arduino IDEなら下の画像の所をクリックすることでソースが出るので，それをビルドして書き込んでください．</p>
+
+<p><img src="http://cir-kit.github.io/images/2015-03-10-light-four-leds-on-arduino-by-ros/arduinoIed1.png" alt="arduinoIed1" /></p>
+
+<p>このプログラムは，<code>chatter</code>トピックに&#8221;Hello world&#8221;と1秒毎にPublishします．
+Arduinoへの書き込みが済んだら，早速確認してみましょう．</p>
+
+<ol>
+<li>まずは<code>roscore</code>を起動します．</li>
+<li>次に<code>rosrun rosserial_python serial_node.py _port:=/dev/ttyACM0</code>を起動します．</li>
+</ol>
+
+
+<p>  Note: <em>_port:=</em>のパスは自分のArduinoへのパスを入れてください．</p>
+
+<p>これで<code>chatter</code>トピックへの配信が始まりました．<code>rostopic</code>で確認してみましょう．</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rostopic <span class="nb">echo </span>chatter
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>&ldquo;Hello World&#8221;と送られていたら成功です．</p>
+
+<p><code>rosserial_python serial_node</code>でArduinoに書き込んだノードを実行していると考えるとわかりやすいと思います．(実際は全然違います)</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[ジョイスティックで4つのLEDをつける(Arduino&ROS)]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/03/10/light-four-leds-on-arduino-by-ros/"/>
+    <updated>2015-03-10T16:59:22+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/03/10/light-four-leds-on-arduino-by-ros</id>
+    <content type="html"><![CDATA[<h1>　ジョイスティックで4つのLEDをつけるbyROS</h1>
+
+<h2>概要</h2>
+
+<p>ROSのトピックを利用してArduinoでledをつける．
+更に，ROSのjoystick_driversを利用してDualShock3でledを制御する．</p>
+
+<h2>検証情報</h2>
+
+<h3>日時</h3>
+
+<p>03/09/2015 (Mon)</p>
+
+<h3>スペック</h3>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;">パーツ</th>
+<th style="text-align:center;">スペック</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">PC</td>
+<td style="text-align:center;">Panasonic Let&rsquo;s note CF-LX3TG7TC</td>
+</tr>
+<tr>
+<td style="text-align:center;">Prosessor</td>
+<td style="text-align:center;">Intel core i7-4500U (1.8GHz)</td>
+</tr>
+<tr>
+<td style="text-align:center;">RAM</td>
+<td style="text-align:center;">DDR3 SDRAM(PC3-12800) 4GB</td>
+</tr>
+<tr>
+<td style="text-align:center;">OS</td>
+<td style="text-align:center;">Ubuntu 14.04.2 LTS 64bit</td>
+</tr>
+<tr>
+<td style="text-align:center;">Kernel</td>
+<td style="text-align:center;">3.13.0-46-generic</td>
+</tr>
+<tr>
+<td style="text-align:center;">ROS</td>
+<td style="text-align:center;">indigo 1.11.10</td>
+</tr>
+<tr>
+<td style="text-align:center;">Arduino</td>
+<td style="text-align:center;">Arduino UNO</td>
+</tr>
+<tr>
+<td style="text-align:center;">joystick_drivers</td>
+<td style="text-align:center;">1.10.0</td>
+</tr>
+</tbody>
+</table>
+
+
+<!--more-->
+
+
+<h2>前提条件</h2>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">対象</th>
+<th style="text-align:left;">条件</th>
+<th style="text-align:left;">参考</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">ROS</td>
+<td style="text-align:left;">Install済み</td>
+<td style="text-align:left;"><a href="http://cir-kit.github.io/blog/2015/02/25/we-have-get-to-work-when-install-ubuntu">CIR-KITメンバーが必ずすべきこと</a></td>
+</tr>
+<tr>
+<td style="text-align:left;">Arduino</td>
+<td style="text-align:left;">Install済み</td>
+<td style="text-align:left;">&lsquo;sudo apt-get install Arduino&rsquo;</td>
+</tr>
+<tr>
+<td style="text-align:left;">rosserial</td>
+<td style="text-align:left;">Install済み</td>
+<td style="text-align:left;"><a href="http://cir-kit.github.io/blog/2015/03/10/use-rosserial-first.md">ArduinoをROSで動かす</a></td>
+</tr>
+<tr>
+<td style="text-align:left;">joystick_drivers</td>
+<td style="text-align:left;">Install済み</td>
+<td style="text-align:left;"><a href="http://wiki.ros.org/turtlebot_teleop/Tutorials/PS3%20Joystick%20Teleop">ROS Wiki</a></td>
+</tr>
+</tbody>
+</table>
+
+
+<h2>はじめに</h2>
+
+<p>ROSは，ノードの再利用を理念に作成されているため，出力用，入力用，計算用，アダプター用の４種のパッケージを作るべきだと私は考えています．今回は入力をjoystick_driversに任せて，出力パッケージとアダプターパッケージを作成します．</p>
+
+<h2>仕様作成</h2>
+
+<p>今回は４つのLEDを十字に配置して，ジョイスティックのアナログパッドを傾けた方向のLEDを光らせます．この時，傾きに合わせて光る強さを変えられるようにします．</p>
+
+<h2>出力パッケージ作成</h2>
+
+<p>出力パッケージは，受け取るメッセージ型を定義し，そのメッセージに対する処理をするノードを作成します．今回パッケージ名は<code>light_fourleds</code>とします．今回はArduinoを使用し，ROSノードは作らないため依存パッケージはありません．</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd</span> &lt;catkin_ws&gt;/src
+</span><span class='line'>catkin_create_pkg light_fourleds
+</span><span class='line'><span class="nb">cd </span>light_fourleds
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>以後しばらくは<code>light_fourleds</code>パッケージの中で作業します．</p>
+
+<h3>メッセージ作成</h3>
+
+<h4>msg定義</h4>
+
+<p>x軸とy軸を考えてそれぞれの強さを受け取るようにするのが良いと考えました．
+よってメッセージ型は<code>Vector2</code>とします．内容はfloat32 のxとyです．</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>mkdir -p msg
+</span><span class='line'><span class="nb">cd </span>msg
+</span><span class='line'><span class="nb">echo</span> <span class="s2">&quot;float32 x&quot;</span> &gt; Vector2.msg
+</span><span class='line'><span class="nb">echo</span> <span class="s2">&quot;float32 y&quot;</span> &gt;&gt; Vector2.msg
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>msg生成</h4>
+
+<p>まずは定義したmsgをmakeします．Arduinoでmsgを利用するには必ず対象のmsgがmakeされていなければなりません．これはros_libとの関係です．</p>
+
+<p>作ったmsgのためにCMakeListsとpackage.xmlを下のように書き換えましょう．</p>
+
+<p>CMakeLists.txt</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>cmake_minimum_required<span class="o">(</span>VERSION 2.8.3<span class="o">)</span>
+</span><span class='line'>project<span class="o">(</span>light_fourleds<span class="o">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># Load catkin and all dependencies required for this package</span>
+</span><span class='line'>find_package<span class="o">(</span>catkin REQUIRED COMPONENTS message_generation<span class="o">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">########################</span>
+</span><span class='line'><span class="c">## Declare ROS message##</span>
+</span><span class='line'><span class="c">########################</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># Generate messages in the &#39;msg&#39; folder</span>
+</span><span class='line'>add_message_files<span class="o">(</span>FILES Vector2.msg<span class="o">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">## Generate added messages with any dependencies listed here</span>
+</span><span class='line'>generate_messages<span class="o">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">###################################</span>
+</span><span class='line'><span class="c">## catkin specific configuration ##</span>
+</span><span class='line'><span class="c">###################################</span>
+</span><span class='line'>
+</span><span class='line'>catkin_package<span class="o">(</span>CATKIN_DEPENDS message_runtime<span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>package.txt</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>&lt;package&gt;
+</span><span class='line'>  &lt;name&gt;light_fourleds&lt;/name&gt;
+</span><span class='line'>  &lt;version&gt;0.1.0&lt;/version&gt;
+</span><span class='line'>  &lt;description&gt;
+</span><span class='line'>    This package defines message, and have node of arduino to light
+</span><span class='line'>  four leds.
+</span><span class='line'>  &lt;/description&gt;
+</span><span class='line'>  &lt;maintainer <span class="nv">email</span><span class="o">=</span><span class="s2">&quot;yourName@todo.todo&quot;</span>&gt;yourName&lt;/maintainer&gt;
+</span><span class='line'>  &lt;license&gt;BSD&lt;/license&gt;
+</span><span class='line'>
+</span><span class='line'>  &lt;buildtool_depend&gt;catkin&lt;/buildtool_depend&gt;
+</span><span class='line'>
+</span><span class='line'>  &lt;build_depend&gt;message_generation&lt;/build_depend&gt;
+</span><span class='line'>
+</span><span class='line'>  &lt;run_depend&gt;message_runtime&lt;/run_depend&gt;
+</span><span class='line'>  &lt;run_depend&gt;rosserial_python&lt;/run_depend&gt;
+</span><span class='line'>&lt;/package&gt;
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>書き終えたら<code>catkin_make --force-cmake</code>を実行します．</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd</span> &lt;catkin_ws&gt;
+</span><span class='line'>catkin_make --force-cmake
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Arduinoノード作成</h3>
+
+<p>それでは実際に今作ったmsgを利用して動く出力ノードを作成します．
+まずは，新しく作ったmsgを認識させるために<code>ros_lib</code>を削除し，再度rosrunで<code>ros_lib</code>を入れなおします．<code>roscore</code>を立ち上げるのを忘れないでください．</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd</span> &lt;sketchbook&gt;/libraries
+</span><span class='line'>rm -fr ros_lib
+</span><span class='line'>rosrun rosserial_arduino make_libraries.py
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>続いてそのライブラリが使用できるところでArduinoのプログラムを作成します．下のプログラムを作成してください．</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>/**
+</span><span class='line'> * light four leds on arduino
+</span><span class='line'> * @author <span class="s2">&quot;yourName&quot;</span>
+</span><span class='line'> */
+</span><span class='line'><span class="c">#include &lt;ros.h&gt;</span>
+</span><span class='line'><span class="c">#include &lt;light_fourleds/Vector2.h&gt;</span>
+</span><span class='line'><span class="c">#define UP 3</span>
+</span><span class='line'><span class="c">#define RIGHT 5</span>
+</span><span class='line'><span class="c">#define DOWN 6</span>
+</span><span class='line'><span class="c">#define LEFT 9</span>
+</span><span class='line'>unsigned int der<span class="o">[</span>4<span class="o">]</span><span class="p">;</span>
+</span><span class='line'>ros::NodeHandle nh<span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>void messageCb<span class="o">(</span>const light_fourleds::Vector2<span class="p">&amp;</span> msg<span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>  <span class="k">for</span> <span class="o">(</span>int i<span class="p">;</span> i &lt; 4<span class="p">;</span> i++<span class="o">)</span> analogWrite<span class="o">(</span>der<span class="o">[</span>i<span class="o">]</span>, 0<span class="o">)</span><span class="p">;</span> //all cleanup
+</span><span class='line'>  <span class="k">if</span> <span class="o">(</span>msg.x &gt; 0<span class="o">)</span> // left
+</span><span class='line'>  analogWrite<span class="o">(</span>der<span class="o">[</span>3<span class="o">]</span>, 255*msg.x<span class="o">)</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">else</span> <span class="k">if</span> <span class="o">(</span>msg.x &lt; 0<span class="o">)</span> // right
+</span><span class='line'>      analogWrite<span class="o">(</span>der<span class="o">[</span>1<span class="o">]</span>, -255*msg.x<span class="o">)</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">if</span> <span class="o">(</span>msg.y &gt; 0<span class="o">)</span> // up
+</span><span class='line'>      analogWrite<span class="o">(</span>der<span class="o">[</span>0<span class="o">]</span>, 255*msg.y<span class="o">)</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">else</span> <span class="k">if</span> <span class="o">(</span>msg.y &lt; 0<span class="o">)</span> // down
+</span><span class='line'>      analogWrite<span class="o">(</span>der<span class="o">[</span>2<span class="o">]</span>, -255*msg.y<span class="o">)</span><span class="p">;</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>ros::Subscriber&lt;light_fourleds::Vector2&gt; sub<span class="o">(</span><span class="s2">&quot;light_fourleds&quot;</span>, <span class="p">&amp;</span>messageCb<span class="o">)</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>void setup<span class="o">(</span>void<span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>  der<span class="o">[</span>0<span class="o">]</span> <span class="o">=</span> UP<span class="p">;</span>
+</span><span class='line'>  der<span class="o">[</span>1<span class="o">]</span> <span class="o">=</span> RIGHT<span class="p">;</span>
+</span><span class='line'>  der<span class="o">[</span>2<span class="o">]</span> <span class="o">=</span> DOWN<span class="p">;</span>
+</span><span class='line'>  der<span class="o">[</span>3<span class="o">]</span> <span class="o">=</span> LEFT<span class="p">;</span>
+</span><span class='line'>  nh.initNode<span class="o">()</span><span class="p">;</span>
+</span><span class='line'>  nh.subscribe<span class="o">(</span>sub<span class="o">)</span><span class="p">;</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>void loop<span class="o">(</span>void<span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>  nh.spinOnce<span class="o">()</span><span class="p">;</span>
+</span><span class='line'>  delay<span class="o">(</span>1<span class="o">)</span><span class="p">;</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>書き込んだら，Arduinoでビルドして，uploadしてください．</p>
+
+<h3>配線</h3>
+
+<p>3,5,6,9pinにLEDをそれぞれつけてください．3を上にして時計回りに配置すると想定された配置となります．</p>
+
+<p>画像は後ほど追加予定です．</p>
+
+<h3>ここまでの確認</h3>
+
+<p>これで出力部が作成できたはずです．ROSの強力な特徴として，ノード単位でのテストができる点があるので，早速実行して試してみましょう．</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rosrun rosserial_python serial_node.py
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rostopic pub light_fourleds/Vector2 -- <span class="m">1</span> 0
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>左のLED(9pin)が光っていれば成功です．</p>
+
+<h2>アダプターパッケージの作成</h2>
+
+<p>アダプターパッケージは出力と入力パッケージのmsgを適切につなぐパッケージです．個人的な命令方法は「出力パッケージ_adapters」です．これは，使いたい入力に対して適宜adapterノードを作成すれば良いと考えているからです．それでは下のコマンドでパッケージを作りましょう．</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd</span> &lt;catkin_ws&gt;/src
+</span><span class='line'>catkin_create_pkg light_fourleds_adapters roscpp light_fourleds joy
+</span><span class='line'><span class="nb">cd </span>light_fourleds_adapters
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>以後しばらくは<code>light_fourleds_adapters</code>パッケージの中で作業します．</p>
+
+<h3>アダプターノード作成</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>mkdir src
+</span><span class='line'><span class="nb">cd </span>src
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>このsrcディレクトリに<code>adapt_joy_node.cpp</code>を作成し，以下の文を書き込みます．</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#include &quot;ros/ros.h&quot;</span>
+</span><span class='line'><span class="c">#include &quot;light_fourleds/Vector2.h&quot;</span>
+</span><span class='line'><span class="c">#include &quot;sensor_msgs/Joy.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'>ros::Publisher pub<span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>void joyCb<span class="o">(</span>const sensor_msgs::Joy::ConstPtr<span class="p">&amp;</span> joy<span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>  light_fourleds::Vector2 msg<span class="p">;</span>
+</span><span class='line'>  msg.x <span class="o">=</span> joy-&gt;axes<span class="o">[</span>0<span class="o">]</span><span class="p">;</span>
+</span><span class='line'>  msg.y <span class="o">=</span> joy-&gt;axes<span class="o">[</span>1<span class="o">]</span><span class="p">;</span>
+</span><span class='line'>  pub.publish<span class="o">(</span>msg<span class="o">)</span><span class="p">;</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>int main<span class="o">(</span>int argc, char **argv<span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>  ros::init<span class="o">(</span>argc, argv, <span class="s2">&quot;adapt_joy_node&quot;</span><span class="o">)</span><span class="p">;</span>
+</span><span class='line'>  ros::NodeHandle nh<span class="p">;</span>
+</span><span class='line'>  ros::Subscriber <span class="nv">sub</span> <span class="o">=</span> nh.subscribe<span class="o">(</span><span class="s2">&quot;joy&quot;</span>, 1, joyCb<span class="o">)</span><span class="p">;</span>
+</span><span class='line'>  <span class="nv">pub</span> <span class="o">=</span> nh.advertise&lt;light_fourleds::Vector2&gt;<span class="o">(</span><span class="s2">&quot;light_fourleds&quot;</span>, 1<span class="o">)</span><span class="p">;</span>
+</span><span class='line'>  ros::spin<span class="o">()</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">return</span> 0<span class="p">;</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>書き込んだら，CMakeLists.txtとpackage.xmlを下のように書き換えます．</p>
+
+<p>CMakeLists.txt</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>cmake_minimum_required<span class="o">(</span>VERSION 2.8.3<span class="o">)</span>
+</span><span class='line'>project<span class="o">(</span>light_fourleds_adapters<span class="o">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">set</span><span class="o">(</span>CATKIN_DEPS roscpp sensor_msgs<span class="o">)</span>
+</span><span class='line'><span class="nb">set</span><span class="o">(</span>ROSDEP_DEPS light_fourleds<span class="o">)</span>
+</span><span class='line'>find_package<span class="o">(</span>catkin REQUIRED COMPONENTS <span class="k">${</span><span class="nv">CATKIN_DEPS</span><span class="k">}</span> <span class="k">${</span><span class="nv">ROSDEP_DEPS</span><span class="k">}</span><span class="o">)</span>
+</span><span class='line'>catkin_package<span class="o">(</span>CATKIN_DEPENDS <span class="k">${</span><span class="nv">CATKIN_DEPS</span><span class="k">}</span> <span class="k">${</span><span class="nv">ROSDEP_DEPS</span><span class="k">}</span><span class="o">)</span>
+</span><span class='line'>
+</span><span class='line'>include_directories<span class="o">(</span><span class="k">${</span><span class="nv">catkin_INCLUDE_DIRS</span><span class="k">}</span><span class="o">)</span>
+</span><span class='line'>
+</span><span class='line'>add_executable<span class="o">(</span>adapt_joy_node src/adapt_joy_node.cpp<span class="o">)</span>
+</span><span class='line'>target_link_libraries<span class="o">(</span>adapt_joy_node <span class="k">${</span><span class="nv">catkin_LIBRARIES</span><span class="k">}</span><span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>package.xml</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>&lt;package&gt;
+</span><span class='line'>  &lt;name&gt;light_fourleds_adapters&lt;/name&gt;
+</span><span class='line'>  &lt;version&gt;0.1.0&lt;/version&gt;
+</span><span class='line'>
+</span><span class='line'>  &lt;description&gt;Adapt message to light_fourleds package.&lt;/description&gt;
+</span><span class='line'>
+</span><span class='line'>  &lt;maintainer <span class="nv">email</span><span class="o">=</span><span class="s2">&quot;yourName@todo.todo&quot;</span>&gt;yourName&lt;/maintainer&gt;
+</span><span class='line'>  &lt;license&gt;BSD&lt;/license&gt;
+</span><span class='line'>
+</span><span class='line'>  &lt;buildtool_depend&gt;catkin&lt;/buildtool_depend&gt;
+</span><span class='line'>
+</span><span class='line'>  &lt;build_depend&gt;light_fourleds&lt;/build_depend&gt;
+</span><span class='line'>  &lt;build_depend&gt;roscpp&lt;/build_depend&gt;
+</span><span class='line'>  &lt;build_depend&gt;sensor_msgs&lt;/build_depend&gt;
+</span><span class='line'>
+</span><span class='line'>  &lt;run_depend&gt;light_fourleds&lt;/run_depend&gt;
+</span><span class='line'>  &lt;run_depend&gt;roscpp&lt;/run_depend&gt;
+</span><span class='line'>  &lt;run_depend&gt;sensor_msgs&lt;/run_depend&gt;
+</span><span class='line'>&lt;/package&gt;
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>すべて書き込んだら<code>workspace</code>直下へ移動して<code>catkin_make</code>します．</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd</span> &lt;catkin_ws&gt;
+</span><span class='line'>catkin_make --force-cmake
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>makeが通ったら実行してみましょう．USBポートにジョイスティックとArduinoを接続して，以下の行を<strong>それぞれ別のターミナル</strong>で実行してください．</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>roscore
+</span><span class='line'>rosrun joy joy_node
+</span><span class='line'>rosrun light_fourleds_adapters adapt_joy_node
+</span><span class='line'>rosrun rosserial_python serial_node.py _port:<span class="o">=</span>ttyACM0
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>Note: Arduinoのbuildとuploadはしましたか？</li>
+<li>Note: rostopic コマンドでトピックを確認することで問題を特定しやすくなります．</li>
+</ul>
+
+
+<h3>補足など</h3>
+
+<p>後ほどコメントや修正，解説などを加えると思います．</p>
 ]]></content>
   </entry>
   
@@ -7481,508 +8219,6 @@ Gazeboサーバを<code>-r</code>コマンドラインオプションをつけ�
 
 <p>以下のキャプチャは、<code>population.world</code>を実行した様子です。
 <img src="http://cir-kit.github.io/images/2015-02-05-gazebo-population-of-models/gazebo_population.png" alt="gazebo_population" /></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[No.3-3:環境をつくろう ! (Digital Elevation Models 編)]]></title>
-    <link href="http://cir-kit.github.io/blog/2015/02/03/gazebo-digital-elevation-models/"/>
-    <updated>2015-02-03T19:58:17+09:00</updated>
-    <id>http://cir-kit.github.io/blog/2015/02/03/gazebo-digital-elevation-models</id>
-    <content type="html"><![CDATA[<p><img src="http://cir-kit.github.io/images/gazebo_logo.png" alt="gazebo_logo" /></p>
-
-<h5>検証日時</h5>
-
-<p>02/03/2015 (Tue)</p>
-
-<h5>概要</h5>
-
-<p>Gazeboのチュートリアル第三弾「Build a World」。
-このチュートリアルでは、シミュレーション中の環境をどのように構築するかについて説明します。<br/>
-今回はその「Digital Elevation Models」編です。<br/>
-公式サイトを適当に翻訳しただけですので、あしからず。</p>
-
-<h5>レベル</h5>
-
-<p><strong>ADVANCED</strong></p>
-
-<!-- more -->
-
-
-<h5>環境</h5>
-
-<table>
-<thead>
-<tr>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center;"> <strong>PC</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Prosessor</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>RAM</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>OS</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Kernel</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> 3.13.0-44-generic </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Gazebo</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Version 5.0.1 </td>
-</tr>
-</tbody>
-</table>
-
-
-<h5>参考</h5>
-
-<p><a href="http://gazebosim.org/tutorials?cat=build_world">GAZEBO Tutorial-Build a World</a></p>
-
-<h2>はじめに</h2>
-
-<p><strong>Digital Elevation Model (DEM)</strong>は3Dの植物や建物のような物体を含まないような地形です。DEMはLIDARやradar、カメラなどによるセンサフュージョンによって生成されます。グラウンドポジションの地形の標高は、定期的に水平間隔でサンプリングされています。<a href="http://en.wikipedia.org/wiki/Digital_elevation_model">Wikipedia</a>でDEMのより詳しい情報があります。<br/>
-DEMという言葉は一般的な名称であり、至って普通のフォーマットです。実際、DEMは代表的なグリッド立体図（水平捜線）や、ベクトルベースの基板地図変換である<strong>vector-based triangular irregular network (TIN)</strong>なのです。現在Gazeboは<a href="http://www.gdal.org/">GDAL</a>ライブラリでサポートされているraster(水平捜線)データのみをサポートしています。<br/>
-GazeboをDEMをサポートする主な動機付けは、リアルな地形をシミュレートできるようにしたいというものです。ロボットを現実の世界のと同じ地形でシミュレーションし、その動向をテストし、救助用または農業用への応用を図ることは興味深いものとなるでしょう。</p>
-
-<h2>GazeboにDEMサポートを適用する</h2>
-
-<p>DEMファイルをサポートするには、GDALライブラリをインストールする必要があります。</p>
-
-<h5>Ubuntu Trusty/Utopic の場合:</h5>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>  sudo apt-get install gdal-bin libgdal-dev libgdal1h python-gdal
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h5>Ubuntu Precise の場合:</h5>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>  sudo apt-get install gdal-bin libgdal1-1.7.0 libgdal1-dev python-gdal
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>DEMファイルとSDFフォーマットでの定義</h2>
-
-<p>立体データを提供する団体はいくつかあります。例えば、80年代の<a href="http://extract.cr.usgs.gov/public/NED/mtsthelens_before.zip">噴火前</a>か<a href="http://extract.cr.usgs.gov/public/NED/mtsthelens_after.zip">噴火後</a>のセント・ヘレンズ山のDEMフォーマットファイルをダウンロードしましょう。ダウンロードしたら、Unzipで解凍し、<code>mtsthelens.dem</code>という名前をつけましょう。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>  <span class="nb">cd</span> ~/Downloads
-</span><span class='line'>  wget http://extract.cr.usgs.gov/public/NED/mtsthelens_before.zip
-</span><span class='line'>  unzip ~/Downloads/mtsthelens_before.zip -d /tmp
-</span><span class='line'>  mv /tmp/30.1.1.1282760.dem /tmp/mtsthelens.dem
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>通常、DEMファイルにはたくさんの取り決めがあるので、Gazeboでは扱えません。なので、DEMの取り決めに合わせる良いアイデアがあります。i日のコマンドで地形を129x129に縮小し、Gazeboの<code>media/dem/</code>ディレクトリにそれをコピーします。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>  mkdir -p /tmp/media/dem/
-</span><span class='line'>  gdalwarp -ts <span class="m">129</span> <span class="m">129</span> /tmp/mtsthelens.dem /tmp/media/dem/mtsthelens_129.dem
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>GazeboでDEMファイルを読み込むのは高低地図を読み込む方法と同じです。Gazeboは読み込みファイルがプレーンファイルかDEMファイルであった場合、自動でファイルを検出します。<code>volcano.world</code>ファイルを作成し、以下の内容をコピペしてください。できたら<code>/tmp</code>のように、どこにでも好きなところに保存してください。。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; ?&gt;</span>
-</span><span class='line'><span class="nt">&lt;sdf</span> <span class="na">version=</span><span class="s">&quot;1.4&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;world</span> <span class="na">name=</span><span class="s">&quot;default&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>    <span class="c">&lt;!-- A global light source --&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;include&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;uri&gt;</span>model://sun<span class="nt">&lt;/uri&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/include&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;model</span> <span class="na">name=</span><span class="s">&quot;heightmap&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;static&gt;</span>true<span class="nt">&lt;/static&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;link</span> <span class="na">name=</span><span class="s">&quot;link&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;collision</span> <span class="na">name=</span><span class="s">&quot;collision&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;heightmap&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;uri&gt;</span>file://media/dem/mtsthelens_129.dem<span class="nt">&lt;/uri&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;size&gt;</span>150 150 50<span class="nt">&lt;/size&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;pos&gt;</span>0 0 0<span class="nt">&lt;/pos&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/heightmap&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/collision&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;visual</span> <span class="na">name=</span><span class="s">&quot;visual_abcedf&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;heightmap&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;texture&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;diffuse&gt;</span>file://media/materials/textures/dirt_diffusespecular.png<span class="nt">&lt;/diffuse&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;normal&gt;</span>file://media/materials/textures/flat_normal.png<span class="nt">&lt;/normal&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;size&gt;</span>1<span class="nt">&lt;/size&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;/texture&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;texture&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;diffuse&gt;</span>file://media/materials/textures/grass_diffusespecular.png<span class="nt">&lt;/diffuse&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;normal&gt;</span>file://media/materials/textures/flat_normal.png<span class="nt">&lt;/normal&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;size&gt;</span>1<span class="nt">&lt;/size&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;/texture&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;texture&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;diffuse&gt;</span>file://media/materials/textures/fungus_diffusespecular.png<span class="nt">&lt;/diffuse&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;normal&gt;</span>file://media/materials/textures/flat_normal.png<span class="nt">&lt;/normal&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;size&gt;</span>1<span class="nt">&lt;/size&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;/texture&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;blend&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;min_height&gt;</span>2<span class="nt">&lt;/min_height&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;fade_dist&gt;</span>5<span class="nt">&lt;/fade_dist&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;/blend&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;blend&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;min_height&gt;</span>4<span class="nt">&lt;/min_height&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;fade_dist&gt;</span>5<span class="nt">&lt;/fade_dist&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;/blend&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;uri&gt;</span>file://media/dem/mtsthelens_129.dem<span class="nt">&lt;/uri&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;size&gt;</span>150 150 50<span class="nt">&lt;/size&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;pos&gt;</span>0 0 0<span class="nt">&lt;/pos&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/heightmap&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/visual&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/link&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/model&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;/world&gt;</span>
-</span><span class='line'><span class="nt">&lt;/sdf&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>コードの上部にある<code>&lt;heightmap&gt;&lt;size&gt;</code>要素は、(<code>&lt;size&gt;</code>要素がないときは)Gazeboが原寸でDEMファイルを読み込むかどうかを決定し、(<code>&lt;size&gt;</code>要素があるときは)リサイズします。今回は、DEMファイルをリサイズします。<code>&lt;size&gt;</code>要素はGazeboにシミュレーションで使用し、リサイズする大きさをメートル単位で定義します。もし、正しいアスペクト比を維持したいなら横幅、高さ、海抜（<code>&lt;size&gt;</code>の三番目です）を詳細に計算して定義してください。今回の例では、DEMファイルは150 x 150 [m]で最も高いところで、海抜50 [m] となるようにリサイズしています。<br/>
-GazeboをDEMファイルを含む<code>world</code>と共に立ち上げ、以下のような火山の立体図が表示されることを確認してください。以下のコマンドの例では、ファイルを<code>/tmp</code>ディレクトリに置いています。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>　# インストールパスにあるgazeboのsetup.shにsourceコマンドを実行することを確認してください。
-</span><span class='line'>　source /usr/share/gazebo/setup.sh
-</span><span class='line'>　GAZEBO_RESOURCE_PATH<span class="o">=</span><span class="s2">&quot;$GAZEBO_RESOURCE_PATH:/tmp&quot;</span> gazebo /tmp/volcano.world
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><img src="http://cir-kit.github.io/images/2015-02-04-gazebo-digital-elevation-model/gazebo_sthelens.png" alt="gazebo_sthelens" /></p>
-
-<h2>興味のある地域のDEMファイルを手に入れるにはどうしたらよいですか?</h2>
-
-<h3>GLCF(Global Land Cover Facillity)について</h3>
-
-<p>続いて、興味のある特定の地域のDEMファイルを手に入れる方法を説明します。<br/>
-<a href="http://glcf.umd.edu/">Global Land Cover Facility</a>では地球の高解像度なデジタル地形データを提供し、維持しています。<a href="http://glcfapp.glcf.umd.edu:8080/esdi/index.jsp">Search and Preview tool</a>へ行ってみましょう。すると、イメージしたシミュレータを見つけることができるでしょう。すべての地形パッチはあなたがこのツールを使う前から知っているであろう個々の<a href="http://www.shinko-keirin.co.jp/keirinkan/tea/sho/jissen/rika/201303_4/index.html">pathとrow</a>を持っています。私達は、QGISを使い興味のあるpath/rowを発見するのです。以下のキャプチャはその検索画面です。
-<img src="http://cir-kit.github.io/images/2015-02-04-gazebo-digital-elevation-model/glcf_search_tool.png" alt="glcf_search_tool" /></p>
-
-<h3>QIGSについて</h3>
-
-<p><a href="http://www.qgis.org/">QIGS</a>とはクロスプラットフォームのオープンソース地理情報システムプログラムです。以下のように、このプログラムでは閲覧、編集、調査で使用することができます。<a href="http://www.qgis.org/en/site/forusers/download.html">QGISのサイトの指示</a>にしたがってQGISをダウンロードしてください。</p>
-
-<!-- ![qgis](/images/2015-02-04-gazebo-digital-elevation-model/qgis.png) -->
-
-
-<h5>QIGSのダウンロード</h5>
-
-<p><a href="http://www.qgis.org/en/site/forusers/download.html">QGISのダウンロード</a>を参考にしてQGISをダウンロードします。<br/>
-以下のように、aptを使ってQGISをインストールします。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>  sudo apt-get update
-</span><span class='line'>  sudo apt-get install qgis python-qgis
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h5>QGISの使い方</h5>
-
-<ol>
-<li><p>QGISを開いたら、以下のように、画面左にある<strong>WMS/WMTSレイヤの追加</strong>というアイコンをクリックしましょう。
-<img src="http://cir-kit.github.io/images/2015-02-04-gazebo-digital-elevation-model/qgis-add-wms-wmts.png" alt="qgis-add-wms-wmts" /></p></li>
-<li><p>すると以下のようなウィンドウが出るので、以下のように、バーをクリックし、<strong>Lizardtch server</strong>を選択し、<strong>接続</strong>ボタンを押してください。
-<img src="http://cir-kit.github.io/images/2015-02-04-gazebo-digital-elevation-model/qgis-lizardtech-server.png" alt="qgis-lizardtech-server" /></p></li>
-<li><p>すると、以下の一枚目のように、レイヤを選択できるようになるので、タイトルが<strong>MODIS</strong>であるレイヤを選んで、一番下の<strong>追加</strong>を押してください。終わったら、このウィンドウィンドウを閉じてください。<br/>
-うまく行くと、二枚目の写真のように、世界地図がレイヤに表示されるはずです。
-<img src="http://cir-kit.github.io/images/2015-02-04-gazebo-digital-elevation-model/qgis-add-modis.png" alt="qgis-add-modis" />
-<img src="http://cir-kit.github.io/images/2015-02-04-gazebo-digital-elevation-model/qgis-modis-layer.png" alt="qgis-modis-layer" /></p></li>
-<li><p>続いてのステップは他のレイヤーを利用可能なパッチと共に追加します。<a href="http://landsat.usgs.gov/documents/wrs2_descending.zip">このshapeファイル</a>をダウンロードし、どこでも良いのでフォルダに解凍してください。私は、<code>~/Downloads/</code>に保存し、そこで展開しました。</p></li>
-<li><p>QGISに戻り、以下の一枚目のように、<strong>ベクタレイヤの追加</strong>というアイコンを押してください。すると、<strong>開く前に、現在のプロジェクトを保存しますか？</strong>と聞かれるポップアプが表示されるので、<strong>保存する</strong>を選んでください。その後、先ほど解凍したフォルダの中の<code>wrs2descending.shp</code>ファイルを選択してください。うまく開けると、2枚目の様なレイヤが表示されるはずです。
-<img src="http://cir-kit.github.io/images/2015-02-04-gazebo-digital-elevation-model/qgis-add-vector-layer.png" alt="qgis-add-vector-layer" />
-<img src="http://cir-kit.github.io/images/2015-02-04-gazebo-digital-elevation-model/qgis-wrs2-descending-layer.png" alt="qgis-wrs2-descending-layer" /></p></li>
-</ol>
-
-
-<p>ここまでで、メインウィンドウに２つのレイヤが開いていることを確認できるはずです。２つのレイヤーを同時に確認できるようにするため、<code>wrs2desceding</code>レイヤの透明度を変更しましょう。<br/>
-ウィンドウ左側のレイヤ一覧より、<code>wrsdescending</code>レイヤをダブルクリックすると、以下の一枚目のようなウィンドウが出るので、透明度を85%程度に修正しましょう。成功すれば、二枚目のようなレイヤになっているはずです。
-<img src="http://cir-kit.github.io/images/2015-02-04-gazebo-digital-elevation-model/qgis-wrs2-descending-%20transparency.png" alt="qgis-wrs2-descending- transparency" />
-<img src="http://cir-kit.github.io/images/2015-02-04-gazebo-digital-elevation-model/qgis-modis-wrs2-descending.png" alt="qgis-modis-wrs2-descending" /></p>
-
-<h3>QGISとGLCFを使って地形データを取得するまでの手順</h3>
-
-<h5>QGISの操作</h5>
-
-<ol>
-<li><p>脇ほどまでのレイヤを使って、スクロールと左ボタンを使用し、興味のある地域まで移動してください。<br/>
-今回は、富士山まで移動してみました。
-<img src="http://cir-kit.github.io/images/2015-02-04-gazebo-digital-elevation-model/qgis-mtfuji.png" alt="qgis-mtfuji" /></p></li>
-<li><p>以下のように、上部のバーにある、<strong>地物情報表示</strong>というアイコンをクリックしてください。<br/>
-その状態で、興味のある地域をクリックすると、以下のように、そのエリア一体の地形パッチがハイライトされます。
-<img src="http://cir-kit.github.io/images/2015-02-04-gazebo-digital-elevation-model/qgis-identify-features.png" alt="qgis-identify-features" /></p></li>
-<li><p>以下のキャプチャの例では、富士山近辺の地域のDEMのためのpathとrowを確認することができます。
-<img src="http://cir-kit.github.io/images/2015-02-04-gazebo-digital-elevation-model/qgis-identify-features-detail.png" alt="qgis-identify-features-detail" />
-ちなみに、公式チュートリアルでは、以下のキャプチャのように、スペイン、カナリア諸島の、<a href="http://ja.wikipedia.org/wiki/%E3%83%A9%E3%82%B9%E3%83%BB%E3%83%91%E3%83%AB%E3%83%9E%E3%82%B9%E3%83%BB%E3%83%87%E3%83%BB%E3%82%B0%E3%83%A9%E3%83%B3%E3%83%BB%E3%82%AB%E3%83%8A%E3%83%AA%E3%82%A2">ラスパルマス</a>のDEMのpathとrowを確認しています。
-<img src="http://cir-kit.github.io/images/2015-02-04-gazebo-digital-elevation-model/qgis_las_palmas.png" alt="qgis_las_palmas" /></p></li>
-</ol>
-
-
-<h5>GLCFの操作</h5>
-
-<ol>
-<li><p><a href="http://glcfapp.glcf.umd.edu:8080/esdi/index.jsp">GLCF検索ツール</a>に戻り、調べたpath/rowの値を<strong>Start Path</strong>と<strong>Start Row</strong>とラベリングされているカラムに入力しましょう。</p></li>
-<li><p>入力したら、<strong>Submit Quenry</strong>をクリックしてください。</p></li>
-<li><p><strong>Preview and Download</strong>を押すと結果を表示できます。以下の結果は、富士山近傍のもので、path = 108、row = 35とした時の結果です。
-<img src="http://cir-kit.github.io/images/2015-02-04-gazebo-digital-elevation-model/glcf-mtfuji.png" alt="glcf-mtfuji" /></p></li>
-<li><p>地形ファイルを選び、<strong>Download</strong>を押してください。<br/>
-今回は、計測年度が一番新しい、2011年のもの、ID:294-863を選びました。（上図参照）</p></li>
-<li><p>最後に、拡張子が<code>.TIF.gz</code>のファイルを選び、好きなディレクトリに保存し、展開してください。<br/>
-尚、<code>.gz</code>が付いているデータは複数ありますが、<code>README.GTF</code>によると、<code>*_B62.TIF.gz</code>となっているものが程よい解像度で、良いみたいです。また、<code>README.GTF</code>によると、<code>*.TIF.*</code>は<code>GeoTiff</code>フォーマットになっているそうなので、これを選びましょう。尚、<code>*</code>はワイルドカードです。<br/>
-<a href="http://glcf.umd.edu/">GLCF(Global Land Cover Facility)</a>ファイルは、DEMが利用できるフォーマットとして、最も標準的なな<a href="http://ja.wikipedia.org/wiki/GeoTIFF">GeoTiffフォーマット</a>になっています。</p></li>
-</ol>
-
-
-<h2>GazeboでDEMデータを使用するための準備</h2>
-
-<p>DEMデータは通常、高精細に作られています。Gazeboで使用する前に、<code>gdalwarp</code>を使って地形の解像度を扱いやすいサイズにします。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>  gdalwarp -ts &lt;width&gt; &lt;height&gt; &lt;srcDEM&gt; &lt;targetDEM&gt;
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>DEMデータは、しばしば、<code>holes</code>や<code>void</code>エリアを含んでいます。そういったエリアはDEMが生成された時に作成できなかったデータがあるエリアと一致します。<code>hole</code>というデータの場合、<code>hole</code>には、DEMで使用された、データタイプの最大値もしくは最小値が割り当てられています。<br/>
-上記のような<code>hols</code>が埋められたDEMのデータセットである、<code>finished</code>バージョンをダウンロードするよう、常に心がけてください。もし、あなたのDEMの地形データが<code>hols</code>(<code>NODATA</code>値としても知られている)を含んでいる場合、<code>gdal_fillnodata.py</code>のような、<code>gdal</code>のツールを使って手動で修復してみてください。</p>
-
-<h2>Gazeboで様々なDEMを使う</h2>
-
-<p>Gazeboは、直接様々なDEMをサポートしていないにも関わらず、GDALにはDEMを一つにするマージのための有益なツールセットがあります。DEMのセットをダウンロードする最初のステップはマージすることです。パッチは他のパッチと重なることがあるということを覚えておいてください。GDALはそれらの重なりをシームレスにマージできるのです。今あなたがいるディレクトリにマージする準備ができた状態で<code>Geofiff</code>ファイルがあるとすると、次のコマンドで、それをマージできます。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>  gdal_merge.py *.tif -o dem_merged.tif
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>すると、<code>dem_merged.tif</code>ファイルを<code>world</code>ファイルの中で使用できますし、Gazeboはすべてのパッチがマージされた状態で、地形を読み込むでしょう。以下のスクリーンショットは、公式サイトのもので、カナリア諸島一帯を囲む４つのパッチをマージした結果だそうです。
-<img src="http://cir-kit.github.io/images/2015-02-04-gazebo-digital-elevation-model/gazebo_dem_merged.png" alt="gazebo_dem_merged" /></p>
-
-<h2>最後に</h2>
-
-<p>自分で取得した地図をとりあえず表示することは出来ましたが、縮尺とかがおかしいままなので、解決したら、また投稿します。とりあえず今は、先に進みたいです。(02/04/2015 21:51)</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[No.3-2:環境をつくろう ! (環境を修正する 編)]]></title>
-    <link href="http://cir-kit.github.io/blog/2015/02/03/gazebo-modifying-a-world/"/>
-    <updated>2015-02-03T18:59:45+09:00</updated>
-    <id>http://cir-kit.github.io/blog/2015/02/03/gazebo-modifying-a-world</id>
-    <content type="html"><![CDATA[<p><img src="http://cir-kit.github.io/images/gazebo_logo.png" alt="gazebo_logo" /></p>
-
-<h5>検証日時</h5>
-
-<p>02/03/2015 (Tue)</p>
-
-<h5>概要</h5>
-
-<p>Gazeboのチュートリアル第三弾「Build a World」。
-このチュートリアルでは、シミュレーション中の環境をどのように構築するかについて説明します。<br/>
-今回はその「Modifying a World」編です。<br/>
-公式サイトを適当に翻訳しただけですので、あしからず。</p>
-
-<h5>レベル</h5>
-
-<p><strong>BEGINNER</strong></p>
-
-<!-- more -->
-
-
-<h5>環境</h5>
-
-<table>
-<thead>
-<tr>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center;"> <strong>PC</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Prosessor</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>RAM</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>OS</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Kernel</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> 3.13.0-44-generic </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Gazebo</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Version 5.0.1 </td>
-</tr>
-</tbody>
-</table>
-
-
-<h5>参考</h5>
-
-<p><a href="http://gazebosim.org/tutorials?cat=build_world">GAZEBO Tutorial-Build a World</a></p>
-
-<h2>はじめに</h2>
-
-<p>このチュートリアルでは、どのようにして物理プロパティや場面プロパティを含むグローバルプロパティを修正するか説明します。<br/>
-Gazeboを起動してください。:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>  gazebo
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>場面プロパティ</h2>
-
-<p><strong>World</strong>タブの中で、<strong>scene</strong>を選んでください。すると、以下のような場面プロパティのリストが表示されたはずです。続いてプロパティの詳細を表示するために、三角形のボタンをクリックしてプロパティを展開してください。</p>
-
-<!-- ![tutorialSceneTab](/images/2015-02-03-gazebo-modifying-a-world/tutorialSceneTab.png) -->
-
-
-<!-- ![tutorialSceneTabExpanded](/images/2015-02-03-gazebo-modifying-a-world/tutorialSceneTabExpanded.png)   -->
-
-
-<p>これらのプロパティでは照明についての詳細を変更することができます。<br/>
-<strong>メモ : </strong>skyが選択されている場合、背景色は変更できません。</p>
-
-<h2>物理プロパティ</h2>
-
-<p><strong>World</strong>タブの中で、<strong>physics</strong>を選択してください。すると、以下のように物理プロパティのリストが表示されたはずです。</p>
-
-<ul>
-<li><p>チェックボックスはプラグインやセンサが起動している間、物理エンジンを起動するかどうかを選択できます。</p></li>
-<li><p><strong>rial time update rate parameter</strong>は物理エンジンのアプデートの時間を[Hz]で指定します。もし、この値を0にしたら、可能な限り速い速度でアップデートを行います。<strong>rial time update rate</strong>と<strong>step size</strong>はリアルタイム要素を代表する要素であり、シミュレーション時間をリアルタイムにするかどうかを決定します。</p></li>
-<li><p><strong>max step size</strong>は一秒間にどれだけの間物理シミュレータのアップデートステップを維持するかを定義します。</p></li>
-</ul>
-
-
-<p><strong>grabity</strong>ブロックでは:</p>
-
-<ul>
-<li>x,y,zのパラメータで全体の重力をベクトルで設定します。単位は[$m/s<sup>2</sup>$]です。</li>
-</ul>
-
-
-<p><strong>solver</strong>ブロックでは:</p>
-
-<ul>
-<li><p>慣性パラメータによりLCP solver（ODEやbulletで使用されています）で使用するための慣性データを設定します。</p></li>
-<li><p>SORパラメータは<a href="http://en.wikipedia.org/wiki/Successive_over-relaxation">連続する加速緩和</a>を記述します。この、加速緩和とは慣性要素を収束させるために使用します。</p></li>
-</ul>
-
-
-<p><strong>constraints</strong>ブロックには制約を解除するパラメータがいくつか含まれています。</p>
-
-<ul>
-<li>CFMやERPパラメータは<a href="http://ode-wiki.org/wiki/index.php?title=Manual:_Concepts#Constraint_Force_Mixing_.28CFM.29">Constant Force Mixing</a>や<a href="http://ode-wiki.org/wiki/index.php?title=Manual:_Concepts#Joint_error_and_the_Error_Reduction_Parameter_.28ERP.29">Error Reduction</a>のパラメータにを記述し、ODEやbulletで使用されます。CFMやERｐパラメータは<a href="http://ode-wiki.org/wiki/index.php?title=Manual:_Concepts#How_To_Use_ERP_and_CFM">linear stiffness や damping coefficients</a>に関連付けることができます。<strong>max velocity</strong>や<strong>surface layer</strong>パラメータは<strong>split inpulse method</strong>の解決に使用されます。どのようなcontactにおいても、<strong>surface layer</strong>やバウンドしないような<strong>max velocity</strong>より遅い速度による深さより深い。(????)<strong>私もよくわからない</strong>ので、ちょっと勘弁してください。すみませんorz&hellip;<br/>
-パラメータについての詳しい説明は、<a href="http://osrf-distributions.s3.amazonaws.com/sdformat/api/dev.html#physics12">sdf physics documentation</a>をご覧ください。</li>
-</ul>
-
-
-<!-- ![tutorialPhysicsTab](/images/2015-02-03-gazebo-modifying-a-world/tutorialPhysicsTab.png) -->
-
-
-<h4>Next >> <a href="">GazeboでのDEMｓの使い方</a></h4>
 ]]></content>
   </entry>
   
