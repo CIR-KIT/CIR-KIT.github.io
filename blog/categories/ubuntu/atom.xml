@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Ubuntu | 九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/blog/categories/ubuntu/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-03-11T18:59:00+09:00</updated>
+  <updated>2015-03-12T14:20:20+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[CIR-KIT Members]]></name>
@@ -12,6 +12,282 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[No.7-1:プラグインを書く (Gazebo Plugin 101 編)]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/03/11/gazebo-plugin-101/"/>
+    <updated>2015-03-11T10:42:29+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/03/11/gazebo-plugin-101</id>
+    <content type="html"><![CDATA[<p><img src="/images/gazebo_logo.png" alt="gazebo_logo" /></p>
+
+<h5>検証日時</h5>
+
+<p>03/04/2015 (Wed)</p>
+
+<h5>概要</h5>
+
+<p>Gazeboのチュートリアル第七弾「Write a plugin」。
+プラグインを使えば、モデルやセンサ、worldプロパティをコントロールしたり、Gazeboを起動させたりできます。様々な目的のために、どのようにしてプラグインを作成したり、ロードしたりしたらよいかを述べてゆきます。
+今回はその「Gazebo plugin 101」編です。
+公式サイトを適当に翻訳しただけですので、あしからず。</p>
+
+<h5>レベル</h5>
+
+<p><strong>INTERMEDIATE</strong></p>
+
+<!-- more -->
+
+
+<h5>環境</h5>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> <strong>PC</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Prosessor</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>RAM</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>OS</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Kernel</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> 3.13.0-44-generic </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Gazebo</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Version 5.0.1 </td>
+</tr>
+</tbody>
+</table>
+
+
+<h5>参考</h5>
+
+<p><a href="http://gazebosim.org/tutorials?cat=write_plugin">GAZEBO Tutorial-Write a Plugin</a></p>
+
+<h2>Gazeboプラグインの概要</h2>
+
+<p>プラグインとは、共有ライブラリとしてコンパイルされ、シミュレーションに取り込まれるコードの集合です。標準C++クラスを通じて、プラグインはすべてのGazeboの機能に直接アクセスします。<br/>
+プラグインは有用です。なぜなら、:</p>
+
+<ul>
+<li>Gazeboのほとんどすべてのアスペクトを開発者がコントロールできる。</li>
+<li>簡単に共有できる独立したルーチンがある。</li>
+<li>実行中のシステムに挿入したり、削除したりできる。</li>
+</ul>
+
+
+<p>Gazeboの最新バージョンはコントローラとして使われています。これは、プラグインと同じような特徴を持ちますが、Gazeboのなかで、静的にコンパイルされています。プラグインはより柔軟に、かつシミュレーションに含まれる機能を選べるようにします。<br/>
+以下の様なとき、プラグインを使うべきです。:</p>
+
+<ul>
+<li>シミュレーションをプログラマチックに変更したいとき
+
+<ul>
+<li>モデルを動かす、イベントの反応をかえす、前提条件を持った新しいモデルを挿入するとき
+
+<ul>
+<li>トランスポートレイヤのオーバーヘッド無しに、Gazeboに高速なインターフェースがほしいとき</li>
+</ul>
+</li>
+<li>メッセージのシリアル化と非シリアル化
+
+<ul>
+<li>他に利益をもたらすコードがあり、それを共有したいとき</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+
+<h2>プラグインの種類</h2>
+
+<p>現在、以下のようにプラグインは5種類あります。</p>
+
+<ol>
+<li>World</li>
+<li>Model</li>
+<li>Sensor</li>
+<li>System.</li>
+<li>Visual.</li>
+</ol>
+
+
+<p>それぞれのプラグインタイプは異なるGazeboのコンポーネントで管理されています。例えば、ModelプラグインがGazeboのある特定のモデルのコントローラに接続されているなどが挙げられます。同じように、Worldプラグインはworldに接続され、Sensorプラグインはsensorに接続されます。システムプラグインはコマンドラインで定義され、Gazeboの初回起動時にロードします。このプラグインは初回起動時にユーザーコントロールを与えます。<br/>
+プラグインの種類は望みの機能に沿ったものでなければなりません。Worldプラグインは物理エンジンや証明の設定などのworldプロパティをコントロールするのに使って下さい。Modelプラグインは、ジョイントやモデルの姿勢をコントロールするために使用して下さい。センサプラグインはセンサ情報を定義し、センサプロパティをコントロールするために使用して下さい。</p>
+
+<h2>Hello World プラグイン</h2>
+
+<p>プラグインはシンプルに設計されています。ベアボーンのworldプラグインにはいくつかの関数と共にクラスが含まれています。<br/>
+最初に、デビアンパッケージよりGazeboをインストールしたら、Gazeboの開発用ファイルをインストールするのを忘れないで下さい。もし、あなたがGazeboをソースコードからインストールしたなら、このステップは無視して構いません。もし<code>gazebo5</code>よりも古いリリースのGazeboを使用しているなら、<code>5</code>の部分を持っているバージョンの番号に置き換えて以下の内容をご覧ください。</p>
+
+<pre><code class="bash">sudo apt-get install libgazebo5-dev
+</code></pre>
+
+<p>続いて、ディレクトリを作り、新しい<code>.cc</code>ファイルのプラグインを作成して下さい。</p>
+
+<pre><code class="bash"> mkdir ~/gazebo_plugin_tutorial
+ cd ~/gazebo_plugin_tutorial
+ gedit hello_world.cc
+</code></pre>
+
+<p>できたら、以下を<code>hello_world.cc</code>にコピーして下さい。</p>
+
+<pre><code class="cpp">#include &lt;gazebo/gazebo.hh&gt;
+
+namespace gazebo
+{
+  class WorldPluginTutorial : public WorldPlugin
+  {
+    public: WorldPluginTutorial() : WorldPlugin()
+            {
+              printf("Hello World!\n");
+            }
+
+    public: void Load(physics::WorldPtr _world, sdf::ElementPtr _sdf)
+            {
+            }
+  };
+  GZ_REGISTER_WORLD_PLUGIN(WorldPluginTutorial)
+}
+</code></pre>
+
+<p>上記のコードはGazeboのソースコード : <a href="https://bitbucket.org/osrf/gazebo/src/gazebo_2.2/examples/plugins/hello_world/">examples/plugins/helloworld/helloworld</a>にもあります。尚、リンク先には<code>CMakeLists.txt</code>ファイルもあります。</p>
+
+<h3>コードの説明</h3>
+
+<pre><code class="cpp">#include &lt;gazebo/gazebo.hh&gt;
+
+namespace gazebo
+{
+</code></pre>
+
+<p><a href="https://bitbucket.org/osrf/gazebo/src/gazebo_2.2/gazebo/gazebo_core.hh">gazebo/gazebo.hh</a>ファイルは基本的なGazeboの関数群のコアをインクルードしています。これは、<code>gazebo/physics/physics.hh</code>や<code>gazebo/rendering/rendering.hh</code>、<code>gazebo/sensors/sensors.hh</code>を臨機応変でインクルードされるべきものとしてインクルードしていません。すべてのプラグインは<code>gazebo</code>という名前空間が必要です。</p>
+
+<pre><code class="cpp">  class WorldPluginTutorial : public WorldPlugin
+  {
+    public: WorldPluginTutorial() : WorldPlugin()
+            {
+              printf("Hello World!\n");
+            }
+</code></pre>
+
+<p>それぞれのプラグインはプラグインタイプを継承しなければなりません。今回の例では、<code>WorldPlugin</code>クラスを継承します。</p>
+
+<pre><code class="cpp">    public: void Load(physics::WorldPtr _world, sdf::ElementPtr _sdf)
+            {
+            }
+</code></pre>
+
+<p>その他の必須の関数は<code>Load</code>です。これはロードされるSDFファイルによって定義される属性や要素を含むSDF要素を受け取ります。</p>
+
+<pre><code class="cpp">  GZ_REGISTER_WORLD_PLUGIN(WorldPluginTutorial)
+</code></pre>
+
+<p>最終的に、プラグインは<code>GZ_REGISTER_WORLD_PLUGIN</code>マクロを使ってシミュレーションと共に登録されなければなりません。このマクロへの唯一のパラメータはプラグインクラスの名前です。それぞれのプラグインタイプに合わせて登録されたマクロの照合が行われます。: <code>GZ_REGISTER_MODEL_PLUGIN</code>, <code>GZ_REGISTER_SENSOR_PLUGIN</code>, <code>GZ_REGISTER_SYSTEM_PLUGIN</code>、<code>GZ_REGISTER_VISUAL_PLUGIN</code>などです。<br/>
+以下のセクションではこのプラグインをどのようにしてコンパイルするかについての簡単な説明も行ってゆきます。</p>
+
+<h3>プラグインをコンパイルする</h3>
+
+<p>Gazeboが正しくインストールされていることを確認して下さい。<br/>
+上記のプラグインをコンパイルするために、<code>~/gazebo_plugin_tutorial/CMakeLists</code>を作成して下さい。:</p>
+
+<pre><code class="bash"> gedit ~/gazebo_plugin_tutorial/CMakeLists.txt
+</code></pre>
+
+<p>以下を<code>CMakeLists.txt</code>にコピーして下さい。:</p>
+
+<pre><code class="cmake">cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
+
+find_package(Boost REQUIRED COMPONENTS system)
+include_directories(${Boost_INCLUDE_DIRS})
+link_directories(${Boost_LIBRARY_DIRS})
+
+include (FindPkgConfig)
+if (PKG_CONFIG_FOUND)
+  pkg_check_modules(GAZEBO gazebo)
+endif()
+include_directories(${GAZEBO_INCLUDE_DIRS})
+link_directories(${GAZEBO_LIBRARY_DIRS})
+
+add_library(hello_world SHARED hello_world.cc)
+target_link_libraries(hello_world ${GAZEBO_LIBRARIES} ${Boost_LIBRARIES})
+</code></pre>
+
+<p>ビルドディレクトリを作成して下さい。</p>
+
+<pre><code class="bash"> mkdir ~/gazebo_plugin_tutorial/build
+ cd ~/gazebo_plugin_tutorial/build
+</code></pre>
+
+<p>コードをコンパイルして下さい。</p>
+
+<pre><code class="bash"> cmake ../
+ make
+</code></pre>
+
+<p>コンパイルの結果は共有ライブラリにでき、<code>~/gazebo_plugin_tutorial/build/libhello_world.so</code>をGazeboシミュレーションに挿入することができます。<br/>
+最後に、ライブラリパスを<code>GAZEBO_PLUGIN_PATH</code>に追加して下さい。:</p>
+
+<pre><code class="bash"> export GAZEBO_PLUGIN_PATH={GAZEBO_PLUGIN_PATH}:~/gazebo_plugin_tutorial/build
+</code></pre>
+
+<h2>プラグインを使う</h2>
+
+<p>プラグインを共有ライブラリとしてコンパイルしたら(上記をご覧ください)、SDFファイルのworldやmodelにそれを追加することができます(詳しくは、<a href="http://gazebosim.org/sdf.html">SDFドキュメント</a>をご覧ください)。最初に、GazeboはSDFファイルを解析し、プラグインを設置します。そしてコードを読み込みます。Gazeboがプラグインを探すことができるというのはとても重要なことです。プラグインへの絶対パスが定義されている、もしくはプラグインが<code>GAZEBOPLUGINPATH</code>パスの中にあればプラグインを利用した環境が利用可能です。<br/>
+worldファイルの例は、<a href="https://bitbucket.org/osrf/gazebo/src/gazebo_2.2/examples/plugins/hello_world/hello.world">examples/plugins/helloworld/helloworld</a>でも見つけることができます。</p>
+
+<pre><code class="xml">&lt;?xml version="1.0"?&gt;
+&lt;sdf version="1.4"&gt;
+  &lt;world name="default"&gt;
+    &lt;plugin name="hello_world" filename="libhello_world.so"/&gt;
+  &lt;/world&gt;
+&lt;/sdf&gt;
+</code></pre>
+
+<p><code>~/gazebo_plugin_tutorial/hello.world</code>にあるファイルのコピーを作成して下さい。<br/>
+もし、<code>GAZEBO_PLUGIN_PATH</code>の中にビルドディレクトリがないなら、Gazeboサーバーをビルドディレクトリから起動しなければなりません。</p>
+
+<pre><code class="bash">$ cd build
+$ gzserver ../hello.world --verbose
+</code></pre>
+
+<p>うまく実行できれば、以下のような出力を得られるはずです。:</p>
+
+<pre><code class="bash">Gazebo multi-robot simulator, version 1.9.5
+Copyright (C) 2013 Open Source Robotics Foundation.
+Released under the Apache 2 License.
+http://gazebosim.org
+
+Msg Waiting for master
+Msg Connected to gazebo master @ http://localhost:11345
+Hello World!
+</code></pre>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[No.6-10:GazeboをROSに繋ぐ (発展的なROSの統合 編)]]></title>
@@ -1234,435 +1510,6 @@ wget -O /tmp/gazebo4_install.sh http://osrf-distributions.s3.amazonaws.com/gazeb
 <code>bash
 gazebo
 </code></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[No.6-7:GazeboをROSに繋ぐ (ROS Control 編)]]></title>
-    <link href="http://cir-kit.github.io/blog/2015/02/22/gazebo-ros-control/"/>
-    <updated>2015-02-22T03:55:56+09:00</updated>
-    <id>http://cir-kit.github.io/blog/2015/02/22/gazebo-ros-control</id>
-    <content type="html"><![CDATA[<p><img src="/images/gazebo_logo.png" alt="gazebo_logo" /></p>
-
-<h5>検証日時</h5>
-
-<p>03/02/2015 (Mon)</p>
-
-<h5>概要</h5>
-
-<p>Gazeboのチュートリアル第六弾「Connect to ROS」。
-ROSはロボットの制御フレームワークです。このチュートリアルでは、GazeboとROSのインターフェースについて説明します。
-今回はその「ROS control」編です。
-公式サイトを適当に翻訳しただけですので、あしからず。</p>
-
-<h5>レベル</h5>
-
-<p><strong>INTERMEDIATE</strong></p>
-
-<!-- more -->
-
-
-<h5>環境</h5>
-
-<table>
-<thead>
-<tr>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center;"> <strong>PC</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Prosessor</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>RAM</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>OS</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Kernel</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> 3.13.0-44-generic </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Gazebo</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Version 5.0.1 </td>
-</tr>
-</tbody>
-</table>
-
-
-<h5>参考</h5>
-
-<p><a href="http://gazebosim.org/tutorials?cat=connect_ros">GAZEBO Tutorial-Connect to ROS</a></p>
-
-<h2>チュートリアル : ROS Control</h2>
-
-<p>このチュートリアルでは、あなたのロボットのジョイントを動かすために、シミュレートされたコントローラを設定してゆきます。これにより、<a href="http://moveit.ros.org/">MoveIt!</a>のようなプランナーのための正しいROSのインターフェースを提供することができるようになります。また、ROSの新しいスタンダードコントローラインターフェースである<a href="http://ros.org/wiki/ros_control"><code>ros_control</code></a>パッケージを使用してゆきます。</p>
-
-<h3><code>ros_control</code>について</h3>
-
-<p>次に進む前に、<a href="http://ros.org/wiki/ros_control"><code>ros_control</code></a>ドキュメントの概要を読んでおくことをおすすめします。
-About ros_control</p>
-
-<h3>Gazeboと<code>ros_control</code>のデータフロー</h3>
-
-<p>Gazeboでロボットのコントローラをシミュレートすることで、<code>ros_control</code>の使い方とシンプルなGazeboのプラグインアダプタの使い方を習得することができます。シミュレーション、ハードウェア、コントローラとトランスミッションの間の関係の概要は以下のようになっています。尚、以下の画像は公式サイトのものです。:
-<img src="/images/2015-02-21-gazebo-ros-control/Gazebo_ros_transmission.png" alt="Gazebo_ros_transmission" /></p>
-
-<h2>必要条件</h2>
-
-<p>このチュートリアルでは、これまでのチュートリアルで紹介したコンセプトの多くを再編してゆきます。プラグイン構成のための例として、<a href="http://cir-kit.github.io/blog/2015/02/17/gazebo-urdf-in-gazebo/">GazeboにおけるURDF</a>のチュートリアルの中で設定したRRBotを再び使用してゆきます。<br/>
-すでに<code>ros_control</code>と<code>ros_controllers</code>をインストールしていることを確認してください。また、それらの依存関係は、<a href="http://cir-kit.github.io/blog/2015/02/14/gazebo-installing-gazebo-ros-pkgs/">Gazebo_ros_packageをインストールする</a>で説明しています。</p>
-
-<h2>使い方</h2>
-
-<h3>URDFに<code>transmission</code>要素を追加する</h3>
-
-<p>あなたのロボットで<code>ros_control</code>を使用するには、URDFにいくつかの追加要素が必要です。<code>&lt;transmission&gt;</code>要素はリンクアクチュエータやジョイントで使用されます。正確なXMLフォーマットのためには、<a href="http://ros.org/wiki/urdf/XML/Transmission"><code>&lt;transmission&gt;</code>の仕様</a>をご覧ください。<br/>
-実行途中の<code>gazebo_ros_control</code>の目的のために、<code>transmission</code>タグの中で唯一重要な情報は以下のとおりである。:</p>
-
-<ul>
-<li><code>&lt;joint name=""&gt;</code> : URDFにあるジョイントの名前と一致していなければなりません。</li>
-<li><code>&lt;type&gt;</code> ; <code>transmission</code>のタイプです。現在では、<code>transmission_interface/SimpleTransmission</code>のみが実行されます。(遠慮無く追加してください)</li>
-<li><code>&lt;hardwareInterface&gt;</code> : <code>&lt;actuator&gt;</code>タグでは、<code>gazebo_ros_control</code>プラグインに姿勢、速度、実行インターフェースなどをロードするためのハードウェアインターフェースを知らせます。現在では、実行インターフェースのみが実行されます。(遠慮無く追加してください)</li>
-</ul>
-
-
-<p>残りの名前と要素は現在は、無視されています。</p>
-
-<h3><code>gazebo_ros_control</code>プラグインを追加する</h3>
-
-<p><code>transmission</code>タグへの追加では、正確に<code>transmission</code>タグを記述し、適用するハードウェアインターフェースとコントローラマネージャを読み込む、URDFにGazeboのプラグインを追加する必要があります。デフォルトの<code>gazebo_ros_control</code>プラグインはシンプルですが、<code>ros_control</code>とGazeboの間のカスタムのロボットハードウェアインターフェースを使えるようにするために、追加のプラグインを展開することができます。<br/>
-デフォルトプラグインXMLをあなたのURDFに追加する必要があります。</p>
-
-<pre><code class="xml">&lt;gazebo&gt;
-  &lt;plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so"&gt;
-    &lt;robotNamespace&gt;/MYROBOT&lt;/robotNamespace&gt;
-  &lt;/plugin&gt;
-&lt;/gazebo&gt;
-</code></pre>
-
-<p><code>gazebo_ros_control</code>の<code>&lt;plugin&gt;</code>タグには以下の子要素もあります。:</p>
-
-<ul>
-<li><code>&lt;robotNamespace&gt;</code> : プラグインの初期化に使用される名前空間です。デフォルトでは、URDF/SDFのロボット名となります。</li>
-<li><code>&lt;controlPeriod&gt;</code> : コントローラアップデートの周期です。デフォルトでは、Gazeboの手記です。</li>
-<li><code>&lt;robotParam&gt;</code> : パラメータサーバーの<code>robot_description</code>(URDF)のロケーションです。デフォルトでは、<code>/robot_description</code>です。</li>
-<li><code>&lt;robotSimType&gt;</code> : 使用されるカスタムのロボットシミュレーションインターフェースの<code>pluginlib</code>の名前です(詳しくは、続きをご覧ください)。デフォルトでは、<code>DefaultRobotHWSim</code>となります。</li>
-</ul>
-
-
-<h4>デフォルトの<code>gazebo_ros_control</code>の挙動</h4>
-
-<p>デフォルトで、<code>&lt;robotSimType&gt;</code>タグなしだと、<code>gazebo_ros_control</code>はURDF
-外の<code>ros_control-based</code>コントローラと通信するのに必要なすべての情報を手に入れようとします。これは、ほとんどの場合十分なことで、少なくとも、始めの内は良いことです。<br/>
-デフォルトの挙動では、以下の<code>ros_control</code>インターフェースを提供しています。:</p>
-
-<ul>
-<li>hardware_interface::JointStateInterface</li>
-<li>hardware_interface::EffortJointInterface</li>
-<li>hardware_interface::VelocityJointInterface - not fully implemented</li>
-</ul>
-
-
-<h4>発展 : カスタムの<code>gazebo_ros_control</code>シミュレーションプラグイン</h4>
-
-<p><code>gazebo_ros_control</code>のGazeboプラグインは、より複雑なメカニズム(非線形バネ、リンクゲージ、etc&hellip;)のための<code>ros_control</code>とGazebo間のカスタムインターフェースを実行するため、<code>pluginlib-based</code>のインターフェースも提供しています。<br/>
-そういったプラグインでは、シミュレートされている<code>ros_control hardware_interface::RobotHW</code>を動かす<code>gazebo_ros_control::RobotHWSim</code>を継承していなければなりません。<code>RobotHWSim</code>では、Gazeboシミュレータの中で、ジョイントプロパティを読み、命令するためのAPIレベルのアクセスを提供します。<br/>
-それぞれの<code>RobotHWSim</code>のサブクラスはURDFモデルで定義されており、ロボットモデルが読み込まれた時に読み込まれます。例えば、以下のXMLはデフォルトプラグインを読み込みます。(<code>&lt;robotSimType&gt;</code>タグを使っていない時と同じ挙動です。):</p>
-
-<pre><code class="xml">&lt;gazebo&gt;
-  &lt;plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so"&gt;
-    &lt;robotNamespace&gt;/MYROBOT&lt;/robotNamespace&gt;
-    &lt;robotSimType&gt;gazebo_ros_control/DefaultRobotHWSim&lt;/robotSimType&gt;
-  &lt;/plugin&gt;
-&lt;/gazebo&gt;
-</code></pre>
-
-<h3>RRBotの例</h3>
-
-<p>Gazeboので動作させたいジョイントのために、以下<code>&lt;transmission&gt;</code>ブロックシミュレータに追加します。<code>rrbot.xacro</code>ファイルを開くと、最後の方に、以下のようなソースコードを確認できるはずです。:</p>
-
-<pre><code class="xml">  &lt;transmission name="tran1"&gt;
-    &lt;type&gt;transmission_interface/SimpleTransmission&lt;/type&gt;
-    &lt;joint name="joint1"/&gt;
-    &lt;actuator name="motor1"&gt;
-      &lt;hardwareInterface&gt;EffortJointInterface&lt;/hardwareInterface&gt;
-      &lt;mechanicalReduction&gt;1&lt;/mechanicalReduction&gt;
-    &lt;/actuator&gt;
-  &lt;/transmission&gt;
-
-  &lt;transmission name="tran2"&gt;
-    &lt;type&gt;transmission_interface/SimpleTransmission&lt;/type&gt;
-    &lt;joint name="joint2"/&gt;
-    &lt;actuator name="motor2"&gt;
-      &lt;hardwareInterface&gt;EffortJointInterface&lt;/hardwareInterface&gt;
-      &lt;mechanicalReduction&gt;1&lt;/mechanicalReduction&gt;
-    &lt;/actuator&gt;
-  &lt;/transmission&gt;
-</code></pre>
-
-<p>すべての<code>&lt;transmission&gt;</code>タグを読む<code>rrbot.gazebo</code>の中に、<code>gazebo_ros_control</code>プラグインも確認できます。:</p>
-
-<pre><code class="xml">&lt;gazebo&gt;
-  &lt;plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so"&gt;
-    &lt;robotNamespace&gt;/rrbot&lt;/robotNamespace&gt;
-  &lt;/plugin&gt;
-&lt;/gazebo&gt;
-</code></pre>
-
-<h3><code>ros_controls</code>パッケージを作る</h3>
-
-<p>続いて、Gazeboと通信する<code>ros_contorl</code>コントローラのためのconfigurationファイルとlaunchファイルを作る必要があります。</p>
-
-<h4>新しいパッケージを作る</h4>
-
-<pre><code class="bash">cd ~/catkin_ws
-catkin_create_pkg MYROBOT_control ros_control ros_controllers
-cd MYROBOT_control
-mkdir config
-mkdir launch
-</code></pre>
-
-<h4><code>.yaml</code>のconfigファイルを作る</h4>
-
-<p>PIDゲインとコントローラ設定はroslaunchファイルを通じてparamサーバによって読み込まれるyamlファイルに保存しなければなりません。あなたの<code>MYROBOT_control</code>パッケージのconfigフォルダで、以下のRRBotの例をあなたのロボットに適用してください。</p>
-
-<pre><code class="yaml">rrbot:
-  # Publish all joint states -----------------------------------
-  joint_state_controller:
-    type: joint_state_controller/JointStateController
-    publish_rate: 50  
-
-  # Position Controllers ---------------------------------------
-  joint1_position_controller:
-    type: effort_controllers/JointPositionController
-    joint: joint1
-    pid: {p: 100.0, i: 0.01, d: 10.0}
-  joint2_position_controller:
-    type: effort_controllers/JointPositionController
-    joint: joint2
-    pid: {p: 100.0, i: 0.01, d: 10.0}
-</code></pre>
-
-<p>これらのコントローラについては、次のセクションをご覧ください。</p>
-
-<h4>roslaunchファイルを作る</h4>
-
-<p><code>ros_control</code>コントローラを起動するためのroslaunchファイルを作ってください。launchフォルダで、<code>MYROBOT/_contorol.launch</code>ファイルを作り、以下のRRBotの例をあなたのロボットに適用してください。:</p>
-
-<pre><code class="xml">&lt;launch&gt;
-
-  &lt;!-- Load joint controller configurations from YAML file to parameter server --&gt;
-  &lt;rosparam file="$(find rrbot_control)/config/rrbot_control.yaml" command="load"/&gt;
-
-  &lt;!-- load the controllers --&gt;
-  &lt;node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
-    output="screen" ns="/rrbot" args="joint1_position_controller joint2_position_controller joint_state_controller"/&gt;
-
-  &lt;!-- convert joint states to TF transforms for rviz, etc --&gt;
-  &lt;node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
-    respawn="false" output="screen"&gt;
-    &lt;remap from="/joint_states" to="/rrbot/joint_states" /&gt;
-  &lt;/node&gt;
-
-&lt;/launch&gt;
-</code></pre>
-
-<h5>説明</h5>
-
-<p>第一行目の、<code>rosparam</code>では、パラメータサーバーにyamlのconfigurationファイル(次のセクションで説明します)を読み込むことでコントローラ設定を読み込んでいます。<br/>
-<code>controller_spawner</code>ノードは、RRBotのための2つのジョイントポジションコントローラを<code>ros_control</code>コントローラマネージャのためのサービスコールを生成するpythonスクリプトを実行することで起動します。サービスコールでは、あなたの望むコントローラのコントローラマネージャを呼び出します。また、<code>hardware_interfaces</code>とすべてのジョイントの姿勢をpublishし、<code>/joint_states</code>トピックを配信する三番目のコントローラも呼び出します。スポナーはroslaunchとの仕様のためのスクリプトを補助しているだけです。<br/>
-最後の行は、<code>joint_state_controller</code>からの<code>/joint_states</code>メッセージをlistenする<code>robot_state_publisher</code>ノードを起動し、起動したら、座標変換を<code>/tf</code>へpublishします。これにより、Rvizでシミュレートされるロボットを他のタスクがしているのと同じように観察することができます。</p>
-
-<h3>roslaunchを使ってコントローラを起動する</h3>
-
-<p>以下のコマンドを実行し、<code>ros_control</code>でコントロールされるRRBotをテストしてください。<br/>
-RRBotシミュレーションを起動する。:</p>
-
-<pre><code class="bash">roslaunch rrbot_gazebo rrbot_world.launch
-</code></pre>
-
-<p>2つ目のlaunchファイルを実行し、2つのジョイントのためのコントローラを読み込んでください。</p>
-
-<pre><code class="bash">roslaunch rrbot_control rrbot_control.launch 
-</code></pre>
-
-<p>尚、個々でエラーが出る場合は、<code>ros_control</code>と<code>ros_controller</code>がインストールされていない可能性があります。<em>*Indigo</em>を使用している場合は、以下のようにしてこれらをインストールしましょう。:</p>
-
-<pre><code class="bash">sudo apt-get install ros-indigo-ros-control ros-indigo-ros-controller 
-</code></pre>
-
-<h4>サービスコールをマニュアルで使う</h4>
-
-<p><code>rrbot_control.yaml</code>ファイルをパラメータサーバーで読み込んだら、サービスリクエストを通じてコントローラをマニュアルで読み込むことができます。いつものroslaunchと同じように、これらをインクルードします。:<br/>
-コントローラを読み込む:</p>
-
-<pre><code class="bash">rosservice call /rrbot/controller_manager/load_controller "name: 'joint1_position_controller'"
-rosservice call /rrbot/controller_manager/load_controller "name: 'joint2_position_controller'"
-</code></pre>
-
-<p>コントローラを起動する:</p>
-
-<pre><code class="bash">rosservice call /rrbot/controller_manager/switch_controller "{start_controllers: ['joint1_position_controller','joint2_position_controller'], stop_controllers: [], strictness: 2}"
-</code></pre>
-
-<p>コントローラを停止する:</p>
-
-<pre><code class="bash">rossevice call /rrbot/controller_manager/switch_controller "{start_controllers: [], stop_controllers: ['joint1_position_controller','joint2_position_controller'], strictness: 2}"
-</code></pre>
-
-<p>尚、これらひと通りの手順は、Gazeboとサービスを通じて通信する場合の例です。これを行うには、上記の通り、launchファイルにて<code>rrbot_control.yaml</code>を読み込んでおく必要があります。詳しくは、<a href="http://wiki.ros.org/ja/ROS/Tutorials/UnderstandingServicesParams">ROSのサービスとパラメータを理解する</a>をご覧ください。</p>
-
-<h3>マニュアルでコマンドの例を送る</h3>
-
-<p>ジョイントコマンドをテストとして以下のコマンドで送ります。:</p>
-
-<pre><code class="bash">rostopic pub -1 /rrbot/joint1_position_controller/command std_msgs/Float64 "data: 1.5"
-rostopic pub -1 /rrbot/joint2_position_controller/command std_msgs/Float64 "data: 1.0"
-</code></pre>
-
-<p>もちろん、上記のコマンドを送る前に、以下のコマンドでシミュレーションとコントローラが起動していることが前提です。:</p>
-
-<pre><code class="bash">roslaunch rrbot_gazebo rrbot_world.launch
-roslaunch rrbot_control rrbot_control.launch 
-</code></pre>
-
-<p>コマンドを送ると、以下のように、２つのジョイントが一定の場所で静止するはずです。
-<img src="/images/2015-02-21-gazebo-ros-control/rostopic-test-1.png" alt="rostopic-test-1" /></p>
-
-<h3>コマンドの送信のためのRQTを使う</h3>
-
-<p>このセクションでは、あなたのコントローラのパフォーマンスを視覚的に表示し、コントローラが持つであろうゲイン(一部にはPIDゲインも)やパラメータを調整するのを助けるツールについて見てゆきます。また、ROSの<code>plugin-based</code>なユーザーインターフェースである<a href="http://www.ros.org/wiki/rqt">RQT</a>を使います。なので、まずはそれがインストールされていることを確認しておいてください。<br/>
-シミュレーションと<code>ros_control</code>を起動したまま、RQTを起動してください。:</p>
-
-<pre><code class="bash">rosrun rqt_gui rqt_gui
-</code></pre>
-
-<p>すると、以下のような画面が開いたはずです。
-<img src="/images/2015-02-21-gazebo-ros-control/rqt_gui-1.png" alt="rqt_gui-1" /></p>
-
-<h4>コマンドpublisherを追加する</h4>
-
-<p>以下キャプチャ画面を参考にして、<code>Publisher</code>プラグインを追加し、あなたがpublishしたいそれぞれのコントローラを命令するドロップダウンボックスからトピックを選択してください。RRBotの場合、下記のコントローラを追加してください。:</p>
-
-<pre><code>/rrbot/joint1_position_controller/command
-</code></pre>
-
-<p><img src="/images/2015-02-21-gazebo-ros-control/rqt_gui-2.png" alt="rqt_gui-2" />
-<img src="/images/2015-02-21-gazebo-ros-control/rqt_gui-3.png" alt="rqt_gui-3" /></p>
-
-<ul>
-<li>完了したら、緑色のプラスの形をしたボタンを押してください。</li>
-<li>トピック名の左にあるチェックボックスをクリックし、トピックpublisherを有効にしてください。</li>
-<li>できたら、<code>rate</code>の値を100に設定してください。(これはコマンドを送る周波数です。つまり、今回は100 [Hz]ということです)</li>
-<li>続いて、データを生の状態で確認するために、トピックを実行してください。生データが再生されている途中で、<code>join1</code>の<code>expression</code>のラジアンの値を変えてみてください。ただし、 RRBotの例ではジョイントは連続であるので、<code>joint limits</code>は存在しませんので、どんな値を入れても動きます。もしこのチュートリアルを行っているなら、RRBotをいろいろな位置に振ることができるようになるはずです。</li>
-<li>続いて、同じ状態のボックスの中で、サイン波を使って自動で値を変えます。<code>expression</code>の部分を以下のようにしてみてください。:</li>
-</ul>
-
-
-<pre><code>sin(i/100)
-</code></pre>
-
-<p>うまく行くと、以下の動画のようになっているはずです。</p>
-
-<div class="youtube-container">
-<iframe width="560" height="315" src="https://www.youtube.com/embed/iaHBCLFAz_w" frameborder="0" allowfullscreen></iframe>
-</div>
-
-
-<p>さらなる応用的なコントロールのために、ロボットの正確な<code>expression</code>にサイン波をpublishするよう構成することができます。:</p>
-
-<pre><code>sin(i/rate*speed)*diff + offset
-</code></pre>
-
-<p>ただし、変数については、以下のとおりです。:</p>
-
-<ul>
-<li>i : RQTの時間変数</li>
-<li>rate : 式が評価される周波数です。これはトピックpublisherの周波数と同じであるべきです。おすすめの値は100です。</li>
-<li>speed : ジョイントをどれくらいの早さで動かすのかという指標です。1から始めるとゆっくりと動き始めます。</li>
-<li>upper_limit と lower_limits : コントローラによってコントロールされる、ハードウェアの<code>joint limits</code>です。</li>
-<li>diff = (upper_limit - lower_limit)/2</li>
-<li>offset = upper_limit-diff</li>
-</ul>
-
-
-<h4>コントローラのパフォーマンスを閲覧する</h4>
-
-<p>先ほどと同じ手順で、プロットプラグインをRQTに追加し、上記で選んだトピックpublisherと同じトピックを追加します。:</p>
-
-<pre><code>/rrbot/joint1_position_controller/command/data
-</code></pre>
-
-<p>緑色の追加ボタンをクリックしてください。すると、サイン波がスクリーン上にプロットされるのが確認できるはずです。<br/>
-スクリーンは以下のようになっているはずです。<br/>
-また、他のデータもプロットしてみてください。例として、目標値との偏差をプロットするには、以下のトピックを追加します。:</p>
-
-<pre><code>/rrbot/joint1_position_controller/state/error
-</code></pre>
-
-<p>ここまでできたら、以下の様なグラフが表示されるはずです。尚、以下の画像では、プロットの表示範囲を時間軸方向に広げることで、見やすくしています。<br/>
-<img src="/images/2015-02-21-gazebo-ros-control/rqt_gui-4.png" alt="rqt_gui-4" /></p>
-
-<p><strong>注意 : </strong>RQTのプロットプラグインは、起動した後、しばらく(>1 min)バグが発生することが確認されています。直線が描かれるだけのバグです。現在の解決方法は、プラグイン画面の右上にある、青いリフレッシュボタンを押すことです。</p>
-
-<h4>PIDゲインを調整する</h4>
-
-<p>最終的に、あなたのロボットに適用可能と考えられる、適切で独創的であり、統合されたPIDコントローラゲインのチューニングを行うために、<a href="http://ros.org/wiki/dynamic_reconfigure">dynamic reconfigure</a>を使います。<br/>
-これまでと同じように、以下の様なPIDゲインのコントロールウィンドウを表示するために、<code>Dynamic Reconfigure</code>プラグインをRQTに追加し、サブオプションを見るために、<strong>Expand All</strong>をクリックしてください。コントローラにPIDを使うなら、<strong>pid</strong>オプションを使ってください。以下のように、5段階のスライダをクリックして、コントローラを調節します。コントローラのパフォーマンスが望みのものとなるまで、値を調整してください。</p>
-
-<p><img src="/images/2015-02-21-gazebo-ros-control/rqt_gui-5.png" alt="rqt_gui-5" /></p>
-
-<h4>RQTの図を保存するために、roslaunchを使う</h4>
-
-<p>RRBotのpre-configuredなRQTの図は以下のコマンドで簡単にlaunchすることができます。</p>
-
-<pre><code class="bash">roslaunch rrbot_control rrbot_rqt.launch
-</code></pre>
-
-<p>これは、あなたのロボットに対しても、テンプレートとして使うことができます。</p>
-
-<h3>RvizをGazeboシミュレーションにつなぐ</h3>
-
-<p>シミュレーション中のロボットにコマンドを送るために、<code>ros_control</code>を使う時に、Gazeboからのロボットの姿勢を読むために、<code>ros_control</code>ジョイントステートコントローラを使用することもできます。良いシミュレータの前提的なアイデアはシミュレーションの中でするのと同じように、本物のハードウェア上で同じソフトウェアが使えるということです。そのスタートとなるのは、本物のハードウェアでも同じように使用する、Rviz上でシミュレートされるあなたのロボットを可視化することです。<br/>
-これまで説明してきたような、<code>joint_state_controller</code>を、<code>rosparam</code>や<code>roslaunch</code>ファイルで起動する準備ができているとするなら、次のステップは、Rvizを起動することです。:</p>
-
-<pre><code class="bash">rosrun rviz rviz
-</code></pre>
-
-<p>起こりうるエラーを解決するために、<strong>Global Options</strong>にある<strong>Fixed Frame</strong>を<strong>world</strong>に変更してください。<br/>
-次に<strong>RobotModel</strong>ディスプレイタイプをRvizに追加すると、以下のように、GazeboでシミュレートしているロボットがRvizでも見れるはずです！<br/>
-尚、以下の例ではカメライメージとレーザースキャンのイメージを追加しています。</p>
-
-<div class="youtube-container">
-<iframe width="560" height="315" src="https://www.youtube.com/embed/FOMUt9Gm2NM" frameborder="0" allowfullscreen></iframe>
-</div>
-
-
-<h2>デモコード</h2>
-
-<p>このチュートリアルにあるRRBotで使用されているコードの例は<a href="https://github.com/ros-simulation/gazebo_ros_demos"><code>gazebo_ros_demos</code></a>レポジトリで使用可能です。</p>
-
-<h2>次のステップ</h2>
-
-<p><a href="http://cir-kit.github.io/blog/2015/03/02/gazebo-ros-communication/">ROS Communication</a>というチュートリアルの中でGazeboとともに使うことのできるROSメッセージコールとサービスコールについて学んでください。</p>
 ]]></content>
   </entry>
   

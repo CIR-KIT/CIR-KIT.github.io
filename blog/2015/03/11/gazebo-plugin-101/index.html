@@ -1,0 +1,609 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>No.7-1:プラグインを書く (Gazebo Plugin 101 編) - 九州工業大学 CIR-KIT Blog</title>
+  <meta name="author" content="RyodoTanaka">
+
+  
+  <meta name="description" content="検証日時 03/04/2015 (Wed) 概要 Gazeboのチュートリアル第七弾「Write a plugin」。
+プラグインを使えば、モデルやセンサ、worldプロパティをコントロールしたり、Gazeboを起動させたりできます。様々な目的のために、どのようにしてプラグインを作成したり、 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://cir-kit.github.io/blog/2015/03/11/gazebo-plugin-101/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="九州工業大学 CIR-KIT Blog" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-59178596-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<meta property="og:title" content="No.7-1:プラグインを書く (Gazebo plugin 101 編) - 九州工業大学 CIR-KIT Blog" />
+<meta property="og:description" content="検証日時 03/04/2015 (Wed) 概要 Gazeboのチュートリアル第七弾「Write a plugin」。
+プラグインを使えば、モデルやセンサ、worldプロパティをコントロールしたり、Gazeboを起動させたりできます。様々な目的のために、どのようにしてプラグインを作成したり、 &hellip;" />
+<meta property="og:url" content="http://cir-kit.github.io/blog/2015/03/11/gazebo-plugin-101/" />
+<meta property="og:image" content="http://cir-kit.github.io/favicon.png" />
+
+<meta property="og:site_name" content="九州工業大学 CIR-KIT Blog" />
+<meta property="og:locale" content="ja_JP" />
+<meta property="og:type" content="blog" />
+<meta property="fb:app_id" content="930841560294053" />
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">九州工業大学 CIR-KIT Blog</a></h1>
+  
+    <h2>九工大自律移動ロボット製作プロジェクトCIR-KITの技術系ブログ</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="cir-kit.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/information">Information</a><li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">No.7-1:プラグインを書く (Gazebo Plugin 101 編)</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-03-11T10:42:29+09:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>10:42 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><img src="/images/gazebo_logo.png" alt="gazebo_logo" /></p>
+
+<h5>検証日時</h5>
+
+<p>03/04/2015 (Wed)</p>
+
+<h5>概要</h5>
+
+<p>Gazeboのチュートリアル第七弾「Write a plugin」。
+プラグインを使えば、モデルやセンサ、worldプロパティをコントロールしたり、Gazeboを起動させたりできます。様々な目的のために、どのようにしてプラグインを作成したり、ロードしたりしたらよいかを述べてゆきます。
+今回はその「Gazebo plugin 101」編です。
+公式サイトを適当に翻訳しただけですので、あしからず。</p>
+
+<h5>レベル</h5>
+
+<p><strong>INTERMEDIATE</strong></p>
+
+<!-- more -->
+
+
+<h5>環境</h5>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> <strong>PC</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Prosessor</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>RAM</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>OS</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Kernel</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> 3.13.0-44-generic </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Gazebo</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Version 5.0.1 </td>
+</tr>
+</tbody>
+</table>
+
+
+<h5>参考</h5>
+
+<p><a href="http://gazebosim.org/tutorials?cat=write_plugin">GAZEBO Tutorial-Write a Plugin</a></p>
+
+<h2>Gazeboプラグインの概要</h2>
+
+<p>プラグインとは、共有ライブラリとしてコンパイルされ、シミュレーションに取り込まれるコードの集合です。標準C++クラスを通じて、プラグインはすべてのGazeboの機能に直接アクセスします。<br/>
+プラグインは有用です。なぜなら、:</p>
+
+<ul>
+<li>Gazeboのほとんどすべてのアスペクトを開発者がコントロールできる。</li>
+<li>簡単に共有できる独立したルーチンがある。</li>
+<li>実行中のシステムに挿入したり、削除したりできる。</li>
+</ul>
+
+
+<p>Gazeboの最新バージョンはコントローラとして使われています。これは、プラグインと同じような特徴を持ちますが、Gazeboのなかで、静的にコンパイルされています。プラグインはより柔軟に、かつシミュレーションに含まれる機能を選べるようにします。<br/>
+以下の様なとき、プラグインを使うべきです。:</p>
+
+<ul>
+<li>シミュレーションをプログラマチックに変更したいとき
+
+<ul>
+<li>モデルを動かす、イベントの反応をかえす、前提条件を持った新しいモデルを挿入するとき
+
+<ul>
+<li>トランスポートレイヤのオーバーヘッド無しに、Gazeboに高速なインターフェースがほしいとき</li>
+</ul>
+</li>
+<li>メッセージのシリアル化と非シリアル化
+
+<ul>
+<li>他に利益をもたらすコードがあり、それを共有したいとき</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+
+<h2>プラグインの種類</h2>
+
+<p>現在、以下のようにプラグインは5種類あります。</p>
+
+<ol>
+<li>World</li>
+<li>Model</li>
+<li>Sensor</li>
+<li>System.</li>
+<li>Visual.</li>
+</ol>
+
+
+<p>それぞれのプラグインタイプは異なるGazeboのコンポーネントで管理されています。例えば、ModelプラグインがGazeboのある特定のモデルのコントローラに接続されているなどが挙げられます。同じように、Worldプラグインはworldに接続され、Sensorプラグインはsensorに接続されます。システムプラグインはコマンドラインで定義され、Gazeboの初回起動時にロードします。このプラグインは初回起動時にユーザーコントロールを与えます。<br/>
+プラグインの種類は望みの機能に沿ったものでなければなりません。Worldプラグインは物理エンジンや証明の設定などのworldプロパティをコントロールするのに使って下さい。Modelプラグインは、ジョイントやモデルの姿勢をコントロールするために使用して下さい。センサプラグインはセンサ情報を定義し、センサプロパティをコントロールするために使用して下さい。</p>
+
+<h2>Hello World プラグイン</h2>
+
+<p>プラグインはシンプルに設計されています。ベアボーンのworldプラグインにはいくつかの関数と共にクラスが含まれています。<br/>
+最初に、デビアンパッケージよりGazeboをインストールしたら、Gazeboの開発用ファイルをインストールするのを忘れないで下さい。もし、あなたがGazeboをソースコードからインストールしたなら、このステップは無視して構いません。もし<code>gazebo5</code>よりも古いリリースのGazeboを使用しているなら、<code>5</code>の部分を持っているバージョンの番号に置き換えて以下の内容をご覧ください。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo apt-get install libgazebo5-dev
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>続いて、ディレクトリを作り、新しい<code>.cc</code>ファイルのプラグインを作成して下さい。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'> mkdir ~/gazebo_plugin_tutorial
+</span><span class='line'> <span class="nb">cd</span> ~/gazebo_plugin_tutorial
+</span><span class='line'> gedit hello_world.cc
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>できたら、以下を<code>hello_world.cc</code>にコピーして下さい。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='cpp'><span class='line'><span class="cp">#include &lt;gazebo/gazebo.hh&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">namespace</span> <span class="n">gazebo</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="k">class</span> <span class="nc">WorldPluginTutorial</span> <span class="o">:</span> <span class="k">public</span> <span class="n">WorldPlugin</span>
+</span><span class='line'>  <span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span><span class="o">:</span> <span class="n">WorldPluginTutorial</span><span class="p">()</span> <span class="o">:</span> <span class="n">WorldPlugin</span><span class="p">()</span>
+</span><span class='line'>            <span class="p">{</span>
+</span><span class='line'>              <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Hello World!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">public</span><span class="o">:</span> <span class="kt">void</span> <span class="n">Load</span><span class="p">(</span><span class="n">physics</span><span class="o">::</span><span class="n">WorldPtr</span> <span class="n">_world</span><span class="p">,</span> <span class="n">sdf</span><span class="o">::</span><span class="n">ElementPtr</span> <span class="n">_sdf</span><span class="p">)</span>
+</span><span class='line'>            <span class="p">{</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>  <span class="p">};</span>
+</span><span class='line'>  <span class="n">GZ_REGISTER_WORLD_PLUGIN</span><span class="p">(</span><span class="n">WorldPluginTutorial</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上記のコードはGazeboのソースコード : <a href="https://bitbucket.org/osrf/gazebo/src/gazebo_2.2/examples/plugins/hello_world/">examples/plugins/helloworld/helloworld</a>にもあります。尚、リンク先には<code>CMakeLists.txt</code>ファイルもあります。</p>
+
+<h3>コードの説明</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='cpp'><span class='line'><span class="cp">#include &lt;gazebo/gazebo.hh&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">namespace</span> <span class="n">gazebo</span>
+</span><span class='line'><span class="p">{</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><a href="https://bitbucket.org/osrf/gazebo/src/gazebo_2.2/gazebo/gazebo_core.hh">gazebo/gazebo.hh</a>ファイルは基本的なGazeboの関数群のコアをインクルードしています。これは、<code>gazebo/physics/physics.hh</code>や<code>gazebo/rendering/rendering.hh</code>、<code>gazebo/sensors/sensors.hh</code>を臨機応変でインクルードされるべきものとしてインクルードしていません。すべてのプラグインは<code>gazebo</code>という名前空間が必要です。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='cpp'><span class='line'>  <span class="k">class</span> <span class="nc">WorldPluginTutorial</span> <span class="o">:</span> <span class="k">public</span> <span class="n">WorldPlugin</span>
+</span><span class='line'>  <span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span><span class="o">:</span> <span class="n">WorldPluginTutorial</span><span class="p">()</span> <span class="o">:</span> <span class="n">WorldPlugin</span><span class="p">()</span>
+</span><span class='line'>            <span class="p">{</span>
+</span><span class='line'>              <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Hello World!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+</span><span class='line'>            <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>それぞれのプラグインはプラグインタイプを継承しなければなりません。今回の例では、<code>WorldPlugin</code>クラスを継承します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='cpp'><span class='line'><span class="k">public</span><span class="o">:</span> <span class="kt">void</span> <span class="n">Load</span><span class="p">(</span><span class="n">physics</span><span class="o">::</span><span class="n">WorldPtr</span> <span class="n">_world</span><span class="p">,</span> <span class="n">sdf</span><span class="o">::</span><span class="n">ElementPtr</span> <span class="n">_sdf</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>        <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>その他の必須の関数は<code>Load</code>です。これはロードされるSDFファイルによって定義される属性や要素を含むSDF要素を受け取ります。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='cpp'><span class='line'>  <span class="n">GZ_REGISTER_WORLD_PLUGIN</span><span class="p">(</span><span class="n">WorldPluginTutorial</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>最終的に、プラグインは<code>GZ_REGISTER_WORLD_PLUGIN</code>マクロを使ってシミュレーションと共に登録されなければなりません。このマクロへの唯一のパラメータはプラグインクラスの名前です。それぞれのプラグインタイプに合わせて登録されたマクロの照合が行われます。: <code>GZ_REGISTER_MODEL_PLUGIN</code>, <code>GZ_REGISTER_SENSOR_PLUGIN</code>, <code>GZ_REGISTER_SYSTEM_PLUGIN</code>、<code>GZ_REGISTER_VISUAL_PLUGIN</code>などです。<br/>
+以下のセクションではこのプラグインをどのようにしてコンパイルするかについての簡単な説明も行ってゆきます。</p>
+
+<h3>プラグインをコンパイルする</h3>
+
+<p>Gazeboが正しくインストールされていることを確認して下さい。<br/>
+上記のプラグインをコンパイルするために、<code>~/gazebo_plugin_tutorial/CMakeLists</code>を作成して下さい。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'> gedit ~/gazebo_plugin_tutorial/CMakeLists.txt
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>以下を<code>CMakeLists.txt</code>にコピーして下さい。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='cmake'><span class='line'><span class="nb">cmake_minimum_required</span><span class="p">(</span><span class="s">VERSION</span> <span class="s">2.8</span> <span class="s">FATAL_ERROR</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">find_package</span><span class="p">(</span><span class="s">Boost</span> <span class="s">REQUIRED</span> <span class="s">COMPONENTS</span> <span class="s">system</span><span class="p">)</span>
+</span><span class='line'><span class="nb">include_directories</span><span class="p">(</span><span class="o">${</span><span class="nv">Boost_INCLUDE_DIRS</span><span class="o">}</span><span class="p">)</span>
+</span><span class='line'><span class="nb">link_directories</span><span class="p">(</span><span class="o">${</span><span class="nv">Boost_LIBRARY_DIRS</span><span class="o">}</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">include</span> <span class="p">(</span><span class="s">FindPkgConfig</span><span class="p">)</span>
+</span><span class='line'><span class="nb">if</span> <span class="p">(</span><span class="s">PKG_CONFIG_FOUND</span><span class="p">)</span>
+</span><span class='line'>  <span class="nb">pkg_check_modules</span><span class="p">(</span><span class="s">GAZEBO</span> <span class="s">gazebo</span><span class="p">)</span>
+</span><span class='line'><span class="nb">endif</span><span class="p">()</span>
+</span><span class='line'><span class="nb">include_directories</span><span class="p">(</span><span class="o">${</span><span class="nv">GAZEBO_INCLUDE_DIRS</span><span class="o">}</span><span class="p">)</span>
+</span><span class='line'><span class="nb">link_directories</span><span class="p">(</span><span class="o">${</span><span class="nv">GAZEBO_LIBRARY_DIRS</span><span class="o">}</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">add_library</span><span class="p">(</span><span class="s">hello_world</span> <span class="s">SHARED</span> <span class="s">hello_world.cc</span><span class="p">)</span>
+</span><span class='line'><span class="nb">target_link_libraries</span><span class="p">(</span><span class="s">hello_world</span> <span class="o">${</span><span class="nv">GAZEBO_LIBRARIES</span><span class="o">}</span> <span class="o">${</span><span class="nv">Boost_LIBRARIES</span><span class="o">}</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ビルドディレクトリを作成して下さい。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'> mkdir ~/gazebo_plugin_tutorial/build
+</span><span class='line'> <span class="nb">cd</span> ~/gazebo_plugin_tutorial/build
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>コードをコンパイルして下さい。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'> cmake ../
+</span><span class='line'> make
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>コンパイルの結果は共有ライブラリにでき、<code>~/gazebo_plugin_tutorial/build/libhello_world.so</code>をGazeboシミュレーションに挿入することができます。<br/>
+最後に、ライブラリパスを<code>GAZEBO_PLUGIN_PATH</code>に追加して下さい。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'> <span class="nb">export </span><span class="nv">GAZEBO_PLUGIN_PATH</span><span class="o">={</span>GAZEBO_PLUGIN_PATH<span class="o">}</span>:~/gazebo_plugin_tutorial/build
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>プラグインを使う</h2>
+
+<p>プラグインを共有ライブラリとしてコンパイルしたら(上記をご覧ください)、SDFファイルのworldやmodelにそれを追加することができます(詳しくは、<a href="http://gazebosim.org/sdf.html">SDFドキュメント</a>をご覧ください)。最初に、GazeboはSDFファイルを解析し、プラグインを設置します。そしてコードを読み込みます。Gazeboがプラグインを探すことができるというのはとても重要なことです。プラグインへの絶対パスが定義されている、もしくはプラグインが<code>GAZEBOPLUGINPATH</code>パスの中にあればプラグインを利用した環境が利用可能です。<br/>
+worldファイルの例は、<a href="https://bitbucket.org/osrf/gazebo/src/gazebo_2.2/examples/plugins/hello_world/hello.world">examples/plugins/helloworld/helloworld</a>でも見つけることができます。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot;?&gt;</span>
+</span><span class='line'><span class="nt">&lt;sdf</span> <span class="na">version=</span><span class="s">&quot;1.4&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;world</span> <span class="na">name=</span><span class="s">&quot;default&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;plugin</span> <span class="na">name=</span><span class="s">&quot;hello_world&quot;</span> <span class="na">filename=</span><span class="s">&quot;libhello_world.so&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/world&gt;</span>
+</span><span class='line'><span class="nt">&lt;/sdf&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>~/gazebo_plugin_tutorial/hello.world</code>にあるファイルのコピーを作成して下さい。<br/>
+もし、<code>GAZEBO_PLUGIN_PATH</code>の中にビルドディレクトリがないなら、Gazeboサーバーをビルドディレクトリから起動しなければなりません。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span><span class="nb">cd </span>build
+</span><span class='line'><span class="nv">$ </span>gzserver ../hello.world --verbose
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>うまく実行できれば、以下のような出力を得られるはずです。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>Gazebo multi-robot simulator, version 1.9.5
+</span><span class='line'>Copyright <span class="o">(</span>C<span class="o">)</span> <span class="m">2013</span> Open Source Robotics Foundation.
+</span><span class='line'>Released under the Apache <span class="m">2</span> License.
+</span><span class='line'>http://gazebosim.org
+</span><span class='line'>
+</span><span class='line'>Msg Waiting <span class="k">for</span> master
+</span><span class='line'>Msg Connected to gazebo master @ http://localhost:11345
+</span><span class='line'>Hello World!
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">RyodoTanaka</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2015-03-11T10:42:29+09:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>10:42 am</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/gazebo/'>gazebo</a>, <a class='category' href='/blog/categories/plugin/'>plugin</a>, <a class='category' href='/blog/categories/ubuntu/'>ubuntu</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://cir-kit.github.io/blog/2015/03/11/gazebo-plugin-101/" data-via="" data-counturl="http://cir-kit.github.io/blog/2015/03/11/gazebo-plugin-101/" >Tweet</a>
+  
+  
+  
+  
+  <div class="fb-comments" data-href="http://cir-kit.github.io" data-num-posts="2" data-width="500"></div>
+  
+  
+
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2015/03/04/gazebo-ros-advanced-integration/" title="Previous Post: No.6-10:GazeboをROSに繋ぐ (発展的なROSの統合 編)">&laquo; No.6-10:GazeboをROSに繋ぐ (発展的なROSの統合 編)</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    
+
+
+
+
+<section>
+<div class="fb-like-box" data-href="https://www.facebook.com/kyutechcirkit" data-width="210" data-height="400" data-colorscheme="light" data-show-faces="false" data-header="false" data-stream="true" data-show-border="false"></div>
+</section>
+
+<section>
+  <h1>Categories</h1>
+    <ul id="category-list">
+      <li><a href='/blog/categories/build-a-robot/'>build a robot (10)</a></li><li><a href='/blog/categories/build-a-world/'>build a world (5)</a></li><li><a href='/blog/categories/gazebo/'>gazebo (34)</a></li><li><a href='/blog/categories/getstarted/'>getstarted (4)</a></li><li><a href='/blog/categories/install/'>install (2)</a></li><li><a href='/blog/categories/plugin/'>plugin (1)</a></li><li><a href='/blog/categories/ros/'>ros (10)</a></li><li><a href='/blog/categories/sensors/'>sensors (2)</a></li><li><a href='/blog/categories/tools-and-utilities/'>tools and utilities (1)</a></li><li><a href='/blog/categories/ubuntu/'>ubuntu (35)</a></li>
+    </ul>
+</section>
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/11/gazebo-plugin-101/">No.7-1:プラグインを書く (Gazebo Plugin 101 編)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/04/gazebo-ros-advanced-integration/">No.6-10:GazeboをROSに繋ぐ (発展的なROSの統合 編)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/04/gazebo-ros-plugin/">No.6-9:GazeboをROSに繋ぐ (ROS Plugin 編)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/02/gazebo-ros-communication/">No.6-8:GazeboをROSに繋ぐ (ROS Communication 編)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/02/26/greeting-arc/">新団体-ARC-設立</a>
+      </li>
+    
+  </ul>
+</section>
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - RyodoTanaka -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&appId=930841560294053&version=v2.0";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
