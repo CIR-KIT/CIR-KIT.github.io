@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Build a Robot | 九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/blog/categories/build-a-robot/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-03-13T18:15:41+09:00</updated>
+  <updated>2015-03-13T19:06:11+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[CIR-KIT Members]]></name>
@@ -456,7 +456,7 @@ gedit ~/.gazebo/models/simple_mobile_manipulator/model.config
       <sdf version='1.4'>manipulator.sdf</sdf>
       <author>
         <name>My Name</name>
-        <email><a href="&#x6d;&#97;&#105;&#x6c;&#116;&#x6f;&#58;&#x6d;&#101;&#x40;&#109;&#x79;&#46;&#x65;&#109;&#97;&#105;&#x6c;">&#x6d;&#101;&#x40;&#109;&#x79;&#x2e;&#101;&#109;&#97;&#x69;&#108;</a></email>
+        <email><a href="&#109;&#97;&#x69;&#x6c;&#x74;&#111;&#x3a;&#109;&#x65;&#64;&#109;&#121;&#46;&#101;&#x6d;&#x61;&#x69;&#108;">&#x6d;&#101;&#64;&#109;&#121;&#x2e;&#x65;&#x6d;&#x61;&#x69;&#108;</a></email>
       </author>
       <description>
         My simple mobile manipulator

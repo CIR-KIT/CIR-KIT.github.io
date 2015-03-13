@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Joystick_driver | 九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/blog/categories/joystick-driver/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-03-13T18:15:41+09:00</updated>
+  <updated>2015-03-13T19:06:11+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[CIR-KIT Members]]></name>
@@ -12,6 +12,140 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[ジョイスティックで亀を泳がせる(準備編)]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/03/13/turtlesim-with-joystick/"/>
+    <updated>2015-03-13T13:02:00+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/03/13/turtlesim-with-joystick</id>
+    <content type="html"><![CDATA[<h1>ジョイスティックで亀を泳がせる</h1>
+
+<h2>概要</h2>
+
+<p>ROSのチュートリアルで使用したturtlesimの亀をジョイスティックで動かします。<a href="http://wiki.ros.org/joy/Tutorials">joy_tutorial</a>で行っていることをやりますので、原文はそちらへどうぞ。</p>
+
+<h2>検証情報</h2>
+
+<h3>日時</h3>
+
+<p>03/13/2015 (Fri)</p>
+
+<h3>スペック</h3>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;">パーツ</th>
+<th style="text-align:center;">スペック</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">PC</td>
+<td style="text-align:center;">CLEVO M76T</td>
+</tr>
+<tr>
+<td style="text-align:center;">Prosessor</td>
+<td style="text-align:center;">CeleronDualCore T3000 1.80GHz×2</td>
+</tr>
+<tr>
+<td style="text-align:center;">RAM</td>
+<td style="text-align:center;">4GB</td>
+</tr>
+<tr>
+<td style="text-align:center;">OS</td>
+<td style="text-align:center;">Ubuntu 14.04.2 LTS 64bit</td>
+</tr>
+<tr>
+<td style="text-align:center;">ROS</td>
+<td style="text-align:center;">indigo 1.11.10</td>
+</tr>
+<tr>
+<td style="text-align:center;">joystick_drivers</td>
+<td style="text-align:center;">1.10.0</td>
+</tr>
+</tbody>
+</table>
+
+
+<!--more-->
+
+
+<h2>使用したもの</h2>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:left;"></th>
+<th style="text-align:left;">参考</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">ROS</td>
+<td style="text-align:left;"><a href="/blog/2015/02/25/we-have-get-to-work-when-install-ubuntu">CIR-KITメンバーが必ずすべきこと</a></td>
+</tr>
+<tr>
+<td style="text-align:left;">DualShock3</td>
+<td style="text-align:left;"><a href="http://www.jp.playstation.com/ps3/peripheral/cechzc2j.html">PlayStation.com</a></td>
+</tr>
+<tr>
+<td style="text-align:left;">joystick_driver</td>
+<td style="text-align:left;"><a href="http://wiki.ros.org/joy">ROS.org</a></td>
+</tr>
+<tr>
+<td style="text-align:left;">PC</td>
+<td style="text-align:left;"><a href="http://shopap.lenovo.com/jp/notebooks/thinkpad/x-series/x250/?cid=jp:sem:q2xyf9&amp;#tab-customize">ご自由に</a></td>
+</tr>
+<tr>
+<td style="text-align:left;">USBケーブル</td>
+<td style="text-align:left;"><a href="http://www.amazon.co.jp/%E3%82%BD%E3%83%8B%E3%83%BC%E3%83%BB%E3%82%B3%E3%83%B3%E3%83%94%E3%83%A5%E3%83%BC%E3%82%BF%E3%82%A8%E3%83%B3%E3%82%BF%E3%83%86%E3%82%A4%E3%83%B3%E3%83%A1%E3%83%B3%E3%83%88-USB-%E3%82%B1%E3%83%BC%E3%83%96%E3%83%AB-2-8m/dp/B00462Q5ZW/ref=sr_1_1?ie=UTF8&amp;qid=1426232234&amp;sr=8-1&amp;keywords=usb%E3%82%B1%E3%83%BC%E3%83%96%E3%83%AB+Dualshock">適宜用意</a></td>
+</tr>
+</tbody>
+</table>
+
+
+<h2>準備</h2>
+
+<p><a href="http://wiki.ros.org/ja">ROS</a>及び<a href="http://wiki.ros.org/joy">joystick_drivers</a>はインストールしておいて下さい。</p>
+
+<p>まずは、joystiの依存関係（要は必要なもの）をインストールして、コンパイルします。
+<code>bash
+rosdep install joy
+rosmake joy
+</code></p>
+
+<p>次に、DualShock3を試します。
+テスト用に<code>jstest</code>をインストールしましょう。
+<code>bash
+sudo apt-get install joystick
+</code>
+インストールが完了したら、DualShock3が繋がっているか確かめます。
+<code>bash
+ls /dev/input
+</code>
+おそらく、次のように表示されるはずです。
+<code>bash
+by-id    event0  event2  event4  event6  event8  mouse0  mouse2  uinput
+by-path  event1  event3  event5  event7  js0     mice    mouse1
+</code>
+この場合は<code>js0</code>にDualShock3に繋がっています。</p>
+
+<p>それでは、<code>jstest</code>を使ってDualShock3の情報を見てみましょう。
+<code>bash
+sudo jstest /dev/input/jsX
+</code>
+Xは先ほど確認した数字に合わせて下さい。すると、以下のように表示されるはずです。
+<code>bash
+Driver version is 2.1.0.
+Joystick (Logitech Logitech Cordless RumblePad 2) has 6 axes (X, Y, Z, Rz, Hat0X, Hat0Y)
+and 12 buttons (BtnX, BtnY, BtnZ, BtnTL, BtnTR, BtnTL2, BtnTR2, BtnSelect, BtnStart, BtnMode, BtnThumbL, BtnThumbR).
+Testing ... (interrupt to exit)
+Axes:  0:     0  1:     0  2:     0  3:     0  4:     0  5:     0 Buttons:  0:off  1:off  2:off  3:off  4:off  5:off  6:off  7:off  8:off  9:off 10:off 11:off
+</code>
+確認できたら、準備は完了です。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[ジョイスティックで4つのLEDをつける(Arduino&ROS)]]></title>
