@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Ros | 九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/blog/categories/ros/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-03-11T18:59:00+09:00</updated>
+  <updated>2015-03-13T19:06:11+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[CIR-KIT Members]]></name>
@@ -12,6 +12,140 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[ジョイスティックで亀を泳がせる(準備編)]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/03/13/turtlesim-with-joystick/"/>
+    <updated>2015-03-13T13:02:00+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/03/13/turtlesim-with-joystick</id>
+    <content type="html"><![CDATA[<h1>ジョイスティックで亀を泳がせる</h1>
+
+<h2>概要</h2>
+
+<p>ROSのチュートリアルで使用したturtlesimの亀をジョイスティックで動かします。<a href="http://wiki.ros.org/joy/Tutorials">joy_tutorial</a>で行っていることをやりますので、原文はそちらへどうぞ。</p>
+
+<h2>検証情報</h2>
+
+<h3>日時</h3>
+
+<p>03/13/2015 (Fri)</p>
+
+<h3>スペック</h3>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;">パーツ</th>
+<th style="text-align:center;">スペック</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">PC</td>
+<td style="text-align:center;">CLEVO M76T</td>
+</tr>
+<tr>
+<td style="text-align:center;">Prosessor</td>
+<td style="text-align:center;">CeleronDualCore T3000 1.80GHz×2</td>
+</tr>
+<tr>
+<td style="text-align:center;">RAM</td>
+<td style="text-align:center;">4GB</td>
+</tr>
+<tr>
+<td style="text-align:center;">OS</td>
+<td style="text-align:center;">Ubuntu 14.04.2 LTS 64bit</td>
+</tr>
+<tr>
+<td style="text-align:center;">ROS</td>
+<td style="text-align:center;">indigo 1.11.10</td>
+</tr>
+<tr>
+<td style="text-align:center;">joystick_drivers</td>
+<td style="text-align:center;">1.10.0</td>
+</tr>
+</tbody>
+</table>
+
+
+<!--more-->
+
+
+<h2>使用したもの</h2>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:left;"></th>
+<th style="text-align:left;">参考</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">ROS</td>
+<td style="text-align:left;"><a href="/blog/2015/02/25/we-have-get-to-work-when-install-ubuntu">CIR-KITメンバーが必ずすべきこと</a></td>
+</tr>
+<tr>
+<td style="text-align:left;">DualShock3</td>
+<td style="text-align:left;"><a href="http://www.jp.playstation.com/ps3/peripheral/cechzc2j.html">PlayStation.com</a></td>
+</tr>
+<tr>
+<td style="text-align:left;">joystick_driver</td>
+<td style="text-align:left;"><a href="http://wiki.ros.org/joy">ROS.org</a></td>
+</tr>
+<tr>
+<td style="text-align:left;">PC</td>
+<td style="text-align:left;"><a href="http://shopap.lenovo.com/jp/notebooks/thinkpad/x-series/x250/?cid=jp:sem:q2xyf9&amp;#tab-customize">ご自由に</a></td>
+</tr>
+<tr>
+<td style="text-align:left;">USBケーブル</td>
+<td style="text-align:left;"><a href="http://www.amazon.co.jp/%E3%82%BD%E3%83%8B%E3%83%BC%E3%83%BB%E3%82%B3%E3%83%B3%E3%83%94%E3%83%A5%E3%83%BC%E3%82%BF%E3%82%A8%E3%83%B3%E3%82%BF%E3%83%86%E3%82%A4%E3%83%B3%E3%83%A1%E3%83%B3%E3%83%88-USB-%E3%82%B1%E3%83%BC%E3%83%96%E3%83%AB-2-8m/dp/B00462Q5ZW/ref=sr_1_1?ie=UTF8&amp;qid=1426232234&amp;sr=8-1&amp;keywords=usb%E3%82%B1%E3%83%BC%E3%83%96%E3%83%AB+Dualshock">適宜用意</a></td>
+</tr>
+</tbody>
+</table>
+
+
+<h2>準備</h2>
+
+<p><a href="http://wiki.ros.org/ja">ROS</a>及び<a href="http://wiki.ros.org/joy">joystick_drivers</a>はインストールしておいて下さい。</p>
+
+<p>まずは、joystiの依存関係（要は必要なもの）をインストールして、コンパイルします。
+<code>bash
+rosdep install joy
+rosmake joy
+</code></p>
+
+<p>次に、DualShock3を試します。
+テスト用に<code>jstest</code>をインストールしましょう。
+<code>bash
+sudo apt-get install joystick
+</code>
+インストールが完了したら、DualShock3が繋がっているか確かめます。
+<code>bash
+ls /dev/input
+</code>
+おそらく、次のように表示されるはずです。
+<code>bash
+by-id    event0  event2  event4  event6  event8  mouse0  mouse2  uinput
+by-path  event1  event3  event5  event7  js0     mice    mouse1
+</code>
+この場合は<code>js0</code>にDualShock3に繋がっています。</p>
+
+<p>それでは、<code>jstest</code>を使ってDualShock3の情報を見てみましょう。
+<code>bash
+sudo jstest /dev/input/jsX
+</code>
+Xは先ほど確認した数字に合わせて下さい。すると、以下のように表示されるはずです。
+<code>bash
+Driver version is 2.1.0.
+Joystick (Logitech Logitech Cordless RumblePad 2) has 6 axes (X, Y, Z, Rz, Hat0X, Hat0Y)
+and 12 buttons (BtnX, BtnY, BtnZ, BtnTL, BtnTR, BtnTL2, BtnTR2, BtnSelect, BtnStart, BtnMode, BtnThumbL, BtnThumbR).
+Testing ... (interrupt to exit)
+Axes:  0:     0  1:     0  2:     0  3:     0  4:     0  5:     0 Buttons:  0:off  1:off  2:off  3:off  4:off  5:off  6:off  7:off  8:off  9:off 10:off 11:off
+</code>
+確認できたら、準備は完了です。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[ArduinoをROSで動かす]]></title>
@@ -329,100 +463,57 @@ echo "float32 y" &gt;&gt; Vector2.msg
 <p>作ったmsgのためにCMakeListsとpackage.xmlを下のように書き換えましょう．</p>
 
 <p>CMakeLists.txt
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>cmake_minimum_required<span class="o">(</span>VERSION 2.8.3<span class="o">)</span>
-</span><span class='line'>project<span class="o">(</span>light_fourleds<span class="o">)</span>&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;h1&gt;Load catkin and all dependencies required <span class="k">for</span> this package&lt;/h1&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;find_package<span class="o">(</span>catkin REQUIRED COMPONENTS message_generation<span class="o">)</span>&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;h6&gt;#&lt;/h6&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;h2&gt;Declare ROS message&lt;/h2&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;h6&gt;#&lt;/h6&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;h1&gt;Generate messages in the <span class="p">&amp;</span>lsquo<span class="p">;</span>msg<span class="p">&amp;</span>rsquo<span class="p">;</span> folder&lt;/h1&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;add_message_files<span class="o">(</span>FILES Vector2.msg<span class="o">)</span>&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;h2&gt;Generate added messages with any dependencies listed here&lt;/h2&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;generate_messages<span class="o">()</span>&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;h6&gt;#&lt;/h6&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;h2&gt;catkin specific configuration&lt;/h2&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;h6&gt;#&lt;/h6&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;catkin_package<span class="o">(</span>CATKIN_DEPENDS message_runtime<span class="o">)</span>
-</span></code></pre></td></tr></table></div></figure></p>
+&#8220;`bash
+cmake_minimum_required(VERSION 2.8.3)
+project(light_fourleds)</p>
+
+<h1>Load catkin and all dependencies required for this package</h1>
+
+<p>find_package(catkin REQUIRED COMPONENTS message_generation)</p>
+
+<h6>#</h6>
+
+<h2>Declare ROS message</h2>
+
+<h6>#</h6>
+
+<h1>Generate messages in the &lsquo;msg&rsquo; folder</h1>
+
+<p>add_message_files(FILES Vector2.msg)</p>
+
+<h2>Generate added messages with any dependencies listed here</h2>
+
+<p>generate_messages()</p>
+
+<h6>#</h6>
+
+<h2>catkin specific configuration</h2>
+
+<h6>#</h6>
+
+<p>catkin_package(CATKIN_DEPENDS message_runtime)
+&#8220;`</p>
 
 <p>package.txt
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>&lt;package&gt;
-</span><span class='line'>  &lt;name&gt;light_fourleds&lt;/name&gt;
-</span><span class='line'>  &lt;version&gt;0.1.0&lt;/version&gt;
-</span><span class='line'>  &lt;description&gt;
-</span><span class='line'>    This package defines message, and have node of arduino to light
-</span><span class='line'>    four leds.
-</span><span class='line'>  &lt;/description&gt;
-</span><span class='line'>  &lt;maintainer <span class="nv">email</span><span class="o">=</span><span class="s2">&quot;yourName@todo.todo&quot;</span>&gt;yourName&lt;/maintainer&gt;
-</span><span class='line'>  &lt;license&gt;BSD&lt;/license&gt;&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;  &lt;buildtool_depend&gt;catkin&lt;/buildtool_depend&gt;&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;  &lt;build_depend&gt;message_generation&lt;/build_depend&gt;&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;  &lt;run_depend&gt;message_runtime&lt;/run_depend&gt;
-</span><span class='line'>  &lt;run_depend&gt;rosserial_python&lt;/run_depend&gt;
-</span><span class='line'>&lt;/package&gt;
-</span></code></pre></td></tr></table></div></figure></p>
+&#8220;`bash
+<package>
+  <name>light_fourleds</name>
+  <version>0.1.0</version>
+  <description>
+    This package defines message, and have node of arduino to light
+    four leds.
+  </description>
+  <maintainer email="yourName@todo.todo">yourName</maintainer>
+  <license>BSD</license></p>
+
+<p>  <buildtool_depend>catkin</buildtool_depend></p>
+
+<p>  <build_depend>message_generation</build_depend></p>
+
+<p>  <run_depend>message_runtime</run_depend>
+  <run_depend>rosserial_python</run_depend>
+</package>
+&#8220;`</p>
 
 <p>書き終えたら<code>catkin_make --force-cmake</code>を実行します．
 <code>bash
@@ -549,72 +640,43 @@ int main(int argc, char **argv) {
 <p>書き込んだら，CMakeLists.txtとpackage.xmlを下のように書き換えます．</p>
 
 <p>CMakeLists.txt
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>cmake_minimum_required<span class="o">(</span>VERSION 2.8.3<span class="o">)</span>
-</span><span class='line'>project<span class="o">(</span>light_fourleds_adapters<span class="o">)</span>&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;set<span class="o">(</span>CATKIN_DEPS roscpp sensor_msgs<span class="o">)</span>
-</span><span class='line'><span class="nb">set</span><span class="o">(</span>ROSDEP_DEPS light_fourleds<span class="o">)</span>
-</span><span class='line'>find_package<span class="o">(</span>catkin REQUIRED COMPONENTS <span class="k">${</span><span class="nv">CATKIN_DEPS</span><span class="k">}</span> <span class="k">${</span><span class="nv">ROSDEP_DEPS</span><span class="k">}</span><span class="o">)</span>
-</span><span class='line'>catkin_package<span class="o">(</span>CATKIN_DEPENDS <span class="k">${</span><span class="nv">CATKIN_DEPS</span><span class="k">}</span> <span class="k">${</span><span class="nv">ROSDEP_DEPS</span><span class="k">}</span><span class="o">)</span>&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;include_directories<span class="o">(</span><span class="k">${</span><span class="nv">catkin_INCLUDE_DIRS</span><span class="k">}</span><span class="o">)</span>&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;add_executable<span class="o">(</span>adapt_joy_node src/adapt_joy_node.cpp<span class="o">)</span>
-</span><span class='line'>target_link_libraries<span class="o">(</span>adapt_joy_node <span class="k">${</span><span class="nv">catkin_LIBRARIES</span><span class="k">}</span><span class="o">)</span>
-</span></code></pre></td></tr></table></div></figure></p>
+&#8220;`bash
+cmake_minimum_required(VERSION 2.8.3)
+project(light_fourleds_adapters)</p>
+
+<p>set(CATKIN_DEPS roscpp sensor_msgs)
+set(ROSDEP_DEPS light_fourleds)
+find_package(catkin REQUIRED COMPONENTS ${CATKIN_DEPS} ${ROSDEP_DEPS})
+catkin_package(CATKIN_DEPENDS ${CATKIN_DEPS} ${ROSDEP_DEPS})</p>
+
+<p>include_directories(${catkin_INCLUDE_DIRS})</p>
+
+<p>add_executable(adapt_joy_node src/adapt_joy_node.cpp)
+target_link_libraries(adapt_joy_node ${catkin_LIBRARIES})
+&#8220;`</p>
 
 <p>package.xml
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>&lt;package&gt;
-</span><span class='line'>  &lt;name&gt;light_fourleds_adapters&lt;/name&gt;
-</span><span class='line'>  &lt;version&gt;0.1.0&lt;/version&gt;&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;  &lt;description&gt;Adapt message to light_fourleds package.&lt;/description&gt;&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;  &lt;maintainer <span class="nv">email</span><span class="o">=</span><span class="s2">&quot;yourName@todo.todo&quot;</span>&gt;yourName&lt;/maintainer&gt;
-</span><span class='line'>  &lt;license&gt;BSD&lt;/license&gt;&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;  &lt;buildtool_depend&gt;catkin&lt;/buildtool_depend&gt;&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;  &lt;build_depend&gt;light_fourleds&lt;/build_depend&gt;
-</span><span class='line'>  &lt;build_depend&gt;roscpp&lt;/build_depend&gt;
-</span><span class='line'>  &lt;build_depend&gt;sensor_msgs&lt;/build_depend&gt;&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;  &lt;run_depend&gt;light_fourleds&lt;/run_depend&gt;
-</span><span class='line'>  &lt;run_depend&gt;roscpp&lt;/run_depend&gt;
-</span><span class='line'>  &lt;run_depend&gt;sensor_msgs&lt;/run_depend&gt;
-</span><span class='line'>&lt;/package&gt;
-</span></code></pre></td></tr></table></div></figure></p>
+&#8220;`bash
+<package>
+  <name>light_fourleds_adapters</name>
+  <version>0.1.0</version></p>
+
+<p>  <description>Adapt message to light_fourleds package.</description></p>
+
+<p>  <maintainer email="yourName@todo.todo">yourName</maintainer>
+  <license>BSD</license></p>
+
+<p>  <buildtool_depend>catkin</buildtool_depend></p>
+
+<p>  <build_depend>light_fourleds</build_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend>sensor_msgs</build_depend></p>
+
+<p>  <run_depend>light_fourleds</run_depend>
+  <run_depend>roscpp</run_depend>
+  <run_depend>sensor_msgs</run_depend>
+</package>
+&#8220;`</p>
 
 <p>すべて書き込んだら<code>workspace</code>直下へ移動して<code>catkin_make</code>します．</p>
 
@@ -989,676 +1051,6 @@ catkin_make
 <h2>次のステップ</h2>
 
 <p>様々な、Gazebo-ROS間の仕組みについては、<a href="http://cir-kit.github.io/blog/2015/03/04/gazebo-ros-advanced-integration/">発展的なROSの統合</a>をご覧ください。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[No.6-8:GazeboをROSに繋ぐ (ROS Communication 編)]]></title>
-    <link href="http://cir-kit.github.io/blog/2015/03/02/gazebo-ros-communication/"/>
-    <updated>2015-03-02T21:11:56+09:00</updated>
-    <id>http://cir-kit.github.io/blog/2015/03/02/gazebo-ros-communication</id>
-    <content type="html"><![CDATA[<p><img src="/images/gazebo_logo.png" alt="gazebo_logo" /></p>
-
-<h5>検証日時</h5>
-
-<p>03/02/2015 (Mon)</p>
-
-<h5>概要</h5>
-
-<p>Gazeboのチュートリアル第六弾「Connect to ROS」。
-ROSはロボットの制御フレームワークです。このチュートリアルでは、GazeboとROSのインターフェースについて説明します。
-今回はその「ROS Communication」編です。
-公式サイトを適当に翻訳しただけですので、あしからず。</p>
-
-<h5>レベル</h5>
-
-<p><strong>INTERMEDIATE</strong></p>
-
-<!-- more -->
-
-
-<h5>環境</h5>
-
-<table>
-<thead>
-<tr>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center;"> <strong>PC</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Prosessor</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>RAM</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>OS</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Kernel</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> 3.13.0-44-generic </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Gazebo</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Version 5.0.1 </td>
-</tr>
-</tbody>
-</table>
-
-
-<h5>参考</h5>
-
-<p><a href="http://gazebosim.org/tutorials?cat=connect_ros">GAZEBO Tutorial-Connect to ROS</a></p>
-
-<h2>チュートリアル : ROS Communication</h2>
-
-<p>Gazeboはユーザにシミュレートされたworldの様々な角度を取得したり修正したりできるROSのAPIを提供しています。以下のセクションでは、シミュレーションのworldと物体を操るための効果について説明します。GazeboのためのROSメッセージとサービスの完全なリストはこのチュートリアルに書いてあります。</p>
-
-<h2>必要条件</h2>
-
-<p>これから説明する例を実行していきたいなら、RRBotのセットアップは、<a href="http://cir-kit.github.io/blog/2015/02/17/gazebo-urdf-in-gazebo/">GazeboにおけるURDF</a>のチュートリアルで述べているということを念頭に置いてください。このチュートリアルでは、いろいろな方法を使ってコーラの缶を<strong>蹴ります</strong>。<br/>
-また、Gazeboが以下のコマンドですでにlaunchされていると仮定して話を進めます。:</p>
-
-<pre><code class="bash">roscore &amp;
-rosrun gazebo_ros gazebo
-</code></pre>
-
-<p>ただし、これから紹介するコマンドを打った後に、Gazeboを再起動する必要があるかもしれません。</p>
-
-<h2><code>gazeborosapi_plugin</code>について</h2>
-
-<p><code>gazeboros</code>パッケージと共に配置されている<code>gazeborosapi_plugin</code>は、<code>gazebo</code>と呼ばれるROSのノードを初期化します。これは、これから説明する様なROSのインターフェースを供給するために、ROSコールバックスケジュラー(<code>message passing</code>)とGazeboのインターナショナルスケジュラーを統合しています。このROSのAPIはユーザーがROSを超えたシミュレーション環境の詳細を扱うのと同じように、環境のモデルの姿勢の内観とスポーンを行うことを可能にします。<br/>
-また、このプラグインは<code>gzserver</code>によってのみ読み込まれます。</p>
-
-<h2><code>gazeborospaths_plugin</code>について</h2>
-
-<p>２つ目の<code>gazeborospath_plugin</code>という名前のプラグインはGazeboがROSリソースを探す(例えば、ROSパッケージのパス名を解決する)ことを可能にする<code>gazebo ros</code>パッケージの中で利用可能です。<br/>
-このプラグインは<code>gzserver</code>と<code>gzclient</code>の両方によって読み込まれます。</p>
-
-<h2>Gazeboのpublishしたパラメータ</h2>
-
-<p>Parameters</p>
-
-<table>
-<thead>
-<tr>
-<th style="text-align:center;"> 名前 </th>
-<th style="text-align:center;"> 型 </th>
-<th style="text-align:center;"> 説明 </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center;"> /usesimtime </td>
-<td style="text-align:center;"> Bool </td>
-<td style="text-align:center;"> ROSがpublishされたROS timeのための<code>/clock</code>トピックを使うかどうか定義します </td>
-</tr>
-</tbody>
-</table>
-
-
-<p>Gazeboは、もしシミュレーション時間が<code>/usertime</code>パラメータに使用されるべきなら、他のアプリケーション(とりわけRviz)を定義するためにROSパラメータサーバーを使用します。これは、あなたが<code>gazebo_ros</code>を起動した時に、Gazeboが自動で設定すべきことです。<br/>
-もし、ROSシステムをシミュレーション同期時間と共に提供するために、<code>gazebo_ros</code>がROSの<code>/clock</code>トピックをpublishしているなら、<code>usesimtime</code>は<code>true</code>です。シミュレーション時間については<a href="http://www.ros.org/wiki/roscpp/Overview/Time">ROS C++ Time</a>をご覧ください。</p>
-
-<h3>値をクリックする</h3>
-
-<p>パラメータに何が設定されているか見るためには、以下のコマンドを実行してください。:</p>
-
-<pre><code class="bash">rosparam get /use_sim_time 
-</code></pre>
-
-<h2>Gazeboが購読するトピック</h2>
-
-<p>Topics</p>
-
-<table>
-<thead>
-<tr>
-<th style="text-align:center;"> 名前 </th>
-<th style="text-align:center;"> 型 </th>
-<th style="text-align:center;"> 説明 </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center;"> ~/setlinkstate </td>
-<td style="text-align:center;">gazebomsgs/LinkState </td>
-<td style="text-align:center;"> リンクの姿勢(<code>pose/twist</code>)を設定します。</td>
-</tr>
-<tr>
-<td style="text-align:center;"> ~/setmodelstate </td>
-<td style="text-align:center;">gazebomsgs/ModelState </td>
-<td style="text-align:center;"> モデルの姿勢(<code>pose/twist</code>)を設定します。</td>
-</tr>
-</tbody>
-</table>
-
-
-<h3>トピックを通じたシミュレーションにおけるモデルのPoseとTwist</h3>
-
-<p><a href="http://www.ros.org/wiki/Topics">Topics</a>は<code>pose</code>の設定動作が完了するのを待つことなく、迅速にモデルの<code>pose</code>と<code>twist</code>を設定するのに使うことができます。そのようにするために、求められる<a href="http://www.ros.org/doc/api/gazebo/html/msg/ModelState.html">model state message</a>を<code>/gazebo/setmodelstate</code>トピックにpublishします。例えば、<code>topics</code>を通じて<code>pose</code>の設定をテストするために、オンラインデータベースからモデルをスポーンさせてコーラの缶をシミュレーションに追加します。:</p>
-
-<pre><code class="bash">rosrun gazebo_ros spawn_model -database coke_can -gazebo -model coke_can -y 1
-</code></pre>
-
-<p>そして<code>/gazebo/setmodelstate</code>トピックにpublishすることで、コーラの缶の姿勢を設定します。:</p>
-
-<pre><code class="bash">rostopic pub -r 20 /gazebo/set_model_state gazebo_msgs/ModelState '{model_name: coke_can, pose: { position: { x: 1, y: 0, z: 2 }, orientation: {x: 0, y: 0.491983115673, z: 0, w: 0.870604813099 } }, twist: { linear: { x: 0, y: 0, z: 0 }, angular: { x: 0, y: 0, z: 0}  }, reference_frame: world }'
-</code></pre>
-
-<p>すると以下のように、蹴ってくれと言わんばかりに(まあ、今から蹴るんですが)RRBotの前にコーラの缶が浮いているのを確認できるはずです。<br/>
-ただし、以下のように、RRBotを追加するため、これまでに説明したroslaunchを使っています。:</p>
-
-<pre><code class="bash">roslaunch rrbot_gazebo rrbot_world.launch
-</code></pre>
-
-<p><img src="/images/2015-03-02-gazebo-ros-communication/rrbot-test-1.png" alt="rrbot-test-1" /></p>
-
-<h2>Gazeboがpuvlishするトピック</h2>
-
-<p>Topics</p>
-
-<table>
-<thead>
-<tr>
-<th style="text-align:center;"> 名前 </th>
-<th style="text-align:center;"> 型 </th>
-<th style="text-align:center;"> 説明 </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center;"> /clock </td>
-<td style="text-align:center;">rosgraphmsgs/Clock </td>
-<td style="text-align:center;"> シミュレーション時間を<code>/usertime</code>パラメータと共にpublishします。</td>
-</tr>
-<tr>
-<td style="text-align:center;"> ~/linkstates </td>
-<td style="text-align:center;">gazebomsgs/LinkStates </td>
-<td style="text-align:center;"> シミュレーション中のすべてのリンクの状態をpublishします。</td>
-</tr>
-<tr>
-<td style="text-align:center;"> ~/modelstates </td>
-<td style="text-align:center;">gazebo_msgs/ModelStates </td>
-<td style="text-align:center;"> シミュレーション中のすべてのモデルの状態をpublishします。</td>
-</tr>
-</tbody>
-</table>
-
-
-<h3>Topicを使ってモデルとリンクの姿勢を訂正する</h3>
-
-<p>Gazeboはworld座標系に関するシミュレーション中の物体のposeとtwistの情報を含む、<code>/gazebo/linkstates</code>と<code>/gazebo/modelstates</code>トピックをpublishしています。これらの挙動は、以下のコマンドを実行することで確認できます。</p>
-
-<pre><code class="bash">rostopic echo -n 1 /gazebo/model_states
-</code></pre>
-
-<p>もしくは</p>
-
-<pre><code class="bash">rostopic echo -n 1 /gazebo/link_states
-</code></pre>
-
-<p>繰り返すには、<code>link</code>が慣性、外観、衝突プロパティの定義された剛体として定義される必要があります。一方、<code>model</code>はリンクとジョイントの衝突要素として定義されます。<code>model</code>の状態は標準的な<code>link</code>の状態であります。URDFが木構造で与えられており、モデルのカノニカルリンクは自身のルートリンクによって定義されます。</p>
-
-<h2>サービス : シミュレーション中のモデルの削除と作成</h2>
-
-<p>以下のサービスでは、シミュレーション中のモデルを削除したり作成したりできます。:</p>
-
-<table>
-<thead>
-<tr>
-<th style="text-align:center;"> 名前 </th>
-<th style="text-align:center;"> 型 </th>
-<th style="text-align:center;"> 説明 </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center;"> ~/spawnurdfmodel </td>
-<td style="text-align:center;">gazebomsgs/SpawnModel </td>
-<td style="text-align:center;"> Universal Robotic Description Format (URDF)をスポーンするために、このサービスを使います。</td>
-</tr>
-<tr>
-<td style="text-align:center;"> ~/spawnsdfmodel </td>
-<td style="text-align:center;">gazebomsgs/SpawnModel </td>
-<td style="text-align:center;"> Gazeboに記述されるSimulmulation Description Format (SDF)モデルをスポーンするために、このサービスを使います。</td>
-</tr>
-<tr>
-<td style="text-align:center;"> ~/deletemodel </td>
-<td style="text-align:center;">gazebomsgs/DeleteModel </td>
-<td style="text-align:center;"> シミュレーションからモデルを削除することができます。</td>
-</tr>
-</tbody>
-</table>
-
-
-<h3>モデルをスポーンする</h3>
-
-<p><code>spawnmodel</code>と呼ばれるスクリプトはモデルの<code>gazeboros</code>によって呼び出されるスポーンサービスをコールするために提供されています。モデルをサービスコールを使ってスポーンするための最も実践的な方法は<code>roslaunch</code>ファイルを使うことです。詳細は、<a href="http://cir-kit.github.io/blog/2015/02/15/gazebo-using-roslaunch/">roslaunchを使う</a>というチュートリアルに書いてあります。URDFやSDFをGazeboに追加するために<code>spawn_model</code>を使う方法はたくさんあります。以下はそのうちのいくつかの例です。:<br/>
-URDFをファイルからスポーンする - まず最初に<code>.Xacro</code>ファイルを<code>.xml</code>ファイルに変換し、スポーンします。:</p>
-
-<pre><code class="bash">rosrun xacro xacro `rospack find rrbot_description`/urdf/rrbot.xacro &gt;&gt; `rospack find rrbot_description`/urdf/rrbot.xml
-rosrun gazebo_ros spawn_model -file `rospack find rrbot_description`/urdf/rrbot.xml -urdf -y 1 -model rrbot1 -robot_namespace rrbot1
-</code></pre>
-
-<p><code>roslaunch</code>と<code>xacro</code>を使ったパラメータサーバーからのURDF: <a href="http://cir-kit.github.io/blog/2015/02/15/gazebo-using-roslaunch/">roslaunchを使う</a>をご覧ください。<br/>
-ローカルモデルデータベースからのSDF:</p>
-
-<pre><code class="bash">rosrun gazebo_ros spawn_model -file `echo $GAZEBO_MODEL_PATH`/coke_can/model.sdf -sdf -model coke_can1 -y 0.2 -x -0.3
-</code></pre>
-
-<p>オンラインモデルデータベースからのSDF:</p>
-
-<pre><code class="bash">rosrun gazebo_ros spawn_model -database coke_can -sdf -model coke_can3 -y 2.2 -x -0.3
-</code></pre>
-
-<p>名前空間、<code>trimesh</code>プロパティ、ジョイントポジション、RPYオリエンテーションを含む<code>spawn_model</code>のための利用可能な引数をすべて見るには、以下を実行してください。:</p>
-
-<pre><code class="bash">rosrun gazebo_ros spawn_model -h
-</code></pre>
-
-<h3>モデルを削除する</h3>
-
-<p>すでにGazeboの中にあるモデルの削除は、物体に与えたモデルの名前を覚えている限りは簡単です。もし、RRBotを前のセクションで記述したように、<code>rrbot1</code>と名付けているなら、以下のコマンドでそれを削除できます。:</p>
-
-<pre><code class="bash">rosservice call gazebo/delete_model '{model_name: rrbot1}'
-</code></pre>
-
-<h2>サービス : 状態とプロパティのセッティング</h2>
-
-<p>以下のサービスでは、シミュレーション中の物体やシミュレーションについての状態やプロパティの情報を設定することができます。:</p>
-
-<table>
-<thead>
-<tr>
-<th style="text-align:center;"> 名前 </th>
-<th style="text-align:center;"> 型 </th>
-<th style="text-align:center;"> 説明 </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center;"> ~/setlinkproperties </td>
-<td style="text-align:center;">gazebomsgs/SetLinkProperties</td>
-<td></td>
-</tr>
-<tr>
-<td style="text-align:center;"> ~/setphysicsproperties </td>
-<td style="text-align:center;">gazebomsgs/SetPhysicsProperties</td>
-<td></td>
-</tr>
-<tr>
-<td style="text-align:center;"> ~/setmodelstate </td>
-<td style="text-align:center;">gazebomsgs/SetModelState</td>
-<td></td>
-</tr>
-<tr>
-<td style="text-align:center;"> ~/setmodelconfiguration </td>
-<td style="text-align:center;">gazebomsgs/SetModelConfiguration </td>
-<td style="text-align:center;"> モデルのジョイントポジションをダイナミクスなしで設定できるようになります。</td>
-</tr>
-<tr>
-<td style="text-align:center;"> ~/setjointproperties </td>
-<td style="text-align:center;">gazebomsgs/SetJointProperties</td>
-<td></td>
-</tr>
-<tr>
-<td style="text-align:center;"> ~/setlinkstate </td>
-<td style="text-align:center;">gazebomsgs/SetLinkState</td>
-<td></td>
-</tr>
-<tr>
-<td style="text-align:center;"> ~/setlinkstate </td>
-<td style="text-align:center;">gazebomsgs/LinkState</td>
-<td></td>
-</tr>
-<tr>
-<td style="text-align:center;"> ~/setmodelstate </td>
-<td style="text-align:center;">gazebomsgs/ModelState</td>
-<td></td>
-</tr>
-</tbody>
-</table>
-
-
-<h3>モデルの姿勢を設定する例</h3>
-
-<p><code>/gazebo/setmodelstate</code>サービスを使い、RRBotでコーラの缶を蹴ってみましょう !<br/>
-もし、まだシミュレーションにコーラの缶を追加していないのなら、以下のコマンドを実行してください。:</p>
-
-<pre><code class="bash">rosrun gazebo_ros spawn_model -database coke_can -gazebo -model coke_can -y 1
-</code></pre>
-
-<p>これは、Gazeboもしくはオンラインモデルデータベース(インターネット接続が必要です)を通じて利用可能になるようパッケージされていなければなりません。尚、コーラの缶がどこにあっても問題はありません。<br/>
-続いて、コーラの缶をRRBotのポジションに動かすためのサービスリクエストをコールしましょう。:</p>
-
-<pre><code class="bash">rosservice call /gazebo/set_model_state '{model_state: { model_name: coke_can, pose: { position: { x: 0.3, y: 0.2 ,z: 0 }, orientation: {x: 0, y: 0.491983115673, z: 0, w: 0.870604813099 } }, twist: { linear: {x: 0.0 , y: 0 ,z: 0 } , angular: { x: 0.0 , y: 0 , z: 0.0 } } , reference_frame: world } }'
-</code></pre>
-
-<p>すると、以下のようになるはずです。</p>
-
-<p><img src="/images/2015-03-02-gazebo-ros-communication/rrbot-test-2.png" alt="rrobt-test-2" /></p>
-
-<p>続いて、RRBotを以下のコマンドを使って動かしてみましょう。</p>
-
-<pre><code class="bash">rosservice call /gazebo/set_model_state '{model_state: { model_name: rrbot, pose: { position: { x: 1, y: 1 ,z: 10 }, orientation: {x: 0, y: 0.491983115673, z: 0, w: 0.870604813099 } }, twist: { linear: {x: 0.0 , y: 0 ,z: 0 } , angular: { x: 0.0 , y: 0 , z: 0.0 } } , reference_frame: world } }'
-</code></pre>
-
-<p>うまく行けば、コーラの缶がどこかに飛んでゆくでしょう。(゜Д゜)ノ&#8221;<br/>
-うまいう行かなかったら、やり直してみましょう。これはチュートリアルなんですから。<br/>
-ちなみに、以下の動画みたいになります。以下の動画では、缶が転がってます。私も何回かやりましたが、缶が気持ちよく飛んでゆくこともありましたw</p>
-
-<p>&lt; div class=&ldquo;youtube-container&rdquo;></p>
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/A8tGFOlgRdg" frameborder="0" allowfullscreen></iframe>
-
-
-<p></div></p>
-
-<h2>サービス : 状態とプロパティの取得</h2>
-
-<p>以下のサービスでは、シミュレーション中の物体やシミュレーションについての状態やプロパティの情報を取得することができます。:</p>
-
-<table>
-<thead>
-<tr>
-<th style="text-align:center;"> 名前 </th>
-<th style="text-align:center;"> 型 </th>
-<th style="text-align:center;"> 説明 </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center;"> ~/getmodelproperties </td>
-<td style="text-align:center;">gazebomsgs/GetModelProperties</td>
-<td style="text-align:center;"> シミュレーション中のモデルのプロパティを返します。</td>
-</tr>
-<tr>
-<td style="text-align:center;"> ~/getmodelstate </td>
-<td style="text-align:center;">gazebomsgs/GetModelState </td>
-<td style="text-align:center;"> シミュレーション中のモデルの状態を返します。</td>
-</tr>
-<tr>
-<td style="text-align:center;"> ~/getworldproperties </td>
-<td style="text-align:center;">gazebomsgs/GetWorldProperties </td>
-<td style="text-align:center;"> シミュレーションworldのプロパティを返します。</td>
-</tr>
-<tr>
-<td style="text-align:center;"> ~/getjointproperties </td>
-<td style="text-align:center;">gazebomsgs/GetJointProperties </td>
-<td style="text-align:center;"> シミュレーション中のジョイントのプロパティを返します。</td>
-</tr>
-<tr>
-<td style="text-align:center;"> ~/getlinkproperties </td>
-<td style="text-align:center;">gazebomsgs/GetLinkProperties </td>
-<td style="text-align:center;"> シミュレーション中のリンクのプロパティを返します。</td>
-</tr>
-<tr>
-<td style="text-align:center;"> ~/getlinkstate </td>
-<td style="text-align:center;">gazebomsgs/GetLinkState </td>
-<td style="text-align:center;"> シミュレーション中のリンクの状態を返します。</td>
-</tr>
-<tr>
-<td style="text-align:center;"> ~/getphysicsproperties </td>
-<td style="text-align:center;">gazebomsgs/GetPhysicsProperties </td>
-<td style="text-align:center;"> シミュレーション中で使用される物理エンジンのプロパティを返します。</td>
-</tr>
-<tr>
-<td style="text-align:center;"> ~/linkstates </td>
-<td style="text-align:center;">gazebomsgs/LinkStates </td>
-<td style="text-align:center;"> world座標の完全なリンクの状態をpublishします。</td>
-</tr>
-<tr>
-<td style="text-align:center;"> ~/modelstates </td>
-<td style="text-align:center;">gazebo_msgs/ModelStates </td>
-<td style="text-align:center;"> world座標の完全なモデルの状態をpublishします。</td>
-</tr>
-</tbody>
-</table>
-
-
-<h2>注意</h2>
-
-<p>Gazebo中のリンクの名前は<code>modelname::body_name</code>の名前表記にスコープされます。</p>
-
-<h3>モデルの状態を取得する例</h3>
-
-<p>さて、すでにコーラの缶を<strong>蹴った</strong>ことでしょう。今度は、それがどのくらい飛んだのか知りたいですね。これまでの例を使い(同じシミュレーションを実行して)、以下のサービスコールを使ってコーラの缶の<code>pose</code>と<code>twist</code>を取得しましょう。:</p>
-
-<pre><code class="bash">rosservice call gazebo/get_model_state '{model_name: coke_can}'
-</code></pre>
-
-<p>この結果は、ロボットの蹴った具合によって変わりますが、以下のような感じになるはずです。:</p>
-
-<pre><code class="bash">pose: 
-  position: 
-    x: -33.4741996929
-    y: 1.72965811349
-    z: 0.0715116701823
-  orientation: 
-    x: 0.52144600413
-    y: 0.478438115917
-    z: -0.471063379854
-    w: -0.526583636448
-twist: 
-  linear: 
-    x: 5.74579911953e-07
-    y: 0.000217124920081
-    z: 9.67915822705e-06
-  angular: 
-    x: -0.0029562892652
-    y: 7.77750570372e-06
-    z: 4.16767016512e-05
-success: True
-</code></pre>
-
-<p>私のロボットは 33 [m]飛ばしました。あなたのはどうでしたか ?</p>
-
-<h3>シミュレーションworldとオブジェクトプロパティを取得する</h3>
-
-<p>以下のコマンドで、worldの中のモデルのリスト(<code>ground_plane</code>, <code>coke cane</code>, <code>rrbot</code>)を取得することができます。:</p>
-
-<pre><code class="bash">rosservice call gazebo/get_world_properties
-</code></pre>
-
-<p>すると、以下のような結果が得られるはずです。</p>
-
-<pre><code class="bash">sim_time: 59.62
-model_names: ['ground_plane', 'rrbot', 'coke_can']
-rendering_enabled: True
-success: True
-status_message: GetWorldProperties: got properties
-</code></pre>
-
-<p>また、以下のコマンドで特定のモデルの詳細を取得できます。</p>
-
-<pre><code class="bash">rosservice call gazebo/get_model_properties '{model_name: rrbot}'
-</code></pre>
-
-<p>すると、以下の様な結果が得られるはずです。</p>
-
-<pre><code class="bash">parent_model_name: ''
-canonical_body_name: ''
-body_names: ['link1', 'link2', 'link3']
-geom_names: ['link1_collision', 'link2_collision', 'link3_collision', 'link3_collision_camera_link', 'link3_collision_hokuyo_link']
-joint_names: ['fixed', 'joint1', 'joint2']
-child_model_names: []
-is_static: False
-success: True
-status_message: GetModelProperties: got properties
-</code></pre>
-
-<h2>サービス : 力のコントロール</h2>
-
-<p>以下のサービスでは、シミュレーション中のボディやジョイントへの力とねじりを適用することができます。</p>
-
-<table>
-<thead>
-<tr>
-<th style="text-align:center;"> 名前 </th>
-<th style="text-align:center;"> 型 </th>
-<th style="text-align:center;"> 説明 </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center;"> ~/applybodywrench </td>
-<td style="text-align:center;">gazebomsgs/ApplyBodyWrench </td>
-<td style="text-align:center;"> シミュレーション中のボディにねじりを適用します。同じボディに適用されるすべてのアクティブなねじりは累積します。</td>
-</tr>
-<tr>
-<td style="text-align:center;"> ~/applyjointeffort </td>
-<td style="text-align:center;">gazebomsgs/ApplyJointEffort </td>
-<td style="text-align:center;"> シミュレーション中のジョイントへの力を適用します。同じジョイントに適用されるすべてのアクティブな力は累積します。</td>
-</tr>
-<tr>
-<td style="text-align:center;"> ~/clearjointforces </td>
-<td style="text-align:center;">gazebomsgs/ClearJointForces </td>
-<td style="text-align:center;"> ジョイントへ適用されている力をクリアします。</td>
-</tr>
-<tr>
-<td style="text-align:center;"> ~/clearbodywrenches </td>
-<td style="text-align:center;">gazebomsgs/ClearBodyWrenches </td>
-<td style="text-align:center;"> ボディへ適用されているねじりをクリアします。</td>
-</tr>
-</tbody>
-</table>
-
-
-<h3>ねじりをリンクに適用する</h3>
-
-<p>Gazeboのボディへのねじりの適用を説明するために、重力をなくして物体をスポーンさせてみましょう。すでにコーラの缶が追加されていることを確認してください。:</p>
-
-<pre><code class="bash">rosrun gazebo_ros spawn_model -database coke_can -gazebo -model coke_can -y 1
-</code></pre>
-
-<p>続いて、<code>/gazebo/setphysicsproperties</code>サービスコールを送り、すべての軸の重力をなくしましょう。:</p>
-
-<p>Then to turn off gravity send a service call to /gazebo/setphysicsproperties with no gravity in any of the axis:</p>
-
-<pre><code class="bash">rosservice call /gazebo/set_physics_properties "
-time_step: 0.001
-max_update_rate: 1000.0
-gravity: 
-  x: 0.0
-  y: 0.0
-  z: 0.0
-ode_config: 
-  auto_disable_bodies: False
-  sor_pgs_precon_iters: 0
-  sor_pgs_iters: 50
-  sor_pgs_w: 1.3
-  sor_pgs_rms_error_tol: 0.0
-  contact_surface_layer: 0.001
-  contact_max_correcting_vel: 100.0
-  cfm: 0.0
-  erp: 0.2
-  max_contacts: 20"
-</code></pre>
-
-<p><code>/gazebo/applybodywerch</code>サービスを呼び、コーラの缶の原点に１秒間、0.01 [Nm]のトルクを適用しましょう。すると、コーラの缶が、X軸に対して正の方向にスピンするのが確認できるはずです。:</p>
-
-<pre><code class="bash">rosservice call /gazebo/apply_body_wrench '{body_name: "coke_can::link" , wrench: { torque: { x: 0.01, y: 0 , z: 0 } }, start_time: 10000000000, duration: 1000000000 }'
-</code></pre>
-
-<p>今度は、コーラの缶の原点に1秒間、-0.01 [Nm]のトルクを適用し、缶の回転を止めましょう。:</p>
-
-<pre><code class="bash">rosservice call /gazebo/apply_body_wrench '{body_name: "coke_can::link" , wrench: { torque: { x: -0.01, y: 0 , z: 0 } }, start_time: 10000000000, duration: 1000000000 }'
-</code></pre>
-
-<p>通常、負のトルクは、曖昧な定義であることが多いです。すべてのアクティブなねじりをボディに適用するには、以下のようなコマンドを実行してください。:</p>
-
-<pre><code class="bash">rosservice call /gazebo/clear_body_wrenches '{body_name: "coke_can::link"}'
-</code></pre>
-
-<h3>シミュレーション中のジョイントに力を適用する</h3>
-
-<p>ジョイントにトルクを適用するために、<code>/gazebo/applyjointeffort</code>をコールしてください。:</p>
-
-<pre><code class="bash">rosservice call /gazebo/apply_joint_effort "joint_name: 'joint2'
-effort: 10.0
-start_time:
-  secs: 0
-  nsecs: 0
-duration:
-  secs: 10
-  nsecs: 0"
-</code></pre>
-
-<p>するとリンクが回り始めるはずです。<br/>
-特定のジョイントの力をクリアするためには、以下のコマンドをコールしてください。:</p>
-
-<pre><code class="bash">rosservice call /gazebo/clear_joint_forces '{joint_name: joint2}'
-</code></pre>
-
-<h2>サービス : シミュレーションコントロール</h2>
-
-<p>以下のサービスでは、シミュレーション中の物理エンジンを一時停止したり解除したリアできます。:</p>
-
-<table>
-<thead>
-<tr>
-<th style="text-align:center;"> 名前 </th>
-<th style="text-align:center;"> 型 </th>
-<th style="text-align:center;"> 説明 </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center;"> ~/pausephysics </td>
-<td style="text-align:center;">stdsrvs/Empty </td>
-<td style="text-align:center;"> 物理エンジンのアップデートを一時停止します。</td>
-</tr>
-<tr>
-<td style="text-align:center;"> ~/unpausephysics </td>
-<td style="text-align:center;">stdsrvs/Empty </td>
-<td style="text-align:center;"> 物理エンジンのアップデートを再開します。</td>
-</tr>
-<tr>
-<td style="text-align:center;"> ~/resetsimulation </td>
-<td style="text-align:center;">stdsrvs/Empty </td>
-<td style="text-align:center;"> モデルのポーズをリセットします。</td>
-</tr>
-<tr>
-<td style="text-align:center;"> ~/resetworld </td>
-<td style="text-align:center;">stdsrvs/Empty </td>
-<td style="text-align:center;"> 時間を含むすべてのシミュレーションをリセットします。</td>
-</tr>
-</tbody>
-</table>
-
-
-<h3>物理エンジンのアップデートを一時停止する</h3>
-
-<p>飛んでゆくコーラの缶のナイスなスクリーンショットを撮りたいとしましょう。いや、そうだと言ってください。そんな時には、以下のコマンドをコールすることで、物理エンジンを一時停止することができます。:</p>
-
-<pre><code class="bash">rosservice call gazebo/pause_physics
-</code></pre>
-
-<p>シミュレーションが一時停止するとき、シミュレーション時間が停止し、物体も静的になります。しかし、Gazeboの内部アップデートループ(カスタムのダイナミクスプラグインアップデートなど)は依然として動いており、シミュレーション時間は変わっていません。これは、シミュレーションタイムをアップデートしないことで抑制されているのです。シミュレーションを再開するために、以下のコマンドをコールして物理エンジンを再開してください。:</p>
-
-<pre><code class="bash">rosservice call gazebo/unpause_physics
-</code></pre>
-
-<h2>次のステップ</h2>
-
-<p>Gazeboのための独自のROSプラグインの作り方について学んでください。</p>
 ]]></content>
   </entry>
   

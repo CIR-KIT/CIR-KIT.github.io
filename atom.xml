@@ -4,7 +4,7 @@
   <title><![CDATA[九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-03-11T18:59:00+09:00</updated>
+  <updated>2015-03-13T19:05:13+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[CIR-KIT Members]]></name>
@@ -12,6 +12,526 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[ジョイスティックで亀を泳がせる(準備編)]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/03/13/turtlesim-with-joystick/"/>
+    <updated>2015-03-13T13:02:00+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/03/13/turtlesim-with-joystick</id>
+    <content type="html"><![CDATA[<h1>ジョイスティックで亀を泳がせる</h1>
+
+<h2>概要</h2>
+
+<p>ROSのチュートリアルで使用したturtlesimの亀をジョイスティックで動かします。<a href="http://wiki.ros.org/joy/Tutorials">joy_tutorial</a>で行っていることをやりますので、原文はそちらへどうぞ。</p>
+
+<h2>検証情報</h2>
+
+<h3>日時</h3>
+
+<p>03/13/2015 (Fri)</p>
+
+<h3>スペック</h3>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;">パーツ</th>
+<th style="text-align:center;">スペック</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">PC</td>
+<td style="text-align:center;">CLEVO M76T</td>
+</tr>
+<tr>
+<td style="text-align:center;">Prosessor</td>
+<td style="text-align:center;">CeleronDualCore T3000 1.80GHz×2</td>
+</tr>
+<tr>
+<td style="text-align:center;">RAM</td>
+<td style="text-align:center;">4GB</td>
+</tr>
+<tr>
+<td style="text-align:center;">OS</td>
+<td style="text-align:center;">Ubuntu 14.04.2 LTS 64bit</td>
+</tr>
+<tr>
+<td style="text-align:center;">ROS</td>
+<td style="text-align:center;">indigo 1.11.10</td>
+</tr>
+<tr>
+<td style="text-align:center;">joystick_drivers</td>
+<td style="text-align:center;">1.10.0</td>
+</tr>
+</tbody>
+</table>
+
+
+<!--more-->
+
+
+<h2>使用したもの</h2>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:left;"></th>
+<th style="text-align:left;">参考</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">ROS</td>
+<td style="text-align:left;"><a href="http://cir-kit.github.io/blog/2015/02/25/we-have-get-to-work-when-install-ubuntu">CIR-KITメンバーが必ずすべきこと</a></td>
+</tr>
+<tr>
+<td style="text-align:left;">DualShock3</td>
+<td style="text-align:left;"><a href="http://www.jp.playstation.com/ps3/peripheral/cechzc2j.html">PlayStation.com</a></td>
+</tr>
+<tr>
+<td style="text-align:left;">joystick_driver</td>
+<td style="text-align:left;"><a href="http://wiki.ros.org/joy">ROS.org</a></td>
+</tr>
+<tr>
+<td style="text-align:left;">PC</td>
+<td style="text-align:left;"><a href="http://shopap.lenovo.com/jp/notebooks/thinkpad/x-series/x250/?cid=jp:sem:q2xyf9&amp;#tab-customize">ご自由に</a></td>
+</tr>
+<tr>
+<td style="text-align:left;">USBケーブル</td>
+<td style="text-align:left;"><a href="http://www.amazon.co.jp/%E3%82%BD%E3%83%8B%E3%83%BC%E3%83%BB%E3%82%B3%E3%83%B3%E3%83%94%E3%83%A5%E3%83%BC%E3%82%BF%E3%82%A8%E3%83%B3%E3%82%BF%E3%83%86%E3%82%A4%E3%83%B3%E3%83%A1%E3%83%B3%E3%83%88-USB-%E3%82%B1%E3%83%BC%E3%83%96%E3%83%AB-2-8m/dp/B00462Q5ZW/ref=sr_1_1?ie=UTF8&amp;qid=1426232234&amp;sr=8-1&amp;keywords=usb%E3%82%B1%E3%83%BC%E3%83%96%E3%83%AB+Dualshock">適宜用意</a></td>
+</tr>
+</tbody>
+</table>
+
+
+<h2>準備</h2>
+
+<p><a href="http://wiki.ros.org/ja">ROS</a>及び<a href="http://wiki.ros.org/joy">joystick_drivers</a>はインストールしておいて下さい。</p>
+
+<p>まずは、joystiの依存関係（要は必要なもの）をインストールして、コンパイルします。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rosdep install joy
+</span><span class='line'>rosmake joy
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>次に、DualShock3を試します。
+テスト用に<code>jstest</code>をインストールしましょう。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo apt-get install joystick
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>インストールが完了したら、DualShock3が繋がっているか確かめます。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>ls /dev/input
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>おそらく、次のように表示されるはずです。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>by-id    event0  event2  event4  event6  event8  mouse0  mouse2  uinput
+</span><span class='line'>by-path  event1  event3  event5  event7  js0     mice    mouse1
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>この場合は<code>js0</code>にDualShock3に繋がっています。</p>
+
+<p>それでは、<code>jstest</code>を使ってDualShock3の情報を見てみましょう。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo jstest /dev/input/jsX
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Xは先ほど確認した数字に合わせて下さい。すると、以下のように表示されるはずです。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>Driver version is 2.1.0.
+</span><span class='line'>Joystick <span class="o">(</span>Logitech Logitech Cordless RumblePad 2<span class="o">)</span> has <span class="m">6</span> axes <span class="o">(</span>X, Y, Z, Rz, Hat0X, Hat0Y<span class="o">)</span>
+</span><span class='line'>and <span class="m">12</span> buttons <span class="o">(</span>BtnX, BtnY, BtnZ, BtnTL, BtnTR, BtnTL2, BtnTR2, BtnSelect, BtnStart, BtnMode, BtnThumbL, BtnThumbR<span class="o">)</span>.
+</span><span class='line'>Testing ... <span class="o">(</span>interrupt to <span class="nb">exit</span><span class="o">)</span>
+</span><span class='line'>Axes:  0:     <span class="m">0</span>  1:     <span class="m">0</span>  2:     <span class="m">0</span>  3:     <span class="m">0</span>  4:     <span class="m">0</span>  5:     <span class="m">0</span> Buttons:  0:off  1:off  2:off  3:off  4:off  5:off  6:off  7:off  8:off  9:off 10:off 11:off
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>確認できたら、準備は完了です。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[No.7-1:プラグインを書く (Gazebo Plugin 101 編)]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/03/11/gazebo-plugin-101/"/>
+    <updated>2015-03-11T10:42:29+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/03/11/gazebo-plugin-101</id>
+    <content type="html"><![CDATA[<p><img src="http://cir-kit.github.io/images/gazebo_logo.png" alt="gazebo_logo" /></p>
+
+<h5>検証日時</h5>
+
+<p>03/04/2015 (Wed)</p>
+
+<h5>概要</h5>
+
+<p>Gazeboのチュートリアル第七弾「Write a plugin」。
+プラグインを使えば、モデルやセンサ、worldプロパティをコントロールしたり、Gazeboを起動させたりできます。様々な目的のために、どのようにしてプラグインを作成したり、ロードしたりしたらよいかを述べてゆきます。
+今回はその「Gazebo plugin 101」編です。
+公式サイトを適当に翻訳しただけですので、あしからず。</p>
+
+<h5>レベル</h5>
+
+<p><strong>INTERMEDIATE</strong></p>
+
+<!-- more -->
+
+
+<h5>環境</h5>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> <strong>PC</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Prosessor</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>RAM</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>OS</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Kernel</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> 3.13.0-44-generic </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Gazebo</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Version 5.0.1 </td>
+</tr>
+</tbody>
+</table>
+
+
+<h5>参考</h5>
+
+<p><a href="http://gazebosim.org/tutorials?cat=write_plugin">GAZEBO Tutorial-Write a Plugin</a></p>
+
+<h2>Gazeboプラグインの概要</h2>
+
+<p>プラグインとは、共有ライブラリとしてコンパイルされ、シミュレーションに取り込まれるコードの集合です。標準C++クラスを通じて、プラグインはすべてのGazeboの機能に直接アクセスします。<br/>
+プラグインは有用です。なぜなら、:</p>
+
+<ul>
+<li>Gazeboのほとんどすべてのアスペクトを開発者がコントロールできる。</li>
+<li>簡単に共有できる独立したルーチンがある。</li>
+<li>実行中のシステムに挿入したり、削除したりできる。</li>
+</ul>
+
+
+<p>Gazeboの最新バージョンはコントローラとして使われています。これは、プラグインと同じような特徴を持ちますが、Gazeboのなかで、静的にコンパイルされています。プラグインはより柔軟に、かつシミュレーションに含まれる機能を選べるようにします。<br/>
+以下の様なとき、プラグインを使うべきです。:</p>
+
+<ul>
+<li>シミュレーションをプログラマチックに変更したいとき
+
+<ul>
+<li>モデルを動かす、イベントの反応をかえす、前提条件を持った新しいモデルを挿入するとき
+
+<ul>
+<li>トランスポートレイヤのオーバーヘッド無しに、Gazeboに高速なインターフェースがほしいとき</li>
+</ul>
+</li>
+<li>メッセージのシリアル化と非シリアル化
+
+<ul>
+<li>他に利益をもたらすコードがあり、それを共有したいとき</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+
+<h2>プラグインの種類</h2>
+
+<p>現在、以下のようにプラグインは5種類あります。</p>
+
+<ol>
+<li>World</li>
+<li>Model</li>
+<li>Sensor</li>
+<li>System.</li>
+<li>Visual.</li>
+</ol>
+
+
+<p>それぞれのプラグインタイプは異なるGazeboのコンポーネントで管理されています。例えば、ModelプラグインがGazeboのある特定のモデルのコントローラに接続されているなどが挙げられます。同じように、Worldプラグインはworldに接続され、Sensorプラグインはsensorに接続されます。システムプラグインはコマンドラインで定義され、Gazeboの初回起動時にロードします。このプラグインは初回起動時にユーザーコントロールを与えます。<br/>
+プラグインの種類は望みの機能に沿ったものでなければなりません。Worldプラグインは物理エンジンや証明の設定などのworldプロパティをコントロールするのに使って下さい。Modelプラグインは、ジョイントやモデルの姿勢をコントロールするために使用して下さい。センサプラグインはセンサ情報を定義し、センサプロパティをコントロールするために使用して下さい。</p>
+
+<h2>Hello World プラグイン</h2>
+
+<p>プラグインはシンプルに設計されています。ベアボーンのworldプラグインにはいくつかの関数と共にクラスが含まれています。<br/>
+最初に、デビアンパッケージよりGazeboをインストールしたら、Gazeboの開発用ファイルをインストールするのを忘れないで下さい。もし、あなたがGazeboをソースコードからインストールしたなら、このステップは無視して構いません。もし<code>gazebo5</code>よりも古いリリースのGazeboを使用しているなら、<code>5</code>の部分を持っているバージョンの番号に置き換えて以下の内容をご覧ください。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo apt-get install libgazebo5-dev
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>続いて、ディレクトリを作り、新しい<code>.cc</code>ファイルのプラグインを作成して下さい。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'> mkdir ~/gazebo_plugin_tutorial
+</span><span class='line'> <span class="nb">cd</span> ~/gazebo_plugin_tutorial
+</span><span class='line'> gedit hello_world.cc
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>できたら、以下を<code>hello_world.cc</code>にコピーして下さい。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='cpp'><span class='line'><span class="cp">#include &lt;gazebo/gazebo.hh&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">namespace</span> <span class="n">gazebo</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="k">class</span> <span class="nc">WorldPluginTutorial</span> <span class="o">:</span> <span class="k">public</span> <span class="n">WorldPlugin</span>
+</span><span class='line'>  <span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span><span class="o">:</span> <span class="n">WorldPluginTutorial</span><span class="p">()</span> <span class="o">:</span> <span class="n">WorldPlugin</span><span class="p">()</span>
+</span><span class='line'>            <span class="p">{</span>
+</span><span class='line'>              <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Hello World!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">public</span><span class="o">:</span> <span class="kt">void</span> <span class="n">Load</span><span class="p">(</span><span class="n">physics</span><span class="o">::</span><span class="n">WorldPtr</span> <span class="n">_world</span><span class="p">,</span> <span class="n">sdf</span><span class="o">::</span><span class="n">ElementPtr</span> <span class="n">_sdf</span><span class="p">)</span>
+</span><span class='line'>            <span class="p">{</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>  <span class="p">};</span>
+</span><span class='line'>  <span class="n">GZ_REGISTER_WORLD_PLUGIN</span><span class="p">(</span><span class="n">WorldPluginTutorial</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上記のコードはGazeboのソースコード : <a href="https://bitbucket.org/osrf/gazebo/src/gazebo_2.2/examples/plugins/hello_world/">examples/plugins/helloworld/helloworld</a>にもあります。尚、リンク先には<code>CMakeLists.txt</code>ファイルもあります。</p>
+
+<h3>コードの説明</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='cpp'><span class='line'><span class="cp">#include &lt;gazebo/gazebo.hh&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">namespace</span> <span class="n">gazebo</span>
+</span><span class='line'><span class="p">{</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><a href="https://bitbucket.org/osrf/gazebo/src/gazebo_2.2/gazebo/gazebo_core.hh">gazebo/gazebo.hh</a>ファイルは基本的なGazeboの関数群のコアをインクルードしています。これは、<code>gazebo/physics/physics.hh</code>や<code>gazebo/rendering/rendering.hh</code>、<code>gazebo/sensors/sensors.hh</code>を臨機応変でインクルードされるべきものとしてインクルードしていません。すべてのプラグインは<code>gazebo</code>という名前空間が必要です。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='cpp'><span class='line'>  <span class="k">class</span> <span class="nc">WorldPluginTutorial</span> <span class="o">:</span> <span class="k">public</span> <span class="n">WorldPlugin</span>
+</span><span class='line'>  <span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span><span class="o">:</span> <span class="n">WorldPluginTutorial</span><span class="p">()</span> <span class="o">:</span> <span class="n">WorldPlugin</span><span class="p">()</span>
+</span><span class='line'>            <span class="p">{</span>
+</span><span class='line'>              <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Hello World!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+</span><span class='line'>            <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>それぞれのプラグインはプラグインタイプを継承しなければなりません。今回の例では、<code>WorldPlugin</code>クラスを継承します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='cpp'><span class='line'><span class="k">public</span><span class="o">:</span> <span class="kt">void</span> <span class="n">Load</span><span class="p">(</span><span class="n">physics</span><span class="o">::</span><span class="n">WorldPtr</span> <span class="n">_world</span><span class="p">,</span> <span class="n">sdf</span><span class="o">::</span><span class="n">ElementPtr</span> <span class="n">_sdf</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>        <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>その他の必須の関数は<code>Load</code>です。これはロードされるSDFファイルによって定義される属性や要素を含むSDF要素を受け取ります。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='cpp'><span class='line'>  <span class="n">GZ_REGISTER_WORLD_PLUGIN</span><span class="p">(</span><span class="n">WorldPluginTutorial</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>最終的に、プラグインは<code>GZ_REGISTER_WORLD_PLUGIN</code>マクロを使ってシミュレーションと共に登録されなければなりません。このマクロへの唯一のパラメータはプラグインクラスの名前です。それぞれのプラグインタイプに合わせて登録されたマクロの照合が行われます。: <code>GZ_REGISTER_MODEL_PLUGIN</code>, <code>GZ_REGISTER_SENSOR_PLUGIN</code>, <code>GZ_REGISTER_SYSTEM_PLUGIN</code>、<code>GZ_REGISTER_VISUAL_PLUGIN</code>などです。<br/>
+以下のセクションではこのプラグインをどのようにしてコンパイルするかについての簡単な説明も行ってゆきます。</p>
+
+<h3>プラグインをコンパイルする</h3>
+
+<p>Gazeboが正しくインストールされていることを確認して下さい。<br/>
+上記のプラグインをコンパイルするために、<code>~/gazebo_plugin_tutorial/CMakeLists</code>を作成して下さい。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'> gedit ~/gazebo_plugin_tutorial/CMakeLists.txt
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>以下を<code>CMakeLists.txt</code>にコピーして下さい。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='cmake'><span class='line'><span class="nb">cmake_minimum_required</span><span class="p">(</span><span class="s">VERSION</span> <span class="s">2.8</span> <span class="s">FATAL_ERROR</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">find_package</span><span class="p">(</span><span class="s">Boost</span> <span class="s">REQUIRED</span> <span class="s">COMPONENTS</span> <span class="s">system</span><span class="p">)</span>
+</span><span class='line'><span class="nb">include_directories</span><span class="p">(</span><span class="o">${</span><span class="nv">Boost_INCLUDE_DIRS</span><span class="o">}</span><span class="p">)</span>
+</span><span class='line'><span class="nb">link_directories</span><span class="p">(</span><span class="o">${</span><span class="nv">Boost_LIBRARY_DIRS</span><span class="o">}</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">include</span> <span class="p">(</span><span class="s">FindPkgConfig</span><span class="p">)</span>
+</span><span class='line'><span class="nb">if</span> <span class="p">(</span><span class="s">PKG_CONFIG_FOUND</span><span class="p">)</span>
+</span><span class='line'>  <span class="nb">pkg_check_modules</span><span class="p">(</span><span class="s">GAZEBO</span> <span class="s">gazebo</span><span class="p">)</span>
+</span><span class='line'><span class="nb">endif</span><span class="p">()</span>
+</span><span class='line'><span class="nb">include_directories</span><span class="p">(</span><span class="o">${</span><span class="nv">GAZEBO_INCLUDE_DIRS</span><span class="o">}</span><span class="p">)</span>
+</span><span class='line'><span class="nb">link_directories</span><span class="p">(</span><span class="o">${</span><span class="nv">GAZEBO_LIBRARY_DIRS</span><span class="o">}</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">add_library</span><span class="p">(</span><span class="s">hello_world</span> <span class="s">SHARED</span> <span class="s">hello_world.cc</span><span class="p">)</span>
+</span><span class='line'><span class="nb">target_link_libraries</span><span class="p">(</span><span class="s">hello_world</span> <span class="o">${</span><span class="nv">GAZEBO_LIBRARIES</span><span class="o">}</span> <span class="o">${</span><span class="nv">Boost_LIBRARIES</span><span class="o">}</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ビルドディレクトリを作成して下さい。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'> mkdir ~/gazebo_plugin_tutorial/build
+</span><span class='line'> <span class="nb">cd</span> ~/gazebo_plugin_tutorial/build
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>コードをコンパイルして下さい。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'> cmake ../
+</span><span class='line'> make
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>コンパイルの結果は共有ライブラリにでき、<code>~/gazebo_plugin_tutorial/build/libhello_world.so</code>をGazeboシミュレーションに挿入することができます。<br/>
+最後に、ライブラリパスを<code>GAZEBO_PLUGIN_PATH</code>に追加して下さい。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'> <span class="nb">export </span><span class="nv">GAZEBO_PLUGIN_PATH</span><span class="o">={</span>GAZEBO_PLUGIN_PATH<span class="o">}</span>:~/gazebo_plugin_tutorial/build
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>プラグインを使う</h2>
+
+<p>プラグインを共有ライブラリとしてコンパイルしたら(上記をご覧ください)、SDFファイルのworldやmodelにそれを追加することができます(詳しくは、<a href="http://gazebosim.org/sdf.html">SDFドキュメント</a>をご覧ください)。最初に、GazeboはSDFファイルを解析し、プラグインを設置します。そしてコードを読み込みます。Gazeboがプラグインを探すことができるというのはとても重要なことです。プラグインへの絶対パスが定義されている、もしくはプラグインが<code>GAZEBOPLUGINPATH</code>パスの中にあればプラグインを利用した環境が利用可能です。<br/>
+worldファイルの例は、<a href="https://bitbucket.org/osrf/gazebo/src/gazebo_2.2/examples/plugins/hello_world/hello.world">examples/plugins/helloworld/helloworld</a>でも見つけることができます。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot;?&gt;</span>
+</span><span class='line'><span class="nt">&lt;sdf</span> <span class="na">version=</span><span class="s">&quot;1.4&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;world</span> <span class="na">name=</span><span class="s">&quot;default&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;plugin</span> <span class="na">name=</span><span class="s">&quot;hello_world&quot;</span> <span class="na">filename=</span><span class="s">&quot;libhello_world.so&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/world&gt;</span>
+</span><span class='line'><span class="nt">&lt;/sdf&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>~/gazebo_plugin_tutorial/hello.world</code>にあるファイルのコピーを作成して下さい。<br/>
+もし、<code>GAZEBO_PLUGIN_PATH</code>の中にビルドディレクトリがないなら、Gazeboサーバーをビルドディレクトリから起動しなければなりません。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span><span class="nb">cd </span>build
+</span><span class='line'><span class="nv">$ </span>gzserver ../hello.world --verbose
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>うまく実行できれば、以下のような出力を得られるはずです。:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>Gazebo multi-robot simulator, version 1.9.5
+</span><span class='line'>Copyright <span class="o">(</span>C<span class="o">)</span> <span class="m">2013</span> Open Source Robotics Foundation.
+</span><span class='line'>Released under the Apache <span class="m">2</span> License.
+</span><span class='line'>http://gazebosim.org
+</span><span class='line'>
+</span><span class='line'>Msg Waiting <span class="k">for</span> master
+</span><span class='line'>Msg Connected to gazebo master @ http://localhost:11345
+</span><span class='line'>Hello World!
+</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[ArduinoをROSで動かす]]></title>
@@ -7596,630 +8116,6 @@ Gazeboサーバを<code>-r</code>コマンドラインオプションをつけ�
 奥に見えるのはWillowGarageのモデルです。
 <img src="http://cir-kit.github.io/images/2015-02-06-gazebo-building-editor/DSC_0332.JPG" alt="control-1st-2D" />
 <img src="http://cir-kit.github.io/images/2015-02-06-gazebo-building-editor/capture.jpg" alt="capture" /></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[No.3-4:環境をつくろう ! (Modelの集合化 編)]]></title>
-    <link href="http://cir-kit.github.io/blog/2015/02/05/gazebo-population-of-models/"/>
-    <updated>2015-02-05T23:10:04+09:00</updated>
-    <id>http://cir-kit.github.io/blog/2015/02/05/gazebo-population-of-models</id>
-    <content type="html"><![CDATA[<p><img src="http://cir-kit.github.io/images/gazebo_logo.png" alt="gazebo_logo" /></p>
-
-<h5>検証日時</h5>
-
-<p>02/03/2015 (Tue)</p>
-
-<h5>概要</h5>
-
-<p>Gazeboのチュートリアル第三弾「Build a World」。
-このチュートリアルでは、シミュレーション中の環境をどのように構築するかについて説明します。<br/>
-今回はその「Population of models」編です。<br/>
-公式サイトを適当に翻訳しただけですので、あしからず。</p>
-
-<h5>レベル</h5>
-
-<p><strong>INTERMEDIATE</strong></p>
-
-<!-- more -->
-
-
-<h5>環境</h5>
-
-<table>
-<thead>
-<tr>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center;"> <strong>PC</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Prosessor</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>RAM</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>OS</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Kernel</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> 3.13.0-44-generic </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Gazebo</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Version 5.0.1 </td>
-</tr>
-</tbody>
-</table>
-
-
-<h5>参考</h5>
-
-<p><a href="http://gazebosim.org/tutorials?cat=build_world">GAZEBO Tutorial-Build a World</a></p>
-
-<h2>はじめに</h2>
-
-<p>このチュートリアルでは、SDFの<code>&lt;population&gt;</code>タグを使ってどのようにしてモデルを集合化するかを説明します。集合は個々のモデルによって構成されています。<br/>
-モデルの集合を追加することは以下のようなパラメータをいちいち定義する問題であるということです。</p>
-
-<ul>
-<li><p>モデル : 机や缶など</p></li>
-<li><p>いくつかの集合の一部となる物体</p></li>
-<li><p>集合を入れておくコンテナの形状と寸法 : 箱、円柱などです。これらのパラメータを知るには、SDFのAPIをご覧ください。</p></li>
-<li><p>集合のポジションと原点</p></li>
-<li><p>集合に含まれる物体の配置 : ランダム、グリッド</p></li>
-</ul>
-
-
-<p>詳しい説明は、<code>&lt;population&gt;</code>タグとそのパラメータについての<a href="http://gazebosim.org/sdf.html">SDF API</a>をチェックしてください。</p>
-
-<h2>物体の集合を作る</h2>
-
-<ol>
-<li>チュートリアル用のディレクトリを作りましょう。</li>
-</ol>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>mkdir ~/tutorial_model_population
-</span><span class='line'><span class="nb">cd</span> ~/tutorial_model_population
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ol>
-<li>作ったディレクトリに、以下のような内容で、<code>can_population.world</code>を作成してください。</li>
-</ol>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>    <span class="cp">&lt;?xml version=&quot;1.0&quot; ?&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;sdf</span> <span class="na">version=</span><span class="s">&quot;1.5&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;world</span> <span class="na">name=</span><span class="s">&quot;default&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>        <span class="c">&lt;!-- A global light source --&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;include&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;uri&gt;</span>model://sun<span class="nt">&lt;/uri&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/include&gt;</span>
-</span><span class='line'>        <span class="c">&lt;!-- A ground plane --&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;include&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;uri&gt;</span>model://ground_plane<span class="nt">&lt;/uri&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/include&gt;</span>
-</span><span class='line'>        <span class="c">&lt;!-- Testing the automatic population of objects --&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;population</span> <span class="na">name=</span><span class="s">&quot;can_population1&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;model</span> <span class="na">name=</span><span class="s">&quot;can1&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;include&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;static&gt;</span>true<span class="nt">&lt;/static&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;uri&gt;</span>model://coke_can<span class="nt">&lt;/uri&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/include&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;/model&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;pose&gt;</span>0 0 0 0 0 0<span class="nt">&lt;/pose&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;box&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;size&gt;</span>2 2 0.01<span class="nt">&lt;/size&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;/box&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;model_count&gt;</span>10<span class="nt">&lt;/model_count&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;distribution&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;type&gt;</span>random<span class="nt">&lt;/type&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;/distribution&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/population&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/world&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/sdf&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>また、<a href="https://bitbucket.org/osrf/gazebo_models/src/63e268d393f03ae6ec5b6930b439c4b7873dacd8/coke_can/?at=default">coke_cam model</a>より、<strong>coke_can</strong>のモデルを取得し、<code>~/.gazebo/models/</code>に置いておきましょう。<br/>
-その後、Gazeboを立ち上げましょう。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo can_population.world
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>すると、ソーダの缶の集合がバラバラに置いてあるのが確認できるでしょう。缶は2 x 2 x 0.01 [m]の大きさの箱に収まるようにしてあります。<br/>
-より深く理解するために、先ほどの<code>can_population.world</code>に他の要素を追加してみましょう。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>    <span class="nt">&lt;population</span> <span class="na">name=</span><span class="s">&quot;can_population1&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;model</span> <span class="na">name=</span><span class="s">&quot;can1&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;include&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;static&gt;</span>true<span class="nt">&lt;/static&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;uri&gt;</span>model://coke_can<span class="nt">&lt;/uri&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/include&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/model&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>ここまでで、<code>&lt;population&gt;</code>タグを使い、どのようにして集合の要素を決定するかがわかりました。すべての集合は、同一でない、個々の名前を持つ必要があり、<code>name</code>の部分で定義されています。<code>population</code>タグの中では、<code>&lt;model&gt;</code>タグを使ってモデルを選択できます。集合のそれぞれの要素は、重複しない名前でシミュレーションに挿入されます。また、その名前というのは、サフィックス<code>_clone_i</code>(<code>i</code>は集合の要素の個数で決定されます)によって名付けられます。Gazeboには以下のようなモデルのリストと共に、物体が表示されます。
-<img src="http://cir-kit.github.io/images/2015-02-05-gazebo-population-of-models/model_list.png" alt="model_list" />
-集合の最も一般的なタイプは、木や岩、建物などの動かない物体で構成されています。<code>&lt;population&gt;</code>タグはそのような静的なモデルで使用することをおすすめます。また、より詳しい定義が必要で、数が少ない、ロボットの様な動的物体には使用しないことをおすすめします。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>  <span class="nt">&lt;pose&gt;</span>0 0 0 0 0 0<span class="nt">&lt;/pose&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;box&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;size&gt;</span>2 2 0.01<span class="nt">&lt;/size&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;/box&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>上記のコードは物体をどこに設置するのかについて定義しています。今回は、すべての物体は、2 2 0.01の3Dの箱の中にスポーンします。また、原点(0, 0, 0)を(0, 0, 0)にセンタリングしてあります。続いて、<code>&lt;box&gt;</code>について説明します。<code>&lt;cylinder&gt;</code>の部分では、半径、長さを定義することができます。<code>&lt;cylinder&gt;</code>パラメータについて詳しく知りたい場合は、<a href="http://gazebosim.org/sdf.html">SDF Specification</a>をチェックしてみてください。<code>&lt;pose&gt;</code>要素では、集合の場所のフレームを定義しています。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>  <span class="nt">&lt;model_count&gt;</span>10<span class="nt">&lt;/model_count&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>上記部分では、集合に、何個の物体を定義するかを決定します。正の数字であれば何でも良いですが、数を大きくすると、パフォーマンスに大きな影響を及ぼすといういうことを念頭に置いておいてください。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>  <span class="nt">&lt;distribution&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;type&gt;</span>random<span class="nt">&lt;/type&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;/distribution&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>上記に示す<code>&lt;distribution&gt;</code>要素では、物体をどのように配置するかを定義します。</p>
-
-<h2>Distributionの種類</h2>
-
-<ul>
-<li><p>random : モデルをランダムに配置します。物体同士がぶつかる可能性があることを覚えておいてください。</p></li>
-<li><p>uniform : 偽似2Dグリッドパターンに沿ってモデルを配置します。<code>K-Means</code>を使うことにより、解決に近づき、範囲内に定義された物体の数を定義できます。</p></li>
-<li><p>grid : モデルを2Dのグリッドパターン上に配置します。この配置は行、列, 物体間距離を定義する必要があります。<code>&lt;model_count&gt;</code>要素は、この配置では無視されるということを覚えておいてください。シミュレーションに挿入される物体は行と列の数を掛けあわせた数と一致します。</p></li>
-<li><p>linear-x : X軸に沿ってモデルが並びます。</p></li>
-<li><p>linear-y : Y軸に沿ってモデルが並びます。</p></li>
-<li><p>linear-z : Z軸に沿ってモデルが並びます。</p></li>
-</ul>
-
-
-<p>もっとたくさんの例を確認したいならば、<a href="http://bitbucket.org/osrf/gazebo/raw/default/worlds/population.world">population.world</a>ファイルをGazeboと共に立ち上げてください。<br/>
-もちろん、その場合には、以下のように入力しましょう。:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>  gazebo worlds/population.world
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>以下のキャプチャは、<code>population.world</code>を実行した様子です。
-<img src="http://cir-kit.github.io/images/2015-02-05-gazebo-population-of-models/gazebo_population.png" alt="gazebo_population" /></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[No.3-3:環境をつくろう ! (Digital Elevation Models 編)]]></title>
-    <link href="http://cir-kit.github.io/blog/2015/02/03/gazebo-digital-elevation-models/"/>
-    <updated>2015-02-03T19:58:17+09:00</updated>
-    <id>http://cir-kit.github.io/blog/2015/02/03/gazebo-digital-elevation-models</id>
-    <content type="html"><![CDATA[<p><img src="http://cir-kit.github.io/images/gazebo_logo.png" alt="gazebo_logo" /></p>
-
-<h5>検証日時</h5>
-
-<p>02/03/2015 (Tue)</p>
-
-<h5>概要</h5>
-
-<p>Gazeboのチュートリアル第三弾「Build a World」。
-このチュートリアルでは、シミュレーション中の環境をどのように構築するかについて説明します。<br/>
-今回はその「Digital Elevation Models」編です。<br/>
-公式サイトを適当に翻訳しただけですので、あしからず。</p>
-
-<h5>レベル</h5>
-
-<p><strong>ADVANCED</strong></p>
-
-<!-- more -->
-
-
-<h5>環境</h5>
-
-<table>
-<thead>
-<tr>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center;"> <strong>PC</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Prosessor</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>RAM</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>OS</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Kernel</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> 3.13.0-44-generic </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Gazebo</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Version 5.0.1 </td>
-</tr>
-</tbody>
-</table>
-
-
-<h5>参考</h5>
-
-<p><a href="http://gazebosim.org/tutorials?cat=build_world">GAZEBO Tutorial-Build a World</a></p>
-
-<h2>はじめに</h2>
-
-<p><strong>Digital Elevation Model (DEM)</strong>は3Dの植物や建物のような物体を含まないような地形です。DEMはLIDARやradar、カメラなどによるセンサフュージョンによって生成されます。グラウンドポジションの地形の標高は、定期的に水平間隔でサンプリングされています。<a href="http://en.wikipedia.org/wiki/Digital_elevation_model">Wikipedia</a>でDEMのより詳しい情報があります。<br/>
-DEMという言葉は一般的な名称であり、至って普通のフォーマットです。実際、DEMは代表的なグリッド立体図（水平捜線）や、ベクトルベースの基板地図変換である<strong>vector-based triangular irregular network (TIN)</strong>なのです。現在Gazeboは<a href="http://www.gdal.org/">GDAL</a>ライブラリでサポートされているraster(水平捜線)データのみをサポートしています。<br/>
-GazeboをDEMをサポートする主な動機付けは、リアルな地形をシミュレートできるようにしたいというものです。ロボットを現実の世界のと同じ地形でシミュレーションし、その動向をテストし、救助用または農業用への応用を図ることは興味深いものとなるでしょう。</p>
-
-<h2>GazeboにDEMサポートを適用する</h2>
-
-<p>DEMファイルをサポートするには、GDALライブラリをインストールする必要があります。</p>
-
-<h5>Ubuntu Trusty/Utopic の場合:</h5>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>  sudo apt-get install gdal-bin libgdal-dev libgdal1h python-gdal
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h5>Ubuntu Precise の場合:</h5>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>  sudo apt-get install gdal-bin libgdal1-1.7.0 libgdal1-dev python-gdal
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>DEMファイルとSDFフォーマットでの定義</h2>
-
-<p>立体データを提供する団体はいくつかあります。例えば、80年代の<a href="http://extract.cr.usgs.gov/public/NED/mtsthelens_before.zip">噴火前</a>か<a href="http://extract.cr.usgs.gov/public/NED/mtsthelens_after.zip">噴火後</a>のセント・ヘレンズ山のDEMフォーマットファイルをダウンロードしましょう。ダウンロードしたら、Unzipで解凍し、<code>mtsthelens.dem</code>という名前をつけましょう。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>  <span class="nb">cd</span> ~/Downloads
-</span><span class='line'>  wget http://extract.cr.usgs.gov/public/NED/mtsthelens_before.zip
-</span><span class='line'>  unzip ~/Downloads/mtsthelens_before.zip -d /tmp
-</span><span class='line'>  mv /tmp/30.1.1.1282760.dem /tmp/mtsthelens.dem
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>通常、DEMファイルにはたくさんの取り決めがあるので、Gazeboでは扱えません。なので、DEMの取り決めに合わせる良いアイデアがあります。i日のコマンドで地形を129x129に縮小し、Gazeboの<code>media/dem/</code>ディレクトリにそれをコピーします。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>  mkdir -p /tmp/media/dem/
-</span><span class='line'>  gdalwarp -ts <span class="m">129</span> <span class="m">129</span> /tmp/mtsthelens.dem /tmp/media/dem/mtsthelens_129.dem
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>GazeboでDEMファイルを読み込むのは高低地図を読み込む方法と同じです。Gazeboは読み込みファイルがプレーンファイルかDEMファイルであった場合、自動でファイルを検出します。<code>volcano.world</code>ファイルを作成し、以下の内容をコピペしてください。できたら<code>/tmp</code>のように、どこにでも好きなところに保存してください。。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; ?&gt;</span>
-</span><span class='line'><span class="nt">&lt;sdf</span> <span class="na">version=</span><span class="s">&quot;1.4&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;world</span> <span class="na">name=</span><span class="s">&quot;default&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>    <span class="c">&lt;!-- A global light source --&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;include&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;uri&gt;</span>model://sun<span class="nt">&lt;/uri&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/include&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;model</span> <span class="na">name=</span><span class="s">&quot;heightmap&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;static&gt;</span>true<span class="nt">&lt;/static&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;link</span> <span class="na">name=</span><span class="s">&quot;link&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;collision</span> <span class="na">name=</span><span class="s">&quot;collision&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;heightmap&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;uri&gt;</span>file://media/dem/mtsthelens_129.dem<span class="nt">&lt;/uri&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;size&gt;</span>150 150 50<span class="nt">&lt;/size&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;pos&gt;</span>0 0 0<span class="nt">&lt;/pos&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/heightmap&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/collision&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;visual</span> <span class="na">name=</span><span class="s">&quot;visual_abcedf&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;heightmap&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;texture&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;diffuse&gt;</span>file://media/materials/textures/dirt_diffusespecular.png<span class="nt">&lt;/diffuse&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;normal&gt;</span>file://media/materials/textures/flat_normal.png<span class="nt">&lt;/normal&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;size&gt;</span>1<span class="nt">&lt;/size&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;/texture&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;texture&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;diffuse&gt;</span>file://media/materials/textures/grass_diffusespecular.png<span class="nt">&lt;/diffuse&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;normal&gt;</span>file://media/materials/textures/flat_normal.png<span class="nt">&lt;/normal&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;size&gt;</span>1<span class="nt">&lt;/size&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;/texture&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;texture&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;diffuse&gt;</span>file://media/materials/textures/fungus_diffusespecular.png<span class="nt">&lt;/diffuse&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;normal&gt;</span>file://media/materials/textures/flat_normal.png<span class="nt">&lt;/normal&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;size&gt;</span>1<span class="nt">&lt;/size&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;/texture&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;blend&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;min_height&gt;</span>2<span class="nt">&lt;/min_height&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;fade_dist&gt;</span>5<span class="nt">&lt;/fade_dist&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;/blend&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;blend&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;min_height&gt;</span>4<span class="nt">&lt;/min_height&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;fade_dist&gt;</span>5<span class="nt">&lt;/fade_dist&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;/blend&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;uri&gt;</span>file://media/dem/mtsthelens_129.dem<span class="nt">&lt;/uri&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;size&gt;</span>150 150 50<span class="nt">&lt;/size&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;pos&gt;</span>0 0 0<span class="nt">&lt;/pos&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/heightmap&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/visual&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/link&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/model&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;/world&gt;</span>
-</span><span class='line'><span class="nt">&lt;/sdf&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>コードの上部にある<code>&lt;heightmap&gt;&lt;size&gt;</code>要素は、(<code>&lt;size&gt;</code>要素がないときは)Gazeboが原寸でDEMファイルを読み込むかどうかを決定し、(<code>&lt;size&gt;</code>要素があるときは)リサイズします。今回は、DEMファイルをリサイズします。<code>&lt;size&gt;</code>要素はGazeboにシミュレーションで使用し、リサイズする大きさをメートル単位で定義します。もし、正しいアスペクト比を維持したいなら横幅、高さ、海抜（<code>&lt;size&gt;</code>の三番目です）を詳細に計算して定義してください。今回の例では、DEMファイルは150 x 150 [m]で最も高いところで、海抜50 [m] となるようにリサイズしています。<br/>
-GazeboをDEMファイルを含む<code>world</code>と共に立ち上げ、以下のような火山の立体図が表示されることを確認してください。以下のコマンドの例では、ファイルを<code>/tmp</code>ディレクトリに置いています。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>　# インストールパスにあるgazeboのsetup.shにsourceコマンドを実行することを確認してください。
-</span><span class='line'>　source /usr/share/gazebo/setup.sh
-</span><span class='line'>　GAZEBO_RESOURCE_PATH<span class="o">=</span><span class="s2">&quot;$GAZEBO_RESOURCE_PATH:/tmp&quot;</span> gazebo /tmp/volcano.world
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><img src="http://cir-kit.github.io/images/2015-02-04-gazebo-digital-elevation-model/gazebo_sthelens.png" alt="gazebo_sthelens" /></p>
-
-<h2>興味のある地域のDEMファイルを手に入れるにはどうしたらよいですか?</h2>
-
-<h3>GLCF(Global Land Cover Facillity)について</h3>
-
-<p>続いて、興味のある特定の地域のDEMファイルを手に入れる方法を説明します。<br/>
-<a href="http://glcf.umd.edu/">Global Land Cover Facility</a>では地球の高解像度なデジタル地形データを提供し、維持しています。<a href="http://glcfapp.glcf.umd.edu:8080/esdi/index.jsp">Search and Preview tool</a>へ行ってみましょう。すると、イメージしたシミュレータを見つけることができるでしょう。すべての地形パッチはあなたがこのツールを使う前から知っているであろう個々の<a href="http://www.shinko-keirin.co.jp/keirinkan/tea/sho/jissen/rika/201303_4/index.html">pathとrow</a>を持っています。私達は、QGISを使い興味のあるpath/rowを発見するのです。以下のキャプチャはその検索画面です。
-<img src="http://cir-kit.github.io/images/2015-02-04-gazebo-digital-elevation-model/glcf_search_tool.png" alt="glcf_search_tool" /></p>
-
-<h3>QIGSについて</h3>
-
-<p><a href="http://www.qgis.org/">QIGS</a>とはクロスプラットフォームのオープンソース地理情報システムプログラムです。以下のように、このプログラムでは閲覧、編集、調査で使用することができます。<a href="http://www.qgis.org/en/site/forusers/download.html">QGISのサイトの指示</a>にしたがってQGISをダウンロードしてください。</p>
-
-<!-- ![qgis](/images/2015-02-04-gazebo-digital-elevation-model/qgis.png) -->
-
-
-<h5>QIGSのダウンロード</h5>
-
-<p><a href="http://www.qgis.org/en/site/forusers/download.html">QGISのダウンロード</a>を参考にしてQGISをダウンロードします。<br/>
-以下のように、aptを使ってQGISをインストールします。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>  sudo apt-get update
-</span><span class='line'>  sudo apt-get install qgis python-qgis
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h5>QGISの使い方</h5>
-
-<ol>
-<li><p>QGISを開いたら、以下のように、画面左にある<strong>WMS/WMTSレイヤの追加</strong>というアイコンをクリックしましょう。
-<img src="http://cir-kit.github.io/images/2015-02-04-gazebo-digital-elevation-model/qgis-add-wms-wmts.png" alt="qgis-add-wms-wmts" /></p></li>
-<li><p>すると以下のようなウィンドウが出るので、以下のように、バーをクリックし、<strong>Lizardtch server</strong>を選択し、<strong>接続</strong>ボタンを押してください。
-<img src="http://cir-kit.github.io/images/2015-02-04-gazebo-digital-elevation-model/qgis-lizardtech-server.png" alt="qgis-lizardtech-server" /></p></li>
-<li><p>すると、以下の一枚目のように、レイヤを選択できるようになるので、タイトルが<strong>MODIS</strong>であるレイヤを選んで、一番下の<strong>追加</strong>を押してください。終わったら、このウィンドウィンドウを閉じてください。<br/>
-うまく行くと、二枚目の写真のように、世界地図がレイヤに表示されるはずです。
-<img src="http://cir-kit.github.io/images/2015-02-04-gazebo-digital-elevation-model/qgis-add-modis.png" alt="qgis-add-modis" />
-<img src="http://cir-kit.github.io/images/2015-02-04-gazebo-digital-elevation-model/qgis-modis-layer.png" alt="qgis-modis-layer" /></p></li>
-<li><p>続いてのステップは他のレイヤーを利用可能なパッチと共に追加します。<a href="http://landsat.usgs.gov/documents/wrs2_descending.zip">このshapeファイル</a>をダウンロードし、どこでも良いのでフォルダに解凍してください。私は、<code>~/Downloads/</code>に保存し、そこで展開しました。</p></li>
-<li><p>QGISに戻り、以下の一枚目のように、<strong>ベクタレイヤの追加</strong>というアイコンを押してください。すると、<strong>開く前に、現在のプロジェクトを保存しますか？</strong>と聞かれるポップアプが表示されるので、<strong>保存する</strong>を選んでください。その後、先ほど解凍したフォルダの中の<code>wrs2descending.shp</code>ファイルを選択してください。うまく開けると、2枚目の様なレイヤが表示されるはずです。
-<img src="http://cir-kit.github.io/images/2015-02-04-gazebo-digital-elevation-model/qgis-add-vector-layer.png" alt="qgis-add-vector-layer" />
-<img src="http://cir-kit.github.io/images/2015-02-04-gazebo-digital-elevation-model/qgis-wrs2-descending-layer.png" alt="qgis-wrs2-descending-layer" /></p></li>
-</ol>
-
-
-<p>ここまでで、メインウィンドウに２つのレイヤが開いていることを確認できるはずです。２つのレイヤーを同時に確認できるようにするため、<code>wrs2desceding</code>レイヤの透明度を変更しましょう。<br/>
-ウィンドウ左側のレイヤ一覧より、<code>wrsdescending</code>レイヤをダブルクリックすると、以下の一枚目のようなウィンドウが出るので、透明度を85%程度に修正しましょう。成功すれば、二枚目のようなレイヤになっているはずです。
-<img src="http://cir-kit.github.io/images/2015-02-04-gazebo-digital-elevation-model/qgis-wrs2-descending-%20transparency.png" alt="qgis-wrs2-descending- transparency" />
-<img src="http://cir-kit.github.io/images/2015-02-04-gazebo-digital-elevation-model/qgis-modis-wrs2-descending.png" alt="qgis-modis-wrs2-descending" /></p>
-
-<h3>QGISとGLCFを使って地形データを取得するまでの手順</h3>
-
-<h5>QGISの操作</h5>
-
-<ol>
-<li><p>脇ほどまでのレイヤを使って、スクロールと左ボタンを使用し、興味のある地域まで移動してください。<br/>
-今回は、富士山まで移動してみました。
-<img src="http://cir-kit.github.io/images/2015-02-04-gazebo-digital-elevation-model/qgis-mtfuji.png" alt="qgis-mtfuji" /></p></li>
-<li><p>以下のように、上部のバーにある、<strong>地物情報表示</strong>というアイコンをクリックしてください。<br/>
-その状態で、興味のある地域をクリックすると、以下のように、そのエリア一体の地形パッチがハイライトされます。
-<img src="http://cir-kit.github.io/images/2015-02-04-gazebo-digital-elevation-model/qgis-identify-features.png" alt="qgis-identify-features" /></p></li>
-<li><p>以下のキャプチャの例では、富士山近辺の地域のDEMのためのpathとrowを確認することができます。
-<img src="http://cir-kit.github.io/images/2015-02-04-gazebo-digital-elevation-model/qgis-identify-features-detail.png" alt="qgis-identify-features-detail" />
-ちなみに、公式チュートリアルでは、以下のキャプチャのように、スペイン、カナリア諸島の、<a href="http://ja.wikipedia.org/wiki/%E3%83%A9%E3%82%B9%E3%83%BB%E3%83%91%E3%83%AB%E3%83%9E%E3%82%B9%E3%83%BB%E3%83%87%E3%83%BB%E3%82%B0%E3%83%A9%E3%83%B3%E3%83%BB%E3%82%AB%E3%83%8A%E3%83%AA%E3%82%A2">ラスパルマス</a>のDEMのpathとrowを確認しています。
-<img src="http://cir-kit.github.io/images/2015-02-04-gazebo-digital-elevation-model/qgis_las_palmas.png" alt="qgis_las_palmas" /></p></li>
-</ol>
-
-
-<h5>GLCFの操作</h5>
-
-<ol>
-<li><p><a href="http://glcfapp.glcf.umd.edu:8080/esdi/index.jsp">GLCF検索ツール</a>に戻り、調べたpath/rowの値を<strong>Start Path</strong>と<strong>Start Row</strong>とラベリングされているカラムに入力しましょう。</p></li>
-<li><p>入力したら、<strong>Submit Quenry</strong>をクリックしてください。</p></li>
-<li><p><strong>Preview and Download</strong>を押すと結果を表示できます。以下の結果は、富士山近傍のもので、path = 108、row = 35とした時の結果です。
-<img src="http://cir-kit.github.io/images/2015-02-04-gazebo-digital-elevation-model/glcf-mtfuji.png" alt="glcf-mtfuji" /></p></li>
-<li><p>地形ファイルを選び、<strong>Download</strong>を押してください。<br/>
-今回は、計測年度が一番新しい、2011年のもの、ID:294-863を選びました。（上図参照）</p></li>
-<li><p>最後に、拡張子が<code>.TIF.gz</code>のファイルを選び、好きなディレクトリに保存し、展開してください。<br/>
-尚、<code>.gz</code>が付いているデータは複数ありますが、<code>README.GTF</code>によると、<code>*_B62.TIF.gz</code>となっているものが程よい解像度で、良いみたいです。また、<code>README.GTF</code>によると、<code>*.TIF.*</code>は<code>GeoTiff</code>フォーマットになっているそうなので、これを選びましょう。尚、<code>*</code>はワイルドカードです。<br/>
-<a href="http://glcf.umd.edu/">GLCF(Global Land Cover Facility)</a>ファイルは、DEMが利用できるフォーマットとして、最も標準的なな<a href="http://ja.wikipedia.org/wiki/GeoTIFF">GeoTiffフォーマット</a>になっています。</p></li>
-</ol>
-
-
-<h2>GazeboでDEMデータを使用するための準備</h2>
-
-<p>DEMデータは通常、高精細に作られています。Gazeboで使用する前に、<code>gdalwarp</code>を使って地形の解像度を扱いやすいサイズにします。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>  gdalwarp -ts &lt;width&gt; &lt;height&gt; &lt;srcDEM&gt; &lt;targetDEM&gt;
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>DEMデータは、しばしば、<code>holes</code>や<code>void</code>エリアを含んでいます。そういったエリアはDEMが生成された時に作成できなかったデータがあるエリアと一致します。<code>hole</code>というデータの場合、<code>hole</code>には、DEMで使用された、データタイプの最大値もしくは最小値が割り当てられています。<br/>
-上記のような<code>hols</code>が埋められたDEMのデータセットである、<code>finished</code>バージョンをダウンロードするよう、常に心がけてください。もし、あなたのDEMの地形データが<code>hols</code>(<code>NODATA</code>値としても知られている)を含んでいる場合、<code>gdal_fillnodata.py</code>のような、<code>gdal</code>のツールを使って手動で修復してみてください。</p>
-
-<h2>Gazeboで様々なDEMを使う</h2>
-
-<p>Gazeboは、直接様々なDEMをサポートしていないにも関わらず、GDALにはDEMを一つにするマージのための有益なツールセットがあります。DEMのセットをダウンロードする最初のステップはマージすることです。パッチは他のパッチと重なることがあるということを覚えておいてください。GDALはそれらの重なりをシームレスにマージできるのです。今あなたがいるディレクトリにマージする準備ができた状態で<code>Geofiff</code>ファイルがあるとすると、次のコマンドで、それをマージできます。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>  gdal_merge.py *.tif -o dem_merged.tif
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>すると、<code>dem_merged.tif</code>ファイルを<code>world</code>ファイルの中で使用できますし、Gazeboはすべてのパッチがマージされた状態で、地形を読み込むでしょう。以下のスクリーンショットは、公式サイトのもので、カナリア諸島一帯を囲む４つのパッチをマージした結果だそうです。
-<img src="http://cir-kit.github.io/images/2015-02-04-gazebo-digital-elevation-model/gazebo_dem_merged.png" alt="gazebo_dem_merged" /></p>
-
-<h2>最後に</h2>
-
-<p>自分で取得した地図をとりあえず表示することは出来ましたが、縮尺とかがおかしいままなので、解決したら、また投稿します。とりあえず今は、先に進みたいです。(02/04/2015 21:51)</p>
 ]]></content>
   </entry>
   

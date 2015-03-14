@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Plugin | 九州工業大学 CIR-KIT Blog]]></title>
+  <link href="http://cir-kit.github.io/blog/categories/plugin/atom.xml" rel="self"/>
+  <link href="http://cir-kit.github.io/"/>
+  <updated>2015-03-13T19:06:11+09:00</updated>
+  <id>http://cir-kit.github.io/</id>
+  <author>
+    <name><![CDATA[CIR-KIT Members]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[No.7-1:プラグインを書く (Gazebo Plugin 101 編)]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/03/11/gazebo-plugin-101/"/>
+    <updated>2015-03-11T10:42:29+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/03/11/gazebo-plugin-101</id>
+    <content type="html"><![CDATA[<p><img src="/images/gazebo_logo.png" alt="gazebo_logo" /></p>
+
+<h5>検証日時</h5>
+
+<p>03/04/2015 (Wed)</p>
+
+<h5>概要</h5>
+
+<p>Gazeboのチュートリアル第七弾「Write a plugin」。
+プラグインを使えば、モデルやセンサ、worldプロパティをコントロールしたり、Gazeboを起動させたりできます。様々な目的のために、どのようにしてプラグインを作成したり、ロードしたりしたらよいかを述べてゆきます。
+今回はその「Gazebo plugin 101」編です。
+公式サイトを適当に翻訳しただけですので、あしからず。</p>
+
+<h5>レベル</h5>
+
+<p><strong>INTERMEDIATE</strong></p>
+
+<!-- more -->
+
+
+<h5>環境</h5>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+<th style="text-align:center;"> </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> <strong>PC</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Prosessor</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>RAM</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>OS</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Kernel</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> 3.13.0-44-generic </td>
+</tr>
+<tr>
+<td style="text-align:center;"> <strong>Gazebo</strong> </td>
+<td style="text-align:center;"> <strong> : </strong> </td>
+<td style="text-align:center;"> Version 5.0.1 </td>
+</tr>
+</tbody>
+</table>
+
+
+<h5>参考</h5>
+
+<p><a href="http://gazebosim.org/tutorials?cat=write_plugin">GAZEBO Tutorial-Write a Plugin</a></p>
+
+<h2>Gazeboプラグインの概要</h2>
+
+<p>プラグインとは、共有ライブラリとしてコンパイルされ、シミュレーションに取り込まれるコードの集合です。標準C++クラスを通じて、プラグインはすべてのGazeboの機能に直接アクセスします。<br/>
+プラグインは有用です。なぜなら、:</p>
+
+<ul>
+<li>Gazeboのほとんどすべてのアスペクトを開発者がコントロールできる。</li>
+<li>簡単に共有できる独立したルーチンがある。</li>
+<li>実行中のシステムに挿入したり、削除したりできる。</li>
+</ul>
+
+
+<p>Gazeboの最新バージョンはコントローラとして使われています。これは、プラグインと同じような特徴を持ちますが、Gazeboのなかで、静的にコンパイルされています。プラグインはより柔軟に、かつシミュレーションに含まれる機能を選べるようにします。<br/>
+以下の様なとき、プラグインを使うべきです。:</p>
+
+<ul>
+<li>シミュレーションをプログラマチックに変更したいとき
+
+<ul>
+<li>モデルを動かす、イベントの反応をかえす、前提条件を持った新しいモデルを挿入するとき
+
+<ul>
+<li>トランスポートレイヤのオーバーヘッド無しに、Gazeboに高速なインターフェースがほしいとき</li>
+</ul>
+</li>
+<li>メッセージのシリアル化と非シリアル化
+
+<ul>
+<li>他に利益をもたらすコードがあり、それを共有したいとき</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+
+<h2>プラグインの種類</h2>
+
+<p>現在、以下のようにプラグインは5種類あります。</p>
+
+<ol>
+<li>World</li>
+<li>Model</li>
+<li>Sensor</li>
+<li>System.</li>
+<li>Visual.</li>
+</ol>
+
+
+<p>それぞれのプラグインタイプは異なるGazeboのコンポーネントで管理されています。例えば、ModelプラグインがGazeboのある特定のモデルのコントローラに接続されているなどが挙げられます。同じように、Worldプラグインはworldに接続され、Sensorプラグインはsensorに接続されます。システムプラグインはコマンドラインで定義され、Gazeboの初回起動時にロードします。このプラグインは初回起動時にユーザーコントロールを与えます。<br/>
+プラグインの種類は望みの機能に沿ったものでなければなりません。Worldプラグインは物理エンジンや証明の設定などのworldプロパティをコントロールするのに使って下さい。Modelプラグインは、ジョイントやモデルの姿勢をコントロールするために使用して下さい。センサプラグインはセンサ情報を定義し、センサプロパティをコントロールするために使用して下さい。</p>
+
+<h2>Hello World プラグイン</h2>
+
+<p>プラグインはシンプルに設計されています。ベアボーンのworldプラグインにはいくつかの関数と共にクラスが含まれています。<br/>
+最初に、デビアンパッケージよりGazeboをインストールしたら、Gazeboの開発用ファイルをインストールするのを忘れないで下さい。もし、あなたがGazeboをソースコードからインストールしたなら、このステップは無視して構いません。もし<code>gazebo5</code>よりも古いリリースのGazeboを使用しているなら、<code>5</code>の部分を持っているバージョンの番号に置き換えて以下の内容をご覧ください。</p>
+
+<pre><code class="bash">sudo apt-get install libgazebo5-dev
+</code></pre>
+
+<p>続いて、ディレクトリを作り、新しい<code>.cc</code>ファイルのプラグインを作成して下さい。</p>
+
+<pre><code class="bash"> mkdir ~/gazebo_plugin_tutorial
+ cd ~/gazebo_plugin_tutorial
+ gedit hello_world.cc
+</code></pre>
+
+<p>できたら、以下を<code>hello_world.cc</code>にコピーして下さい。</p>
+
+<pre><code class="cpp">#include &lt;gazebo/gazebo.hh&gt;
+
+namespace gazebo
+{
+  class WorldPluginTutorial : public WorldPlugin
+  {
+    public: WorldPluginTutorial() : WorldPlugin()
+            {
+              printf("Hello World!\n");
+            }
+
+    public: void Load(physics::WorldPtr _world, sdf::ElementPtr _sdf)
+            {
+            }
+  };
+  GZ_REGISTER_WORLD_PLUGIN(WorldPluginTutorial)
+}
+</code></pre>
+
+<p>上記のコードはGazeboのソースコード : <a href="https://bitbucket.org/osrf/gazebo/src/gazebo_2.2/examples/plugins/hello_world/">examples/plugins/helloworld/helloworld</a>にもあります。尚、リンク先には<code>CMakeLists.txt</code>ファイルもあります。</p>
+
+<h3>コードの説明</h3>
+
+<pre><code class="cpp">#include &lt;gazebo/gazebo.hh&gt;
+
+namespace gazebo
+{
+</code></pre>
+
+<p><a href="https://bitbucket.org/osrf/gazebo/src/gazebo_2.2/gazebo/gazebo_core.hh">gazebo/gazebo.hh</a>ファイルは基本的なGazeboの関数群のコアをインクルードしています。これは、<code>gazebo/physics/physics.hh</code>や<code>gazebo/rendering/rendering.hh</code>、<code>gazebo/sensors/sensors.hh</code>を臨機応変でインクルードされるべきものとしてインクルードしていません。すべてのプラグインは<code>gazebo</code>という名前空間が必要です。</p>
+
+<pre><code class="cpp">  class WorldPluginTutorial : public WorldPlugin
+  {
+    public: WorldPluginTutorial() : WorldPlugin()
+            {
+              printf("Hello World!\n");
+            }
+</code></pre>
+
+<p>それぞれのプラグインはプラグインタイプを継承しなければなりません。今回の例では、<code>WorldPlugin</code>クラスを継承します。</p>
+
+<pre><code class="cpp">    public: void Load(physics::WorldPtr _world, sdf::ElementPtr _sdf)
+            {
+            }
+</code></pre>
+
+<p>その他の必須の関数は<code>Load</code>です。これはロードされるSDFファイルによって定義される属性や要素を含むSDF要素を受け取ります。</p>
+
+<pre><code class="cpp">  GZ_REGISTER_WORLD_PLUGIN(WorldPluginTutorial)
+</code></pre>
+
+<p>最終的に、プラグインは<code>GZ_REGISTER_WORLD_PLUGIN</code>マクロを使ってシミュレーションと共に登録されなければなりません。このマクロへの唯一のパラメータはプラグインクラスの名前です。それぞれのプラグインタイプに合わせて登録されたマクロの照合が行われます。: <code>GZ_REGISTER_MODEL_PLUGIN</code>, <code>GZ_REGISTER_SENSOR_PLUGIN</code>, <code>GZ_REGISTER_SYSTEM_PLUGIN</code>、<code>GZ_REGISTER_VISUAL_PLUGIN</code>などです。<br/>
+以下のセクションではこのプラグインをどのようにしてコンパイルするかについての簡単な説明も行ってゆきます。</p>
+
+<h3>プラグインをコンパイルする</h3>
+
+<p>Gazeboが正しくインストールされていることを確認して下さい。<br/>
+上記のプラグインをコンパイルするために、<code>~/gazebo_plugin_tutorial/CMakeLists</code>を作成して下さい。:</p>
+
+<pre><code class="bash"> gedit ~/gazebo_plugin_tutorial/CMakeLists.txt
+</code></pre>
+
+<p>以下を<code>CMakeLists.txt</code>にコピーして下さい。:</p>
+
+<pre><code class="cmake">cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
+
+find_package(Boost REQUIRED COMPONENTS system)
+include_directories(${Boost_INCLUDE_DIRS})
+link_directories(${Boost_LIBRARY_DIRS})
+
+include (FindPkgConfig)
+if (PKG_CONFIG_FOUND)
+  pkg_check_modules(GAZEBO gazebo)
+endif()
+include_directories(${GAZEBO_INCLUDE_DIRS})
+link_directories(${GAZEBO_LIBRARY_DIRS})
+
+add_library(hello_world SHARED hello_world.cc)
+target_link_libraries(hello_world ${GAZEBO_LIBRARIES} ${Boost_LIBRARIES})
+</code></pre>
+
+<p>ビルドディレクトリを作成して下さい。</p>
+
+<pre><code class="bash"> mkdir ~/gazebo_plugin_tutorial/build
+ cd ~/gazebo_plugin_tutorial/build
+</code></pre>
+
+<p>コードをコンパイルして下さい。</p>
+
+<pre><code class="bash"> cmake ../
+ make
+</code></pre>
+
+<p>コンパイルの結果は共有ライブラリにでき、<code>~/gazebo_plugin_tutorial/build/libhello_world.so</code>をGazeboシミュレーションに挿入することができます。<br/>
+最後に、ライブラリパスを<code>GAZEBO_PLUGIN_PATH</code>に追加して下さい。:</p>
+
+<pre><code class="bash"> export GAZEBO_PLUGIN_PATH={GAZEBO_PLUGIN_PATH}:~/gazebo_plugin_tutorial/build
+</code></pre>
+
+<h2>プラグインを使う</h2>
+
+<p>プラグインを共有ライブラリとしてコンパイルしたら(上記をご覧ください)、SDFファイルのworldやmodelにそれを追加することができます(詳しくは、<a href="http://gazebosim.org/sdf.html">SDFドキュメント</a>をご覧ください)。最初に、GazeboはSDFファイルを解析し、プラグインを設置します。そしてコードを読み込みます。Gazeboがプラグインを探すことができるというのはとても重要なことです。プラグインへの絶対パスが定義されている、もしくはプラグインが<code>GAZEBOPLUGINPATH</code>パスの中にあればプラグインを利用した環境が利用可能です。<br/>
+worldファイルの例は、<a href="https://bitbucket.org/osrf/gazebo/src/gazebo_2.2/examples/plugins/hello_world/hello.world">examples/plugins/helloworld/helloworld</a>でも見つけることができます。</p>
+
+<pre><code class="xml">&lt;?xml version="1.0"?&gt;
+&lt;sdf version="1.4"&gt;
+  &lt;world name="default"&gt;
+    &lt;plugin name="hello_world" filename="libhello_world.so"/&gt;
+  &lt;/world&gt;
+&lt;/sdf&gt;
+</code></pre>
+
+<p><code>~/gazebo_plugin_tutorial/hello.world</code>にあるファイルのコピーを作成して下さい。<br/>
+もし、<code>GAZEBO_PLUGIN_PATH</code>の中にビルドディレクトリがないなら、Gazeboサーバーをビルドディレクトリから起動しなければなりません。</p>
+
+<pre><code class="bash">$ cd build
+$ gzserver ../hello.world --verbose
+</code></pre>
+
+<p>うまく実行できれば、以下のような出力を得られるはずです。:</p>
+
+<pre><code class="bash">Gazebo multi-robot simulator, version 1.9.5
+Copyright (C) 2013 Open Source Robotics Foundation.
+Released under the Apache 2 License.
+http://gazebosim.org
+
+Msg Waiting for master
+Msg Connected to gazebo master @ http://localhost:11345
+Hello World!
+</code></pre>
+]]></content>
+  </entry>
+  
+</feed>
