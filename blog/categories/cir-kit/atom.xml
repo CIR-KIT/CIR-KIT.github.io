@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Cir-kit | 九州工業大学 CIR-KIT Blog]]></title>
+  <link href="http://cir-kit.github.io/blog/categories/cir-kit/atom.xml" rel="self"/>
+  <link href="http://cir-kit.github.io/"/>
+  <updated>2015-03-15T03:10:29+09:00</updated>
+  <id>http://cir-kit.github.io/</id>
+  <author>
+    <name><![CDATA[CIR-KIT Members]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[CIR-KITの1号機ドライバ作成 on ROS]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/03/15/make-first-robot-driver-on-ros/"/>
+    <updated>2015-03-15T03:00:00+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/03/15/make-first-robot-driver-on-ros</id>
+    <content type="html"><![CDATA[<h1>1号機の新しいドライバについて</h1>
+
+<h2>概要</h2>
+
+<p>ROSを利用して1号機のドライバを再度作成した際に
+決定した仕様や，変更した仕様などをまとめた．
+また，Arduinoによる制御において考えるべき要素を記す．</p>
+
+<h2>検証情報</h2>
+
+<h3>日時</h3>
+
+<p>03/13/2015 (Fri)</p>
+
+<!--more-->
+
+
+<h3>スペック</h3>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;">パーツ</th>
+<th style="text-align:center;">スペック</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">PC</td>
+<td style="text-align:center;">Panasonic Let&rsquo;s note CF-LX3TG7TC</td>
+</tr>
+<tr>
+<td style="text-align:center;">Prosessor</td>
+<td style="text-align:center;">Intel core i7-4500U (1.8GHz)</td>
+</tr>
+<tr>
+<td style="text-align:center;">RAM</td>
+<td style="text-align:center;">DDR3 SDRAM(PC3-12800) 4GB</td>
+</tr>
+<tr>
+<td style="text-align:center;">OS</td>
+<td style="text-align:center;">Ubuntu 14.04.2 LTS 64bit</td>
+</tr>
+<tr>
+<td style="text-align:center;">Kernel</td>
+<td style="text-align:center;">3.13.0-46-generic</td>
+</tr>
+<tr>
+<td style="text-align:center;">ROS</td>
+<td style="text-align:center;">indigo 1.11.10</td>
+</tr>
+<tr>
+<td style="text-align:center;">Arduino</td>
+<td style="text-align:center;">Arduino UNO</td>
+</tr>
+<tr>
+<td style="text-align:center;">rosserial</td>
+<td style="text-align:center;">0.6.3</td>
+</tr>
+</tbody>
+</table>
+
+
+<h2>新しいドライバの過去からの変更点</h2>
+
+<p>レスポンス速度を過去のものより高速化した．ただし無駄を改良仕切ったわけではない．
+前身はloopを最速で回す前提かつdelayで一時処理がとまるプログラムだったので，一部だけだが，それらに依らない改良を行った．</p>
+
+<h2>ドライバ仕様</h2>
+
+<p>Topic</p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;">名称</th>
+<th style="text-align:center;">使用法</th>
+<th style="text-align:center;">型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">moter_driver</td>
+<td style="text-align:center;">subscribe</td>
+<td style="text-align:center;">geometry_msgs/Twist</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>Msg:geometry_msgs/Twist</p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;">要素</th>
+<th style="text-align:center;">関連物</th>
+<th style="text-align:center;">想定条件</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">linear.x</td>
+<td style="text-align:center;">前後移動速度</td>
+<td style="text-align:center;">-1.0 ~ 1.0</td>
+</tr>
+<tr>
+<td style="text-align:center;">angular.z</td>
+<td style="text-align:center;">左右操舵条件</td>
+<td style="text-align:center;">ステッピングモータのステップ数</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>geometry_msgs/Twist メッセージを受け取り，linear.xを前後移動速度，angular.zを左右操舵条件としてモータを制御します．</p>
+
+<p>linear.xの絶対値は速度になります．また，1.0は最大速度を示します．
+負の値を受け取った時はバックします．yとzは使用しません．</p>
+
+<p>angular.zが正の値で左，負の値で右へ操舵します．0の場合，現在の操舵状態を保持します．angularにステッピングモータのステップ数を入れるよう推奨しているのはジオメトリ出力として入力しやすいと考えたからです．なお，xとyは使用しません．</p>
+
+<h2>ソース</h2>
+
+<pre><code class="cpp">/**
+Copyright (c) 2015, Yusuke Doi
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met: 
+
+1. Redistributions of source code must retain the above copyright notice,
+   this list of conditions and the following disclaimer. 
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution. 
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+The views and conclusions contained in the software and documentation are those
+of the authors and should not be interpreted as representing official policies, 
+either expressed or implied, of the FreeBSD Project.
+*/
+#include &lt;ros.h&gt; // Use ros_lib.
+#include &lt;geometry_msgs/Twist.h&gt; // Use Twist.msg. -&gt; [linear(x,y,z), angular(x,y,z)]
+
+/* Define pin numbers. */
+#define ACCEL 9
+#define BACK_GEAR 8
+#define CW 3
+#define CCW 4
+/* Define pulse width time of the stepping motor. */
+#define PULSE_WIDTH_MICRO_SECOND 500
+/* Define max speed to 220. */
+#define MAX_SPEED 220
+/* Define direction of angular z. */
+#define LEFT 0
+#define RIGHT 1
+#define KEEP 2
+/* Define direction of back gear. */
+#define FORWARD 0
+#define BACK 1
+
+/* Declare proto type functions. */
+void steer(const char direction); // Write pulse to the stepping motor.
+void setGear(const char direction); // Set direction to the back gear pin.
+unsigned char getSpeed(float speed); // Get speed what fit the robot model.
+void motorCb(const geometry_msgs::Twist&amp; msg); // Call back function of the motor_driver topic.
+
+/* Declare global constants. */
+const unsigned int PULSE_FREQUENCY = 1000l * 1000 / (PULSE_WIDTH_MICRO_SECOND * 2); // Get frequency of pulse.
+/* Declare global variables. */
+ros::NodeHandle nh; // The nodeHandle.
+ros::Subscriber&lt;geometry_msgs::Twist&gt; sub("motor_driver", &amp;motorCb); // Set subscribe the motor_driver topic.
+
+void setup() {
+    /* Set pins Mode. */
+    for (int i = CCW; i &lt; ACCEL+1; i++) { // 3: CCW, 4: CW, 5: C0, 6:C2, 7:HOFF 8: BACK_GEAR 9: ACCEL
+        pinMode(i, OUTPUT);
+        digitalWrite(i, LOW); // Default pin status is LOW.
+    }
+    /* Node handle setting. */
+    nh.initNode(); // First setup the node handle.
+    nh.subscribe(sub); // Start subscribe the motor_driver topic.
+}
+
+void loop() {
+    nh.spinOnce(); // Check topic and if change it, run the call back function.
+    delay(1);
+}
+
+/**
+ * Call back function of the motor_driver topic.
+ * This funcion is moter driver unit.
+ *
+ * @author "Yusuke Doi"
+ * @param msg This param is msg object of the motor_driver topic.
+ */
+void motorCb(const geometry_msgs::Twist&amp; msg) {
+   /* gear change task */
+    if (msg.linear.x &lt; 0 &amp;&amp; !digitalRead(BACK_GEAR)) // Go to back, but gear setting is forward now.
+        setGear(BACK); // Set back to back gear.
+    else if (msg.linear.x &gt; 0 &amp;&amp; digitalRead(BACK_GEAR)) // Go to forward, but gear setting is back now.
+        setGear(FORWARD); // Set forward to back gear.
+   /* steer task */
+    if (msg.angular.z &lt; 0) steer(RIGHT); // Minus mean CCW or right.
+    else if (msg.angular.z &gt; 0) steer(LEFT); // Plus mean CW or left.
+    else steer(KEEP); // Zero mean keep steer.
+   /* move task */
+    analogWrite(ACCEL, getSpeed(msg.linear.x)); // Write speed to accel pin.
+}
+
+/**
+ * Set back gear by direction.
+ *
+ * @author "Yusuke Doi"
+ * @param direction Set this into back gear.
+ */
+void setGear(const char direction) {
+    analogWrite(ACCEL, 0); // Stop the DC motor.
+    switch (direction) {
+    case FORWARD:
+        delay(700); // Wait to stop the DC motor perfectly.
+        digitalWrite(BACK_GEAR, LOW); // Change back gear to back.
+        delay(400); // Wait to change back gear perfectly.
+        break;
+    case BACK:
+        delay(500); // Wait to stop the DC motor perfectly.
+        digitalWrite(BACK_GEAR, HIGH); // Change back gear to back.
+        delay(500); // Wait to change back gear perfectly.
+        break;
+    default:
+        setGear(FORWARD); // Run this function, and set FORWARD.
+    }
+}
+
+/**
+ * Steering function of the stepping motor.
+ *
+ * @author "Yusuke Doi"
+ * @param direction Steer to direction.
+ */
+void steer(const char direction) {
+    switch (direction) {
+    case LEFT: // Task steer left.
+        noTone(CW); // Unset tone. If don't running tone, not happen.
+        digitalWrite(CW, HIGH); // Set high to CW.
+        tone(CCW, PULSE_FREQUENCY); // Write pulse to CCW pin. turn to CW.
+        break;
+    case RIGHT: // Task steer right.
+        noTone(CCW); // Unset tone. If don't running tone, not happen.
+        digitalWrite(CCW, HIGH); // Set high to CCW.
+        tone(CW, PULSE_FREQUENCY); // Write pulse to CW pin. turn to CCW.
+        break;
+    case KEEP: default: // set CW and CCW to low.
+        noTone(CW); // Unset tone. If don't running tone, not happen.
+        noTone(CCW); // Unset tone. If don't running tone, not happen.
+        digitalWrite(CW, LOW);
+        digitalWrite(CCW, LOW);
+    }
+}
+
+unsigned char getSpeed(float baseSpeed) {
+    float speed = abs(baseSpeed * MAX_SPEED); // Cast to 0~MAX_SPEED. so baseSpeed width is -1.0~1.0.
+    if (speed &gt; MAX_SPEED) speed = MAX_SPEED; // Limit max speed to 220.
+    return (unsigned char)speed; // Cast to unsigned char.
+}
+</code></pre>
+
+<h3>解説など</h3>
+
+<p>トピックにメッセージが来たらコールバック関数joyCbを呼び出します．この関数は受け取ったメッセージを解析して，操舵，ギアチェンジ，モータ制御を行います．詳しくはソースのコメントを呼んでください．</p>
+
+<h3>加えられた改良について</h3>
+
+<h4>操舵</h4>
+
+<p>今回の一番の改良点は操舵にtone関数を採用した点です．これによりarduinoは操舵にCPUを専有されることがなくなります．toneは指定ピンに指定周波数のデューティー比50%PWMを出力します．
+この関数はPWM用のタイマを利用するので3番ピンと11番ピンのanalogWriteを阻害します．よって現在の構成には影響しません．</p>
+
+<h4>無意味なコピペ削除</h4>
+
+<p>いままでのソースは分岐後に全く同じ動作をする部分が多すぎたため，それらをまとめ可読性を上げました．</p>
+
+<h3>課題点</h3>
+
+<h4>ギアチェンジ</h4>
+
+<p>ギアチェンジ用の関数は未だにdelayが使用されています．このためこのドライバはギアチェンジ中の1秒以上操作不可能に陥ります．</p>
+
+<p>私ははギアチェンジフラグを作成し，DCモータへのアクセスを禁止することでこれを解決しようと考えています．</p>
+
+<h4>多量のマクロ及び関数</h4>
+
+<p>C++を採用しているにも関わらず，CIR-KITでは古いC言語ライクの文が蔓延っています．それは，例えば定数として無意味にマクロを用いたり，1つのソース内からすべての変数にアクセスできることです．</p>
+
+<p>私はクラスを利用してオブジェクト化することでこれら問題を解決すべきと考えています．</p>
+
+<h2>Arduinoプログラムに求められること</h2>
+
+<h3>最低基準：常時反応性</h3>
+
+<p>ここまでのことからまず，最低限マイコンに求められることがあります．
+それは常時反応性です．つまり，右を向けと指示を出して，すぐにそれを感知してタスクを実行し始めることが重要です．もし，右に向けと指示を出したのにずっとギアチェンジのタスクに掛かり切りなら，右に向くのはずっと後になります．ギアチェンジのタスク中は停止しているようにすら見えるでしょう．</p>
+
+<p>つまり，マルチタスクをする場合でも，入力受付を常時行うことが必要です．そして，動いてはいけない場合は場合分けで対応するべきです．</p>
+
+<h4>達成方法</h4>
+
+<p>多くのマイコンにはタイマやsoftwareで一度指示を出せばバックグラウンドに処理をしてくれる機能が場合ついています．これらに継続的処理をすべて任せることでプログラマは情報の処理に集中でき，更に常時入力性を保つことができます．</p>
+]]></content>
+  </entry>
+  
+</feed>

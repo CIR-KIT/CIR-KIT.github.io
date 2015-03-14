@@ -1,0 +1,730 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>CIR-KITの1号機ドライバ作成 on ROS - 九州工業大学 CIR-KIT Blog</title>
+  <meta name="author" content="Yusuke Doi">
+
+  
+  <meta name="description" content="1号機の新しいドライバについて 概要 ROSを利用して1号機のドライバを再度作成した際に
+決定した仕様や，変更した仕様などをまとめた．
+また，Arduinoによる制御において考えるべき要素を記す． 検証情報 日時 03/13/2015 (Fri) スペック パーツ
+スペック PC &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://cir-kit.github.io/blog/2015/03/15/make-first-robot-driver-on-ros/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="九州工業大学 CIR-KIT Blog" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-59178596-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<meta property="og:title" content="CIR-KITの1号機ドライバ作成 on ROS - 九州工業大学 CIR-KIT Blog" />
+<meta property="og:description" content="1号機の新しいドライバについて 概要 ROSを利用して1号機のドライバを再度作成した際に
+決定した仕様や，変更した仕様などをまとめた．
+また，Arduinoによる制御において考えるべき要素を記す． 検証情報 日時 03/13/2015 (Fri) スペック パーツ
+スペック PC &hellip;" />
+<meta property="og:url" content="http://cir-kit.github.io/blog/2015/03/15/make-first-robot-driver-on-ros/" />
+<meta property="og:image" content="http://cir-kit.github.io/favicon.png" />
+
+<meta property="og:site_name" content="九州工業大学 CIR-KIT Blog" />
+<meta property="og:locale" content="ja_JP" />
+<meta property="og:type" content="blog" />
+<meta property="fb:app_id" content="930841560294053" />
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">九州工業大学 CIR-KIT Blog</a></h1>
+  
+    <h2>九工大自律移動ロボット製作プロジェクトCIR-KITの技術系ブログ</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="cir-kit.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/information">Information</a><li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">CIR-KITの1号機ドライバ作成 on ROS</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-03-15T03:00:00+09:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>15</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>3:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h1>1号機の新しいドライバについて</h1>
+
+<h2>概要</h2>
+
+<p>ROSを利用して1号機のドライバを再度作成した際に
+決定した仕様や，変更した仕様などをまとめた．
+また，Arduinoによる制御において考えるべき要素を記す．</p>
+
+<h2>検証情報</h2>
+
+<h3>日時</h3>
+
+<p>03/13/2015 (Fri)</p>
+
+<!--more-->
+
+
+<h3>スペック</h3>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;">パーツ</th>
+<th style="text-align:center;">スペック</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">PC</td>
+<td style="text-align:center;">Panasonic Let&rsquo;s note CF-LX3TG7TC</td>
+</tr>
+<tr>
+<td style="text-align:center;">Prosessor</td>
+<td style="text-align:center;">Intel core i7-4500U (1.8GHz)</td>
+</tr>
+<tr>
+<td style="text-align:center;">RAM</td>
+<td style="text-align:center;">DDR3 SDRAM(PC3-12800) 4GB</td>
+</tr>
+<tr>
+<td style="text-align:center;">OS</td>
+<td style="text-align:center;">Ubuntu 14.04.2 LTS 64bit</td>
+</tr>
+<tr>
+<td style="text-align:center;">Kernel</td>
+<td style="text-align:center;">3.13.0-46-generic</td>
+</tr>
+<tr>
+<td style="text-align:center;">ROS</td>
+<td style="text-align:center;">indigo 1.11.10</td>
+</tr>
+<tr>
+<td style="text-align:center;">Arduino</td>
+<td style="text-align:center;">Arduino UNO</td>
+</tr>
+<tr>
+<td style="text-align:center;">rosserial</td>
+<td style="text-align:center;">0.6.3</td>
+</tr>
+</tbody>
+</table>
+
+
+<h2>新しいドライバの過去からの変更点</h2>
+
+<p>レスポンス速度を過去のものより高速化した．ただし無駄を改良仕切ったわけではない．
+前身はloopを最速で回す前提かつdelayで一時処理がとまるプログラムだったので，一部だけだが，それらに依らない改良を行った．</p>
+
+<h2>ドライバ仕様</h2>
+
+<p>Topic</p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;">名称</th>
+<th style="text-align:center;">使用法</th>
+<th style="text-align:center;">型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">moter_driver</td>
+<td style="text-align:center;">subscribe</td>
+<td style="text-align:center;">geometry_msgs/Twist</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>Msg:geometry_msgs/Twist</p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;">要素</th>
+<th style="text-align:center;">関連物</th>
+<th style="text-align:center;">想定条件</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">linear.x</td>
+<td style="text-align:center;">前後移動速度</td>
+<td style="text-align:center;">-1.0 ~ 1.0</td>
+</tr>
+<tr>
+<td style="text-align:center;">angular.z</td>
+<td style="text-align:center;">左右操舵条件</td>
+<td style="text-align:center;">ステッピングモータのステップ数</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>geometry_msgs/Twist メッセージを受け取り，linear.xを前後移動速度，angular.zを左右操舵条件としてモータを制御します．</p>
+
+<p>linear.xの絶対値は速度になります．また，1.0は最大速度を示します．
+負の値を受け取った時はバックします．yとzは使用しません．</p>
+
+<p>angular.zが正の値で左，負の値で右へ操舵します．0の場合，現在の操舵状態を保持します．angularにステッピングモータのステップ数を入れるよう推奨しているのはジオメトリ出力として入力しやすいと考えたからです．なお，xとyは使用しません．</p>
+
+<h2>ソース</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+<span class='line-number'>112</span>
+<span class='line-number'>113</span>
+<span class='line-number'>114</span>
+<span class='line-number'>115</span>
+<span class='line-number'>116</span>
+<span class='line-number'>117</span>
+<span class='line-number'>118</span>
+<span class='line-number'>119</span>
+<span class='line-number'>120</span>
+<span class='line-number'>121</span>
+<span class='line-number'>122</span>
+<span class='line-number'>123</span>
+<span class='line-number'>124</span>
+<span class='line-number'>125</span>
+<span class='line-number'>126</span>
+<span class='line-number'>127</span>
+<span class='line-number'>128</span>
+<span class='line-number'>129</span>
+<span class='line-number'>130</span>
+<span class='line-number'>131</span>
+<span class='line-number'>132</span>
+<span class='line-number'>133</span>
+<span class='line-number'>134</span>
+<span class='line-number'>135</span>
+<span class='line-number'>136</span>
+<span class='line-number'>137</span>
+<span class='line-number'>138</span>
+<span class='line-number'>139</span>
+<span class='line-number'>140</span>
+<span class='line-number'>141</span>
+<span class='line-number'>142</span>
+<span class='line-number'>143</span>
+<span class='line-number'>144</span>
+<span class='line-number'>145</span>
+<span class='line-number'>146</span>
+<span class='line-number'>147</span>
+<span class='line-number'>148</span>
+<span class='line-number'>149</span>
+<span class='line-number'>150</span>
+<span class='line-number'>151</span>
+<span class='line-number'>152</span>
+</pre></td><td class='code'><pre><code class='cpp'><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm">Copyright (c) 2015, Yusuke Doi</span>
+</span><span class='line'><span class="cm">All rights reserved.</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">Redistribution and use in source and binary forms, with or without</span>
+</span><span class='line'><span class="cm">modification, are permitted provided that the following conditions are met: </span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">1. Redistributions of source code must retain the above copyright notice,</span>
+</span><span class='line'><span class="cm">   this list of conditions and the following disclaimer. </span>
+</span><span class='line'><span class="cm">2. Redistributions in binary form must reproduce the above copyright notice,</span>
+</span><span class='line'><span class="cm">   this list of conditions and the following disclaimer in the documentation</span>
+</span><span class='line'><span class="cm">   and/or other materials provided with the distribution. </span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &quot;AS IS&quot; AND</span>
+</span><span class='line'><span class="cm">ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED</span>
+</span><span class='line'><span class="cm">WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE</span>
+</span><span class='line'><span class="cm">DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR</span>
+</span><span class='line'><span class="cm">ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES</span>
+</span><span class='line'><span class="cm">(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;</span>
+</span><span class='line'><span class="cm">LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND</span>
+</span><span class='line'><span class="cm">ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT</span>
+</span><span class='line'><span class="cm">(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS</span>
+</span><span class='line'><span class="cm">SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">The views and conclusions contained in the software and documentation are those</span>
+</span><span class='line'><span class="cm">of the authors and should not be interpreted as representing official policies, </span>
+</span><span class='line'><span class="cm">either expressed or implied, of the FreeBSD Project.</span>
+</span><span class='line'><span class="cm">*/</span>
+</span><span class='line'><span class="cp">#include &lt;ros.h&gt; </span><span class="c1">// Use ros_lib.</span>
+</span><span class='line'><span class="cp">#include &lt;geometry_msgs/Twist.h&gt; </span><span class="c1">// Use Twist.msg. -&gt; [linear(x,y,z), angular(x,y,z)]</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/* Define pin numbers. */</span>
+</span><span class='line'><span class="cp">#define ACCEL 9</span>
+</span><span class='line'><span class="cp">#define BACK_GEAR 8</span>
+</span><span class='line'><span class="cp">#define CW 3</span>
+</span><span class='line'><span class="cp">#define CCW 4</span>
+</span><span class='line'><span class="cm">/* Define pulse width time of the stepping motor. */</span>
+</span><span class='line'><span class="cp">#define PULSE_WIDTH_MICRO_SECOND 500</span>
+</span><span class='line'><span class="cm">/* Define max speed to 220. */</span>
+</span><span class='line'><span class="cp">#define MAX_SPEED 220</span>
+</span><span class='line'><span class="cm">/* Define direction of angular z. */</span>
+</span><span class='line'><span class="cp">#define LEFT 0</span>
+</span><span class='line'><span class="cp">#define RIGHT 1</span>
+</span><span class='line'><span class="cp">#define KEEP 2</span>
+</span><span class='line'><span class="cm">/* Define direction of back gear. */</span>
+</span><span class='line'><span class="cp">#define FORWARD 0</span>
+</span><span class='line'><span class="cp">#define BACK 1</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/* Declare proto type functions. */</span>
+</span><span class='line'><span class="kt">void</span> <span class="nf">steer</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="n">direction</span><span class="p">);</span> <span class="c1">// Write pulse to the stepping motor.</span>
+</span><span class='line'><span class="kt">void</span> <span class="nf">setGear</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="n">direction</span><span class="p">);</span> <span class="c1">// Set direction to the back gear pin.</span>
+</span><span class='line'><span class="kt">unsigned</span> <span class="kt">char</span> <span class="nf">getSpeed</span><span class="p">(</span><span class="kt">float</span> <span class="n">speed</span><span class="p">);</span> <span class="c1">// Get speed what fit the robot model.</span>
+</span><span class='line'><span class="kt">void</span> <span class="nf">motorCb</span><span class="p">(</span><span class="k">const</span> <span class="n">geometry_msgs</span><span class="o">::</span><span class="n">Twist</span><span class="o">&amp;</span> <span class="n">msg</span><span class="p">);</span> <span class="c1">// Call back function of the motor_driver topic.</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/* Declare global constants. */</span>
+</span><span class='line'><span class="k">const</span> <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">PULSE_FREQUENCY</span> <span class="o">=</span> <span class="mi">1000l</span> <span class="o">*</span> <span class="mi">1000</span> <span class="o">/</span> <span class="p">(</span><span class="n">PULSE_WIDTH_MICRO_SECOND</span> <span class="o">*</span> <span class="mi">2</span><span class="p">);</span> <span class="c1">// Get frequency of pulse.</span>
+</span><span class='line'><span class="cm">/* Declare global variables. */</span>
+</span><span class='line'><span class="n">ros</span><span class="o">::</span><span class="n">NodeHandle</span> <span class="n">nh</span><span class="p">;</span> <span class="c1">// The nodeHandle.</span>
+</span><span class='line'><span class="n">ros</span><span class="o">::</span><span class="n">Subscriber</span><span class="o">&lt;</span><span class="n">geometry_msgs</span><span class="o">::</span><span class="n">Twist</span><span class="o">&gt;</span> <span class="n">sub</span><span class="p">(</span><span class="s">&quot;motor_driver&quot;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">motorCb</span><span class="p">);</span> <span class="c1">// Set subscribe the motor_driver topic.</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">void</span> <span class="nf">setup</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="cm">/* Set pins Mode. */</span>
+</span><span class='line'>  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">CCW</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">ACCEL</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// 3: CCW, 4: CW, 5: C0, 6:C2, 7:HOFF 8: BACK_GEAR 9: ACCEL</span>
+</span><span class='line'>      <span class="n">pinMode</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">OUTPUT</span><span class="p">);</span>
+</span><span class='line'>      <span class="n">digitalWrite</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">LOW</span><span class="p">);</span> <span class="c1">// Default pin status is LOW.</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="cm">/* Node handle setting. */</span>
+</span><span class='line'>  <span class="n">nh</span><span class="p">.</span><span class="n">initNode</span><span class="p">();</span> <span class="c1">// First setup the node handle.</span>
+</span><span class='line'>  <span class="n">nh</span><span class="p">.</span><span class="n">subscribe</span><span class="p">(</span><span class="n">sub</span><span class="p">);</span> <span class="c1">// Start subscribe the motor_driver topic.</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">void</span> <span class="nf">loop</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="n">nh</span><span class="p">.</span><span class="n">spinOnce</span><span class="p">();</span> <span class="c1">// Check topic and if change it, run the call back function.</span>
+</span><span class='line'>  <span class="n">delay</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> * Call back function of the motor_driver topic.</span>
+</span><span class='line'><span class="cm"> * This funcion is moter driver unit.</span>
+</span><span class='line'><span class="cm"> *</span>
+</span><span class='line'><span class="cm"> * @author &quot;Yusuke Doi&quot;</span>
+</span><span class='line'><span class="cm"> * @param msg This param is msg object of the motor_driver topic.</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'><span class="kt">void</span> <span class="nf">motorCb</span><span class="p">(</span><span class="k">const</span> <span class="n">geometry_msgs</span><span class="o">::</span><span class="n">Twist</span><span class="o">&amp;</span> <span class="n">msg</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>   <span class="cm">/* gear change task */</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="n">msg</span><span class="p">.</span><span class="n">linear</span><span class="p">.</span><span class="n">x</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">digitalRead</span><span class="p">(</span><span class="n">BACK_GEAR</span><span class="p">))</span> <span class="c1">// Go to back, but gear setting is forward now.</span>
+</span><span class='line'>      <span class="n">setGear</span><span class="p">(</span><span class="n">BACK</span><span class="p">);</span> <span class="c1">// Set back to back gear.</span>
+</span><span class='line'>  <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">msg</span><span class="p">.</span><span class="n">linear</span><span class="p">.</span><span class="n">x</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">digitalRead</span><span class="p">(</span><span class="n">BACK_GEAR</span><span class="p">))</span> <span class="c1">// Go to forward, but gear setting is back now.</span>
+</span><span class='line'>      <span class="n">setGear</span><span class="p">(</span><span class="n">FORWARD</span><span class="p">);</span> <span class="c1">// Set forward to back gear.</span>
+</span><span class='line'>   <span class="cm">/* steer task */</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="n">msg</span><span class="p">.</span><span class="n">angular</span><span class="p">.</span><span class="n">z</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="n">steer</span><span class="p">(</span><span class="n">RIGHT</span><span class="p">);</span> <span class="c1">// Minus mean CCW or right.</span>
+</span><span class='line'>  <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">msg</span><span class="p">.</span><span class="n">angular</span><span class="p">.</span><span class="n">z</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="n">steer</span><span class="p">(</span><span class="n">LEFT</span><span class="p">);</span> <span class="c1">// Plus mean CW or left.</span>
+</span><span class='line'>  <span class="k">else</span> <span class="n">steer</span><span class="p">(</span><span class="n">KEEP</span><span class="p">);</span> <span class="c1">// Zero mean keep steer.</span>
+</span><span class='line'>   <span class="cm">/* move task */</span>
+</span><span class='line'>  <span class="n">analogWrite</span><span class="p">(</span><span class="n">ACCEL</span><span class="p">,</span> <span class="n">getSpeed</span><span class="p">(</span><span class="n">msg</span><span class="p">.</span><span class="n">linear</span><span class="p">.</span><span class="n">x</span><span class="p">));</span> <span class="c1">// Write speed to accel pin.</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> * Set back gear by direction.</span>
+</span><span class='line'><span class="cm"> *</span>
+</span><span class='line'><span class="cm"> * @author &quot;Yusuke Doi&quot;</span>
+</span><span class='line'><span class="cm"> * @param direction Set this into back gear.</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'><span class="kt">void</span> <span class="nf">setGear</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="n">direction</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">analogWrite</span><span class="p">(</span><span class="n">ACCEL</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span> <span class="c1">// Stop the DC motor.</span>
+</span><span class='line'>  <span class="k">switch</span> <span class="p">(</span><span class="n">direction</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">case</span> <span class="nl">FORWARD</span><span class="p">:</span>
+</span><span class='line'>      <span class="n">delay</span><span class="p">(</span><span class="mi">700</span><span class="p">);</span> <span class="c1">// Wait to stop the DC motor perfectly.</span>
+</span><span class='line'>      <span class="n">digitalWrite</span><span class="p">(</span><span class="n">BACK_GEAR</span><span class="p">,</span> <span class="n">LOW</span><span class="p">);</span> <span class="c1">// Change back gear to back.</span>
+</span><span class='line'>      <span class="n">delay</span><span class="p">(</span><span class="mi">400</span><span class="p">);</span> <span class="c1">// Wait to change back gear perfectly.</span>
+</span><span class='line'>      <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">case</span> <span class="nl">BACK</span><span class="p">:</span>
+</span><span class='line'>      <span class="n">delay</span><span class="p">(</span><span class="mi">500</span><span class="p">);</span> <span class="c1">// Wait to stop the DC motor perfectly.</span>
+</span><span class='line'>      <span class="n">digitalWrite</span><span class="p">(</span><span class="n">BACK_GEAR</span><span class="p">,</span> <span class="n">HIGH</span><span class="p">);</span> <span class="c1">// Change back gear to back.</span>
+</span><span class='line'>      <span class="n">delay</span><span class="p">(</span><span class="mi">500</span><span class="p">);</span> <span class="c1">// Wait to change back gear perfectly.</span>
+</span><span class='line'>      <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">default</span><span class="o">:</span>
+</span><span class='line'>      <span class="n">setGear</span><span class="p">(</span><span class="n">FORWARD</span><span class="p">);</span> <span class="c1">// Run this function, and set FORWARD.</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> * Steering function of the stepping motor.</span>
+</span><span class='line'><span class="cm"> *</span>
+</span><span class='line'><span class="cm"> * @author &quot;Yusuke Doi&quot;</span>
+</span><span class='line'><span class="cm"> * @param direction Steer to direction.</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'><span class="kt">void</span> <span class="nf">steer</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="n">direction</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">switch</span> <span class="p">(</span><span class="n">direction</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">case</span> <span class="nl">LEFT</span><span class="p">:</span> <span class="c1">// Task steer left.</span>
+</span><span class='line'>      <span class="n">noTone</span><span class="p">(</span><span class="n">CW</span><span class="p">);</span> <span class="c1">// Unset tone. If don&#39;t running tone, not happen.</span>
+</span><span class='line'>      <span class="n">digitalWrite</span><span class="p">(</span><span class="n">CW</span><span class="p">,</span> <span class="n">HIGH</span><span class="p">);</span> <span class="c1">// Set high to CW.</span>
+</span><span class='line'>      <span class="n">tone</span><span class="p">(</span><span class="n">CCW</span><span class="p">,</span> <span class="n">PULSE_FREQUENCY</span><span class="p">);</span> <span class="c1">// Write pulse to CCW pin. turn to CW.</span>
+</span><span class='line'>      <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">case</span> <span class="nl">RIGHT</span><span class="p">:</span> <span class="c1">// Task steer right.</span>
+</span><span class='line'>      <span class="n">noTone</span><span class="p">(</span><span class="n">CCW</span><span class="p">);</span> <span class="c1">// Unset tone. If don&#39;t running tone, not happen.</span>
+</span><span class='line'>      <span class="n">digitalWrite</span><span class="p">(</span><span class="n">CCW</span><span class="p">,</span> <span class="n">HIGH</span><span class="p">);</span> <span class="c1">// Set high to CCW.</span>
+</span><span class='line'>      <span class="n">tone</span><span class="p">(</span><span class="n">CW</span><span class="p">,</span> <span class="n">PULSE_FREQUENCY</span><span class="p">);</span> <span class="c1">// Write pulse to CW pin. turn to CCW.</span>
+</span><span class='line'>      <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">case</span> <span class="nl">KEEP</span><span class="p">:</span> <span class="k">default</span><span class="o">:</span> <span class="c1">// set CW and CCW to low.</span>
+</span><span class='line'>      <span class="n">noTone</span><span class="p">(</span><span class="n">CW</span><span class="p">);</span> <span class="c1">// Unset tone. If don&#39;t running tone, not happen.</span>
+</span><span class='line'>      <span class="n">noTone</span><span class="p">(</span><span class="n">CCW</span><span class="p">);</span> <span class="c1">// Unset tone. If don&#39;t running tone, not happen.</span>
+</span><span class='line'>      <span class="n">digitalWrite</span><span class="p">(</span><span class="n">CW</span><span class="p">,</span> <span class="n">LOW</span><span class="p">);</span>
+</span><span class='line'>      <span class="n">digitalWrite</span><span class="p">(</span><span class="n">CCW</span><span class="p">,</span> <span class="n">LOW</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">unsigned</span> <span class="kt">char</span> <span class="nf">getSpeed</span><span class="p">(</span><span class="kt">float</span> <span class="n">baseSpeed</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kt">float</span> <span class="n">speed</span> <span class="o">=</span> <span class="n">abs</span><span class="p">(</span><span class="n">baseSpeed</span> <span class="o">*</span> <span class="n">MAX_SPEED</span><span class="p">);</span> <span class="c1">// Cast to 0~MAX_SPEED. so baseSpeed width is -1.0~1.0.</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="n">speed</span> <span class="o">&gt;</span> <span class="n">MAX_SPEED</span><span class="p">)</span> <span class="n">speed</span> <span class="o">=</span> <span class="n">MAX_SPEED</span><span class="p">;</span> <span class="c1">// Limit max speed to 220.</span>
+</span><span class='line'>  <span class="k">return</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">char</span><span class="p">)</span><span class="n">speed</span><span class="p">;</span> <span class="c1">// Cast to unsigned char.</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>解説など</h3>
+
+<p>トピックにメッセージが来たらコールバック関数joyCbを呼び出します．この関数は受け取ったメッセージを解析して，操舵，ギアチェンジ，モータ制御を行います．詳しくはソースのコメントを呼んでください．</p>
+
+<h3>加えられた改良について</h3>
+
+<h4>操舵</h4>
+
+<p>今回の一番の改良点は操舵にtone関数を採用した点です．これによりarduinoは操舵にCPUを専有されることがなくなります．toneは指定ピンに指定周波数のデューティー比50%PWMを出力します．
+この関数はPWM用のタイマを利用するので3番ピンと11番ピンのanalogWriteを阻害します．よって現在の構成には影響しません．</p>
+
+<h4>無意味なコピペ削除</h4>
+
+<p>いままでのソースは分岐後に全く同じ動作をする部分が多すぎたため，それらをまとめ可読性を上げました．</p>
+
+<h3>課題点</h3>
+
+<h4>ギアチェンジ</h4>
+
+<p>ギアチェンジ用の関数は未だにdelayが使用されています．このためこのドライバはギアチェンジ中の1秒以上操作不可能に陥ります．</p>
+
+<p>私ははギアチェンジフラグを作成し，DCモータへのアクセスを禁止することでこれを解決しようと考えています．</p>
+
+<h4>多量のマクロ及び関数</h4>
+
+<p>C++を採用しているにも関わらず，CIR-KITでは古いC言語ライクの文が蔓延っています．それは，例えば定数として無意味にマクロを用いたり，1つのソース内からすべての変数にアクセスできることです．</p>
+
+<p>私はクラスを利用してオブジェクト化することでこれら問題を解決すべきと考えています．</p>
+
+<h2>Arduinoプログラムに求められること</h2>
+
+<h3>最低基準：常時反応性</h3>
+
+<p>ここまでのことからまず，最低限マイコンに求められることがあります．
+それは常時反応性です．つまり，右を向けと指示を出して，すぐにそれを感知してタスクを実行し始めることが重要です．もし，右に向けと指示を出したのにずっとギアチェンジのタスクに掛かり切りなら，右に向くのはずっと後になります．ギアチェンジのタスク中は停止しているようにすら見えるでしょう．</p>
+
+<p>つまり，マルチタスクをする場合でも，入力受付を常時行うことが必要です．そして，動いてはいけない場合は場合分けで対応するべきです．</p>
+
+<h4>達成方法</h4>
+
+<p>多くのマイコンにはタイマやsoftwareで一度指示を出せばバックグラウンドに処理をしてくれる機能が場合ついています．これらに継続的処理をすべて任せることでプログラマは情報の処理に集中でき，更に常時入力性を保つことができます．</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Yusuke Doi</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2015-03-15T03:00:00+09:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>15</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>3:00 am</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/cir-kit/'>cir-kit</a>, <a class='category' href='/blog/categories/robot/'>robot</a>, <a class='category' href='/blog/categories/ros/'>ros</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://cir-kit.github.io/blog/2015/03/15/make-first-robot-driver-on-ros/" data-via="" data-counturl="http://cir-kit.github.io/blog/2015/03/15/make-first-robot-driver-on-ros/" >Tweet</a>
+  
+  
+  
+  
+  <div class="fb-comments" data-href="http://cir-kit.github.io" data-num-posts="2" data-width="500"></div>
+  
+  
+
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2015/03/13/turtlesim-with-joystick/" title="Previous Post: ジョイスティックで亀を泳がせる(準備編)">&laquo; ジョイスティックで亀を泳がせる(準備編)</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    
+
+
+
+
+<section>
+<div class="fb-like-box" data-href="https://www.facebook.com/kyutechcirkit" data-width="210" data-height="400" data-colorscheme="light" data-show-faces="false" data-header="false" data-stream="true" data-show-border="false"></div>
+</section>
+
+<section>
+  <h1>Categories</h1>
+    <ul id="category-list">
+      <li><a href='/blog/categories/arduino/'>arduino (2)</a></li><li><a href='/blog/categories/build-a-robot/'>build a robot (10)</a></li><li><a href='/blog/categories/build-a-world/'>build a world (5)</a></li><li><a href='/blog/categories/cir-kit/'>cir-kit (1)</a></li><li><a href='/blog/categories/gazebo/'>gazebo (34)</a></li><li><a href='/blog/categories/getstarted/'>getstarted (4)</a></li><li><a href='/blog/categories/install/'>install (2)</a></li><li><a href='/blog/categories/joystick-driver/'>joystick_driver (2)</a></li><li><a href='/blog/categories/plugin/'>plugin (1)</a></li><li><a href='/blog/categories/robot/'>robot (1)</a></li><li><a href='/blog/categories/ros/'>ros (14)</a></li><li><a href='/blog/categories/rosserial/'>rosserial (2)</a></li><li><a href='/blog/categories/sensors/'>sensors (2)</a></li><li><a href='/blog/categories/tools-and-utilities/'>tools and utilities (1)</a></li><li><a href='/blog/categories/ubuntu/'>ubuntu (35)</a></li>
+    </ul>
+</section>
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/15/make-first-robot-driver-on-ros/">CIR-KITの1号機ドライバ作成 on ROS</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/13/turtlesim-with-joystick/">ジョイスティックで亀を泳がせる(準備編)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/11/gazebo-plugin-101/">No.7-1:プラグインを書く (Gazebo Plugin 101 編)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/10/light-four-leds-on-arduino-by-ros/">ジョイスティックで4つのLEDをつける(Arduino&ROS)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/10/use-rosserial-first/">ArduinoをROSで動かす</a>
+      </li>
+    
+  </ul>
+</section>
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Yusuke Doi -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&appId=930841560294053&version=v2.0";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

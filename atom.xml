@@ -4,7 +4,7 @@
   <title><![CDATA[九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-03-13T19:05:13+09:00</updated>
+  <updated>2015-03-15T03:10:29+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[CIR-KIT Members]]></name>
@@ -12,6 +12,486 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[CIR-KITの1号機ドライバ作成 on ROS]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/03/15/make-first-robot-driver-on-ros/"/>
+    <updated>2015-03-15T03:00:00+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/03/15/make-first-robot-driver-on-ros</id>
+    <content type="html"><![CDATA[<h1>1号機の新しいドライバについて</h1>
+
+<h2>概要</h2>
+
+<p>ROSを利用して1号機のドライバを再度作成した際に
+決定した仕様や，変更した仕様などをまとめた．
+また，Arduinoによる制御において考えるべき要素を記す．</p>
+
+<h2>検証情報</h2>
+
+<h3>日時</h3>
+
+<p>03/13/2015 (Fri)</p>
+
+<!--more-->
+
+
+<h3>スペック</h3>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;">パーツ</th>
+<th style="text-align:center;">スペック</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">PC</td>
+<td style="text-align:center;">Panasonic Let&rsquo;s note CF-LX3TG7TC</td>
+</tr>
+<tr>
+<td style="text-align:center;">Prosessor</td>
+<td style="text-align:center;">Intel core i7-4500U (1.8GHz)</td>
+</tr>
+<tr>
+<td style="text-align:center;">RAM</td>
+<td style="text-align:center;">DDR3 SDRAM(PC3-12800) 4GB</td>
+</tr>
+<tr>
+<td style="text-align:center;">OS</td>
+<td style="text-align:center;">Ubuntu 14.04.2 LTS 64bit</td>
+</tr>
+<tr>
+<td style="text-align:center;">Kernel</td>
+<td style="text-align:center;">3.13.0-46-generic</td>
+</tr>
+<tr>
+<td style="text-align:center;">ROS</td>
+<td style="text-align:center;">indigo 1.11.10</td>
+</tr>
+<tr>
+<td style="text-align:center;">Arduino</td>
+<td style="text-align:center;">Arduino UNO</td>
+</tr>
+<tr>
+<td style="text-align:center;">rosserial</td>
+<td style="text-align:center;">0.6.3</td>
+</tr>
+</tbody>
+</table>
+
+
+<h2>新しいドライバの過去からの変更点</h2>
+
+<p>レスポンス速度を過去のものより高速化した．ただし無駄を改良仕切ったわけではない．
+前身はloopを最速で回す前提かつdelayで一時処理がとまるプログラムだったので，一部だけだが，それらに依らない改良を行った．</p>
+
+<h2>ドライバ仕様</h2>
+
+<p>Topic</p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;">名称</th>
+<th style="text-align:center;">使用法</th>
+<th style="text-align:center;">型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">moter_driver</td>
+<td style="text-align:center;">subscribe</td>
+<td style="text-align:center;">geometry_msgs/Twist</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>Msg:geometry_msgs/Twist</p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;">要素</th>
+<th style="text-align:center;">関連物</th>
+<th style="text-align:center;">想定条件</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">linear.x</td>
+<td style="text-align:center;">前後移動速度</td>
+<td style="text-align:center;">-1.0 ~ 1.0</td>
+</tr>
+<tr>
+<td style="text-align:center;">angular.z</td>
+<td style="text-align:center;">左右操舵条件</td>
+<td style="text-align:center;">ステッピングモータのステップ数</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>geometry_msgs/Twist メッセージを受け取り，linear.xを前後移動速度，angular.zを左右操舵条件としてモータを制御します．</p>
+
+<p>linear.xの絶対値は速度になります．また，1.0は最大速度を示します．
+負の値を受け取った時はバックします．yとzは使用しません．</p>
+
+<p>angular.zが正の値で左，負の値で右へ操舵します．0の場合，現在の操舵状態を保持します．angularにステッピングモータのステップ数を入れるよう推奨しているのはジオメトリ出力として入力しやすいと考えたからです．なお，xとyは使用しません．</p>
+
+<h2>ソース</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+<span class='line-number'>112</span>
+<span class='line-number'>113</span>
+<span class='line-number'>114</span>
+<span class='line-number'>115</span>
+<span class='line-number'>116</span>
+<span class='line-number'>117</span>
+<span class='line-number'>118</span>
+<span class='line-number'>119</span>
+<span class='line-number'>120</span>
+<span class='line-number'>121</span>
+<span class='line-number'>122</span>
+<span class='line-number'>123</span>
+<span class='line-number'>124</span>
+<span class='line-number'>125</span>
+<span class='line-number'>126</span>
+<span class='line-number'>127</span>
+<span class='line-number'>128</span>
+<span class='line-number'>129</span>
+<span class='line-number'>130</span>
+<span class='line-number'>131</span>
+<span class='line-number'>132</span>
+<span class='line-number'>133</span>
+<span class='line-number'>134</span>
+<span class='line-number'>135</span>
+<span class='line-number'>136</span>
+<span class='line-number'>137</span>
+<span class='line-number'>138</span>
+<span class='line-number'>139</span>
+<span class='line-number'>140</span>
+<span class='line-number'>141</span>
+<span class='line-number'>142</span>
+<span class='line-number'>143</span>
+<span class='line-number'>144</span>
+<span class='line-number'>145</span>
+<span class='line-number'>146</span>
+<span class='line-number'>147</span>
+<span class='line-number'>148</span>
+<span class='line-number'>149</span>
+<span class='line-number'>150</span>
+<span class='line-number'>151</span>
+<span class='line-number'>152</span>
+</pre></td><td class='code'><pre><code class='cpp'><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm">Copyright (c) 2015, Yusuke Doi</span>
+</span><span class='line'><span class="cm">All rights reserved.</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">Redistribution and use in source and binary forms, with or without</span>
+</span><span class='line'><span class="cm">modification, are permitted provided that the following conditions are met: </span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">1. Redistributions of source code must retain the above copyright notice,</span>
+</span><span class='line'><span class="cm">   this list of conditions and the following disclaimer. </span>
+</span><span class='line'><span class="cm">2. Redistributions in binary form must reproduce the above copyright notice,</span>
+</span><span class='line'><span class="cm">   this list of conditions and the following disclaimer in the documentation</span>
+</span><span class='line'><span class="cm">   and/or other materials provided with the distribution. </span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &quot;AS IS&quot; AND</span>
+</span><span class='line'><span class="cm">ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED</span>
+</span><span class='line'><span class="cm">WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE</span>
+</span><span class='line'><span class="cm">DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR</span>
+</span><span class='line'><span class="cm">ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES</span>
+</span><span class='line'><span class="cm">(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;</span>
+</span><span class='line'><span class="cm">LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND</span>
+</span><span class='line'><span class="cm">ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT</span>
+</span><span class='line'><span class="cm">(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS</span>
+</span><span class='line'><span class="cm">SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">The views and conclusions contained in the software and documentation are those</span>
+</span><span class='line'><span class="cm">of the authors and should not be interpreted as representing official policies, </span>
+</span><span class='line'><span class="cm">either expressed or implied, of the FreeBSD Project.</span>
+</span><span class='line'><span class="cm">*/</span>
+</span><span class='line'><span class="cp">#include &lt;ros.h&gt; </span><span class="c1">// Use ros_lib.</span>
+</span><span class='line'><span class="cp">#include &lt;geometry_msgs/Twist.h&gt; </span><span class="c1">// Use Twist.msg. -&gt; [linear(x,y,z), angular(x,y,z)]</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/* Define pin numbers. */</span>
+</span><span class='line'><span class="cp">#define ACCEL 9</span>
+</span><span class='line'><span class="cp">#define BACK_GEAR 8</span>
+</span><span class='line'><span class="cp">#define CW 3</span>
+</span><span class='line'><span class="cp">#define CCW 4</span>
+</span><span class='line'><span class="cm">/* Define pulse width time of the stepping motor. */</span>
+</span><span class='line'><span class="cp">#define PULSE_WIDTH_MICRO_SECOND 500</span>
+</span><span class='line'><span class="cm">/* Define max speed to 220. */</span>
+</span><span class='line'><span class="cp">#define MAX_SPEED 220</span>
+</span><span class='line'><span class="cm">/* Define direction of angular z. */</span>
+</span><span class='line'><span class="cp">#define LEFT 0</span>
+</span><span class='line'><span class="cp">#define RIGHT 1</span>
+</span><span class='line'><span class="cp">#define KEEP 2</span>
+</span><span class='line'><span class="cm">/* Define direction of back gear. */</span>
+</span><span class='line'><span class="cp">#define FORWARD 0</span>
+</span><span class='line'><span class="cp">#define BACK 1</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/* Declare proto type functions. */</span>
+</span><span class='line'><span class="kt">void</span> <span class="nf">steer</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="n">direction</span><span class="p">);</span> <span class="c1">// Write pulse to the stepping motor.</span>
+</span><span class='line'><span class="kt">void</span> <span class="nf">setGear</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="n">direction</span><span class="p">);</span> <span class="c1">// Set direction to the back gear pin.</span>
+</span><span class='line'><span class="kt">unsigned</span> <span class="kt">char</span> <span class="nf">getSpeed</span><span class="p">(</span><span class="kt">float</span> <span class="n">speed</span><span class="p">);</span> <span class="c1">// Get speed what fit the robot model.</span>
+</span><span class='line'><span class="kt">void</span> <span class="nf">motorCb</span><span class="p">(</span><span class="k">const</span> <span class="n">geometry_msgs</span><span class="o">::</span><span class="n">Twist</span><span class="o">&amp;</span> <span class="n">msg</span><span class="p">);</span> <span class="c1">// Call back function of the motor_driver topic.</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/* Declare global constants. */</span>
+</span><span class='line'><span class="k">const</span> <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">PULSE_FREQUENCY</span> <span class="o">=</span> <span class="mi">1000l</span> <span class="o">*</span> <span class="mi">1000</span> <span class="o">/</span> <span class="p">(</span><span class="n">PULSE_WIDTH_MICRO_SECOND</span> <span class="o">*</span> <span class="mi">2</span><span class="p">);</span> <span class="c1">// Get frequency of pulse.</span>
+</span><span class='line'><span class="cm">/* Declare global variables. */</span>
+</span><span class='line'><span class="n">ros</span><span class="o">::</span><span class="n">NodeHandle</span> <span class="n">nh</span><span class="p">;</span> <span class="c1">// The nodeHandle.</span>
+</span><span class='line'><span class="n">ros</span><span class="o">::</span><span class="n">Subscriber</span><span class="o">&lt;</span><span class="n">geometry_msgs</span><span class="o">::</span><span class="n">Twist</span><span class="o">&gt;</span> <span class="n">sub</span><span class="p">(</span><span class="s">&quot;motor_driver&quot;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">motorCb</span><span class="p">);</span> <span class="c1">// Set subscribe the motor_driver topic.</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">void</span> <span class="nf">setup</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="cm">/* Set pins Mode. */</span>
+</span><span class='line'>  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">CCW</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">ACCEL</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// 3: CCW, 4: CW, 5: C0, 6:C2, 7:HOFF 8: BACK_GEAR 9: ACCEL</span>
+</span><span class='line'>      <span class="n">pinMode</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">OUTPUT</span><span class="p">);</span>
+</span><span class='line'>      <span class="n">digitalWrite</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">LOW</span><span class="p">);</span> <span class="c1">// Default pin status is LOW.</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="cm">/* Node handle setting. */</span>
+</span><span class='line'>  <span class="n">nh</span><span class="p">.</span><span class="n">initNode</span><span class="p">();</span> <span class="c1">// First setup the node handle.</span>
+</span><span class='line'>  <span class="n">nh</span><span class="p">.</span><span class="n">subscribe</span><span class="p">(</span><span class="n">sub</span><span class="p">);</span> <span class="c1">// Start subscribe the motor_driver topic.</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">void</span> <span class="nf">loop</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="n">nh</span><span class="p">.</span><span class="n">spinOnce</span><span class="p">();</span> <span class="c1">// Check topic and if change it, run the call back function.</span>
+</span><span class='line'>  <span class="n">delay</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> * Call back function of the motor_driver topic.</span>
+</span><span class='line'><span class="cm"> * This funcion is moter driver unit.</span>
+</span><span class='line'><span class="cm"> *</span>
+</span><span class='line'><span class="cm"> * @author &quot;Yusuke Doi&quot;</span>
+</span><span class='line'><span class="cm"> * @param msg This param is msg object of the motor_driver topic.</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'><span class="kt">void</span> <span class="nf">motorCb</span><span class="p">(</span><span class="k">const</span> <span class="n">geometry_msgs</span><span class="o">::</span><span class="n">Twist</span><span class="o">&amp;</span> <span class="n">msg</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>   <span class="cm">/* gear change task */</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="n">msg</span><span class="p">.</span><span class="n">linear</span><span class="p">.</span><span class="n">x</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">digitalRead</span><span class="p">(</span><span class="n">BACK_GEAR</span><span class="p">))</span> <span class="c1">// Go to back, but gear setting is forward now.</span>
+</span><span class='line'>      <span class="n">setGear</span><span class="p">(</span><span class="n">BACK</span><span class="p">);</span> <span class="c1">// Set back to back gear.</span>
+</span><span class='line'>  <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">msg</span><span class="p">.</span><span class="n">linear</span><span class="p">.</span><span class="n">x</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">digitalRead</span><span class="p">(</span><span class="n">BACK_GEAR</span><span class="p">))</span> <span class="c1">// Go to forward, but gear setting is back now.</span>
+</span><span class='line'>      <span class="n">setGear</span><span class="p">(</span><span class="n">FORWARD</span><span class="p">);</span> <span class="c1">// Set forward to back gear.</span>
+</span><span class='line'>   <span class="cm">/* steer task */</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="n">msg</span><span class="p">.</span><span class="n">angular</span><span class="p">.</span><span class="n">z</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="n">steer</span><span class="p">(</span><span class="n">RIGHT</span><span class="p">);</span> <span class="c1">// Minus mean CCW or right.</span>
+</span><span class='line'>  <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">msg</span><span class="p">.</span><span class="n">angular</span><span class="p">.</span><span class="n">z</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="n">steer</span><span class="p">(</span><span class="n">LEFT</span><span class="p">);</span> <span class="c1">// Plus mean CW or left.</span>
+</span><span class='line'>  <span class="k">else</span> <span class="n">steer</span><span class="p">(</span><span class="n">KEEP</span><span class="p">);</span> <span class="c1">// Zero mean keep steer.</span>
+</span><span class='line'>   <span class="cm">/* move task */</span>
+</span><span class='line'>  <span class="n">analogWrite</span><span class="p">(</span><span class="n">ACCEL</span><span class="p">,</span> <span class="n">getSpeed</span><span class="p">(</span><span class="n">msg</span><span class="p">.</span><span class="n">linear</span><span class="p">.</span><span class="n">x</span><span class="p">));</span> <span class="c1">// Write speed to accel pin.</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> * Set back gear by direction.</span>
+</span><span class='line'><span class="cm"> *</span>
+</span><span class='line'><span class="cm"> * @author &quot;Yusuke Doi&quot;</span>
+</span><span class='line'><span class="cm"> * @param direction Set this into back gear.</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'><span class="kt">void</span> <span class="nf">setGear</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="n">direction</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">analogWrite</span><span class="p">(</span><span class="n">ACCEL</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span> <span class="c1">// Stop the DC motor.</span>
+</span><span class='line'>  <span class="k">switch</span> <span class="p">(</span><span class="n">direction</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">case</span> <span class="nl">FORWARD</span><span class="p">:</span>
+</span><span class='line'>      <span class="n">delay</span><span class="p">(</span><span class="mi">700</span><span class="p">);</span> <span class="c1">// Wait to stop the DC motor perfectly.</span>
+</span><span class='line'>      <span class="n">digitalWrite</span><span class="p">(</span><span class="n">BACK_GEAR</span><span class="p">,</span> <span class="n">LOW</span><span class="p">);</span> <span class="c1">// Change back gear to back.</span>
+</span><span class='line'>      <span class="n">delay</span><span class="p">(</span><span class="mi">400</span><span class="p">);</span> <span class="c1">// Wait to change back gear perfectly.</span>
+</span><span class='line'>      <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">case</span> <span class="nl">BACK</span><span class="p">:</span>
+</span><span class='line'>      <span class="n">delay</span><span class="p">(</span><span class="mi">500</span><span class="p">);</span> <span class="c1">// Wait to stop the DC motor perfectly.</span>
+</span><span class='line'>      <span class="n">digitalWrite</span><span class="p">(</span><span class="n">BACK_GEAR</span><span class="p">,</span> <span class="n">HIGH</span><span class="p">);</span> <span class="c1">// Change back gear to back.</span>
+</span><span class='line'>      <span class="n">delay</span><span class="p">(</span><span class="mi">500</span><span class="p">);</span> <span class="c1">// Wait to change back gear perfectly.</span>
+</span><span class='line'>      <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">default</span><span class="o">:</span>
+</span><span class='line'>      <span class="n">setGear</span><span class="p">(</span><span class="n">FORWARD</span><span class="p">);</span> <span class="c1">// Run this function, and set FORWARD.</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> * Steering function of the stepping motor.</span>
+</span><span class='line'><span class="cm"> *</span>
+</span><span class='line'><span class="cm"> * @author &quot;Yusuke Doi&quot;</span>
+</span><span class='line'><span class="cm"> * @param direction Steer to direction.</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'><span class="kt">void</span> <span class="nf">steer</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="n">direction</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">switch</span> <span class="p">(</span><span class="n">direction</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">case</span> <span class="nl">LEFT</span><span class="p">:</span> <span class="c1">// Task steer left.</span>
+</span><span class='line'>      <span class="n">noTone</span><span class="p">(</span><span class="n">CW</span><span class="p">);</span> <span class="c1">// Unset tone. If don&#39;t running tone, not happen.</span>
+</span><span class='line'>      <span class="n">digitalWrite</span><span class="p">(</span><span class="n">CW</span><span class="p">,</span> <span class="n">HIGH</span><span class="p">);</span> <span class="c1">// Set high to CW.</span>
+</span><span class='line'>      <span class="n">tone</span><span class="p">(</span><span class="n">CCW</span><span class="p">,</span> <span class="n">PULSE_FREQUENCY</span><span class="p">);</span> <span class="c1">// Write pulse to CCW pin. turn to CW.</span>
+</span><span class='line'>      <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">case</span> <span class="nl">RIGHT</span><span class="p">:</span> <span class="c1">// Task steer right.</span>
+</span><span class='line'>      <span class="n">noTone</span><span class="p">(</span><span class="n">CCW</span><span class="p">);</span> <span class="c1">// Unset tone. If don&#39;t running tone, not happen.</span>
+</span><span class='line'>      <span class="n">digitalWrite</span><span class="p">(</span><span class="n">CCW</span><span class="p">,</span> <span class="n">HIGH</span><span class="p">);</span> <span class="c1">// Set high to CCW.</span>
+</span><span class='line'>      <span class="n">tone</span><span class="p">(</span><span class="n">CW</span><span class="p">,</span> <span class="n">PULSE_FREQUENCY</span><span class="p">);</span> <span class="c1">// Write pulse to CW pin. turn to CCW.</span>
+</span><span class='line'>      <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">case</span> <span class="nl">KEEP</span><span class="p">:</span> <span class="k">default</span><span class="o">:</span> <span class="c1">// set CW and CCW to low.</span>
+</span><span class='line'>      <span class="n">noTone</span><span class="p">(</span><span class="n">CW</span><span class="p">);</span> <span class="c1">// Unset tone. If don&#39;t running tone, not happen.</span>
+</span><span class='line'>      <span class="n">noTone</span><span class="p">(</span><span class="n">CCW</span><span class="p">);</span> <span class="c1">// Unset tone. If don&#39;t running tone, not happen.</span>
+</span><span class='line'>      <span class="n">digitalWrite</span><span class="p">(</span><span class="n">CW</span><span class="p">,</span> <span class="n">LOW</span><span class="p">);</span>
+</span><span class='line'>      <span class="n">digitalWrite</span><span class="p">(</span><span class="n">CCW</span><span class="p">,</span> <span class="n">LOW</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">unsigned</span> <span class="kt">char</span> <span class="nf">getSpeed</span><span class="p">(</span><span class="kt">float</span> <span class="n">baseSpeed</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kt">float</span> <span class="n">speed</span> <span class="o">=</span> <span class="n">abs</span><span class="p">(</span><span class="n">baseSpeed</span> <span class="o">*</span> <span class="n">MAX_SPEED</span><span class="p">);</span> <span class="c1">// Cast to 0~MAX_SPEED. so baseSpeed width is -1.0~1.0.</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="n">speed</span> <span class="o">&gt;</span> <span class="n">MAX_SPEED</span><span class="p">)</span> <span class="n">speed</span> <span class="o">=</span> <span class="n">MAX_SPEED</span><span class="p">;</span> <span class="c1">// Limit max speed to 220.</span>
+</span><span class='line'>  <span class="k">return</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">char</span><span class="p">)</span><span class="n">speed</span><span class="p">;</span> <span class="c1">// Cast to unsigned char.</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>解説など</h3>
+
+<p>トピックにメッセージが来たらコールバック関数joyCbを呼び出します．この関数は受け取ったメッセージを解析して，操舵，ギアチェンジ，モータ制御を行います．詳しくはソースのコメントを呼んでください．</p>
+
+<h3>加えられた改良について</h3>
+
+<h4>操舵</h4>
+
+<p>今回の一番の改良点は操舵にtone関数を採用した点です．これによりarduinoは操舵にCPUを専有されることがなくなります．toneは指定ピンに指定周波数のデューティー比50%PWMを出力します．
+この関数はPWM用のタイマを利用するので3番ピンと11番ピンのanalogWriteを阻害します．よって現在の構成には影響しません．</p>
+
+<h4>無意味なコピペ削除</h4>
+
+<p>いままでのソースは分岐後に全く同じ動作をする部分が多すぎたため，それらをまとめ可読性を上げました．</p>
+
+<h3>課題点</h3>
+
+<h4>ギアチェンジ</h4>
+
+<p>ギアチェンジ用の関数は未だにdelayが使用されています．このためこのドライバはギアチェンジ中の1秒以上操作不可能に陥ります．</p>
+
+<p>私ははギアチェンジフラグを作成し，DCモータへのアクセスを禁止することでこれを解決しようと考えています．</p>
+
+<h4>多量のマクロ及び関数</h4>
+
+<p>C++を採用しているにも関わらず，CIR-KITでは古いC言語ライクの文が蔓延っています．それは，例えば定数として無意味にマクロを用いたり，1つのソース内からすべての変数にアクセスできることです．</p>
+
+<p>私はクラスを利用してオブジェクト化することでこれら問題を解決すべきと考えています．</p>
+
+<h2>Arduinoプログラムに求められること</h2>
+
+<h3>最低基準：常時反応性</h3>
+
+<p>ここまでのことからまず，最低限マイコンに求められることがあります．
+それは常時反応性です．つまり，右を向けと指示を出して，すぐにそれを感知してタスクを実行し始めることが重要です．もし，右に向けと指示を出したのにずっとギアチェンジのタスクに掛かり切りなら，右に向くのはずっと後になります．ギアチェンジのタスク中は停止しているようにすら見えるでしょう．</p>
+
+<p>つまり，マルチタスクをする場合でも，入力受付を常時行うことが必要です．そして，動いてはいけない場合は場合分けで対応するべきです．</p>
+
+<h4>達成方法</h4>
+
+<p>多くのマイコンにはタイマやsoftwareで一度指示を出せばバックグラウンドに処理をしてくれる機能が場合ついています．これらに継続的処理をすべて任せることでプログラマは情報の処理に集中でき，更に常時入力性を保つことができます．</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[ジョイスティックで亀を泳がせる(準備編)]]></title>
@@ -167,6 +647,10 @@
 
 
 <p>確認できたら、準備は完了です。</p>
+
+<h2>備考</h2>
+
+<p>何か間違った表現とかあればコメントお願いします。</p>
 ]]></content>
   </entry>
   
@@ -534,199 +1018,9 @@ worldファイルの例は、<a href="https://bitbucket.org/osrf/gazebo/src/gaze
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[ArduinoをROSで動かす]]></title>
-    <link href="http://cir-kit.github.io/blog/2015/03/10/use-rosserial-first/"/>
-    <updated>2015-03-10T16:59:22+09:00</updated>
-    <id>http://cir-kit.github.io/blog/2015/03/10/use-rosserial-first</id>
-    <content type="html"><![CDATA[<h1>　Arduino を ROS で動かす</h1>
-
-<h2>概要</h2>
-
-<p>ROSのトピックなどをArduinoで利用するためのインストール等．</p>
-
-<h2>検証情報</h2>
-
-<h3>日時</h3>
-
-<p>03/09/2015 (Mon)</p>
-
-<h3>スペック</h3>
-
-<table>
-<thead>
-<tr>
-<th style="text-align:center;">パーツ</th>
-<th style="text-align:center;">スペック</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center;">PC</td>
-<td style="text-align:center;">Panasonic Let&rsquo;s note CF-LX3TG7TC</td>
-</tr>
-<tr>
-<td style="text-align:center;">Prosessor</td>
-<td style="text-align:center;">Intel core i7-4500U (1.8GHz)</td>
-</tr>
-<tr>
-<td style="text-align:center;">RAM</td>
-<td style="text-align:center;">DDR3 SDRAM(PC3-12800) 4GB</td>
-</tr>
-<tr>
-<td style="text-align:center;">OS</td>
-<td style="text-align:center;">Ubuntu 14.04.2 LTS 64bit</td>
-</tr>
-<tr>
-<td style="text-align:center;">Kernel</td>
-<td style="text-align:center;">3.13.0-46-generic</td>
-</tr>
-<tr>
-<td style="text-align:center;">ROS</td>
-<td style="text-align:center;">indigo 1.11.10</td>
-</tr>
-<tr>
-<td style="text-align:center;">Arduino</td>
-<td style="text-align:center;">Arduino UNO</td>
-</tr>
-</tbody>
-</table>
-
-
-<!--more-->
-
-
-<h2>前提条件</h2>
-
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">対象</th>
-<th style="text-align:left;">条件</th>
-<th style="text-align:left;">参考</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">ROS</td>
-<td style="text-align:left;">Install済み</td>
-<td style="text-align:left;"><a href="http://cir-kit.github.io/blog/2015/02/25/we-have-get-to-work-when-install-ubuntu">CIR-KITメンバーが必ずすべきこと</a></td>
-</tr>
-<tr>
-<td style="text-align:left;">Arduino</td>
-<td style="text-align:left;">Install済み</td>
-<td style="text-align:left;">&lsquo;sudo apt-get install Arduino&rsquo;</td>
-</tr>
-</tbody>
-</table>
-
-
-<h2>Arduino で ROS を利用する</h2>
-
-<p>まずは，ArduinoをROSのnodeに見せかけるためのROSパッケージをインストールします．
-<a href="http://wiki.ros.org/rosserial_arduino/Tutorials/Arduino%20IDE%20Setup">対象パッケージのROS Wiki</a>を参考に行います．</p>
-
-<h3>install</h3>
-
-<p>参考サイトの3.install the Softwereを見ると，2種類のインストール方法があるようです．</p>
-
-<hr />
-
-<p>1つ目は3.1の方法で，下のコマンドを実行します．workspaceが汚れ無いのでこっちおすすめです．</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo apt-get install ros-indigo-rosserial-arduino
-</span><span class='line'>sudo apt-get install ros-indigo-rosserial
-</span></code></pre></td></tr></table></div></figure>
-
-
-<hr />
-
-<p>2つ目は3.2の方法で，下の手順で行います．&lt;ws>は自分のrosWorkspaceまでのパスに置き換えてください．</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>  <span class="nb">cd</span> &lt;ws&gt;/src
-</span><span class='line'>  git clone https://github.com/ros-drivers/rosserial.git
-</span><span class='line'>  <span class="nb">cd</span> ../
-</span><span class='line'>  catkin_make
-</span><span class='line'>  catkin_make install
-</span><span class='line'>  <span class="nb">source</span> &lt;ws&gt;/install/setup.bash
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>この時，<code>~/.bashrc</code>へ<code>source &lt;ws&gt;/install/setup.bash</code>を追加しておくことを推奨します．(以後入力がいらなくなります)</p>
-
-<ul>
-<li>Note:<em>devel/setup.bash</em>では<strong>無い</strong>ことに注意してください</li>
-</ul>
-
-
-<hr />
-
-<h3>setup</h3>
-
-<p>3.3にArduinoの(ごく普通の)ライブラリとしてros_libを追加するように書いてあります．
-必ず<code>roscore</code>を起動して下のコマンドでros_libを追加してください．</p>
-
-<p>&lt;sketchbook>は各自のArduinoのライブラリがあるディレクトリに置き換えてください．</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>  <span class="nb">cd</span> &lt;sketchbook&gt;/libraries
-</span><span class='line'>  rosrun rosserial_arduino make_libraries.py .
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li>Note:環境によってlibrariesディレクトリの名前や場所が違うので注意．</li>
-<li>sketchbookはrosパッケージ内に作ると管理しやすいと思います．</li>
-</ul>
-
-
-<h4>確認</h4>
-
-<p>Arduinoライブラリにros_libが入っていて，その中にROSにパスが通っているmsgやsrvを定義している<strong>ROSパッケージすべて</strong>のディレクトリが含まれていることを確認する．</p>
-
-<h3>使ってみる</h3>
-
-<p><code>/libraries/examples/HelloWorld/HelloWorld.pde</code>をビルドしてみる．
-Arduino IDEなら下の画像の所をクリックすることでソースが出るので，それをビルドして書き込んでください．</p>
-
-<p><img src="http://cir-kit.github.io/images/2015-03-10-light-four-leds-on-arduino-by-ros/arduinoIed1.png" alt="arduinoIed1" /></p>
-
-<p>このプログラムは，<code>chatter</code>トピックに&#8221;Hello world&#8221;と1秒毎にPublishします．
-Arduinoへの書き込みが済んだら，早速確認してみましょう．</p>
-
-<ol>
-<li>まずは<code>roscore</code>を起動します．</li>
-<li>次に<code>rosrun rosserial_python serial_node.py _port:=/dev/ttyACM0</code>を起動します．</li>
-</ol>
-
-
-<p>  Note: <em>_port:=</em>のパスは自分のArduinoへのパスを入れてください．</p>
-
-<p>これで<code>chatter</code>トピックへの配信が始まりました．<code>rostopic</code>で確認してみましょう．</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>rostopic <span class="nb">echo </span>chatter
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>&ldquo;Hello World&#8221;と送られていたら成功です．</p>
-
-<p><code>rosserial_python serial_node</code>でArduinoに書き込んだノードを実行していると考えるとわかりやすいと思います．(実際は全然違います)</p>
-]]></content>
-  </entry>
-  
-  <entry>
     <title type="html"><![CDATA[ジョイスティックで4つのLEDをつける(Arduino&ROS)]]></title>
     <link href="http://cir-kit.github.io/blog/2015/03/10/light-four-leds-on-arduino-by-ros/"/>
-    <updated>2015-03-10T16:59:22+09:00</updated>
+    <updated>2015-03-10T17:00:00+09:00</updated>
     <id>http://cir-kit.github.io/blog/2015/03/10/light-four-leds-on-arduino-by-ros</id>
     <content type="html"><![CDATA[<h1>　ジョイスティックで4つのLEDをつけるbyROS</h1>
 
@@ -1268,6 +1562,179 @@ Arduinoへの書き込みが済んだら，早速確認してみましょう．<
 <h3>補足など</h3>
 
 <p>後ほどコメントや修正，解説などを加えると思います．</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[ArduinoをROSで動かす]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/03/10/use-rosserial-first/"/>
+    <updated>2015-03-10T16:59:22+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/03/10/use-rosserial-first</id>
+    <content type="html"><![CDATA[<h1>　Arduino を ROS で動かす</h1>
+
+<h2>概要</h2>
+
+<p>ROSのトピックなどをArduinoで利用するためのインストール等．</p>
+
+<h2>検証情報</h2>
+
+<h3>日時</h3>
+
+<p>03/09/2015 (Mon)</p>
+
+<h3>スペック</h3>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;">パーツ</th>
+<th style="text-align:center;">スペック</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">PC</td>
+<td style="text-align:center;">Panasonic Let&rsquo;s note CF-LX3TG7TC</td>
+</tr>
+<tr>
+<td style="text-align:center;">Prosessor</td>
+<td style="text-align:center;">Intel core i7-4500U (1.8GHz)</td>
+</tr>
+<tr>
+<td style="text-align:center;">RAM</td>
+<td style="text-align:center;">DDR3 SDRAM(PC3-12800) 4GB</td>
+</tr>
+<tr>
+<td style="text-align:center;">OS</td>
+<td style="text-align:center;">Ubuntu 14.04.2 LTS 64bit</td>
+</tr>
+<tr>
+<td style="text-align:center;">Kernel</td>
+<td style="text-align:center;">3.13.0-46-generic</td>
+</tr>
+<tr>
+<td style="text-align:center;">ROS</td>
+<td style="text-align:center;">indigo 1.11.10</td>
+</tr>
+<tr>
+<td style="text-align:center;">Arduino</td>
+<td style="text-align:center;">Arduino UNO</td>
+</tr>
+</tbody>
+</table>
+
+
+<!--more-->
+
+
+<h2>前提条件</h2>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">対象</th>
+<th style="text-align:left;">条件</th>
+<th style="text-align:left;">参考</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">ROS</td>
+<td style="text-align:left;">Install済み</td>
+<td style="text-align:left;"><a href="http://cir-kit.github.io/blog/2015/02/25/we-have-get-to-work-when-install-ubuntu">CIR-KITメンバーが必ずすべきこと</a></td>
+</tr>
+<tr>
+<td style="text-align:left;">Arduino</td>
+<td style="text-align:left;">Install済み</td>
+<td style="text-align:left;">&lsquo;sudo apt-get install Arduino&rsquo;</td>
+</tr>
+</tbody>
+</table>
+
+
+<h2>Arduino で ROS を利用する</h2>
+
+<p>ArduinoをROSに見せかけ，実行するためのパッケージ群であるrosserialを落とします．
+<a href="http://wiki.ros.org/rosserial_arduino/Tutorials/Arduino%20IDE%20Setup">対象パッケージのROS Wiki</a>を参考に行います．</p>
+
+<h3>install</h3>
+
+<p>参考サイトの3.install the Softwereを見ると，rosserial_arduinoを落とすには2種類の方法があるようです．しかし，実行に必要なrosserial_python等も入れるためにrosserialパッケージ群をgitで落とします．</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>  <span class="nb">cd</span> &lt;ws&gt;/src
+</span><span class='line'>  git clone https://github.com/ros-drivers/rosserial.git
+</span><span class='line'>  <span class="nb">cd</span> ../
+</span><span class='line'>  catkin_make
+</span><span class='line'>  catkin_make install
+</span><span class='line'>  <span class="nb">source</span> &lt;ws&gt;/install/setup.bash
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>この時，<code>~/.bashrc</code>へ<code>source &lt;ws&gt;/install/setup.bash</code>を追加しておくことを推奨します．(以後入力がいらなくなります)</p>
+
+<ul>
+<li>Note:<em>devel/setup.bash</em>では<strong>無い</strong>ことに注意してください</li>
+</ul>
+
+
+<h3>setup</h3>
+
+<p>3.3にArduinoの(ごく普通の)ライブラリとしてros_libを追加するように書いてあります．
+必ず<code>roscore</code>を起動して下のコマンドでros_libを追加してください．</p>
+
+<p>&lt;sketchbook>は各自のArduinoのライブラリがあるディレクトリに置き換えてください．</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>  <span class="nb">cd</span> &lt;sketchbook&gt;/libraries
+</span><span class='line'>  rosrun rosserial_arduino make_libraries.py .
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>Note:環境によってlibrariesディレクトリの名前や場所が違うので注意．</li>
+<li>sketchbookはrosパッケージ内に作ると管理しやすいと思います．</li>
+</ul>
+
+
+<h4>確認</h4>
+
+<p>Arduinoライブラリにros_libが入っていて，その中にROSにパスが通っているmsgやsrvを定義している<strong>ROSパッケージすべて</strong>のディレクトリが含まれていることを確認する．</p>
+
+<h3>使ってみる</h3>
+
+<p><code>/libraries/examples/HelloWorld/HelloWorld.pde</code>をビルドしてみる．
+Arduino IDEなら下の画像の所をクリックすることでソースが出るので，それをビルドして書き込んでください．</p>
+
+<p><img src="http://cir-kit.github.io/images/2015-03-10-light-four-leds-on-arduino-by-ros/arduinoIed1.png" alt="arduinoIed1" /></p>
+
+<p>このプログラムは，<code>chatter</code>トピックに&#8221;Hello world&#8221;と1秒毎にPublishします．
+Arduinoへの書き込みが済んだら，早速確認してみましょう．</p>
+
+<ol>
+<li>まずは<code>roscore</code>を起動します．</li>
+<li>次に<code>rosrun rosserial_python serial_node.py _port:=/dev/ttyACM0</code>を起動します．</li>
+</ol>
+
+
+<p>  Note: <em>_port:=</em>のパスは自分のArduinoへのパスを入れてください．</p>
+
+<p>これで<code>chatter</code>トピックへの配信が始まりました．<code>rostopic</code>で確認してみましょう．</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rostopic <span class="nb">echo </span>chatter
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>&ldquo;Hello World&#8221;と送られていたら成功です．</p>
+
+<p><code>rosserial_python serial_node</code>でArduinoに書き込んだノードを実行していると考えるとわかりやすいと思います．(実際は全然違います)</p>
 ]]></content>
   </entry>
   
@@ -7801,321 +8268,6 @@ Gazeboサーバを<code>-r</code>コマンドラインオプションをつけ�
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo -p /tmp/filtered_state.log
 </span></code></pre></td></tr></table></div></figure>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[No.3-5:環境をつくろう ! (建築エディタ 編)]]></title>
-    <link href="http://cir-kit.github.io/blog/2015/02/06/gazebo-building-editor/"/>
-    <updated>2015-02-06T02:14:35+09:00</updated>
-    <id>http://cir-kit.github.io/blog/2015/02/06/gazebo-building-editor</id>
-    <content type="html"><![CDATA[<p><img src="http://cir-kit.github.io/images/gazebo_logo.png" alt="gazebo_logo" /></p>
-
-<h5>検証日時</h5>
-
-<p>02/06/2015 (Tue)</p>
-
-<h5>概要</h5>
-
-<p>Gazeboのチュートリアル第三弾「Build a World」。
-このチュートリアルでは、シミュレーション中の環境をどのように構築するかについて説明します。<br/>
-今回はその「Building Edito」編です。<br/>
-公式サイトを適当に翻訳しただけですので、あしからず。</p>
-
-<h5>レベル</h5>
-
-<p><strong>BEGINNER</strong></p>
-
-<!-- more -->
-
-
-<h5>環境</h5>
-
-<table>
-<thead>
-<tr>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center;"> <strong>PC</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Prosessor</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>RAM</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>OS</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Kernel</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> 3.13.0-44-generic </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Gazebo</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Version 5.0.1 </td>
-</tr>
-</tbody>
-</table>
-
-
-<h5>参考</h5>
-
-<p><a href="http://gazebosim.org/tutorials?cat=build_world">GAZEBO Tutorial-Build a World</a></p>
-
-<h2>はじめに</h2>
-
-<p>このチュートリアルでは、建築エディタを使って建築物を作る過程を説明します。</p>
-
-<h3>建築エディタを開く。</h3>
-
-<ol>
-<li><p>Gazeboがインストールされていることを確認してください。インストールしていない場合には、<a href="http://cir-kit.github.io/blog/2015/01/31/gazebo-install/">Gazeboのインストール</a>をご覧ください。</p></li>
-<li><p>Gazeboを立ち上げてください。</p></li>
-</ol>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ol>
-<li><strong>Edit</strong>メニューより、<strong>Building Editor</strong>を選ぶか、<strong>Ctrl+B</strong>を押して、エディタを立ち上げてください。すると、以下のような画面が立ち上がるはずです。
-<img src="http://cir-kit.github.io/images/2015-02-06-gazebo-building-editor/empty_editor.png" alt="empty_editor" /></li>
-</ol>
-
-
-<h3>GUIについて</h3>
-
-<p>エディタは、３つのエリアからできています。</p>
-
-<ol>
-<li><p>Palette : 建築物の素材や特徴を選べます。</p></li>
-<li><p>2DView : トレースするフロアイメージをインポートできます。また、それに沿って、壁、窓、ドア、階段を追加することができます。</p></li>
-<li><p>3DView : 建築物のプレビューを確認できます。色やテクスチャを他の建築物の部品に適用することもできます。</p></li>
-</ol>
-
-
-<!-- ![editor_zones](/images/2015-02-06-gazebo-building-editor/editor_zones.png) -->
-
-
-<h2>フロアをインポートする</h2>
-
-<p>スクラッチでシーンを作るか、すでにあるイメージをトレーするイメージとしてとして使います。このイメージは、例えば、2Dのレーザースキャンイメージ出会ったりもします。<br/>
-<a href="https://bitbucket.org/osrf/gazebo_tutorials/raw/default/building_editor/files/floorplan.png">ここ</a>をクリックしてフロアイメージの例をダウンロードしてください。手順は以下のとおりです。</p>
-
-<ol>
-<li><p>以下のように、先ほどの建築エディタを開いたまま、エディタウィンドウの左側にある、<strong>Import</strong>ボタンを押してください。すると、インポートするイメージのダイアログが出てきます。
-<img src="http://cir-kit.github.io/images/2015-02-06-gazebo-building-editor/building_editor-import.png" alt="building_editor-import" /></p></li>
-<li><p>先ほど手に入れたイメージを選んでください。選んだら、<strong>Next</strong>を押してください。
-<img src="http://cir-kit.github.io/images/2015-02-06-gazebo-building-editor/building_editor-next.png" alt="building_editor-next" /></p></li>
-<li><p>トレースする壁が、正しい大きさで出力できているか確かめるために、メートルピクセル比[px/m]を設定しなければなりません。比を知っているなら、ダイアログに直接入力して、クリックすればOKです。今回の例では、比がわかっていないとします。しかし、トレースイメージ中の実世界での二点間の距離がわかっているとすると、（例えば。一番長い壁が7.5 [m]であるとか）比を計算することで、使用できるようになります。:</p></li>
-<li><p>壁の一端をクリックしてください。すると、以下のように、オリジナルのラインが現れます。</p></li>
-<li><p>壁の一端をクリックしてください。すると、ラインが定義されます。</p></li>
-<li><p>個々で、ダイアログに距離を単位[m]で入力してください(今回は7.5 [m]です)。すると、ピクセルメートル比は先ほど指定したラインに沿って自動で計算されます。</p></li>
-<li><p>完了したら、OKをクリックしてください。
-<img src="http://cir-kit.github.io/images/2015-02-06-gazebo-building-editor/import_step_2.png" alt="import_step_2" /></p></li>
-<li><p>うまく行けば、2DViewの部分に、イメージが表示されます。<br/>
-<strong>コツ : </strong>レベルあ上がれば、それぞれのフロアを同じプロセスでインポートすることができます。</p></li>
-</ol>
-
-
-<h2>特徴を加える</h2>
-
-<h3>壁を追加する</h3>
-
-<p>以下の手順にしたがって、すべての壁をフロアイメージに沿ってトレースしてください。後でドアや窓を付け加えることを覚えておいてください。一旦は、それらを無視して壁を作ることができます。壁を完璧に作れなくても慌てないでください。後でまた編集することができます。</p>
-
-<ol>
-<li><p>Palleteの、壁の上でクリックしてください。</p></li>
-<li><p>2DViewの上で、壁の端点からクリックをしてください。マウスを動かしたら、壁の長さが表示されます。</p></li>
-<li><p>同じ壁のもう一方の端点でクリックし、微調整を行ってください。</p></li>
-<li><p>新しい壁を作り始めることなく、ダブルクリックして終了します。<br/>
-<strong>コツ : </strong>右クリックもしくはEscを押すと、現在の壁の編集をキャンセルできます。<br/>
-<strong>コツ : </strong>デフォルトでは、壁は15°ごと、0.25[m]ごとに増減します。また、存在する壁の端点も同じです。Shiftを押しながら操作すると、これらの制限が解除できます。
-<img src="http://cir-kit.github.io/images/2015-02-06-gazebo-building-editor/add_walls.png" alt="add_walls" /></p></li>
-</ol>
-
-
-<h3>窓とドアを追加する</h3>
-
-<p><strong>Note : 正確には、窓や、ドアは壁にただ穴を開けるだけです。</strong><br/>
-窓とドアをフロアイメージに沿って追加してみましょう。</p>
-
-<ol>
-<li><p>Paletteにある<strong>Window</strong>もしくは<strong>Door</strong>をクリックしましょう。</p></li>
-<li><p>2DViewの上でマウスを動かすと、それらも一緒に動きます。また、それと一緒に、3DViewの上でも動きます。<br/>
-<strong>コツ : </strong>窓やドアは自動で壁に沿って動きます。壁の端までの距離は動かすごとに、ディスプレイに表示されます。</p></li>
-<li><p>気に入ったところでクリックしましょう。
-<img src="http://cir-kit.github.io/images/2015-02-06-gazebo-building-editor/add_windows_doors.png" alt="add_windows_doors" />
-<strong>コツ : </strong>最初に壁を作った後に、フロアプランにある窓やドアの位置を探すのは難しく感じるでしょう。これを簡単にするには、2DViewの上で、フロアプランをもしくは現在までの窓やドアの表示、非表示を選択することができます。
-<img src="http://cir-kit.github.io/images/2015-02-06-gazebo-building-editor/view_floorplan.png" alt="view_floorplan" /></p></li>
-</ol>
-
-
-<h3>階段を追加する</h3>
-
-<p>このフロアプランには階段はありませんが、階段を一つ追加したいと思います。</p>
-
-<ol>
-<li><p>Palletの<strong>Stairs</strong>をクリックしてください。</p></li>
-<li><p>2DViewの上でマウスを動かすと、階段もそれと一緒に動きます。3DViewに写っているものも同様です。</p></li>
-<li><p>気に入ったところでクリックしましょう。
-<img src="http://cir-kit.github.io/images/2015-02-06-gazebo-building-editor/add_stairs.png" alt="add_stairs" /></p></li>
-</ol>
-
-
-<h2>階数を追加する</h2>
-
-<p>一階については、だいぶ完成しました。階段の先もないことですし、階数を追加しましょう。<br/>
-2DViewの上にある、<strong>+</strong>の上でクリックし、階数を足しましょう。あるいは、2DViewを右クリックし、<strong>Add a level</strong>を選びましょう。<br/>
-新しい階数が追加できたら、フロアは自動で追加されます。すでに下の階に階段が設置されている場合は、建築物がセーブされるときに、フロアに自動で階段用の穴が飽きます。<br/>
-<strong>Note : 現在は、すべてのフロアは矩形です。</strong><br/>
-<strong>コツ : </strong>階数を追加する前に、現在の階数の壁が設置されていることを確認してください。<br/>
-<strong>コツ : </strong>現在は、前の海の壁は、デフォルトの素材で、新しい階の壁としてコピーされます。窓やドアはコピーされません。いらない壁は、手動で削除できます。
-<img src="http://cir-kit.github.io/images/2015-02-06-gazebo-building-editor/add_level.png" alt="add_level" /></p>
-
-<h2>建築物を編集する</h2>
-
-<p><strong>Note : 建築物を編集する際は気をつけてください。というのも、現在、エディタにはUndoオプションがありません。<br/>
-</strong>コツ : **すべての長さはメートル単位系です。</p>
-
-<h3>階を変更する</h3>
-
-<p>階を追加したので、2DViewも新しい階に移動しましょう。2DViewの上にあるリストから選べば、一階にも戻れます。<br/>
-<strong>コツ : </strong>現在2DViewで選択されている階数は3DViewに半島名で表示されています。また、すべての下の階は半透明です。上の階は隠れています。しかし、建築物の一部であるということを覚えておいてください。<br/>
-階の形状を編集することもできます。</p>
-
-<ul>
-<li>階の形状オプションと一緒にインスペクターを開くために、2DViewをダブルクリックしてください。もしくは、右クリックし、<strong>Open level Inspector</strong>を選んでください。</li>
-</ul>
-
-
-<p>あなたが望まない階を追加したことでしょう。もしくは現在の階をめちゃくちゃにしいてしまい、初めからやり直したいでしょう。</p>
-
-<ul>
-<li>現在の階を削除したいなら、2DViewの上のボタンをオス化、右クリックし、<strong>Delete Level</strong>を選んでください。
-<img src="http://cir-kit.github.io/images/2015-02-06-gazebo-building-editor/edit_level.png" alt="edit_level" /></li>
-</ul>
-
-
-<h3>壁を編集する</h3>
-
-<p>最初の方に、たくさんの壁を制作しました。しかし、希望通りには作成できていないかもしれません。</p>
-
-<ul>
-<li>2DViewで壁をクリックしてください。</li>
-<li>ドラッグによって壁を新しい位置に変更してください。</li>
-<li><p>端点をドラッグし、リサイズもしくは回転を行ってください。<br/>
-<strong>コツ ; </strong>デフォルトでは、壁は15°ごと、0.25[m]ごとに増減します。また、存在する壁の端点も同じです。Shiftを押しながら操作すると、これらの制限が解除できます。</p></li>
-<li><p>階の形状オプションと一緒にインスペクターを開くために、2DViewをダブルクリックしてください。もしくは、右クリックし、<strong>Open level Inspector</strong>を選んでください。いくつかのフィールドを編集し、それらの変更を反映するために、<strong>Apply</strong>を押してください。</p></li>
-<li><p>2DViewで壁の選択中に、右クリックを押して、<strong>Delete</strong>を選ぶか、Deleteを押すと、選択中の壁を削除できます。<br/>
-<strong>コツ : </strong>壁を編集すると、付属の壁と統合されます。<br/>
-<strong>コツ : </strong>壁を削除すると、付属の窓と壁も削除します。
-<img src="http://cir-kit.github.io/images/2015-02-06-gazebo-building-editor/edit_walls.png" alt="edit_walls" /></p></li>
-</ul>
-
-
-<h3>窓とドアを編集する</h3>
-
-<p>続いては、窓とドアについて編集しましょう。壁で行ったように、多少の違いはありますが、窓やドアを正確に編集することができます。</p>
-
-<ul>
-<li>2DViewで、窓やドアをクリックしてください。</li>
-<li>新しいポジションまでドラッグして運んでください。窓やドアは自動で壁に沿って動きますし、壁から話してsってすることはできませんし、窓やドアは壁に穴を開けるだけであると言ったことを忘れないようにしてください。</li>
-<li>回転ハンドルを使って回転させてください。現在は、できるだけ、壁に沿おうとしますし、回転原点を変更することはできません。</li>
-<li><p>窓やドアの幅を端点をドラッグすることでリサイズしてください。</p></li>
-<li><p>階の形状オプションと一緒にインスペクターを開くために、2DViewをダブルクリックしてください。もしくは、右クリックし、<strong>Window/Dooe</strong>を選んでください。</p></li>
-<li><p>2DViewで壁の選択中に、右クリックを押して、<strong>Delete</strong>を選ぶか、Deleteを押すと、選択中の窓やドアを削除できます。<br/>
-<img src="http://cir-kit.github.io/images/2015-02-06-gazebo-building-editor/edit_windows_doors.png" alt="edit_windows_doors" /></p></li>
-</ul>
-
-
-<h3>階段を編集する</h3>
-
-<p>最後に、最初の方に追加した階段を編集しましょう。フロアプランにはないので、好きなように編集しましょう。</p>
-
-<ul>
-<li>2DViewで、階段をクリックしてください。</li>
-<li>新しいポジションまでドラッグして運んでください</li>
-<li>回転ハンドルを使って90°回転させてください。現在は、できるだけ、壁に沿おうとしますし、回転原点を変更することはできません。</li>
-<li><p>端点をドラッグすることでリサイズしてください。</p></li>
-<li><p>階の形状オプションと一緒にインスペクターを開くために、2DViewをダブルクリックしてください。もしくは、右クリックし、<strong>Window/Dooe</strong>を選んでください。</p></li>
-<li><p>2DViewで壁の選択中に、右クリックを押して、<strong>Delete</strong>を選ぶか、Deleteを押すと、選択中の階段を削除できます。<br/>
-<strong>コツ : </strong>2DViewでは、階段の始まりも終わりも見ることができます。
-<img src="http://cir-kit.github.io/images/2015-02-06-gazebo-building-editor/edit_stairs.png" alt="edit_stairs" /></p></li>
-</ul>
-
-
-<h2>色とテクスチャを追加する</h2>
-
-<p>さて、すべての物が設置され、リサイズされました。今度は、壁や床、そして階段の色やテクスチャを決定していきます。窓やドアはただ壁に穴を開けているだけなので、物質要素がないということを覚えておいてください。<br/>
-<strong>コツ : </strong>デフォルトは、色は白で、テクスチャはありません。<br/>
-建築物に色やテクスチャを追加する方法は２つあります。</p>
-
-<h3>インスペクタから変更する</h3>
-
-<p>壁、床、階段に色やテクスチャを追加するには、壁インスペクタ、床インスペクタ、階段インスペクタのそれぞれから追加することができます。まずは、インスペクタを開、物質を選んだら、<strong>Apply</strong>を押してください。インスペクタを表示するには、それぞれの物体の上でダブルクリックするか、右クリックから選択してください。
-<img src="http://cir-kit.github.io/images/2015-02-06-gazebo-building-editor/color_texture_inspector.png" alt="color_texture_inspector" /></p>
-
-<h3>パレットから変更する</h3>
-
-<p>3DViewで物体をクリックすることで、建築物のアイテムの色やテクスチャをパレットから選ぶことができます。</p>
-
-<ol>
-<li><p>Paletteから色とテクスチャを選んでください。</p></li>
-<li><p>3DViewでマウスを動かすと、選択された物体のpレビューが表示され、選択された要素がハイライトされます。</p></li>
-<li>選択した用をに適用する、もしくは、3DViewを右クリックする、もしくは、マテリアルモードを終了するために、物体の外をクリックすると、操作が完了します。</li>
-</ol>
-
-
-<p><img src="http://cir-kit.github.io/images/2015-02-06-gazebo-building-editor/color_texture_palette.png" alt="color_texture_palette" />
-<strong>Gazebo5.1の新機能 : </strong>カスタムカラーを選ぶには、paletteの<strong>More</strong>をクリックします。すると、カスタムカラーを決定するためのダイアログが開きます。<br/>
-私の環境は、Ver.5.0.1なので、確認できません。<br/>
-下図は、公式チュートリアル掲載のものです。
-<img src="http://cir-kit.github.io/images/2015-02-06-gazebo-building-editor/custom_color.png" alt="custom_color" />
-<strong>コツ : </strong>それぞれの物体には、一つの色とテクスチャしか適用できません。同じ物体はすべて同じ見た目になります。<br/>
-<strong>Note : 現在は、カスタムテクスチャをこのエディタで使用することはできません。</strong></p>
-
-<h2>建築物を保存する</h2>
-
-<p>セーブをすると、<a href="http://gazebosim.org/tutorials?tut=model_structure&amp;cat=build_robot">SDFとConfigファイル</a>を直接生成します。<br/>
-セーブする前に、Paletteで建築物の名前を決定してください。<br/>
-<img src="http://cir-kit.github.io/images/2015-02-06-gazebo-building-editor/edit_name.png" alt="edit_name" /><br/>
-トップメニューでファイルを選び、<strong>Save As</strong>もしくは、Ctrl+Sでセーブしてください。モデルを保存する場所を聞くダイアログが出現します。<br/>
-<strong>コツ : </strong>アドバンスオプションでは、メタデータを設定することもできます。<br/>
-<img src="http://cir-kit.github.io/images/2015-02-06-gazebo-building-editor/save_dialog.png" alt="save_dialog" /></p>
-
-<h2>終了する</h2>
-
-<p><strong>Note : 一度、建築エディタを終了すると、建築物を編集することはできません。</strong><br/>
-建築物を製作し、保存したら、ファイルのところへ行き、建築エディタを終了させてください。<br/>
-あなたの建築物がメインウィンドウに表示されます。将来的には、建築物を<code>Insert</code>タブで見つけることができます。
-<img src="http://cir-kit.github.io/images/2015-02-06-gazebo-building-editor/saved_building.png" alt="saved_building" />
-<img src="http://cir-kit.github.io/images/2015-02-06-gazebo-building-editor/final_model_angles.png" alt="final_model_angles" /></p>
-
-<h2>最後に</h2>
-
-<p>私も、学校の施設を作って遊んでみました。元にした見取り図は、案内板にあったので、スマホで写真をとって作りました。シミュレーションなら、PR2も遊びに来てくれますw<br/>
-奥に見えるのはWillowGarageのモデルです。
-<img src="http://cir-kit.github.io/images/2015-02-06-gazebo-building-editor/DSC_0332.JPG" alt="control-1st-2D" />
-<img src="http://cir-kit.github.io/images/2015-02-06-gazebo-building-editor/capture.jpg" alt="capture" /></p>
 ]]></content>
   </entry>
   
