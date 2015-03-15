@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://cir-kit.github.io/blog/2015/03/15/make-turtlesim-teleop/</loc>
+    <lastmod>2015-03-15T19:10:46+09:00</lastmod>
+  </url>
+  <url>
     <loc>http://cir-kit.github.io/blog/2015/03/15/make-first-robot-driver-on-ros/</loc>
     <lastmod>2015-03-15T03:00:00+09:00</lastmod>
   </url>
@@ -166,14 +170,59 @@
   </url>
   <url>
     <loc>http://cir-kit.github.io/</loc>
-    <lastmod>2015-03-15T12:44:18+09:00</lastmod>
   </url>
   <url>
     <loc>http://cir-kit.github.io/blog/archives/</loc>
-    <lastmod>2015-03-15T12:44:18+09:00</lastmod>
   </url>
   <url>
     <loc>http://cir-kit.github.io/information/</loc>
-    <lastmod>2015-03-15T12:44:18+09:00</lastmod>
+  </url>
+  <url>
+    <loc>http://cir-kit.github.io/blog/categories/gazebo/</loc>
+  </url>
+  <url>
+    <loc>http://cir-kit.github.io/blog/categories/ubuntu/</loc>
+  </url>
+  <url>
+    <loc>http://cir-kit.github.io/blog/categories/install/</loc>
+  </url>
+  <url>
+    <loc>http://cir-kit.github.io/blog/categories/getstarted/</loc>
+  </url>
+  <url>
+    <loc>http://cir-kit.github.io/blog/categories/build-a-robot/</loc>
+  </url>
+  <url>
+    <loc>http://cir-kit.github.io/blog/categories/build-a-world/</loc>
+  </url>
+  <url>
+    <loc>http://cir-kit.github.io/blog/categories/tools-and-utilities/</loc>
+  </url>
+  <url>
+    <loc>http://cir-kit.github.io/blog/categories/sensors/</loc>
+  </url>
+  <url>
+    <loc>http://cir-kit.github.io/blog/categories/ros/</loc>
+  </url>
+  <url>
+    <loc>http://cir-kit.github.io/blog/categories/arduino/</loc>
+  </url>
+  <url>
+    <loc>http://cir-kit.github.io/blog/categories/rosserial/</loc>
+  </url>
+  <url>
+    <loc>http://cir-kit.github.io/blog/categories/joystick-driver/</loc>
+  </url>
+  <url>
+    <loc>http://cir-kit.github.io/blog/categories/plugin/</loc>
+  </url>
+  <url>
+    <loc>http://cir-kit.github.io/blog/categories/turtlesim/</loc>
+  </url>
+  <url>
+    <loc>http://cir-kit.github.io/blog/categories/cir-kit/</loc>
+  </url>
+  <url>
+    <loc>http://cir-kit.github.io/blog/categories/robot/</loc>
   </url>
 </urlset>

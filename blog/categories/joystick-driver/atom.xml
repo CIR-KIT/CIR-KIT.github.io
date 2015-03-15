@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Joystick_driver | 九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/blog/categories/joystick-driver/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-03-15T12:44:18+09:00</updated>
+  <updated>2015-03-15T17:03:15+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[CIR-KIT Members]]></name>
@@ -12,6 +12,256 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[ジョイスティックで亀を泳がせる（機動編）]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/03/15/make-turtlesim-teleop/"/>
+    <updated>2015-03-15T19:10:46+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/03/15/make-turtlesim-teleop</id>
+    <content type="html"><![CDATA[<h1>ジョイスティックで亀を泳がせる</h1>
+
+<h2>概要</h2>
+
+<p>ROSのチュートリアルで使用したturtlesimの亀をジョイスティックで動かします。<a href="http://wiki.ros.org/joy/Tutorials">joy_tutorial</a>で行っていることをやりますので、原文はそちらへどうぞ。</p>
+
+<h2>検証情報</h2>
+
+<h3>日時</h3>
+
+<p>03/13/2015 (Fri)</p>
+
+<!--more-->
+
+
+<h3>スペック</h3>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;">パーツ</th>
+<th style="text-align:center;">スペック</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">PC</td>
+<td style="text-align:center;">CLEVO M76T</td>
+</tr>
+<tr>
+<td style="text-align:center;">Prosessor</td>
+<td style="text-align:center;">CeleronDualCore T3000 1.80GHz×2</td>
+</tr>
+<tr>
+<td style="text-align:center;">RAM</td>
+<td style="text-align:center;">4GB</td>
+</tr>
+<tr>
+<td style="text-align:center;">OS</td>
+<td style="text-align:center;">Ubuntu 14.04.2 LTS 64bit</td>
+</tr>
+<tr>
+<td style="text-align:center;">ROS</td>
+<td style="text-align:center;">indigo 1.11.10</td>
+</tr>
+<tr>
+<td style="text-align:center;">joystick_drivers</td>
+<td style="text-align:center;">1.10.0</td>
+</tr>
+</tbody>
+</table>
+
+
+<h2>使用したもの</h2>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:left;"></th>
+<th style="text-align:left;">参考</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">ROS</td>
+<td style="text-align:left;"><a href="/blog/2015/02/25/we-have-get-to-work-when-install-ubuntu">CIR-KITメンバーが必ずすべきこと</a></td>
+</tr>
+<tr>
+<td style="text-align:left;">DualShock3</td>
+<td style="text-align:left;"><a href="http://www.jp.playstation.com/ps3/peripheral/cechzc2j.html">PlayStation.com</a></td>
+</tr>
+<tr>
+<td style="text-align:left;">joystick_driver</td>
+<td style="text-align:left;"><a href="http://wiki.ros.org/joy">ROS.org</a></td>
+</tr>
+<tr>
+<td style="text-align:left;">PC</td>
+<td style="text-align:left;"><a href="http://shopap.lenovo.com/jp/notebooks/thinkpad/x-series/x250/?cid=jp:sem:q2xyf9&amp;#tab-customize">ご自由に</a></td>
+</tr>
+<tr>
+<td style="text-align:left;">USBケーブル</td>
+<td style="text-align:left;"><a href="http://www.amazon.co.jp/%E3%82%BD%E3%83%8B%E3%83%BC%E3%83%BB%E3%82%B3%E3%83%B3%E3%83%94%E3%83%A5%E3%83%BC%E3%82%BF%E3%82%A8%E3%83%B3%E3%82%BF%E3%83%86%E3%82%A4%E3%83%B3%E3%83%A1%E3%83%B3%E3%83%88-USB-%E3%82%B1%E3%83%BC%E3%83%96%E3%83%AB-2-8m/dp/B00462Q5ZW/ref=sr_1_1?ie=UTF8&amp;qid=1426232234&amp;sr=8-1&amp;keywords=usb%E3%82%B1%E3%83%BC%E3%83%96%E3%83%AB+Dualshock">適宜用意</a></td>
+</tr>
+</tbody>
+</table>
+
+
+<h2>新しいパッケージを作る</h2>
+
+<p>亀を動かすためのパッケージを作ります。<code>catkin_ws</code>に移動して以下のコマンドを実行して下さい。
+<code>bash
+catkin_create_pkg learning_joy roscpp turtlesim joy
+</code>
+これで<code>roscpp</code> <code>turtlesim</code> <code>joy</code>を依存関係に持つ<code>learnig_joy</code>というパッケージが出来ました。</p>
+
+<p>次は中身を作ります。</p>
+
+<pre><code class="bash">cd src/learning_joy/src
+emacs turtle_teleop_joy.cpp
+</code></pre>
+
+<p>以下のソースをコピーして下さい。</p>
+
+<pre><code class="cpp">#include &lt;ros/ros.h&gt;
+#include &lt;geometry_msgs/Twist.h&gt;
+#include &lt;sensor_msgs/Joy.h&gt;
+
+
+class TeleopTurtle
+{
+public:
+  TeleopTurtle();
+
+private:
+  void joyCallback(const sensor_msgs::Joy::ConstPtr&amp; joy);
+
+  ros::NodeHandle nh_;
+
+  int linear_, angular_;
+  double l_scale_, a_scale_;
+  ros::Publisher twist_pub_;
+  ros::Subscriber joy_sub_;
+
+};
+
+
+TeleopTurtle::TeleopTurtle():
+  linear_(1),
+  angular_(2)
+{
+
+  nh_.param("axis_linear", linear_, linear_);
+  nh_.param("axis_angular", angular_, angular_);
+  nh_.param("scale_angular", a_scale_, a_scale_);
+  nh_.param("scale_linear", l_scale_, l_scale_);
+
+
+  twist_pub_ = nh_.advertise&lt;geometry_msgs::Twist&gt;("turtle1/cmd_vel", 1);
+
+
+  joy_sub_ = nh_.subscribe&lt;sensor_msgs::Joy&gt;("joy", 10, &amp;TeleopTurtle::joyCallback, this);
+
+}
+
+void TeleopTurtle::joyCallback(const sensor_msgs::Joy::ConstPtr&amp; joy)
+{
+  geometry_msgs::Twist twist;
+  twist.angular.z = a_scale_*joy-&gt;axes[angular_];
+  twist.linear.x = l_scale_*joy-&gt;axes[linear_];
+  twist_pub_.publish(twist);
+}
+
+
+int main(int argc, char** argv)
+{
+  ros::init(argc, argv, "teleop_turtle");
+  TeleopTurtle teleop_turtle;
+
+  ros::spin();
+}
+</code></pre>
+
+<p>このソースは既にIndigoで動くように所々書き換えられています。よって、Indigo以外のディストリビューションの方は原文のページを参考にして下さい。</p>
+
+<p>次に、<code>CMakeLists.txt</code>を書き換えます。</p>
+
+<pre><code class="bash">cd ..
+emacs CMakeLists.txt
+</code></pre>
+
+<p>以下の行を<code>CMakeLists.txt</code>の最後に追加して下さい。</p>
+
+<pre><code class="bash">add_executable(turtle_teleop_joy src/turtle_teleop_joy.cpp)
+target_link_libraries(turtle_teleop_joy ${catkin_LIBRARIES})
+</code></pre>
+
+<p>また、以下の部分を探してコメントアウトを外して下さい。
+<code>bash
+CATKIN_DEPENDS joy roscpp turtlesim
+</code></p>
+
+<h2>launchファイルを作る</h2>
+
+<p>joy_nodeやturtlesimを一斉に起動するlaunchファイルを作ります。</p>
+
+<pre><code class="bash">mkdir launch
+cd launch
+emacs turtle_joy.launch
+</code></pre>
+
+<p>以下のソースをコピーして下さい。</p>
+
+<pre><code class="cpp">&lt;launch&gt;
+
+ &lt;!-- Turtlesim Node--&gt;
+  &lt;node pkg="turtlesim" type="turtlesim_node" name="sim"/&gt;
+
+
+ &lt;!-- joy node --&gt;
+  &lt;node respawn="true" pkg="joy"
+        type="joy_node" name="turtle_joy" &gt;
+    &lt;param name="dev" type="string" value="/dev/input/js0" /&gt;
+    &lt;param name="deadzone" value="0.12" /&gt;
+  &lt;/node&gt;
+
+ &lt;!-- Axes --&gt;
+  &lt;param name="axis_linear" value="1" type="int"/&gt;
+  &lt;param name="axis_angular" value="0" type="int"/&gt;
+  &lt;param name="scale_linear" value="2" type="double"/&gt;
+  &lt;param name="scale_angular" value="2" type="double"/&gt;
+
+  &lt;node pkg="leaning_joy" type="turtle_teleop_joy" name="teleop"/&gt;
+
+&lt;/launch&gt;
+</code></pre>
+
+<p>例によって、Indigo用に書き換えてあります。</p>
+
+<p>保存したら、<code>catkin_ws</code>に移動して以下のコマンドを実行して下さい。</p>
+
+<pre><code class="bash">catkin_make install
+</code></pre>
+
+<p>これは依存関係をすべて整えてグローバルインストールします。つまり、困ったらコレ的な便利コマンドです。</p>
+
+<p>DualShock3を繋いで許可を出し、トピックが配信されることを確認しましょう。</p>
+
+<pre><code class="bash">ls -l /dev/input/js0
+sudo chmod a+rw /dev/input/js0
+rostopic echo joy
+</code></pre>
+
+<p>確認ができたら以下のコマンドを実行して下さい。turtlesimが起動して、DualShock3で動かせるようになっているはずです。</p>
+
+<pre><code class="bash">roslaunch learning_joy turtle_joy.launch
+</code></pre>
+
+<h2>最後に</h2>
+
+<p>今回は自分が誤字で依存関係がうまく構築できなかったり、DualShock3からうまく情報が取れなかったりと色々ありました。が、とりあえず動いたので満足です。</p>
+
+<p>間違っているところがあればコメントお願いします。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[ジョイスティックで亀を泳がせる(準備編)]]></title>
