@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Arduino | 九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/blog/categories/arduino/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-03-15T17:03:15+09:00</updated>
+  <updated>2015-03-18T11:26:55+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[CIR-KIT Members]]></name>
@@ -104,7 +104,7 @@
 <tr>
 <td style="text-align:left;">rosserial</td>
 <td style="text-align:left;">Install済み</td>
-<td style="text-align:left;"><a href="/blog/2015/03/10/use-rosserial-first.md">ArduinoをROSで動かす</a></td>
+<td style="text-align:left;"><a href="/blog/2015/03/10/use-rosserial-first">ArduinoをROSで動かす</a></td>
 </tr>
 <tr>
 <td style="text-align:left;">joystick_drivers</td>
