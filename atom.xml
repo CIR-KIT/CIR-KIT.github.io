@@ -4,7 +4,7 @@
   <title><![CDATA[九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-03-18T11:26:55+09:00</updated>
+  <updated>2015-03-18T15:50:38+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[CIR-KIT Members]]></name>
@@ -2055,14 +2055,10 @@ worldファイルの例は、<a href="https://bitbucket.org/osrf/gazebo/src/gaze
 
 
 <ul>
-<li>Note:環境によってlibrariesディレクトリの名前や場所が違うので注意．</li>
+<li>Note:環境によってlibrariesディレクトリの名前や場所が違うので注意．(例えば<code>~/sketchbook/liblaries</code>)</li>
 <li>sketchbookはrosパッケージ内に作ると管理しやすいと思います．</li>
 </ul>
 
-
-<h4>確認</h4>
-
-<p>Arduinoライブラリにros_libが入っていて，その中にROSにパスが通っているmsgやsrvを定義している<strong>ROSパッケージすべて</strong>のディレクトリが含まれていることを確認する．</p>
 
 <h3>使ってみる</h3>
 
