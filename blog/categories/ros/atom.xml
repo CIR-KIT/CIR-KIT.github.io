@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Ros | 九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/blog/categories/ros/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-03-15T03:10:29+09:00</updated>
+  <updated>2015-03-18T15:51:15+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[CIR-KIT Members]]></name>
@@ -12,6 +12,256 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[ジョイスティックで亀を泳がせる（機動編）]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/03/15/make-turtlesim-teleop/"/>
+    <updated>2015-03-15T19:10:46+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/03/15/make-turtlesim-teleop</id>
+    <content type="html"><![CDATA[<h1>ジョイスティックで亀を泳がせる</h1>
+
+<h2>概要</h2>
+
+<p>ROSのチュートリアルで使用したturtlesimの亀をジョイスティックで動かします。<a href="http://wiki.ros.org/joy/Tutorials">joy_tutorial</a>で行っていることをやりますので、原文はそちらへどうぞ。</p>
+
+<h2>検証情報</h2>
+
+<h3>日時</h3>
+
+<p>03/13/2015 (Fri)</p>
+
+<!--more-->
+
+
+<h3>スペック</h3>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;">パーツ</th>
+<th style="text-align:center;">スペック</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">PC</td>
+<td style="text-align:center;">CLEVO M76T</td>
+</tr>
+<tr>
+<td style="text-align:center;">Prosessor</td>
+<td style="text-align:center;">CeleronDualCore T3000 1.80GHz×2</td>
+</tr>
+<tr>
+<td style="text-align:center;">RAM</td>
+<td style="text-align:center;">4GB</td>
+</tr>
+<tr>
+<td style="text-align:center;">OS</td>
+<td style="text-align:center;">Ubuntu 14.04.2 LTS 64bit</td>
+</tr>
+<tr>
+<td style="text-align:center;">ROS</td>
+<td style="text-align:center;">indigo 1.11.10</td>
+</tr>
+<tr>
+<td style="text-align:center;">joystick_drivers</td>
+<td style="text-align:center;">1.10.0</td>
+</tr>
+</tbody>
+</table>
+
+
+<h2>使用したもの</h2>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:left;"></th>
+<th style="text-align:left;">参考</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">ROS</td>
+<td style="text-align:left;"><a href="/blog/2015/02/25/we-have-get-to-work-when-install-ubuntu">CIR-KITメンバーが必ずすべきこと</a></td>
+</tr>
+<tr>
+<td style="text-align:left;">DualShock3</td>
+<td style="text-align:left;"><a href="http://www.jp.playstation.com/ps3/peripheral/cechzc2j.html">PlayStation.com</a></td>
+</tr>
+<tr>
+<td style="text-align:left;">joystick_driver</td>
+<td style="text-align:left;"><a href="http://wiki.ros.org/joy">ROS.org</a></td>
+</tr>
+<tr>
+<td style="text-align:left;">PC</td>
+<td style="text-align:left;"><a href="http://shopap.lenovo.com/jp/notebooks/thinkpad/x-series/x250/?cid=jp:sem:q2xyf9&amp;#tab-customize">ご自由に</a></td>
+</tr>
+<tr>
+<td style="text-align:left;">USBケーブル</td>
+<td style="text-align:left;"><a href="http://www.amazon.co.jp/%E3%82%BD%E3%83%8B%E3%83%BC%E3%83%BB%E3%82%B3%E3%83%B3%E3%83%94%E3%83%A5%E3%83%BC%E3%82%BF%E3%82%A8%E3%83%B3%E3%82%BF%E3%83%86%E3%82%A4%E3%83%B3%E3%83%A1%E3%83%B3%E3%83%88-USB-%E3%82%B1%E3%83%BC%E3%83%96%E3%83%AB-2-8m/dp/B00462Q5ZW/ref=sr_1_1?ie=UTF8&amp;qid=1426232234&amp;sr=8-1&amp;keywords=usb%E3%82%B1%E3%83%BC%E3%83%96%E3%83%AB+Dualshock">適宜用意</a></td>
+</tr>
+</tbody>
+</table>
+
+
+<h2>新しいパッケージを作る</h2>
+
+<p>亀を動かすためのパッケージを作ります。<code>catkin_ws</code>に移動して以下のコマンドを実行して下さい。
+<code>bash
+catkin_create_pkg learning_joy roscpp turtlesim joy
+</code>
+これで<code>roscpp</code> <code>turtlesim</code> <code>joy</code>を依存関係に持つ<code>learnig_joy</code>というパッケージが出来ました。</p>
+
+<p>次は中身を作ります。</p>
+
+<pre><code class="bash">cd src/learning_joy/src
+emacs turtle_teleop_joy.cpp
+</code></pre>
+
+<p>以下のソースをコピーして下さい。</p>
+
+<pre><code class="cpp">#include &lt;ros/ros.h&gt;
+#include &lt;geometry_msgs/Twist.h&gt;
+#include &lt;sensor_msgs/Joy.h&gt;
+
+
+class TeleopTurtle
+{
+public:
+  TeleopTurtle();
+
+private:
+  void joyCallback(const sensor_msgs::Joy::ConstPtr&amp; joy);
+
+  ros::NodeHandle nh_;
+
+  int linear_, angular_;
+  double l_scale_, a_scale_;
+  ros::Publisher twist_pub_;
+  ros::Subscriber joy_sub_;
+
+};
+
+
+TeleopTurtle::TeleopTurtle():
+  linear_(1),
+  angular_(2)
+{
+
+  nh_.param("axis_linear", linear_, linear_);
+  nh_.param("axis_angular", angular_, angular_);
+  nh_.param("scale_angular", a_scale_, a_scale_);
+  nh_.param("scale_linear", l_scale_, l_scale_);
+
+
+  twist_pub_ = nh_.advertise&lt;geometry_msgs::Twist&gt;("turtle1/cmd_vel", 1);
+
+
+  joy_sub_ = nh_.subscribe&lt;sensor_msgs::Joy&gt;("joy", 10, &amp;TeleopTurtle::joyCallback, this);
+
+}
+
+void TeleopTurtle::joyCallback(const sensor_msgs::Joy::ConstPtr&amp; joy)
+{
+  geometry_msgs::Twist twist;
+  twist.angular.z = a_scale_*joy-&gt;axes[angular_];
+  twist.linear.x = l_scale_*joy-&gt;axes[linear_];
+  twist_pub_.publish(twist);
+}
+
+
+int main(int argc, char** argv)
+{
+  ros::init(argc, argv, "teleop_turtle");
+  TeleopTurtle teleop_turtle;
+
+  ros::spin();
+}
+</code></pre>
+
+<p>このソースは既にIndigoで動くように所々書き換えられています。よって、Indigo以外のディストリビューションの方は原文のページを参考にして下さい。</p>
+
+<p>次に、<code>CMakeLists.txt</code>を書き換えます。</p>
+
+<pre><code class="bash">cd ..
+emacs CMakeLists.txt
+</code></pre>
+
+<p>以下の行を<code>CMakeLists.txt</code>の最後に追加して下さい。</p>
+
+<pre><code class="bash">add_executable(turtle_teleop_joy src/turtle_teleop_joy.cpp)
+target_link_libraries(turtle_teleop_joy ${catkin_LIBRARIES})
+</code></pre>
+
+<p>また、以下の部分を探してコメントアウトを外して下さい。
+<code>bash
+CATKIN_DEPENDS joy roscpp turtlesim
+</code></p>
+
+<h2>launchファイルを作る</h2>
+
+<p>joy_nodeやturtlesimを一斉に起動するlaunchファイルを作ります。</p>
+
+<pre><code class="bash">mkdir launch
+cd launch
+emacs turtle_joy.launch
+</code></pre>
+
+<p>以下のソースをコピーして下さい。</p>
+
+<pre><code class="cpp">&lt;launch&gt;
+
+ &lt;!-- Turtlesim Node--&gt;
+  &lt;node pkg="turtlesim" type="turtlesim_node" name="sim"/&gt;
+
+
+ &lt;!-- joy node --&gt;
+  &lt;node respawn="true" pkg="joy"
+        type="joy_node" name="turtle_joy" &gt;
+    &lt;param name="dev" type="string" value="/dev/input/js0" /&gt;
+    &lt;param name="deadzone" value="0.12" /&gt;
+  &lt;/node&gt;
+
+ &lt;!-- Axes --&gt;
+  &lt;param name="axis_linear" value="1" type="int"/&gt;
+  &lt;param name="axis_angular" value="0" type="int"/&gt;
+  &lt;param name="scale_linear" value="2" type="double"/&gt;
+  &lt;param name="scale_angular" value="2" type="double"/&gt;
+
+  &lt;node pkg="leaning_joy" type="turtle_teleop_joy" name="teleop"/&gt;
+
+&lt;/launch&gt;
+</code></pre>
+
+<p>例によって、Indigo用に書き換えてあります。</p>
+
+<p>保存したら、<code>catkin_ws</code>に移動して以下のコマンドを実行して下さい。</p>
+
+<pre><code class="bash">catkin_make install
+</code></pre>
+
+<p>これは依存関係をすべて整えてグローバルインストールします。つまり、困ったらコレ的な便利コマンドです。</p>
+
+<p>DualShock3を繋いで許可を出し、トピックが配信されることを確認しましょう。</p>
+
+<pre><code class="bash">ls -l /dev/input/js0
+sudo chmod a+rw /dev/input/js0
+rostopic echo joy
+</code></pre>
+
+<p>確認ができたら以下のコマンドを実行して下さい。turtlesimが起動して、DualShock3で動かせるようになっているはずです。</p>
+
+<pre><code class="bash">roslaunch learning_joy turtle_joy.launch
+</code></pre>
+
+<h2>最後に</h2>
+
+<p>今回は自分が誤字で依存関係がうまく構築できなかったり、DualShock3からうまく情報が取れなかったりと色々ありました。が、とりあえず動いたので満足です。</p>
+
+<p>間違っているところがあればコメントお願いします。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[CIR-KITの1号機ドライバ作成 on ROS]]></title>
@@ -436,7 +686,7 @@ unsigned char getSpeed(float baseSpeed) {
 
 <p><a href="http://wiki.ros.org/ja">ROS</a>及び<a href="http://wiki.ros.org/joy">joystick_drivers</a>はインストールしておいて下さい。</p>
 
-<p>まずは、joystiの依存関係（要は必要なもの）をインストールして、コンパイルします。
+<p>まずは、joystickの依存関係（要は必要なもの）をインストールして、コンパイルします。
 <code>bash
 rosdep install joy
 rosmake joy
@@ -569,7 +819,7 @@ Axes:  0:     0  1:     0  2:     0  3:     0  4:     0  5:     0 Buttons:  0:of
 <tr>
 <td style="text-align:left;">rosserial</td>
 <td style="text-align:left;">Install済み</td>
-<td style="text-align:left;"><a href="/blog/2015/03/10/use-rosserial-first.md">ArduinoをROSで動かす</a></td>
+<td style="text-align:left;"><a href="/blog/2015/03/10/use-rosserial-first">ArduinoをROSで動かす</a></td>
 </tr>
 <tr>
 <td style="text-align:left;">joystick_drivers</td>
@@ -619,100 +869,57 @@ echo "float32 y" &gt;&gt; Vector2.msg
 <p>作ったmsgのためにCMakeListsとpackage.xmlを下のように書き換えましょう．</p>
 
 <p>CMakeLists.txt
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>cmake_minimum_required<span class="o">(</span>VERSION 2.8.3<span class="o">)</span>
-</span><span class='line'>project<span class="o">(</span>light_fourleds<span class="o">)</span>&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;h1&gt;Load catkin and all dependencies required <span class="k">for</span> this package&lt;/h1&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;find_package<span class="o">(</span>catkin REQUIRED COMPONENTS message_generation<span class="o">)</span>&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;h6&gt;#&lt;/h6&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;h2&gt;Declare ROS message&lt;/h2&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;h6&gt;#&lt;/h6&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;h1&gt;Generate messages in the <span class="p">&amp;</span>lsquo<span class="p">;</span>msg<span class="p">&amp;</span>rsquo<span class="p">;</span> folder&lt;/h1&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;add_message_files<span class="o">(</span>FILES Vector2.msg<span class="o">)</span>&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;h2&gt;Generate added messages with any dependencies listed here&lt;/h2&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;generate_messages<span class="o">()</span>&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;h6&gt;#&lt;/h6&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;h2&gt;catkin specific configuration&lt;/h2&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;h6&gt;#&lt;/h6&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;catkin_package<span class="o">(</span>CATKIN_DEPENDS message_runtime<span class="o">)</span>
-</span></code></pre></td></tr></table></div></figure></p>
+&#8220;`bash
+cmake_minimum_required(VERSION 2.8.3)
+project(light_fourleds)</p>
+
+<h1>Load catkin and all dependencies required for this package</h1>
+
+<p>find_package(catkin REQUIRED COMPONENTS message_generation)</p>
+
+<h6>#</h6>
+
+<h2>Declare ROS message</h2>
+
+<h6>#</h6>
+
+<h1>Generate messages in the &lsquo;msg&rsquo; folder</h1>
+
+<p>add_message_files(FILES Vector2.msg)</p>
+
+<h2>Generate added messages with any dependencies listed here</h2>
+
+<p>generate_messages()</p>
+
+<h6>#</h6>
+
+<h2>catkin specific configuration</h2>
+
+<h6>#</h6>
+
+<p>catkin_package(CATKIN_DEPENDS message_runtime)
+&#8220;`</p>
 
 <p>package.txt
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>&lt;package&gt;
-</span><span class='line'>  &lt;name&gt;light_fourleds&lt;/name&gt;
-</span><span class='line'>  &lt;version&gt;0.1.0&lt;/version&gt;
-</span><span class='line'>  &lt;description&gt;
-</span><span class='line'>    This package defines message, and have node of arduino to light
-</span><span class='line'>    four leds.
-</span><span class='line'>  &lt;/description&gt;
-</span><span class='line'>  &lt;maintainer <span class="nv">email</span><span class="o">=</span><span class="s2">&quot;yourName@todo.todo&quot;</span>&gt;yourName&lt;/maintainer&gt;
-</span><span class='line'>  &lt;license&gt;BSD&lt;/license&gt;&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;  &lt;buildtool_depend&gt;catkin&lt;/buildtool_depend&gt;&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;  &lt;build_depend&gt;message_generation&lt;/build_depend&gt;&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;  &lt;run_depend&gt;message_runtime&lt;/run_depend&gt;
-</span><span class='line'>  &lt;run_depend&gt;rosserial_python&lt;/run_depend&gt;
-</span><span class='line'>&lt;/package&gt;
-</span></code></pre></td></tr></table></div></figure></p>
+&#8220;`bash
+<package>
+  <name>light_fourleds</name>
+  <version>0.1.0</version>
+  <description>
+    This package defines message, and have node of arduino to light
+    four leds.
+  </description>
+  <maintainer email="yourName@todo.todo">yourName</maintainer>
+  <license>BSD</license></p>
+
+<p>  <buildtool_depend>catkin</buildtool_depend></p>
+
+<p>  <build_depend>message_generation</build_depend></p>
+
+<p>  <run_depend>message_runtime</run_depend>
+  <run_depend>rosserial_python</run_depend>
+</package>
+&#8220;`</p>
 
 <p>書き終えたら<code>catkin_make --force-cmake</code>を実行します．
 <code>bash
@@ -839,72 +1046,43 @@ int main(int argc, char **argv) {
 <p>書き込んだら，CMakeLists.txtとpackage.xmlを下のように書き換えます．</p>
 
 <p>CMakeLists.txt
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>cmake_minimum_required<span class="o">(</span>VERSION 2.8.3<span class="o">)</span>
-</span><span class='line'>project<span class="o">(</span>light_fourleds_adapters<span class="o">)</span>&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;set<span class="o">(</span>CATKIN_DEPS roscpp sensor_msgs<span class="o">)</span>
-</span><span class='line'><span class="nb">set</span><span class="o">(</span>ROSDEP_DEPS light_fourleds<span class="o">)</span>
-</span><span class='line'>find_package<span class="o">(</span>catkin REQUIRED COMPONENTS <span class="k">${</span><span class="nv">CATKIN_DEPS</span><span class="k">}</span> <span class="k">${</span><span class="nv">ROSDEP_DEPS</span><span class="k">}</span><span class="o">)</span>
-</span><span class='line'>catkin_package<span class="o">(</span>CATKIN_DEPENDS <span class="k">${</span><span class="nv">CATKIN_DEPS</span><span class="k">}</span> <span class="k">${</span><span class="nv">ROSDEP_DEPS</span><span class="k">}</span><span class="o">)</span>&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;include_directories<span class="o">(</span><span class="k">${</span><span class="nv">catkin_INCLUDE_DIRS</span><span class="k">}</span><span class="o">)</span>&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;add_executable<span class="o">(</span>adapt_joy_node src/adapt_joy_node.cpp<span class="o">)</span>
-</span><span class='line'>target_link_libraries<span class="o">(</span>adapt_joy_node <span class="k">${</span><span class="nv">catkin_LIBRARIES</span><span class="k">}</span><span class="o">)</span>
-</span></code></pre></td></tr></table></div></figure></p>
+&#8220;`bash
+cmake_minimum_required(VERSION 2.8.3)
+project(light_fourleds_adapters)</p>
+
+<p>set(CATKIN_DEPS roscpp sensor_msgs)
+set(ROSDEP_DEPS light_fourleds)
+find_package(catkin REQUIRED COMPONENTS ${CATKIN_DEPS} ${ROSDEP_DEPS})
+catkin_package(CATKIN_DEPENDS ${CATKIN_DEPS} ${ROSDEP_DEPS})</p>
+
+<p>include_directories(${catkin_INCLUDE_DIRS})</p>
+
+<p>add_executable(adapt_joy_node src/adapt_joy_node.cpp)
+target_link_libraries(adapt_joy_node ${catkin_LIBRARIES})
+&#8220;`</p>
 
 <p>package.xml
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>&lt;package&gt;
-</span><span class='line'>  &lt;name&gt;light_fourleds_adapters&lt;/name&gt;
-</span><span class='line'>  &lt;version&gt;0.1.0&lt;/version&gt;&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;  &lt;description&gt;Adapt message to light_fourleds package.&lt;/description&gt;&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;  &lt;maintainer <span class="nv">email</span><span class="o">=</span><span class="s2">&quot;yourName@todo.todo&quot;</span>&gt;yourName&lt;/maintainer&gt;
-</span><span class='line'>  &lt;license&gt;BSD&lt;/license&gt;&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;  &lt;buildtool_depend&gt;catkin&lt;/buildtool_depend&gt;&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;  &lt;build_depend&gt;light_fourleds&lt;/build_depend&gt;
-</span><span class='line'>  &lt;build_depend&gt;roscpp&lt;/build_depend&gt;
-</span><span class='line'>  &lt;build_depend&gt;sensor_msgs&lt;/build_depend&gt;&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;  &lt;run_depend&gt;light_fourleds&lt;/run_depend&gt;
-</span><span class='line'>  &lt;run_depend&gt;roscpp&lt;/run_depend&gt;
-</span><span class='line'>  &lt;run_depend&gt;sensor_msgs&lt;/run_depend&gt;
-</span><span class='line'>&lt;/package&gt;
-</span></code></pre></td></tr></table></div></figure></p>
+&#8220;`bash
+<package>
+  <name>light_fourleds_adapters</name>
+  <version>0.1.0</version></p>
+
+<p>  <description>Adapt message to light_fourleds package.</description></p>
+
+<p>  <maintainer email="yourName@todo.todo">yourName</maintainer>
+  <license>BSD</license></p>
+
+<p>  <buildtool_depend>catkin</buildtool_depend></p>
+
+<p>  <build_depend>light_fourleds</build_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend>sensor_msgs</build_depend></p>
+
+<p>  <run_depend>light_fourleds</run_depend>
+  <run_depend>roscpp</run_depend>
+  <run_depend>sensor_msgs</run_depend>
+</package>
+&#8220;`</p>
 
 <p>すべて書き込んだら<code>workspace</code>直下へ移動して<code>catkin_make</code>します．</p>
 
@@ -1055,14 +1233,10 @@ rosrun rosserial_python serial_node.py _port:=ttyACM0
 </code></pre>
 
 <ul>
-<li>Note:環境によってlibrariesディレクトリの名前や場所が違うので注意．</li>
+<li>Note:環境によってlibrariesディレクトリの名前や場所が違うので注意．(例えば<code>~/sketchbook/liblaries</code>)</li>
 <li>sketchbookはrosパッケージ内に作ると管理しやすいと思います．</li>
 </ul>
 
-
-<h4>確認</h4>
-
-<p>Arduinoライブラリにros_libが入っていて，その中にROSにパスが通っているmsgやsrvを定義している<strong>ROSパッケージすべて</strong>のディレクトリが含まれていることを確認する．</p>
 
 <h3>使ってみる</h3>
 
@@ -1090,122 +1264,6 @@ Arduinoへの書き込みが済んだら，早速確認してみましょう．<
 <p>&ldquo;Hello World&#8221;と送られていたら成功です．</p>
 
 <p><code>rosserial_python serial_node</code>でArduinoに書き込んだノードを実行していると考えるとわかりやすいと思います．(実際は全然違います)</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[No.6-10:GazeboをROSに繋ぐ (発展的なROSの統合 編)]]></title>
-    <link href="http://cir-kit.github.io/blog/2015/03/04/gazebo-ros-advanced-integration/"/>
-    <updated>2015-03-04T05:26:59+09:00</updated>
-    <id>http://cir-kit.github.io/blog/2015/03/04/gazebo-ros-advanced-integration</id>
-    <content type="html"><![CDATA[<p><img src="/images/gazebo_logo.png" alt="gazebo_logo" /></p>
-
-<h5>検証日時</h5>
-
-<p>03/04/2015 (Wed)</p>
-
-<h5>概要</h5>
-
-<p>Gazeboのチュートリアル第六弾「Connect to ROS」。
-ROSはロボットの制御フレームワークです。このチュートリアルでは、GazeboとROSのインターフェースについて説明します。
-今回はその「Advanced ROS Integratio」編です。
-公式サイトを適当に翻訳しただけですので、あしからず。</p>
-
-<h5>レベル</h5>
-
-<p><strong>INTERMEDIATE</strong></p>
-
-<!-- more -->
-
-
-<h5>環境</h5>
-
-<table>
-<thead>
-<tr>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center;"> <strong>PC</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Prosessor</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>RAM</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>OS</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Kernel</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> 3.13.0-44-generic </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Gazebo</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Version 5.0.1 </td>
-</tr>
-</tbody>
-</table>
-
-
-<h5>参考</h5>
-
-<p><a href="http://gazebosim.org/tutorials?cat=connect_ros">GAZEBO Tutorial-Connect to ROS</a></p>
-
-<h2>チュートリアル : 発展的なROSの統合</h2>
-
-<h3>動的再構成</h3>
-
-<p>物理エンジンのパラメータの一部は<a href="http://cir-kit.github.io/blog/2015/02/03/gazebo-modifying-a-world/">環境を修正する</a>のチュートリアルで行ったように、Gazeboに合わせることが出きます。これに加えて、ROSの動的再構成メカニズムを使うことで、これらのパラメータを調整できます。<br/>
-例として、シミュレーション中の重力を入れ替えてみます。以下のインストールが完了しているか確認してください。:</p>
-
-<h5>Groovyの場合</h5>
-
-<pre><code class="bash">sudo apt-get install ros-groovy-rqt-common-plugins ros-groovy-dynamic-reconfigure
-</code></pre>
-
-<h5>Hydroの場合</h5>
-
-<pre><code class="bash">sudo apt-get install ros-hydro-rqt-common-plugins ros-hydro-dynamic-reconfigure
-</code></pre>
-
-<h5>Indigoの場合</h5>
-
-<pre><code class="bash">sudo apt-get install ros-indigo-rqt-common-plugins ros-indigo-dynamic-reconfigure
-</code></pre>
-
-<p>続いて、Gazeboを起動してください。:</p>
-
-<pre><code class="bash">rosrun gazebo_ros gazebo
-</code></pre>
-
-<p>物理エンジンについての変更を行う前に、Gazeboのモデルを挿入しましょう。画面左のタブより<strong>Insert</strong>をkリックし、<strong>Pioneer 2DX</strong>のロボットモデルをクリックしてください。<br/>
-完了したら、ランタイムのGazeboと情報を交換するために、ROSのGUIツールを起動してください。</p>
-
-<pre><code class="bash">rosrun rqt_gui rqt_gui
-</code></pre>
-
-<p><img src="/images/2015-03-04-ros-advanced-integration/rqt.png" alt="rqt" /></p>
-
-<p>上に載せたキャプチャと一致するように、RQT(前述のROSのGUI)のパラメータを設定してください。<br/>
-RQTの左側にある<strong>gazebo</strong>をクリックすると、調整可能な物理エンジンのパラメータのリストを確認できます。<br/>
-確認できたら、<code>gravity_z</code>を<strong>-9.8</strong>から<strong>+9.8</strong>にして、あなたのロボットに重力がどのような影響を及ぼすか、確認してみてください。<br/>
-ちなみに、変更すると、<strong>Pioneer2DX</strong>がどっかに飛んでいったはずです。</p>
 ]]></content>
   </entry>
   

@@ -1,0 +1,605 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>ジョイスティックで亀を泳がせる（機動編） - 九州工業大学 CIR-KIT Blog</title>
+  <meta name="author" content="shimoe">
+
+  
+  <meta name="description" content="ジョイスティックで亀を泳がせる 概要 ROSのチュートリアルで使用したturtlesimの亀をジョイスティックで動かします。joy_tutorialで行っていることをやりますので、原文はそちらへどうぞ。 検証情報 日時 03/13/2015 (Fri) スペック パーツ
+スペック PC
+CLEVO &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://cir-kit.github.io/blog/2015/03/15/make-turtlesim-teleop/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="九州工業大学 CIR-KIT Blog" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-59178596-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<meta property="og:title" content="ジョイスティックで亀を泳がせる（機動編） - 九州工業大学 CIR-KIT Blog" />
+<meta property="og:description" content="ジョイスティックで亀を泳がせる 概要 ROSのチュートリアルで使用したturtlesimの亀をジョイスティックで動かします。joy_tutorialで行っていることをやりますので、原文はそちらへどうぞ。 検証情報 日時 03/13/2015 (Fri) スペック パーツ
+スペック PC
+CLEVO &hellip;" />
+<meta property="og:url" content="http://cir-kit.github.io/blog/2015/03/15/make-turtlesim-teleop/" />
+<meta property="og:image" content="http://cir-kit.github.io/favicon.png" />
+
+<meta property="og:site_name" content="九州工業大学 CIR-KIT Blog" />
+<meta property="og:locale" content="ja_JP" />
+<meta property="og:type" content="blog" />
+<meta property="fb:app_id" content="930841560294053" />
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">九州工業大学 CIR-KIT Blog</a></h1>
+  
+    <h2>九工大自律移動ロボット製作プロジェクトCIR-KITの技術系ブログ</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="cir-kit.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/information">Information</a><li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">ジョイスティックで亀を泳がせる（機動編）</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-03-15T19:10:46+09:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>15</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>7:10 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h1>ジョイスティックで亀を泳がせる</h1>
+
+<h2>概要</h2>
+
+<p>ROSのチュートリアルで使用したturtlesimの亀をジョイスティックで動かします。<a href="http://wiki.ros.org/joy/Tutorials">joy_tutorial</a>で行っていることをやりますので、原文はそちらへどうぞ。</p>
+
+<h2>検証情報</h2>
+
+<h3>日時</h3>
+
+<p>03/13/2015 (Fri)</p>
+
+<!--more-->
+
+
+<h3>スペック</h3>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;">パーツ</th>
+<th style="text-align:center;">スペック</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">PC</td>
+<td style="text-align:center;">CLEVO M76T</td>
+</tr>
+<tr>
+<td style="text-align:center;">Prosessor</td>
+<td style="text-align:center;">CeleronDualCore T3000 1.80GHz×2</td>
+</tr>
+<tr>
+<td style="text-align:center;">RAM</td>
+<td style="text-align:center;">4GB</td>
+</tr>
+<tr>
+<td style="text-align:center;">OS</td>
+<td style="text-align:center;">Ubuntu 14.04.2 LTS 64bit</td>
+</tr>
+<tr>
+<td style="text-align:center;">ROS</td>
+<td style="text-align:center;">indigo 1.11.10</td>
+</tr>
+<tr>
+<td style="text-align:center;">joystick_drivers</td>
+<td style="text-align:center;">1.10.0</td>
+</tr>
+</tbody>
+</table>
+
+
+<h2>使用したもの</h2>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:left;"></th>
+<th style="text-align:left;">参考</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">ROS</td>
+<td style="text-align:left;"><a href="/blog/2015/02/25/we-have-get-to-work-when-install-ubuntu">CIR-KITメンバーが必ずすべきこと</a></td>
+</tr>
+<tr>
+<td style="text-align:left;">DualShock3</td>
+<td style="text-align:left;"><a href="http://www.jp.playstation.com/ps3/peripheral/cechzc2j.html">PlayStation.com</a></td>
+</tr>
+<tr>
+<td style="text-align:left;">joystick_driver</td>
+<td style="text-align:left;"><a href="http://wiki.ros.org/joy">ROS.org</a></td>
+</tr>
+<tr>
+<td style="text-align:left;">PC</td>
+<td style="text-align:left;"><a href="http://shopap.lenovo.com/jp/notebooks/thinkpad/x-series/x250/?cid=jp:sem:q2xyf9&amp;#tab-customize">ご自由に</a></td>
+</tr>
+<tr>
+<td style="text-align:left;">USBケーブル</td>
+<td style="text-align:left;"><a href="http://www.amazon.co.jp/%E3%82%BD%E3%83%8B%E3%83%BC%E3%83%BB%E3%82%B3%E3%83%B3%E3%83%94%E3%83%A5%E3%83%BC%E3%82%BF%E3%82%A8%E3%83%B3%E3%82%BF%E3%83%86%E3%82%A4%E3%83%B3%E3%83%A1%E3%83%B3%E3%83%88-USB-%E3%82%B1%E3%83%BC%E3%83%96%E3%83%AB-2-8m/dp/B00462Q5ZW/ref=sr_1_1?ie=UTF8&amp;qid=1426232234&amp;sr=8-1&amp;keywords=usb%E3%82%B1%E3%83%BC%E3%83%96%E3%83%AB+Dualshock">適宜用意</a></td>
+</tr>
+</tbody>
+</table>
+
+
+<h2>新しいパッケージを作る</h2>
+
+<p>亀を動かすためのパッケージを作ります。<code>catkin_ws</code>に移動して以下のコマンドを実行して下さい。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>catkin_create_pkg learning_joy roscpp turtlesim joy
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>これで<code>roscpp</code> <code>turtlesim</code> <code>joy</code>を依存関係に持つ<code>learnig_joy</code>というパッケージが出来ました。</p>
+
+<p>次は中身を作ります。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd </span>src/learning_joy/src
+</span><span class='line'>emacs turtle_teleop_joy.cpp
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>以下のソースをコピーして下さい。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+</pre></td><td class='code'><pre><code class='cpp'><span class='line'><span class="cp">#include &lt;ros/ros.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;geometry_msgs/Twist.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;sensor_msgs/Joy.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">TeleopTurtle</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'><span class="k">public</span><span class="o">:</span>
+</span><span class='line'>  <span class="n">TeleopTurtle</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">private</span><span class="o">:</span>
+</span><span class='line'>  <span class="kt">void</span> <span class="n">joyCallback</span><span class="p">(</span><span class="k">const</span> <span class="n">sensor_msgs</span><span class="o">::</span><span class="n">Joy</span><span class="o">::</span><span class="n">ConstPtr</span><span class="o">&amp;</span> <span class="n">joy</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">ros</span><span class="o">::</span><span class="n">NodeHandle</span> <span class="n">nh_</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kt">int</span> <span class="n">linear_</span><span class="p">,</span> <span class="n">angular_</span><span class="p">;</span>
+</span><span class='line'>  <span class="kt">double</span> <span class="n">l_scale_</span><span class="p">,</span> <span class="n">a_scale_</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">ros</span><span class="o">::</span><span class="n">Publisher</span> <span class="n">twist_pub_</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">ros</span><span class="o">::</span><span class="n">Subscriber</span> <span class="n">joy_sub_</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="n">TeleopTurtle</span><span class="o">::</span><span class="n">TeleopTurtle</span><span class="p">()</span><span class="o">:</span>
+</span><span class='line'>  <span class="n">linear_</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+</span><span class='line'>  <span class="n">angular_</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">nh_</span><span class="p">.</span><span class="n">param</span><span class="p">(</span><span class="s">&quot;axis_linear&quot;</span><span class="p">,</span> <span class="n">linear_</span><span class="p">,</span> <span class="n">linear_</span><span class="p">);</span>
+</span><span class='line'>  <span class="n">nh_</span><span class="p">.</span><span class="n">param</span><span class="p">(</span><span class="s">&quot;axis_angular&quot;</span><span class="p">,</span> <span class="n">angular_</span><span class="p">,</span> <span class="n">angular_</span><span class="p">);</span>
+</span><span class='line'>  <span class="n">nh_</span><span class="p">.</span><span class="n">param</span><span class="p">(</span><span class="s">&quot;scale_angular&quot;</span><span class="p">,</span> <span class="n">a_scale_</span><span class="p">,</span> <span class="n">a_scale_</span><span class="p">);</span>
+</span><span class='line'>  <span class="n">nh_</span><span class="p">.</span><span class="n">param</span><span class="p">(</span><span class="s">&quot;scale_linear&quot;</span><span class="p">,</span> <span class="n">l_scale_</span><span class="p">,</span> <span class="n">l_scale_</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">twist_pub_</span> <span class="o">=</span> <span class="n">nh_</span><span class="p">.</span><span class="n">advertise</span><span class="o">&lt;</span><span class="n">geometry_msgs</span><span class="o">::</span><span class="n">Twist</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;turtle1/cmd_vel&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">joy_sub_</span> <span class="o">=</span> <span class="n">nh_</span><span class="p">.</span><span class="n">subscribe</span><span class="o">&lt;</span><span class="n">sensor_msgs</span><span class="o">::</span><span class="n">Joy</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;joy&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">TeleopTurtle</span><span class="o">::</span><span class="n">joyCallback</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">void</span> <span class="n">TeleopTurtle</span><span class="o">::</span><span class="n">joyCallback</span><span class="p">(</span><span class="k">const</span> <span class="n">sensor_msgs</span><span class="o">::</span><span class="n">Joy</span><span class="o">::</span><span class="n">ConstPtr</span><span class="o">&amp;</span> <span class="n">joy</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="n">geometry_msgs</span><span class="o">::</span><span class="n">Twist</span> <span class="n">twist</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">twist</span><span class="p">.</span><span class="n">angular</span><span class="p">.</span><span class="n">z</span> <span class="o">=</span> <span class="n">a_scale_</span><span class="o">*</span><span class="n">joy</span><span class="o">-&gt;</span><span class="n">axes</span><span class="p">[</span><span class="n">angular_</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">twist</span><span class="p">.</span><span class="n">linear</span><span class="p">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">l_scale_</span><span class="o">*</span><span class="n">joy</span><span class="o">-&gt;</span><span class="n">axes</span><span class="p">[</span><span class="n">linear_</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">twist_pub_</span><span class="p">.</span><span class="n">publish</span><span class="p">(</span><span class="n">twist</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="kt">int</span> <span class="n">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span><span class="o">**</span> <span class="n">argv</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="n">ros</span><span class="o">::</span><span class="n">init</span><span class="p">(</span><span class="n">argc</span><span class="p">,</span> <span class="n">argv</span><span class="p">,</span> <span class="s">&quot;teleop_turtle&quot;</span><span class="p">);</span>
+</span><span class='line'>  <span class="n">TeleopTurtle</span> <span class="n">teleop_turtle</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">ros</span><span class="o">::</span><span class="n">spin</span><span class="p">();</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>このソースは既にIndigoで動くように所々書き換えられています。よって、Indigo以外のディストリビューションの方は原文のページを参考にして下さい。</p>
+
+<p>次に、<code>CMakeLists.txt</code>を書き換えます。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd</span> ..
+</span><span class='line'>emacs CMakeLists.txt
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>以下の行を<code>CMakeLists.txt</code>の最後に追加して下さい。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>add_executable<span class="o">(</span>turtle_teleop_joy src/turtle_teleop_joy.cpp<span class="o">)</span>
+</span><span class='line'>target_link_libraries<span class="o">(</span>turtle_teleop_joy <span class="k">${</span><span class="nv">catkin_LIBRARIES</span><span class="k">}</span><span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>また、以下の部分を探してコメントアウトを外して下さい。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>CATKIN_DEPENDS joy roscpp turtlesim
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>launchファイルを作る</h2>
+
+<p>joy_nodeやturtlesimを一斉に起動するlaunchファイルを作ります。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>mkdir launch
+</span><span class='line'><span class="nb">cd </span>launch
+</span><span class='line'>emacs turtle_joy.launch
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>以下のソースをコピーして下さい。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='cpp'><span class='line'><span class="o">&lt;</span><span class="n">launch</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'> <span class="o">&lt;!--</span> <span class="n">Turtlesim</span> <span class="n">Node</span><span class="o">--&gt;</span>
+</span><span class='line'>  <span class="o">&lt;</span><span class="n">node</span> <span class="n">pkg</span><span class="o">=</span><span class="s">&quot;turtlesim&quot;</span> <span class="n">type</span><span class="o">=</span><span class="s">&quot;turtlesim_node&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;sim&quot;</span><span class="o">/&gt;</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'> <span class="o">&lt;!--</span> <span class="n">joy</span> <span class="n">node</span> <span class="o">--&gt;</span>
+</span><span class='line'>  <span class="o">&lt;</span><span class="n">node</span> <span class="n">respawn</span><span class="o">=</span><span class="s">&quot;true&quot;</span> <span class="n">pkg</span><span class="o">=</span><span class="s">&quot;joy&quot;</span>
+</span><span class='line'>        <span class="n">type</span><span class="o">=</span><span class="s">&quot;joy_node&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;turtle_joy&quot;</span> <span class="o">&gt;</span>
+</span><span class='line'>    <span class="o">&lt;</span><span class="n">param</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;dev&quot;</span> <span class="n">type</span><span class="o">=</span><span class="s">&quot;string&quot;</span> <span class="n">value</span><span class="o">=</span><span class="s">&quot;/dev/input/js0&quot;</span> <span class="o">/&gt;</span>
+</span><span class='line'>    <span class="o">&lt;</span><span class="n">param</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;deadzone&quot;</span> <span class="n">value</span><span class="o">=</span><span class="s">&quot;0.12&quot;</span> <span class="o">/&gt;</span>
+</span><span class='line'>  <span class="o">&lt;/</span><span class="n">node</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'> <span class="o">&lt;!--</span> <span class="n">Axes</span> <span class="o">--&gt;</span>
+</span><span class='line'>  <span class="o">&lt;</span><span class="n">param</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;axis_linear&quot;</span> <span class="n">value</span><span class="o">=</span><span class="s">&quot;1&quot;</span> <span class="n">type</span><span class="o">=</span><span class="s">&quot;int&quot;</span><span class="o">/&gt;</span>
+</span><span class='line'>  <span class="o">&lt;</span><span class="n">param</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;axis_angular&quot;</span> <span class="n">value</span><span class="o">=</span><span class="s">&quot;0&quot;</span> <span class="n">type</span><span class="o">=</span><span class="s">&quot;int&quot;</span><span class="o">/&gt;</span>
+</span><span class='line'>  <span class="o">&lt;</span><span class="n">param</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;scale_linear&quot;</span> <span class="n">value</span><span class="o">=</span><span class="s">&quot;2&quot;</span> <span class="n">type</span><span class="o">=</span><span class="s">&quot;double&quot;</span><span class="o">/&gt;</span>
+</span><span class='line'>  <span class="o">&lt;</span><span class="n">param</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;scale_angular&quot;</span> <span class="n">value</span><span class="o">=</span><span class="s">&quot;2&quot;</span> <span class="n">type</span><span class="o">=</span><span class="s">&quot;double&quot;</span><span class="o">/&gt;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="o">&lt;</span><span class="n">node</span> <span class="n">pkg</span><span class="o">=</span><span class="s">&quot;leaning_joy&quot;</span> <span class="n">type</span><span class="o">=</span><span class="s">&quot;turtle_teleop_joy&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;teleop&quot;</span><span class="o">/&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">launch</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>例によって、Indigo用に書き換えてあります。</p>
+
+<p>保存したら、<code>catkin_ws</code>に移動して以下のコマンドを実行して下さい。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>catkin_make install
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>これは依存関係をすべて整えてグローバルインストールします。つまり、困ったらコレ的な便利コマンドです。</p>
+
+<p>DualShock3を繋いで許可を出し、トピックが配信されることを確認しましょう。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>ls -l /dev/input/js0
+</span><span class='line'>sudo chmod a+rw /dev/input/js0
+</span><span class='line'>rostopic <span class="nb">echo </span>joy
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>確認ができたら以下のコマンドを実行して下さい。turtlesimが起動して、DualShock3で動かせるようになっているはずです。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>roslaunch learning_joy turtle_joy.launch
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>最後に</h2>
+
+<p>今回は自分が誤字で依存関係がうまく構築できなかったり、DualShock3からうまく情報が取れなかったりと色々ありました。が、とりあえず動いたので満足です。</p>
+
+<p>間違っているところがあればコメントお願いします。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">shimoe</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2015-03-15T19:10:46+09:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>15</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>7:10 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/joystick-driver/'>joystick_driver</a>, <a class='category' href='/blog/categories/ros/'>ros</a>, <a class='category' href='/blog/categories/turtlesim/'>turtlesim</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://cir-kit.github.io/blog/2015/03/15/make-turtlesim-teleop/" data-via="" data-counturl="http://cir-kit.github.io/blog/2015/03/15/make-turtlesim-teleop/" >Tweet</a>
+  
+  
+  
+  
+  <div class="fb-comments" data-href="http://cir-kit.github.io" data-num-posts="2" data-width="500"></div>
+  
+  
+
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2015/03/15/make-first-robot-driver-on-ros/" title="Previous Post: CIR-KITの1号機ドライバ作成 on ROS">&laquo; CIR-KITの1号機ドライバ作成 on ROS</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    
+
+
+
+
+<section>
+<div class="fb-like-box" data-href="https://www.facebook.com/kyutechcirkit" data-width="210" data-height="400" data-colorscheme="light" data-show-faces="false" data-header="false" data-stream="true" data-show-border="false"></div>
+</section>
+
+<section>
+  <h1>Categories</h1>
+    <ul id="category-list">
+      <li><a href='/blog/categories/arduino/'>arduino (2)</a></li><li><a href='/blog/categories/build-a-robot/'>build a robot (10)</a></li><li><a href='/blog/categories/build-a-world/'>build a world (5)</a></li><li><a href='/blog/categories/cir-kit/'>cir-kit (1)</a></li><li><a href='/blog/categories/gazebo/'>gazebo (34)</a></li><li><a href='/blog/categories/getstarted/'>getstarted (4)</a></li><li><a href='/blog/categories/install/'>install (2)</a></li><li><a href='/blog/categories/joystick-driver/'>joystick_driver (3)</a></li><li><a href='/blog/categories/plugin/'>plugin (1)</a></li><li><a href='/blog/categories/robot/'>robot (1)</a></li><li><a href='/blog/categories/ros/'>ros (15)</a></li><li><a href='/blog/categories/rosserial/'>rosserial (2)</a></li><li><a href='/blog/categories/sensors/'>sensors (2)</a></li><li><a href='/blog/categories/tools-and-utilities/'>tools and utilities (1)</a></li><li><a href='/blog/categories/turtlesim/'>turtlesim (2)</a></li><li><a href='/blog/categories/ubuntu/'>ubuntu (35)</a></li>
+    </ul>
+</section>
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/15/make-turtlesim-teleop/">ジョイスティックで亀を泳がせる（機動編）</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/15/make-first-robot-driver-on-ros/">CIR-KITの1号機ドライバ作成 on ROS</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/13/turtlesim-with-joystick/">ジョイスティックで亀を泳がせる(準備編)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/11/gazebo-plugin-101/">No.7-1:プラグインを書く (Gazebo Plugin 101 編)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/10/light-four-leds-on-arduino-by-ros/">ジョイスティックで4つのLEDをつける(Arduino&ROS)</a>
+      </li>
+    
+  </ul>
+</section>
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - shimoe -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&appId=930841560294053&version=v2.0";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
