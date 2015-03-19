@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Rosserial | 九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/blog/categories/rosserial/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-03-18T15:51:15+09:00</updated>
+  <updated>2015-03-19T15:12:28+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[CIR-KIT Members]]></name>
@@ -154,57 +154,100 @@ echo "float32 y" &gt;&gt; Vector2.msg
 <p>作ったmsgのためにCMakeListsとpackage.xmlを下のように書き換えましょう．</p>
 
 <p>CMakeLists.txt
-&#8220;`bash
-cmake_minimum_required(VERSION 2.8.3)
-project(light_fourleds)</p>
-
-<h1>Load catkin and all dependencies required for this package</h1>
-
-<p>find_package(catkin REQUIRED COMPONENTS message_generation)</p>
-
-<h6>#</h6>
-
-<h2>Declare ROS message</h2>
-
-<h6>#</h6>
-
-<h1>Generate messages in the &lsquo;msg&rsquo; folder</h1>
-
-<p>add_message_files(FILES Vector2.msg)</p>
-
-<h2>Generate added messages with any dependencies listed here</h2>
-
-<p>generate_messages()</p>
-
-<h6>#</h6>
-
-<h2>catkin specific configuration</h2>
-
-<h6>#</h6>
-
-<p>catkin_package(CATKIN_DEPENDS message_runtime)
-&#8220;`</p>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>cmake_minimum_required<span class="o">(</span>VERSION 2.8.3<span class="o">)</span>
+</span><span class='line'>project<span class="o">(</span>light_fourleds<span class="o">)</span>&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;h1&gt;Load catkin and all dependencies required <span class="k">for</span> this package&lt;/h1&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;find_package<span class="o">(</span>catkin REQUIRED COMPONENTS message_generation<span class="o">)</span>&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;h6&gt;#&lt;/h6&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;h2&gt;Declare ROS message&lt;/h2&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;h6&gt;#&lt;/h6&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;h1&gt;Generate messages in the <span class="p">&amp;</span>lsquo<span class="p">;</span>msg<span class="p">&amp;</span>rsquo<span class="p">;</span> folder&lt;/h1&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;add_message_files<span class="o">(</span>FILES Vector2.msg<span class="o">)</span>&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;h2&gt;Generate added messages with any dependencies listed here&lt;/h2&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;generate_messages<span class="o">()</span>&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;h6&gt;#&lt;/h6&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;h2&gt;catkin specific configuration&lt;/h2&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;h6&gt;#&lt;/h6&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;catkin_package<span class="o">(</span>CATKIN_DEPENDS message_runtime<span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure></p>
 
 <p>package.txt
-&#8220;`bash
-<package>
-  <name>light_fourleds</name>
-  <version>0.1.0</version>
-  <description>
-    This package defines message, and have node of arduino to light
-    four leds.
-  </description>
-  <maintainer email="yourName@todo.todo">yourName</maintainer>
-  <license>BSD</license></p>
-
-<p>  <buildtool_depend>catkin</buildtool_depend></p>
-
-<p>  <build_depend>message_generation</build_depend></p>
-
-<p>  <run_depend>message_runtime</run_depend>
-  <run_depend>rosserial_python</run_depend>
-</package>
-&#8220;`</p>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>&lt;package&gt;
+</span><span class='line'>  &lt;name&gt;light_fourleds&lt;/name&gt;
+</span><span class='line'>  &lt;version&gt;0.1.0&lt;/version&gt;
+</span><span class='line'>  &lt;description&gt;
+</span><span class='line'>    This package defines message, and have node of arduino to light
+</span><span class='line'>    four leds.
+</span><span class='line'>  &lt;/description&gt;
+</span><span class='line'>  &lt;maintainer <span class="nv">email</span><span class="o">=</span><span class="s2">&quot;yourName@todo.todo&quot;</span>&gt;yourName&lt;/maintainer&gt;
+</span><span class='line'>  &lt;license&gt;BSD&lt;/license&gt;&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;  &lt;buildtool_depend&gt;catkin&lt;/buildtool_depend&gt;&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;  &lt;build_depend&gt;message_generation&lt;/build_depend&gt;&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;  &lt;run_depend&gt;message_runtime&lt;/run_depend&gt;
+</span><span class='line'>  &lt;run_depend&gt;rosserial_python&lt;/run_depend&gt;
+</span><span class='line'>&lt;/package&gt;
+</span></code></pre></td></tr></table></div></figure></p>
 
 <p>書き終えたら<code>catkin_make --force-cmake</code>を実行します．
 <code>bash
@@ -331,43 +374,72 @@ int main(int argc, char **argv) {
 <p>書き込んだら，CMakeLists.txtとpackage.xmlを下のように書き換えます．</p>
 
 <p>CMakeLists.txt
-&#8220;`bash
-cmake_minimum_required(VERSION 2.8.3)
-project(light_fourleds_adapters)</p>
-
-<p>set(CATKIN_DEPS roscpp sensor_msgs)
-set(ROSDEP_DEPS light_fourleds)
-find_package(catkin REQUIRED COMPONENTS ${CATKIN_DEPS} ${ROSDEP_DEPS})
-catkin_package(CATKIN_DEPENDS ${CATKIN_DEPS} ${ROSDEP_DEPS})</p>
-
-<p>include_directories(${catkin_INCLUDE_DIRS})</p>
-
-<p>add_executable(adapt_joy_node src/adapt_joy_node.cpp)
-target_link_libraries(adapt_joy_node ${catkin_LIBRARIES})
-&#8220;`</p>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>cmake_minimum_required<span class="o">(</span>VERSION 2.8.3<span class="o">)</span>
+</span><span class='line'>project<span class="o">(</span>light_fourleds_adapters<span class="o">)</span>&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;set<span class="o">(</span>CATKIN_DEPS roscpp sensor_msgs<span class="o">)</span>
+</span><span class='line'><span class="nb">set</span><span class="o">(</span>ROSDEP_DEPS light_fourleds<span class="o">)</span>
+</span><span class='line'>find_package<span class="o">(</span>catkin REQUIRED COMPONENTS <span class="k">${</span><span class="nv">CATKIN_DEPS</span><span class="k">}</span> <span class="k">${</span><span class="nv">ROSDEP_DEPS</span><span class="k">}</span><span class="o">)</span>
+</span><span class='line'>catkin_package<span class="o">(</span>CATKIN_DEPENDS <span class="k">${</span><span class="nv">CATKIN_DEPS</span><span class="k">}</span> <span class="k">${</span><span class="nv">ROSDEP_DEPS</span><span class="k">}</span><span class="o">)</span>&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;include_directories<span class="o">(</span><span class="k">${</span><span class="nv">catkin_INCLUDE_DIRS</span><span class="k">}</span><span class="o">)</span>&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;add_executable<span class="o">(</span>adapt_joy_node src/adapt_joy_node.cpp<span class="o">)</span>
+</span><span class='line'>target_link_libraries<span class="o">(</span>adapt_joy_node <span class="k">${</span><span class="nv">catkin_LIBRARIES</span><span class="k">}</span><span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure></p>
 
 <p>package.xml
-&#8220;`bash
-<package>
-  <name>light_fourleds_adapters</name>
-  <version>0.1.0</version></p>
-
-<p>  <description>Adapt message to light_fourleds package.</description></p>
-
-<p>  <maintainer email="yourName@todo.todo">yourName</maintainer>
-  <license>BSD</license></p>
-
-<p>  <buildtool_depend>catkin</buildtool_depend></p>
-
-<p>  <build_depend>light_fourleds</build_depend>
-  <build_depend>roscpp</build_depend>
-  <build_depend>sensor_msgs</build_depend></p>
-
-<p>  <run_depend>light_fourleds</run_depend>
-  <run_depend>roscpp</run_depend>
-  <run_depend>sensor_msgs</run_depend>
-</package>
-&#8220;`</p>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>&lt;package&gt;
+</span><span class='line'>  &lt;name&gt;light_fourleds_adapters&lt;/name&gt;
+</span><span class='line'>  &lt;version&gt;0.1.0&lt;/version&gt;&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;  &lt;description&gt;Adapt message to light_fourleds package.&lt;/description&gt;&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;  &lt;maintainer <span class="nv">email</span><span class="o">=</span><span class="s2">&quot;yourName@todo.todo&quot;</span>&gt;yourName&lt;/maintainer&gt;
+</span><span class='line'>  &lt;license&gt;BSD&lt;/license&gt;&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;  &lt;buildtool_depend&gt;catkin&lt;/buildtool_depend&gt;&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;  &lt;build_depend&gt;light_fourleds&lt;/build_depend&gt;
+</span><span class='line'>  &lt;build_depend&gt;roscpp&lt;/build_depend&gt;
+</span><span class='line'>  &lt;build_depend&gt;sensor_msgs&lt;/build_depend&gt;&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;  &lt;run_depend&gt;light_fourleds&lt;/run_depend&gt;
+</span><span class='line'>  &lt;run_depend&gt;roscpp&lt;/run_depend&gt;
+</span><span class='line'>  &lt;run_depend&gt;sensor_msgs&lt;/run_depend&gt;
+</span><span class='line'>&lt;/package&gt;
+</span></code></pre></td></tr></table></div></figure></p>
 
 <p>すべて書き込んだら<code>workspace</code>直下へ移動して<code>catkin_make</code>します．</p>
 
