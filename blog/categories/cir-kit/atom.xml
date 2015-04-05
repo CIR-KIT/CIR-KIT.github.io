@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Cir-kit | 九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/blog/categories/cir-kit/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-04-05T11:21:47+09:00</updated>
+  <updated>2015-04-05T11:36:52+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[CIR-KIT Members]]></name>
@@ -12,6 +12,26 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[CIR-KITロゴ　完成！]]></title>
+    <link href="http://cir-kit.github.io/blog/2015/04/04/logo/"/>
+    <updated>2015-04-04T23:05:02+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2015/04/04/logo</id>
+    <content type="html"><![CDATA[<h1>CIR-KITのロゴが完成しました</h1>
+
+<!--more-->
+
+
+<p>CIR-KITのロゴが完成しました。横長の物と正方形の2種類です。</p>
+
+<p>今後ともよろしくお願いします。</p>
+
+<p><img src="/images/2015-04-04-logo/CIR-KIT_ver17.png" alt="symbol1" /></p>
+
+<p><img src="/images/2015-04-04-logo/CIR-KIT_square3.png" alt="symbol2" /></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[CIR-KITの1号機ドライバ作成 on ROS]]></title>
