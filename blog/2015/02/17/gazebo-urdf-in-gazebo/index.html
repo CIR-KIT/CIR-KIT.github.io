@@ -429,11 +429,11 @@ Gazeboであなたのロボットが動くように変換するあいだ、Rviz�
 
 <h3><code>&lt;collision&gt;</code>と<code>&lt;visual&gt;</code>要素</h3>
 
-<p>これらのタグの働きはGazeboでもRVizでも基本的に同じです。両方を定義することは重要ですが、いくつかのROSアプリケーションでは異なるので、Gazeboでは、もし定義されていなければ、あなたの<code>&lt;cisual&gt;</code>要素を<code>&lt;collision&gt;</code>要素と同じようには使いません。その代わり、Gazeboではあなたの<code>link</code>をレーザスキャナからも衝突要素としても&#8221;見えない&#8221;ものとして扱います。</p>
+<p>これらのタグの働きはGazeboでもRVizでも基本的に同じです。両方を定義することは重要ですが、いくつかのROSアプリケーションでは異なるので、Gazeboでは、もし定義されていなければ、あなたの<code>&lt;visual&gt;</code>要素を<code>&lt;collision&gt;</code>要素と同じようには使いません。その代わり、Gazeboではあなたの<code>link</code>をレーザスキャナからも衝突要素としても&#8221;見えない&#8221;ものとして扱います。</p>
 
 <h4>collisionモデルの簡単化</h4>
 
-<p><code>collision</code>と<code>visual</code>要素のどちらにも同じように幾何要素やメッシュを使うことができます。しかし、PCの性能工場のために、衝突幾何要素の<code>model/meshes</code>は簡略化することを強くおすすめします。メッシュを簡単化するおすすめのツールは<a href="http://blender.jp/">Blender</a>です。BlenderにはMayaや3DX Maxなど、たくさんの<code>closed-source</code>があり、メッシュを簡単化することもできます。</p>
+<p><code>collision</code>と<code>visual</code>要素のどちらにも同じように幾何要素やメッシュを使うことができます。しかし、PCの性能向上のために、衝突幾何要素の<code>model/meshes</code>は簡略化することを強くおすすめします。メッシュを簡単化するおすすめのツールは<a href="http://blender.jp/">Blender</a>です。BlenderにはMayaや3DX Maxなど、たくさんの<code>closed-source</code>があり、メッシュを簡単化することもできます。</p>
 
 <h4>物質 : 適切な色とテクスチャを使う</h4>
 
