@@ -4,7 +4,7 @@
   <title><![CDATA[九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-07-08T14:08:32+09:00</updated>
+  <updated>2015-07-08T14:41:38+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[CIR-KIT Members]]></name>
@@ -5322,7 +5322,7 @@ URDFをできるだけ完全なドキュメントとし、Gazeboでサポート�
 <li>センサプラグインを追加する</li>
 </ul>
 </li>
-<li><code>&lt;gazebo&gt;</code>要素をすべての<code>&lt;link&gt;</code>に追加する
+<li><code>&lt;gazebo&gt;</code>要素をすべての<code>&lt;joint&gt;</code>に追加する
 
 <ul>
 <li>適切な同ダンパを定義する</li>
@@ -5563,7 +5563,7 @@ Gazeboであなたのロボットが動くように変換するあいだ、Rviz�
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>しかし残念なことに、この定義方法では、<code>link</code>の色はGazeboでは反映されません。というのも、<code>link</code>に色をつけたり、テクスチャを貼ったりするのにOこの物質スクリプトが採用されているのです。その代わり、Gazeboの物質タグは、以下のように、それぞれのリンクに定義してやる必要があります。</p>
+<p>しかし残念なことに、この定義方法では、<code>link</code>の色はGazeboでは反映されません。というのも、<code>link</code>に色をつけたり、テクスチャを貼ったりするのにこの物質スクリプトが採用されているのです。その代わり、Gazeboの物質タグは、以下のように、それぞれのリンクに定義してやる必要があります。</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -5583,7 +5583,7 @@ Gazeboでデフォルトで使用可能な物質は<code>gazebo/media/materials/
 
 <h4>STLやColladaファイル</h4>
 
-<p>Rvizのように、Gazeboでも<a href="http://en.wikipedia.org/wiki/STL_(file_format">STL</a>)や<a href="http://en.wikipedia.org/wiki/Collada">Collada</a>ファイルを使用することができます。通常は、Collada(<code>.dae</code>)ファイルを使うことをおすすめします。なぜなら、このフォーマット形式は、色とテクスチャをサポートしているからです。STLファイルだと、個体の色の<code>link</code>しか作ることができません。</p>
+<p>Rvizのように、Gazeboでも<a href="http://en.wikipedia.org/wiki/STL_(file_format">STL</a>や<a href="http://en.wikipedia.org/wiki/Collada">Collada</a>ファイルを使用することができます。通常は、Collada(<code>.dae</code>)ファイルを使うことをおすすめします。なぜなら、このフォーマット形式は、色とテクスチャをサポートしているからです。STLファイルだと、個体の色の<code>link</code>しか作ることができません。</p>
 
 <h3><code>&lt;inertial&gt;</code>要素</h3>
 
