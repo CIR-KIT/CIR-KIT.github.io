@@ -1,187 +1,248 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>http://cir-kit.github.io/blog/2015/04/04/logo/</loc>
-    <lastmod>2015-04-04T23:05:02+09:00</lastmod>
-  </url>
-  <url>
-    <loc>http://cir-kit.github.io/blog/2015/03/15/make-turtlesim-teleop/</loc>
-    <lastmod>2015-03-15T19:10:46+09:00</lastmod>
-  </url>
-  <url>
-    <loc>http://cir-kit.github.io/blog/2015/03/15/make-first-robot-driver-on-ros/</loc>
-    <lastmod>2015-03-15T03:00:00+09:00</lastmod>
-  </url>
-  <url>
-    <loc>http://cir-kit.github.io/blog/2015/03/13/turtlesim-with-joystick/</loc>
-    <lastmod>2015-03-13T13:02:00+09:00</lastmod>
-  </url>
-  <url>
-    <loc>http://cir-kit.github.io/blog/2015/03/11/gazebo-plugin-101/</loc>
-    <lastmod>2015-03-11T10:42:29+09:00</lastmod>
-  </url>
-  <url>
-    <loc>http://cir-kit.github.io/blog/2015/03/10/light-four-leds-on-arduino-by-ros/</loc>
-    <lastmod>2015-03-10T17:00:00+09:00</lastmod>
-  </url>
-  <url>
-    <loc>http://cir-kit.github.io/blog/2015/03/10/use-rosserial-first/</loc>
-    <lastmod>2015-03-10T16:59:22+09:00</lastmod>
-  </url>
-  <url>
-    <loc>http://cir-kit.github.io/blog/2015/03/04/gazebo-ros-advanced-integration/</loc>
-    <lastmod>2015-03-04T05:26:59+09:00</lastmod>
-  </url>
-  <url>
-    <loc>http://cir-kit.github.io/blog/2015/03/04/gazebo-ros-plugin/</loc>
-    <lastmod>2015-03-04T04:45:47+09:00</lastmod>
-  </url>
-  <url>
-    <loc>http://cir-kit.github.io/blog/2015/03/02/gazebo-ros-communication/</loc>
-    <lastmod>2015-03-02T21:11:56+09:00</lastmod>
-  </url>
-  <url>
-    <loc>http://cir-kit.github.io/blog/2015/02/26/greeting-arc/</loc>
-    <lastmod>2015-02-26T16:22:35+09:00</lastmod>
-  </url>
-  <url>
-    <loc>http://cir-kit.github.io/blog/2015/02/25/we-have-get-to-work-when-install-ubuntu/</loc>
-    <lastmod>2015-02-25T20:31:54+09:00</lastmod>
-  </url>
-  <url>
-    <loc>http://cir-kit.github.io/blog/2015/02/22/gazebo-ros-control/</loc>
-    <lastmod>2015-02-22T03:55:56+09:00</lastmod>
-  </url>
-  <url>
-    <loc>http://cir-kit.github.io/blog/2015/02/19/gazebo-gazebo-plugins-in-ros/</loc>
-    <lastmod>2015-02-19T03:23:21+09:00</lastmod>
-  </url>
-  <url>
-    <loc>http://cir-kit.github.io/blog/2015/02/17/gazebo-urdf-in-gazebo/</loc>
-    <lastmod>2015-02-17T17:03:28+09:00</lastmod>
-  </url>
-  <url>
-    <loc>http://cir-kit.github.io/blog/2015/02/15/gazebo-using-roslaunch/</loc>
-    <lastmod>2015-02-15T17:03:28+09:00</lastmod>
-  </url>
-  <url>
-    <loc>http://cir-kit.github.io/blog/2015/02/14/gazebo-installing-gazebo-ros-pkgs/</loc>
-    <lastmod>2015-02-14T21:33:12+09:00</lastmod>
-  </url>
-  <url>
-    <loc>http://cir-kit.github.io/blog/2015/02/14/gazebo-which-combination-of-ros-and-gazebo-versions-to-use/</loc>
-    <lastmod>2015-02-14T15:29:45+09:00</lastmod>
-  </url>
-  <url>
-    <loc>http://cir-kit.github.io/blog/2015/02/14/gazebo-ros-overview/</loc>
-    <lastmod>2015-02-14T11:25:06+09:00</lastmod>
-  </url>
-  <url>
-    <loc>http://cir-kit.github.io/blog/2015/02/14/gazebo-camera-distortion/</loc>
-    <lastmod>2015-02-14T04:06:22+09:00</lastmod>
-  </url>
-  <url>
-    <loc>http://cir-kit.github.io/blog/2015/02/13/gazebo-sensor-noise-model/</loc>
-    <lastmod>2015-02-13T21:50:50+09:00</lastmod>
-  </url>
-  <url>
-    <loc>http://cir-kit.github.io/blog/2015/02/13/gazebo-log-filtering/</loc>
-    <lastmod>2015-02-13T20:57:58+09:00</lastmod>
-  </url>
-  <url>
-    <loc>http://cir-kit.github.io/blog/2015/02/06/gazebo-building-editor/</loc>
-    <lastmod>2015-02-06T02:14:35+09:00</lastmod>
-  </url>
-  <url>
-    <loc>http://cir-kit.github.io/blog/2015/02/05/gazebo-population-of-models/</loc>
-    <lastmod>2015-02-05T23:10:04+09:00</lastmod>
-  </url>
-  <url>
-    <loc>http://cir-kit.github.io/blog/2015/02/03/gazebo-digital-elevation-models/</loc>
-    <lastmod>2015-02-03T19:58:17+09:00</lastmod>
-  </url>
-  <url>
-    <loc>http://cir-kit.github.io/blog/2015/02/03/gazebo-modifying-a-world/</loc>
-    <lastmod>2015-02-03T18:59:45+09:00</lastmod>
-  </url>
-  <url>
-    <loc>http://cir-kit.github.io/blog/2015/02/03/gazebo-building-a-new-world/</loc>
-    <lastmod>2015-02-03T17:42:21+09:00</lastmod>
-  </url>
-  <url>
-    <loc>http://cir-kit.github.io/blog/2015/02/01/gazebo-animated-box/</loc>
-    <lastmod>2015-02-01T10:50:42+09:00</lastmod>
-  </url>
-  <url>
-    <loc>http://cir-kit.github.io/blog/2015/02/01/gazebo-attach-gripper-to-robot/</loc>
-    <lastmod>2015-02-01T01:24:00+09:00</lastmod>
-  </url>
-  <url>
-    <loc>http://cir-kit.github.io/blog/2015/01/31/gazebo-make-a-simple-gripper/</loc>
-    <lastmod>2015-01-31T22:35:00+09:00</lastmod>
-  </url>
-  <url>
-    <loc>http://cir-kit.github.io/blog/2015/01/31/gazebo-add-a-sensor-to-a-robot/</loc>
-    <lastmod>2015-01-31T22:12:43+09:00</lastmod>
-  </url>
-  <url>
-    <loc>http://cir-kit.github.io/blog/2015/01/31/gazebo-attach-meshes/</loc>
-    <lastmod>2015-01-31T20:50:08+09:00</lastmod>
-  </url>
-  <url>
-    <loc>http://cir-kit.github.io/blog/2015/01/31/gazebo-import-meshes/</loc>
-    <lastmod>2015-01-31T19:55:25+09:00</lastmod>
-  </url>
-  <url>
-    <loc>http://cir-kit.github.io/blog/2015/01/31/gazebo-make-a-mobile-robot/</loc>
-    <lastmod>2015-01-31T19:28:40+09:00</lastmod>
-  </url>
-  <url>
-    <loc>http://cir-kit.github.io/blog/2015/01/31/gazebo-make-a-model/</loc>
-    <lastmod>2015-01-31T19:22:14+09:00</lastmod>
-  </url>
-  <url>
-    <loc>http://cir-kit.github.io/blog/2015/01/31/gazebo-how-to-contribute-a-model/</loc>
-    <lastmod>2015-01-31T19:07:55+09:00</lastmod>
-  </url>
-  <url>
-    <loc>http://cir-kit.github.io/blog/2015/01/31/gazebo-model-structure-and-requirements/</loc>
-    <lastmod>2015-01-31T18:54:31+09:00</lastmod>
-  </url>
-  <url>
-    <loc>http://cir-kit.github.io/blog/2015/01/31/gazebo-capture-screenshot/</loc>
-    <lastmod>2015-01-31T18:39:31+09:00</lastmod>
-  </url>
-  <url>
-    <loc>http://cir-kit.github.io/blog/2015/01/31/gazebo-architecture/</loc>
-    <lastmod>2015-01-31T18:21:33+09:00</lastmod>
-  </url>
-  <url>
-    <loc>http://cir-kit.github.io/blog/2015/01/31/gazebo-components/</loc>
-    <lastmod>2015-01-31T18:01:34+09:00</lastmod>
-  </url>
-  <url>
-    <loc>http://cir-kit.github.io/blog/2015/01/31/gazebo-quickstart/</loc>
-    <lastmod>2015-01-31T17:12:33+09:00</lastmod>
-  </url>
-  <url>
-    <loc>http://cir-kit.github.io/blog/2015/01/31/gazebo-install/</loc>
-    <lastmod>2015-01-31T15:28:43+09:00</lastmod>
-  </url>
-  <url>
-    <loc>http://cir-kit.github.io/blog/2015/01/31/information-the-change-of-cir-kit-blog/</loc>
-    <lastmod>2015-01-31T13:28:42+09:00</lastmod>
-  </url>
-  <url>
-    <loc>http://cir-kit.github.io/</loc>
-    <lastmod>2015-07-08T16:02:26+09:00</lastmod>
-  </url>
-  <url>
-    <loc>http://cir-kit.github.io/blog/archives/</loc>
-    <lastmod>2015-07-08T16:02:26+09:00</lastmod>
-  </url>
-  <url>
-    <loc>http://cir-kit.github.io/information/</loc>
-    <lastmod>2015-07-08T16:02:26+09:00</lastmod>
-  </url>
+<url>
+<loc>http://cir-kit.github.io/blog/2016/07/06/new-machine/</loc>
+<lastmod>2016-07-06T19:38:47+09:00</lastmod>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/2015/04/04/logo/</loc>
+<lastmod>2015-04-04T23:05:02+09:00</lastmod>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/2015/03/15/make-turtlesim-teleop/</loc>
+<lastmod>2015-03-15T19:10:46+09:00</lastmod>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/2015/03/15/make-first-robot-driver-on-ros/</loc>
+<lastmod>2015-03-15T03:00:00+09:00</lastmod>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/2015/03/13/turtlesim-with-joystick/</loc>
+<lastmod>2015-03-13T13:02:00+09:00</lastmod>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/2015/03/11/gazebo-plugin-101/</loc>
+<lastmod>2015-03-11T10:42:29+09:00</lastmod>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/2015/03/10/light-four-leds-on-arduino-by-ros/</loc>
+<lastmod>2015-03-10T17:00:00+09:00</lastmod>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/2015/03/10/use-rosserial-first/</loc>
+<lastmod>2015-03-10T16:59:22+09:00</lastmod>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/2015/03/04/gazebo-ros-advanced-integration/</loc>
+<lastmod>2015-03-04T05:26:59+09:00</lastmod>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/2015/03/04/gazebo-ros-plugin/</loc>
+<lastmod>2015-03-04T04:45:47+09:00</lastmod>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/2015/03/02/gazebo-ros-communication/</loc>
+<lastmod>2015-03-02T21:11:56+09:00</lastmod>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/2015/02/26/greeting-arc/</loc>
+<lastmod>2015-02-26T16:22:35+09:00</lastmod>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/2015/02/25/we-have-get-to-work-when-install-ubuntu/</loc>
+<lastmod>2015-02-25T20:31:54+09:00</lastmod>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/2015/02/22/gazebo-ros-control/</loc>
+<lastmod>2015-02-22T03:55:56+09:00</lastmod>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/2015/02/19/gazebo-gazebo-plugins-in-ros/</loc>
+<lastmod>2015-02-19T03:23:21+09:00</lastmod>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/2015/02/17/gazebo-urdf-in-gazebo/</loc>
+<lastmod>2015-02-17T17:03:28+09:00</lastmod>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/2015/02/15/gazebo-using-roslaunch/</loc>
+<lastmod>2015-02-15T17:03:28+09:00</lastmod>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/2015/02/14/gazebo-installing-gazebo-ros-pkgs/</loc>
+<lastmod>2015-02-14T21:33:12+09:00</lastmod>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/2015/02/14/gazebo-which-combination-of-ros-and-gazebo-versions-to-use/</loc>
+<lastmod>2015-02-14T15:29:45+09:00</lastmod>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/2015/02/14/gazebo-ros-overview/</loc>
+<lastmod>2015-02-14T11:25:06+09:00</lastmod>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/2015/02/14/gazebo-camera-distortion/</loc>
+<lastmod>2015-02-14T04:06:22+09:00</lastmod>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/2015/02/13/gazebo-sensor-noise-model/</loc>
+<lastmod>2015-02-13T21:50:50+09:00</lastmod>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/2015/02/13/gazebo-log-filtering/</loc>
+<lastmod>2015-02-13T20:57:58+09:00</lastmod>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/2015/02/06/gazebo-building-editor/</loc>
+<lastmod>2015-02-06T02:14:35+09:00</lastmod>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/2015/02/05/gazebo-population-of-models/</loc>
+<lastmod>2015-02-05T23:10:04+09:00</lastmod>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/2015/02/03/gazebo-digital-elevation-models/</loc>
+<lastmod>2015-02-03T19:58:17+09:00</lastmod>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/2015/02/03/gazebo-modifying-a-world/</loc>
+<lastmod>2015-02-03T18:59:45+09:00</lastmod>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/2015/02/03/gazebo-building-a-new-world/</loc>
+<lastmod>2015-02-03T17:42:21+09:00</lastmod>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/2015/02/01/gazebo-animated-box/</loc>
+<lastmod>2015-02-01T10:50:42+09:00</lastmod>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/2015/02/01/gazebo-attach-gripper-to-robot/</loc>
+<lastmod>2015-02-01T01:24:00+09:00</lastmod>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/2015/01/31/gazebo-make-a-simple-gripper/</loc>
+<lastmod>2015-01-31T22:35:00+09:00</lastmod>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/2015/01/31/gazebo-add-a-sensor-to-a-robot/</loc>
+<lastmod>2015-01-31T22:12:43+09:00</lastmod>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/2015/01/31/gazebo-attach-meshes/</loc>
+<lastmod>2015-01-31T20:50:08+09:00</lastmod>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/2015/01/31/gazebo-import-meshes/</loc>
+<lastmod>2015-01-31T19:55:25+09:00</lastmod>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/2015/01/31/gazebo-make-a-mobile-robot/</loc>
+<lastmod>2015-01-31T19:28:40+09:00</lastmod>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/2015/01/31/gazebo-make-a-model/</loc>
+<lastmod>2015-01-31T19:22:14+09:00</lastmod>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/2015/01/31/gazebo-how-to-contribute-a-model/</loc>
+<lastmod>2015-01-31T19:07:55+09:00</lastmod>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/2015/01/31/gazebo-model-structure-and-requirements/</loc>
+<lastmod>2015-01-31T18:54:31+09:00</lastmod>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/2015/01/31/gazebo-capture-screenshot/</loc>
+<lastmod>2015-01-31T18:39:31+09:00</lastmod>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/2015/01/31/gazebo-architecture/</loc>
+<lastmod>2015-01-31T18:21:33+09:00</lastmod>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/2015/01/31/gazebo-components/</loc>
+<lastmod>2015-01-31T18:01:34+09:00</lastmod>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/2015/01/31/gazebo-quickstart/</loc>
+<lastmod>2015-01-31T17:12:33+09:00</lastmod>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/2015/01/31/gazebo-install/</loc>
+<lastmod>2015-01-31T15:28:43+09:00</lastmod>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/2015/01/31/information-the-change-of-cir-kit-blog/</loc>
+<lastmod>2015-01-31T13:28:42+09:00</lastmod>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/archives/</loc>
+</url>
+<url>
+<loc>http://cir-kit.github.io/</loc>
+</url>
+<url>
+<loc>http://cir-kit.github.io/information/</loc>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/categories/gazebo/</loc>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/categories/ubuntu/</loc>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/categories/install/</loc>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/categories/getstarted/</loc>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/categories/build-a-robot/</loc>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/categories/build-a-world/</loc>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/categories/tools-and-utilities/</loc>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/categories/sensors/</loc>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/categories/ros/</loc>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/categories/arduino/</loc>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/categories/rosserial/</loc>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/categories/joystick-driver/</loc>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/categories/plugin/</loc>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/categories/turtlesim/</loc>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/categories/cir-kit/</loc>
+</url>
+<url>
+<loc>http://cir-kit.github.io/blog/categories/robot/</loc>
+</url>
+<url>
+<loc>http://cir-kit.github.io/posts/2/</loc>
+</url>
+<url>
+<loc>http://cir-kit.github.io/posts/3/</loc>
+</url>
+<url>
+<loc>http://cir-kit.github.io/posts/4/</loc>
+</url>
+<url>
+<loc>http://cir-kit.github.io/posts/5/</loc>
+</url>
 </urlset>

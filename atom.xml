@@ -4,7 +4,7 @@
   <title><![CDATA[九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-07-08T16:02:26+09:00</updated>
+  <updated>2016-07-07T04:41:42+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[CIR-KIT Members]]></name>
@@ -12,6 +12,91 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[New_machine]]></title>
+    <link href="http://cir-kit.github.io/blog/2016/07/06/new-machine/"/>
+    <updated>2016-07-06T19:38:47+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2016/07/06/new-machine</id>
+    <content type="html"><![CDATA[<h5>概要</h5>
+
+<p>[新メンバ向け]新機材の導入について</p>
+
+<!--more-->
+
+
+<h5>目録</h5>
+
+<p>・ CIRKIT-5の制作についての記述<br/>
+・ YP-Spurについての記述<br/>
+・ 開発環境の導入についての記述<br/>
+-Linux(Ubuntu)<br/>
+-Git<br/>
+-GitHub<br/>
+-ROS<br/>
+-Octpress(このブログの書き方)<br/>
+・ 当面の目標についての記述</p>
+
+<h1>CIRKIT-5についての記述  </h1>
+
+<p>CIRKIT-5は独立して回転する２つの車輪を以って自律駆動し,街中を自律走行する.
+電源は鉛蓄電池を搭載.センサーとしてカメラ,LRFを予定する.
+開発内容としては <em>ROS</em> 使用が前提となっている</p>
+
+<h1>YP-Spurについての記述  </h1>
+
+<p>T-frog社のi-Cart Mini <a href="http://t-frog.com/products/icart_mini/">http://t-frog.com/products/icart_mini/</a><br/>
+公式をまず参照.<br/>
+さらにここ↓<br/>
+<a href="http://www.roboken.iit.tsukuba.ac.jp/platform/wiki/yp-spur/how-to-install">http://www.roboken.iit.tsukuba.ac.jp/platform/wiki/yp-spur/how-to-install</a><br/>
+からサンプルを以って学習.</p>
+
+<p>のドライバ. ハードソフト両面共に非常に扱いやすい(前年度比)</p>
+
+<h1>開発環境の導入についての記述  </h1>
+
+<h2>Linux(Ubuntu)</h2>
+
+<p>Bootメディアが工房内にあるので,それを使ってインストールすれば良い
+すべてのタスクのために必要になる(Windowsではむづかしい.)CIR-KIT/ARC標準OSシステム.<br/>
+基本的にUbuntu16.04を導入してもらいたい.<br/>
+当分は工房のUbuntu14.04マシンで作業することができる.<br/>
+生協PC,ネットブックなどではHDD容量不足などの問題が生じる人が要るかもしれない. 外付けHDD導入,アップグレードなどで対処されたい.
+大丈夫,なんとでもなる</p>
+
+<h2>Git</h2>
+
+<p>Ubuntuに標準装備されている.
+<em>バージョン管理ツール</em> つまるところ,
+1.  作業マシンのディレクトリ内の変化を追跡する<br/>
+2.  変化のあった事項を遠隔サーバーにアップロードする<br/>
+3.  任意のタイミングのソースコードを手元に返す<br/>
+が行える. <em>早めに使い慣れておくと煩雑な管理作業から開放されうる</em></p>
+
+<h2>GitHub</h2>
+
+<p>上に述べたGitのアップロード先として提案されるサービス.GitHHub Pages という機能がOctpressにおいても必要</p>
+
+<h2>ROS</h2>
+
+<p>ネットから落として入れる
+<em>ロボット開発用のミドルウェア</em><br/>
+各々の書いたコードを <em>ノード</em> という形式で実行する.これらは相互に通信を行う必要がある場合,ROS越しでそれを行うことができる.つまりプログラム相互の通信規定,プロトコルについてはるかに作業が削減される.<br/>
+サンプルやデモ,チュートリアルがたくさんある.ここの過去記事にも既出であるが,各々興味の湧く分野で試行錯誤してみること.</p>
+
+<h2>Octpress(このブログの書き方)</h2>
+
+<p>GitHubを導入する際に使用可能にする(<em>Ask!</em>)<br/>
+できたことを報告したり見せたりするのにガンガン使っていきたい・・・行きましょう</p>
+
+<h1>当面の目標についての記述  </h1>
+
+<p>上記の遠足の準備にとりかかる.<br/>
+借りの機体を修復し,実働試験を行う<br/>
+コードを書いて,ロボットを動かす.<br/>
+<em>ROS</em> を活用してみる.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[CIR-KITロゴ　完成！]]></title>
@@ -7436,301 +7521,6 @@ GazeboサーバーとGUIを両方起動します。</li>
 
 <p>Gazeboの履歴に起因する多くの変更を反映するために、<code>ros.org</code>のチュートリアルは完全に消去され、このウェブサイトの<code>scratch</code>に再投稿されています。Gazeboの中で、URDFベースのロボットをスムーズに動かすためのやり方について、私達は、徹底的なドキュメントを作ることにより、最善を尽くしています。もし、疑問があるなら、<a href="http://answers.ros.org/">answers.ros.org</a>をご覧ください。<br/>
 <a href="http://cir-kit.github.io/blog/2015/02/14/gazebo-installing-gazebo-ros-pkgs/">gazebo_rosパッケージをインストールする</a>に続きます。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[No.5-2:センサについて（カメラの歪み 編)]]></title>
-    <link href="http://cir-kit.github.io/blog/2015/02/14/gazebo-camera-distortion/"/>
-    <updated>2015-02-14T04:06:22+09:00</updated>
-    <id>http://cir-kit.github.io/blog/2015/02/14/gazebo-camera-distortion</id>
-    <content type="html"><![CDATA[<p><img src="http://cir-kit.github.io/images/gazebo_logo.png" alt="gazebo_logo" /></p>
-
-<h5>検証日時</h5>
-
-<p>02/14/2015 (Sat)</p>
-
-<h5>概要</h5>
-
-<p>Gazeboのチュートリアル第五弾「Sensors」。<br/>
-シミュレーションのセンサは環境を分析し、センサになるべくよく似たデータストリームを生成します。<br/>
-チュートリアルでは、センサの使い方と修正方法について説明します。
-今回はその「Camera Distortion」編です。<br/>
-公式サイトを適当に翻訳しただけですので、あしからず。</p>
-
-<h5>レベル</h5>
-
-<p><strong>BEGINNER</strong></p>
-
-<!-- more -->
-
-
-<h5>環境</h5>
-
-<table>
-<thead>
-<tr>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-<th style="text-align:center;"> </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center;"> <strong>PC</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Lenovo ThinkPad X240 </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Prosessor</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Intel Core i7-4600U (2.10GHz, 4MB, 1600MHz) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>RAM</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> PC3-12800 DDR3L (8GB) </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>OS</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Ubuntu 14.04 LTS 64bit </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Kernel</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> 3.13.0-44-generic </td>
-</tr>
-<tr>
-<td style="text-align:center;"> <strong>Gazebo</strong> </td>
-<td style="text-align:center;"> <strong> : </strong> </td>
-<td style="text-align:center;"> Version 5.0.1 </td>
-</tr>
-</tbody>
-</table>
-
-
-<h5>参考</h5>
-
-<p><a href="http://gazebosim.org/tutorials?cat=sensors">GAZEBO Tutorial-Sensors</a></p>
-
-<h2>はじめに</h2>
-
-<p>カメラのレンズはたいてい光学の角度ゆがみがあり、これにより、イメージ（像）が歪む。例として、タスクを実行したり、物体を発見するのに、より広い範囲の環境視野を確保する目的でロボティクスの分野で広く使用されている、魚眼カメラが挙げられる。<br/>
-MatlabやOpenCVのようなカメラキャリブレーションツールを使うと、カメラ固有のパラメータに付随した、歪み係数をなしにすることができる。そのような歪み系数とともに、Gazeboの中に歪んだカメラセンサを生成することができる。</p>
-
-<h3>現在の実装</h3>
-
-<p>Gazeboでは、現在、<a href="http://en.wikipedia.org/wiki/Distortion_(optics">Brown&rsquo;s distortion model</a>#Software_correction)に基づいたカメラのシミュレーションをサポートしています。このモデルでは、カメラのキャリブレーションツールから取得できる歪み系数を<code>k1</code>、<code>k2</code>、<code>k3</code>、<code>p1</code>、<code>p2</code>としている。<code>k</code>という係数は歪みモデルの放射状の構成であり、<code>p</code>という係数はタンジェントの構成を示す。　　
-現在の実装には以下のようないくつかの制限がある。</p>
-
-<ol>
-<li><p>樽状の歪みだけがサポートされており、たいていは、<code>k1</code>の値が負である。</p></li>
-<li><p>歪みは、カメラのイメージテクスチャに適用されています。これは、イメージデータを生成し、ねじっているだけのものを使っていることを意味する。このことは、最終的なイメージ（特に角では）が現実の樽状の歪みを持ったカメラレンズよりも、狭い視野になるという警告を持つことになる。この現象を償う一つの解決策はGazeboの中で、カメラセンサの視野を増加させるという方法である。</p></li>
-</ol>
-
-
-<h2>カメラを歪みとともに生成する</h2>
-
-<p>歪みのあるカメラモデルを追加するには:</p>
-
-<ol>
-<li>モデルのディレクトリを作る</li>
-</ol>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>mkdir -p ~/.gazebo/models/distorted_camera
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ol>
-<li><code>model.config</code>ファイルを生成する</li>
-</ol>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gedit ~/.gazebo/models/distorted_camera/model.config
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ol>
-<li><code>model.config</code>に以下の内容をコピペする</li>
-</ol>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot;?&gt;</span>
-</span><span class='line'><span class="nt">&lt;model&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;name&gt;</span>Distorted Camera<span class="nt">&lt;/name&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;version&gt;</span>1.0<span class="nt">&lt;/version&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;sdf</span> <span class="na">version=</span><span class="s">&#39;1.5&#39;</span><span class="nt">&gt;</span>model.sdf<span class="nt">&lt;/sdf&gt;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="nt">&lt;author&gt;</span>
-</span><span class='line'>   <span class="nt">&lt;name&gt;</span>My Name<span class="nt">&lt;/name&gt;</span>
-</span><span class='line'>   <span class="nt">&lt;email&gt;</span>me@my.email<span class="nt">&lt;/email&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;/author&gt;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="nt">&lt;description&gt;</span>
-</span><span class='line'>    My distorted camera.
-</span><span class='line'>  <span class="nt">&lt;/description&gt;</span>
-</span><span class='line'><span class="nt">&lt;/model&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ol>
-<li><code>~/.gazebo/models/distorted_camera/model.sdf</code>ファイルを生成する</li>
-</ol>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gedit ~/.gazebo/models/distorted_camera/model.sdf
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ol>
-<li><code>model.sdf</code>に以下の内容をコピペする。以下のモデルはスタンダードなカメラモデルに歪みを付加したものです。:</li>
-</ol>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; ?&gt;</span>
-</span><span class='line'><span class="nt">&lt;sdf</span> <span class="na">version=</span><span class="s">&quot;1.5&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;model</span> <span class="na">name=</span><span class="s">&quot;distorted_camera&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;link</span> <span class="na">name=</span><span class="s">&quot;link&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;pose&gt;</span>0.05 0.05 0.05 0 0 0<span class="nt">&lt;/pose&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;inertial&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;mass&gt;</span>0.1<span class="nt">&lt;/mass&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/inertial&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;collision</span> <span class="na">name=</span><span class="s">&quot;collision&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;box&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;size&gt;</span>0.1 0.1 0.1<span class="nt">&lt;/size&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;/box&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/collision&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;visual</span> <span class="na">name=</span><span class="s">&quot;visual&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;geometry&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;box&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;size&gt;</span>0.1 0.1 0.1<span class="nt">&lt;/size&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;/box&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/geometry&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/visual&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;sensor</span> <span class="na">name=</span><span class="s">&quot;camera&quot;</span> <span class="na">type=</span><span class="s">&quot;camera&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;camera&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;horizontal_fov&gt;</span>1.047<span class="nt">&lt;/horizontal_fov&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;image&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;width&gt;</span>320<span class="nt">&lt;/width&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;height&gt;</span>240<span class="nt">&lt;/height&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;/image&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;clip&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;near&gt;</span>0.1<span class="nt">&lt;/near&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;far&gt;</span>100<span class="nt">&lt;/far&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;/clip&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;distortion&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;k1&gt;</span>-0.25<span class="nt">&lt;/k1&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;k2&gt;</span>0.12<span class="nt">&lt;/k2&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;k3&gt;</span>0.0<span class="nt">&lt;/k3&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;p1&gt;</span>-0.00028<span class="nt">&lt;/p1&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;p2&gt;</span>-0.00005<span class="nt">&lt;/p2&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;center&gt;</span>0.5 0.5<span class="nt">&lt;/center&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;/distortion&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/camera&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;always_on&gt;</span>1<span class="nt">&lt;/always_on&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;update_rate&gt;</span>30<span class="nt">&lt;/update_rate&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;visualize&gt;</span>true<span class="nt">&lt;/visualize&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/sensor&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/link&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;/model&gt;</span>
-</span><span class='line'><span class="nt">&lt;/sdf&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ol>
-<li>Gazeboを起動する</li>
-</ol>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gazebo
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ol>
-<li><p>歪みを付加したカメラモデルを挿入する : 画面左側の枠の中で、<strong>Insert</strong>タブを選び、<strong>Distorted Camera</strong>をクリックする。その後、シミュレータにそれを設置する。</p></li>
-<li><p>歪みを付加したカメラモデルを観測する : <strong>Topis Selector</strong>を表示するために、<strong>Window</strong>-><strong>Topic Visualazation</strong>をクリックする(もしくは、<code>Ctrl-T</code>を押す)。</p></li>
-<li><p><code>/gazebo/default/hokuyo/link/camera/image</code>のような名前のトピックを探し、クリックしたら、<strong>Okay</strong>をクリックしてください。すると、カメライメージが表示されたウィンドウが見えるはずです。</p></li>
-</ol>
-
-
-<p>手順は、以下の動画を参照ください。また、動画でご覧いただくように、カメラのイメージは湯がんでおり、箱のエッジが曲がって見えます。歪みを調整するには、<code>model.sdf</code>ファイルにある、<code>k1</code>,<code>k2</code>,<code>k3</code>,<code>p1</code>,<code>p2</code>の歪み係数を変更するだけでよいです。</p>
-
-<div class="youtube-container">
-<iframe width="560" height="315" src="https://www.youtube.com/embed/lZ41gqMjbV4" frameborder="0" allowfullscreen></iframe>
-</div>
-
 ]]></content>
   </entry>
   

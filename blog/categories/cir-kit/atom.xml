@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Cir-kit | 九州工業大学 CIR-KIT Blog]]></title>
   <link href="http://cir-kit.github.io/blog/categories/cir-kit/atom.xml" rel="self"/>
   <link href="http://cir-kit.github.io/"/>
-  <updated>2015-07-08T16:02:26+09:00</updated>
+  <updated>2016-07-07T04:41:42+09:00</updated>
   <id>http://cir-kit.github.io/</id>
   <author>
     <name><![CDATA[CIR-KIT Members]]></name>
@@ -12,6 +12,91 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[New_machine]]></title>
+    <link href="http://cir-kit.github.io/blog/2016/07/06/new-machine/"/>
+    <updated>2016-07-06T19:38:47+09:00</updated>
+    <id>http://cir-kit.github.io/blog/2016/07/06/new-machine</id>
+    <content type="html"><![CDATA[<h5>概要</h5>
+
+<p>[新メンバ向け]新機材の導入について</p>
+
+<!--more-->
+
+
+<h5>目録</h5>
+
+<p>・ CIRKIT-5の制作についての記述<br/>
+・ YP-Spurについての記述<br/>
+・ 開発環境の導入についての記述<br/>
+-Linux(Ubuntu)<br/>
+-Git<br/>
+-GitHub<br/>
+-ROS<br/>
+-Octpress(このブログの書き方)<br/>
+・ 当面の目標についての記述</p>
+
+<h1>CIRKIT-5についての記述  </h1>
+
+<p>CIRKIT-5は独立して回転する２つの車輪を以って自律駆動し,街中を自律走行する.
+電源は鉛蓄電池を搭載.センサーとしてカメラ,LRFを予定する.
+開発内容としては <em>ROS</em> 使用が前提となっている</p>
+
+<h1>YP-Spurについての記述  </h1>
+
+<p>T-frog社のi-Cart Mini <a href="http://t-frog.com/products/icart_mini/">http://t-frog.com/products/icart_mini/</a><br/>
+公式をまず参照.<br/>
+さらにここ↓<br/>
+<a href="http://www.roboken.iit.tsukuba.ac.jp/platform/wiki/yp-spur/how-to-install">http://www.roboken.iit.tsukuba.ac.jp/platform/wiki/yp-spur/how-to-install</a><br/>
+からサンプルを以って学習.</p>
+
+<p>のドライバ. ハードソフト両面共に非常に扱いやすい(前年度比)</p>
+
+<h1>開発環境の導入についての記述  </h1>
+
+<h2>Linux(Ubuntu)</h2>
+
+<p>Bootメディアが工房内にあるので,それを使ってインストールすれば良い
+すべてのタスクのために必要になる(Windowsではむづかしい.)CIR-KIT/ARC標準OSシステム.<br/>
+基本的にUbuntu16.04を導入してもらいたい.<br/>
+当分は工房のUbuntu14.04マシンで作業することができる.<br/>
+生協PC,ネットブックなどではHDD容量不足などの問題が生じる人が要るかもしれない. 外付けHDD導入,アップグレードなどで対処されたい.
+大丈夫,なんとでもなる</p>
+
+<h2>Git</h2>
+
+<p>Ubuntuに標準装備されている.
+<em>バージョン管理ツール</em> つまるところ,
+1.  作業マシンのディレクトリ内の変化を追跡する<br/>
+2.  変化のあった事項を遠隔サーバーにアップロードする<br/>
+3.  任意のタイミングのソースコードを手元に返す<br/>
+が行える. <em>早めに使い慣れておくと煩雑な管理作業から開放されうる</em></p>
+
+<h2>GitHub</h2>
+
+<p>上に述べたGitのアップロード先として提案されるサービス.GitHHub Pages という機能がOctpressにおいても必要</p>
+
+<h2>ROS</h2>
+
+<p>ネットから落として入れる
+<em>ロボット開発用のミドルウェア</em><br/>
+各々の書いたコードを <em>ノード</em> という形式で実行する.これらは相互に通信を行う必要がある場合,ROS越しでそれを行うことができる.つまりプログラム相互の通信規定,プロトコルについてはるかに作業が削減される.<br/>
+サンプルやデモ,チュートリアルがたくさんある.ここの過去記事にも既出であるが,各々興味の湧く分野で試行錯誤してみること.</p>
+
+<h2>Octpress(このブログの書き方)</h2>
+
+<p>GitHubを導入する際に使用可能にする(<em>Ask!</em>)<br/>
+できたことを報告したり見せたりするのにガンガン使っていきたい・・・行きましょう</p>
+
+<h1>当面の目標についての記述  </h1>
+
+<p>上記の遠足の準備にとりかかる.<br/>
+借りの機体を修復し,実働試験を行う<br/>
+コードを書いて,ロボットを動かす.<br/>
+<em>ROS</em> を活用してみる.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[CIR-KITロゴ　完成！]]></title>
